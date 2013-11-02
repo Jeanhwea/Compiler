@@ -1,5 +1,7 @@
 % PL/0 grammar.tex
 \section{Grammar for extended PL/0}
+\label{sec:gfepl0}
+
 \[
 	\sym{program} \define 
 		\sym{block}.
@@ -22,7 +24,7 @@
 \]
 \[
 	\sym{character} \define
-		'\sym{alpha}' | '\sym{digit}'
+		'\sym{letter}' | '\sym{digit}'
 \]
 \[
 	\sym{string} \define
@@ -34,7 +36,7 @@
 \]
 \[
 	\sym{ident} \define
-		\sym{alpha} \{ \sym{alpha} | \sym{digit} \}
+		\sym{letter} \{ \sym{letter} | \sym{digit} \}
 \]
 \[
 	\sym{vardec} \define
@@ -162,7 +164,7 @@
 				\keyword{write} '(' \sym{expression}')'
 \]
 \[
-	\sym{alpha} \define
+	\sym{letter} \define
 		a|b|c|...|z|A|B|C|...|Z
 \]
 \[
