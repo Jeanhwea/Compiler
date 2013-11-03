@@ -1,10 +1,12 @@
 /**
  * FILE: main.c
  * Date: Nov 3, 2012
- * AUTHOR: Jeanhwea
+ * Author: Jeanhwea
  */
 
 #include <global.h>
+#include <util.h>
+#include <scan.h>
 
 int main(int argc, const char *argv[])
 {

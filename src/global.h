@@ -1,7 +1,7 @@
 /**
  * File: global.h
  * Date: Nov 3, 2013
- * AUTHOR: Jeanhwea 
+ * Author: Jeanhwea 
  */
 
 #ifndef GLOBAL_H
@@ -22,18 +22,36 @@
 #endif
 
 /* MAXRESERVED = the number of reserved words */
-#define MAXRESERVED 8
+#define MAXRESERVED 21
 
 typedef enum {
 	/* book-keeping tokens */
 	ENDFILE, ERROR,
 	/* reserved words */
-	IF, THEN, ELSE, END, REPEAT, UNTIL, READ, WRITE,
+	ARRAY, BEGIN, CHAR, CONST, DO, DOWNTO, ELSE, END,
+	FOR, FUNCTION, IF, INTEGER, OF, PROCEDURE, READ,
+	REPEAT, THEN, TO, UNTIL, VAR, WRITE,
 	/* muticharacter tokens */
-	ID, NUM,
+	ID, NUM, STRING,
 	/* special symbol */
-	ASSIGN, EQ, LT, PLUS, MINUS, TIMES, OVER, LPAREN, RPAREN, SEMI
+	PLUS, MINUS, STAR, OVER, EQU, LST, LEQ, GTT, GEQ,
+	NEQ, COMMA, SEMI, ASSIGN, LPAR, RPAR, LBRA, RBRA,
+	SQUO, COLON
 } TokenType;
+
+extern FILE *source; /* source code text file */
+extern FILE *listing; /* listing output text file */
+extern FILE *code; /* code text file */
+
+extern int lineno; /* source line number for listing */
+
+typedef enum {
+	StmtK, ExpK
+} NodeKind;
+typedef enum {
+	AssignK, IfK, ReapetK, CallK, CompK, ReadK, WriteK,
+	ForK, NullK
+} StmtKind;
 
 typedef struct _TreeNode {
 	struct _TreeNode *child[MAXCHILDREN];
@@ -52,4 +70,6 @@ typedef struct _TreeNode {
 	ExpType type;
 } TreeNode;
 
+extern int PrintSource;
+extern int TraceScan;
 #endif /* end of include guard: GLOBAL_H */
