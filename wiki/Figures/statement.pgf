@@ -1,0 +1,172 @@
+\usetikzlibrary{shapes,arrows,automata,positioning}
+\newcommand{\sym}[1]{~\emph{#1}~}
+\newcommand{\keyword}[1]{\textbf{#1}}
+\begin{tikzpicture}[auto]
+%0
+\draw[-] (-2.5,0) -- node {\sym{statement}} (0,0);
+\draw (0,0) -- (0,-20);
+\draw[-] (0,0) -- node {\sym{assignstmt}} (4,0);
+\draw[->] (4,0) -- (8.25,0);
+\draw[->] (9.7,0) -- (12.65,0);
+\draw[->] (13.3,0) -- (14.6,0);
+\draw[->] (15.35,0) -- (15.8,0);
+\draw[->] (18.2,0) -- (25,0);
+\draw[-] (24,0) -- (24,-20);
+%1
+\draw[->] (3.5,-1) -- (8,-1);
+\draw[-] (10,-1) -- (12,-1);
+%2
+\draw[->] (3.5,-2) -- (4.25,-2);
+\draw[->] (5.7,-2) -- (6.55,-2);
+\draw[->] (7.4,-2) -- (7.85,-2);
+\draw[->] (10.15,-2) -- (10.5,-2);
+\draw[-] (11.4,-2) -- (12,-2);
+%bulabula
+\draw[-] (3.5,0) -- (3.5,-2);
+\draw[->] (12,-2) -- (12,-0.1);
+%assignstmt
+\node  at (9,0) [rectangle,draw] {\sym{ident}};
+\node  at (13,0) [circle,draw] {$:$};
+\node  at (15,0) [circle,draw] {$=$};
+\node  at (17,0) [rectangle,draw] {\sym{expression}};
+\node  at (9,-1) [rectangle,draw] {\sym{funident}};
+\node  at (5,-2) [rectangle,draw] {\sym{ident}};
+\node  at (7,-2) [circle,draw] {$[$};
+\node  at (9,-2) [rectangle,draw] {\sym{expression}};
+\node  at (11,-2) [circle,draw] {$]$};
+%3
+\draw[-] (15.5,-3) -- (24,-3);
+\draw[-] (15.5,-4) -- (15.5,-3);
+%4
+\draw[-] (0,-4) -- node {\sym{ifstmt}} (4,-4);
+\draw[->] (4,-4) -- (4.5,-4);
+\draw[->] (5.45,-4) -- (6.9,-4);
+\draw[->] (9.1,-4) -- (10.1,-4);
+\draw[->] (11.85,-4) -- (12.85,-4);
+\draw[->] (15.1,-4) -- (16.2,-4);
+\draw[->] (17.75,-4) -- (18.85,-4);
+\draw[-] (21.1,-4) -- (24,-4);
+%ifstmt
+\node  at (5,-4) [ellipse,draw] {\keyword{if}};
+\node  at (8,-4) [rectangle,draw] {\sym{condition}};
+\node  at (11,-4) [ellipse,draw] {\keyword{then}};
+\node  at (14,-4) [rectangle,draw] {\sym{statement}};
+\node  at (17,-4) [ellipse,draw] {\keyword{else}};
+\node  at (20,-4) [rectangle,draw] {\sym{statement}};
+%6
+\draw[->] (0,-6) -- node {\sym{repeatstmt}} (3.84,-6);
+\draw[->] (6.1,-6) -- (6.8,-6);
+\draw[->] (9.1,-6) -- (10.1,-6);
+\draw[->] (11.9,-6) -- (12.85,-6);
+\draw[-] (15.1,-6) -- (24,-6);
+%repeat
+\node  at (5,-6) [ellipse,draw] {\keyword{repeat}};
+\node  at (8,-6) [rectangle,draw] {\sym{statement}};
+\node  at (11,-6) [ellipse,draw] {\keyword{until}};
+\node  at (14,-6) [rectangle,draw] {\sym{condititon}};
+%8
+\draw[-] (0,-8) -- node {\sym{callstmt}} (4,-8);
+\draw[->] (7.4,-8) -- node {\sym{arglist}} (10.9,-8);
+\draw[->] (4,-8) -- (4.3,-8);
+\draw[->] (5.7,-8) -- (6.55,-8);
+\draw[->] (13.1,-8) -- (13.55,-8);
+\draw[-] (14.45,-8) -- (24,-8);
+%9
+\draw[-] (10.5,-9) -- (11.7,-9);
+\draw[->] (10.5,-9) -- (10.5,-8.1);
+\draw[->] (12,-8.3) -- (12,-8.7);
+%callstmt
+\node  at (5,-8) [rectangle,draw] {\sym{ident}};
+\node  at (7,-8) [circle,draw] {$($};
+\node  at (12,-8) [rectangle,draw] {\sym{argument}};
+\node  at (14,-8) [circle,draw] {$)$};
+\node  at (12,-9) [circle,draw]{$,$};
+%10
+\draw[->] (0,-10) -- node {\sym{compstmt}} (3.95,-10);
+\draw[->] (6,-10) --  (6.85,-10);
+\draw[->] (9.1,-10) --  (10.25,-10);
+\draw[-] (11.74,-10) --  (24,-10);
+%11
+\draw[->] (8,-10.3) --  (8,-10.6);
+\draw[->] (6.5,-11) --  (6.5,-10.1);
+\draw[-] (6.5,-11) --  (7.6,-11);
+%compstmt
+\node  at (5,-10) [ellipse,draw] {\keyword{begin}};
+\node  at (8,-10) [rectangle,draw] {\sym{statement}};
+\node  at (11,-10) [ellipse,draw] {\keyword{end}};
+\node  at (8,-11) [circle,draw] {$;$};
+%12
+\draw[->] (0,-12) -- node {\sym{readstmt}} (4.1,-12);
+\draw[->] (5.8,-12) -- (7.5,-12);
+\draw[->] (8.45,-12) -- (10.3,-12);
+\draw[->] (11.7,-12) -- (13.5,-12);
+\draw[-] (14.45,-12) -- (24,-12);
+%13
+\draw[->] (10,-13) -- (10,-12.1);
+\draw[->] (11,-12.3) -- (11,-12.65);
+\draw[-] (10.65,-13) -- (10,-13);
+%readstmt
+\node  at (5,-12) [ellipse,draw] {\keyword{read}};
+\node  at (8,-12) [circle,draw] {$($};
+\node  at (11,-12) [rectangle,draw] {\sym{ident}};
+\node  at (14,-12) [circle,draw] {$)$};
+\node  at (11,-13) [circle,draw] {$,$};
+%14
+\draw[->] (0,-14) -- node {\sym{writestmt}} (4,-14);
+\draw[->] (6,-14) -- (7.5,-14);
+\draw[->] (8.45,-14) -- (10.2,-14);
+\draw[->] (11.7,-14) -- (13.65,-14);
+\draw[->] (14.3,-14) -- (15.8,-14);
+\draw[->] (18.15,-14) -- (19.5,-14);
+\draw[-] (20.4,-14) -- (24,-14);
+%15
+\draw[->] (9,-15) -- (13.2,-15);
+\draw[-] (14.8,-15) -- (19,-15);
+%16
+\draw[->] (9,-16) -- (12.8,-16);
+\draw[-] (15.15,-16) -- (19,-16);
+\draw[-] (9,-14) -- (9,-16);
+\draw[->] (19,-16) -- (19,-14.1);
+%writestmt
+\node  at (5,-14) [ellipse,draw] {\keyword{write}};
+\node  at (8,-14) [circle,draw] {$($};
+\node  at (11,-14) [rectangle,draw] {\sym{string}};
+\node  at (14,-14) [circle,draw] {$,$};
+\node  at (17,-14) [rectangle,draw] {\sym{expression}};
+\node  at (20,-14) [circle,draw] {$)$};
+\node  at (14,-15) [rectangle,draw] {\sym{string}};
+\node  at (14,-16) [rectangle,draw] {\sym{expression}};
+%18
+\draw[-] (0,-18) -- node {\sym{forstmt}} (4,-18);
+\draw[->] (4,-18) -- (4.3,-18);
+\draw[->] (5.6,-18) -- (6.3,-18);
+\draw[->] (7.7,-18) -- (8.15,-18);
+\draw[->] (8.8,-18) -- (9.1,-18);
+\draw[->] (9.85,-18) -- (10.8,-18);
+\draw[->] (13.15,-18) -- (14.45,-18);
+\draw[->] (15.5,-18) -- (16.8,-18);
+\draw[->] (19.15,-18) -- (19.7,-18);
+\draw[->] (20.85,-18) -- (21.35,-18);
+\draw[-] (23.6,-18) -- (24,-18);
+%bulabula
+\draw[->] (16.6,-19) -- (16.6,-18.1);
+\draw[-] (13.3,-18) -- (13.3,-19);
+%19
+\draw[->] (13.3,-19) -- (13.65,-19);
+\draw[-] (16.25,-19) -- (16.6,-19);
+%forstmt
+\node  at (5,-18) [ellipse,draw] {\keyword{for}};
+\node  at (7,-18) [rectangle,draw] {\sym{ident}};
+\node  at (8.5,-18) [circle,draw] {$:$};
+\node  at (9.5,-18) [circle,draw] {$=$};
+\node  at (12,-18) [rectangle,draw] {\sym{expression}};
+\node  at (15,-18) [ellipse,draw] {\keyword{to}};
+\node  at (15,-19) [ellipse,draw] {\keyword{downto}};
+\node  at (18,-18) [rectangle,draw] {\sym{expression}};
+\node  at (20.3,-18) [ellipse,draw] {\keyword{do}};
+\node  at (22.5,-18) [rectangle,draw] {\sym{statement}};
+%20
+\draw[-] (0,-20) -- node {\sym{nullstmt}} (4,-20);
+%nullstmt
+\draw[-] (4,-20) -- (24,-20);
+\end{tikzpicture}

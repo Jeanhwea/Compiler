@@ -1,0 +1,26 @@
+\newcommand{\sym}[1]{~\emph{#1}~}
+\newcommand{\keyword}[1]{\textbf{#1}} 
+\begin{tikzpicture}[auto]
+\draw (-3,0) -- node {expression} (0,0);
+\draw (0,-1) -- (0,1);
+\draw[->] (0,1) -- (2.5,1);
+\draw[->] (0,-1) -- (2.5,-1);
+\draw[->] (0,0) -- (5.3,0);
+\draw (3.4,1) -- (6,1);
+\draw (3.4,-1) -- (6,-1);
+\draw[->]  (6,1) -- (6,0.35);
+\draw[->]  (6,-1) -- (6,-0.35);
+\draw[->] (6.65,0) -- (14,0);
+\draw[->] (12,-2) -- (9.7,-2);
+\draw[->] (9,-1.75) -- (9,-0.1);
+\draw[->] (11,0) -- (11,-0.5);
+\draw[->] (12,0) -- (12,-0.5);
+\draw[-] (11,-1.4) -- (11,-2);
+\draw[-] (12,-1.4) -- (12,-2);
+\node  at (6,0)[rectangle,draw] {\sym{term}};
+\node  at (3,1)[circle,draw] {$-$};
+\node  at (3,-1)[circle,draw] {$+$};
+\node  at (11,-1)[circle,draw] {$-$};
+\node  at (12,-1)[circle,draw] {$+$};
+\node  at (9,-2)[rectangle,draw] {\sym{term}};
+\end{tikzpicture}

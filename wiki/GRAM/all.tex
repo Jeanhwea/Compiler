@@ -1,0 +1,170 @@
+% PL/0 grammar.tex
+\[
+	\sym{program} \define 
+		\sym{block}.
+\]
+\[
+	\sym{block} \define 
+		[\sym{constdec}] [\sym{vardec}] \{[\sym{procdec}] | [\sym{fundec}]\} \sym{compstmt}
+\]
+\[
+	\sym{constdec} \define
+		\keyword{const} \sym{constdef} \{,\sym{constdef}\};	
+\]
+\[
+	\sym{constdef} \define
+		\sym{ident} = \sym{const}
+\]
+\[
+	\sym{const} \define
+		[+|-]\sym{unsign}|\sym{character}
+\]
+\[
+	\sym{character} \define
+		'\sym{letter}' | '\sym{digit}'
+\]
+\[
+	\sym{string} \define
+		``\{ASCII~characters~with~decimal~code~number~varys~from~32~to~126~exclude~34\}"
+\]
+\[
+	\sym{unsign} \define
+		\sym{digit} \{\sym{digit}\}
+\]
+\[
+	\sym{ident} \define
+		\sym{letter} \{ \sym{letter} | \sym{digit} \}
+\]
+\[
+	\sym{vardec} \define
+		\keyword{var} \sym{vardef}; \{, \sym{vardef}; \}
+\]
+\[
+	\sym{vardef} \define
+		\sym{ident}\{,\sym{ident}\}:\sym{type}
+\]
+\[
+	\sym{type} \define
+		\sym{basictype} | \keyword{array} '['\sym{unsign}']' \keyword{of} \sym{basictype}
+\]
+\[
+	\sym{basictype} \define
+		\keyword{integer} | \keyword{char}
+\]
+\[
+	\sym{procdec} \define
+		\sym{prochead} \sym{block} \{; \sym{prochead} \sym{block} \};
+\]
+\[
+	\sym{fundec} \define
+		\sym{funhead} \sym{block} \{; \sym{funhead} \sym{block} \};
+\]
+\[
+	\sym{prochead} \define
+		\keyword{procedure} \sym{ident} '(' [\sym{paralist}] ')';
+\]
+\[
+	\sym{funhead} \define
+		\keyword{function} \sym{ident} '(' [\sym{paralist}] ')': \sym{basictype};
+\]
+\[
+	\sym{paralist} \define
+		[ \keyword{var} ] \sym{ident} \{, \sym{ident} \}: \sym{basictype} \{; \sym{paralist} \}
+\]
+\[ \begin{aligned}
+	\sym{statement} \define
+		& \sym{assignstmt} | \sym{ifstmt} | \sym{repeatstmt} | \sym{callstmt} \\
+		& \quad | \sym{compstmt} | \sym{readstmt} | \sym{writestmt} | \sym{forstmt} | \sym{nullstmt}
+\end{aligned} \]
+\[ \begin{aligned}
+	\sym{assignstmt} \define
+		& \sym{ident} := \sym{expression} | \sym{funident} := \sym{expression}  \\
+		& \quad | \sym{ident} '[' \sym{expression} ']' := \sym{expression}
+\end{aligned} \]
+\[
+	\sym{funident} \define
+		\sym{ident}
+\]
+\[
+	\sym{expression} \define
+		[+|-] \sym{term} \{ \sym{addop} \sym{term} \}
+\]
+\[
+	\sym{term} \define
+		\sym{factor} \{ \sym{multop} \sym{factor} \}
+\]
+\[
+	\sym{factor} \define
+		\sym{ident} | \sym{ident} '[' \sym{expression} ']' | \sym{unsign} |
+			'(' \sym{expression} ')' | \sym{callstmt}
+\]
+\[
+	\sym{callstmt} \define
+		\sym{ident} '(' \sym{arglist} ')'
+\]
+\[
+	\sym{arglist} \define
+		\sym{argument} \{, \sym{argument} \}
+\]
+\[
+	\sym{argument} \define
+		\sym{expression}
+\]
+\[
+	\sym{addop} \define
+		+|-
+\]
+\[
+	\sym{multop} \define
+		*|/
+\]
+\[
+	\sym{condition} \define
+		\sym{expression} \sym{relop} \sym{expression}
+\]
+\[
+	\sym{relop} \define
+		< | <= | > | >=| = |  <>
+\]
+\[
+\begin{aligned}
+	\sym{ifstmt} \define
+		& \keyword{if} \sym{condition} \keyword{then} \sym{statement} \\
+		& \quad | \keyword{if} \sym{condition} \keyword{then} \sym{statement} \keyword{else} \sym{statement}
+\end{aligned}
+\]
+\[
+	\sym{repeatstmt} \define
+		\keyword{repeat} \sym{statement} \keyword{until} \sym{condition}
+\]
+\[
+	\sym{forstmt} \define
+		\keyword{for} \sym{ident} := \sym{expression} ( \keyword{to} | \keyword{downto})
+			\sym{expression} \keyword{do} \sym{statement}
+\]
+\[
+	\sym{callstmt} \define
+		\sym{ident} '(' [ \sym{arglist}] ')'
+\]
+\[
+	\sym{compstmt} \define
+		\keyword{begin} \sym{statement} \{; \sym{statement} \} \keyword{end}
+\]
+\[
+	\sym{readstmt} \define
+		\keyword{read} '(' \sym{ident} \{, \sym{ident} \} ')'
+\]
+\[
+	\sym{writestmt} \define
+		\keyword{write} '(' \sym{string} , \sym{expression} ')' |
+			\keyword{write} '(' \sym{string} ')' |
+				\keyword{write} '(' \sym{expression}')'
+\]
+\[
+	\sym{letter} \define
+		a|b|c|...|z|A|B|C|...|Z
+\]
+\[
+	\sym{digit} \define
+		0|1|2|3|...|9
+\]

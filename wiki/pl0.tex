@@ -1,17 +1,19 @@
 \documentclass[a4paper,fleqn]{article}
-\usepackage{amsmath} 
-\usepackage[left=2.0cm,right=2.0cm]{geometry} 
-\usepackage{tikz} 
-\usetikzlibrary{arrows,automata,positioning}
-\title{PL/0 Compiler}
-\author{HuJinghui}
-\date{\today}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{CJK}
+\usepackage[left=2.0cm,right=2.0cm]{geometry}
 \newcommand{\sym}[1]{~\emph{#1}~}
 \newcommand{\keyword}[1]{\textbf{#1}} 
 \newcommand{\define}{\quad ::= \quad} 
 \begin{document}
-\maketitle
+\begin{CJK*}{UTF8}{gbsn}
+\title{Extended PL/0 Compiler}
+\author{胡京徽(11061191)}
+\date{\today}
+%\maketitle
 \clearpage
-\input{./grammar.tex}
-\input{./statemachine.tex}
+\input{./SEC/sec1.tex}
+\input{./SEC/sec2.tex}
+\end{CJK*}
 \end{document}

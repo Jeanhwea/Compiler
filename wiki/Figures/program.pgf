@@ -1,0 +1,8 @@
+\newcommand{\sym}[1]{~\emph{#1}~}
+\newcommand{\keyword}[1]{\textbf{#1}} 
+\begin{tikzpicture}[auto]
+     	\draw[->] (0, 0) -- node{\sym{program}} (2.8, 0) ;
+	\node at (3.5,0) [rectangle,draw] {\sym{block}} ;
+	\draw[->] (4.2,0) -- (5.9,0);
+	\node at (6.2,0) [circle, draw] {$.$};
+\end{tikzpicture}

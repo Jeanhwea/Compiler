@@ -1,0 +1,47 @@
+\usetikzlibrary{positioning,automata}
+\begin{tikzpicture}[
+       >=stealth,
+       node distance=5cm,
+       on grid,
+       auto
+     ]
+	\node[initial,initial text=,state] (START) {START};
+	\node[state] (INSTR) [above left of=START] {INSTR};
+	\node[state] (INUNS) [below left of=START] {INUNS};
+	\node[state] (INIDE) [above right of=START] {INIDE};
+	\node[state] (INLES) [below right of=START] {INLES};
+	\node[state] (INCOM) [right of=INIDE] {INCOM};
+	\node[state] (INGRE) [right of=INLES] {INGRE};
+	\node[state,accepting] (DONE1) [below right of=INCOM] {DONE};
+	\node[state,accepting] (DONE2) [above of=START] {DONE};
+	\node[state,accepting] (DONE3) [below of=START] {DONE};
+
+	\path[->] (START) edge[loop below] node{white space} (START);
+	\path[->] (START) edge[bend left] node{$"$} (INSTR);
+	\path[->] (START) edge[bend right] node{digit} (INUNS);
+	\path[->] (START) edge node{letter} (INIDE);
+	\path[->] (START) edge node{$<$} (INLES);
+	\path[->] (START) edge node{$:$} (INCOM);
+	\path[->] (START) edge node{$>$} (INGRE);
+	\path[->] (START) edge node{other} (DONE1);
+
+	\path[->] (INSTR) edge[loop above] node{other} (INSTR);
+	\path[->] (INSTR) edge node{$"$} (DONE2);
+	
+	\path[->] (INIDE) edge[loop above] node{digit$|$letter} (INIDE);
+	\path[->] (INIDE) edge[bend right] node{other} (DONE2);
+
+	\path[->] (INUNS) edge[loop below] node{digit} (INUNS);
+	\path[->] (INUNS) edge node{other} (DONE3);
+
+	\path[->] (INCOM) edge[bend left] node{$=$} (DONE1);
+	\path[->] (INCOM) edge[bend right] node{other} (DONE1);
+
+	\path[->] (INGRE) edge[bend left] node{$=$} (DONE1);
+	\path[->] (INGRE) edge[bend right] node{other} (DONE1);
+
+	\path[->] (INLES) edge[bend right] node{$=$} (DONE3);
+	\path[->] (INLES) edge node{$>$} (DONE3);
+	\path[->] (INLES) edge[bend left] node{other} (DONE3);
+     
+\end{tikzpicture}

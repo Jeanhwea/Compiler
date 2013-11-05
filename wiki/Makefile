@@ -8,7 +8,7 @@ PDFFILE := pl0.pdf
 all: ${TEXFILE}
 	${DVICC} ${TEXFILE} -o ${DVIFILE} && ${PDFCC} ${DVIFILE} ${PDFFILE}
 
-see:
+love:
 	${DVICC} ${TEXFILE} -o ${DVIFILE} && ${PDFCC} ${DVIFILE} ${PDFFILE} && ${VIEWR} ${PDFFILE}
 
 .PHONY: clean

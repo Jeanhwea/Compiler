@@ -119,7 +119,7 @@ TokenType getToken(void)
 			} else {
 				state = DONE;
 				switch (c) {
-				case EOF: 						
+				case EOF:
 					save = FALSE;
 					currentToken = ENDFILE;
 					break;
