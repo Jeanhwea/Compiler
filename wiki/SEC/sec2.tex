@@ -149,3 +149,85 @@ end
 	\item 常量的定义可以是正负整数，也可以是字符。若是字符，则会使用ASCII
 		码值进行运算。
 \end{enumerate}
+\section{表达式，项，因子的解读}
+\subsection{表达式}
+\input{./GRAM/22.tex}
+表达式的语法图见Figure~\ref{expression}。
+下面是一些表达式的样例:
+\begin{verbatim}
+- 3 + a
+a + b
+1 - 10
+a + 1 - 5
+\end{verbatim}
+\begin{figure}[h!]
+\begin{center}
+    \includegraphics[scale=.8]{Figures/expression.eps}
+\end{center}
+\caption{expression 语法图}
+\label{expression}
+\end{figure}
+\subsection{项}
+\input{./GRAM/23.tex}
+项的语法图见Figure~\ref{term}。
+下面是一些项的样例:
+\begin{verbatim}
+a * b
+1 / 10
+a / 1 * 5
+\end{verbatim}
+\begin{figure}[h!]
+\begin{center}
+    \includegraphics[scale=.8]{Figures/term.eps}
+\end{center}
+\caption{term 语法图}
+\label{term}
+\end{figure}
+\subsection{因子}
+\input{./GRAM/24.tex}
+因子的语法图见Figure~\ref{factor}。
+下面是一些因子的样例:
+\begin{verbatim}
+const a = 1;
+var A:array[3] of integer;
+function somefun();
+  somefun程序略;
+// 下面的是因子
+a 
+A[2]
+(a + b)
+somefun()
+\end{verbatim}
+\begin{figure}[h!]
+\begin{center}
+    \includegraphics[scale=.8]{Figures/factor.eps}
+\end{center}
+\caption{factor 语法图}
+\label{factor}
+\end{figure}
+\section{其他一些杂项}
+\input{./GRAM/9.tex}
+\input{./GRAM/18.tex}
+\input{./GRAM/21.tex}
+\input{./GRAM/26.tex}
+\input{./GRAM/27.tex}
+\input{./GRAM/28.tex}
+\input{./GRAM/29.tex}
+\input{./GRAM/30.tex}
+\input{./GRAM/31.tex}
+杂项的说明：
+\begin{enumerate}
+	\item 关于标识符的解析可以总结成一个状态机，见 Figure~\ref{getToken}
+	\item 形参列表需要给出参数类型。
+	\item 参数列表是由实参组成，之间使用逗号隔开。
+	\item 实参被定义成一个表达式。
+	\item 条件是基于一些比较，零表示假，非零表示真。
+\end{enumerate}
+\begin{figure}[!h]
+\begin{center}
+    \includegraphics[scale=.8]{Figures/getToken.eps}
+\end{center}
+\caption{getToken 状态机}
+\label{getToken}
+\end{figure}
+
