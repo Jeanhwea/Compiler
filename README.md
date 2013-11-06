@@ -15,4 +15,4 @@ About me
 > 
 	email: jeanhwea@126.com (常用)
 > 
-	jeanhwea@gmail.com 
+	       jeanhwea@gmail.com 
