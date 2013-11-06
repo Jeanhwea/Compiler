@@ -27,5 +27,5 @@
 \node  at (6,-3)[circle,draw] {$($};
 \node  at (9,-3)[rectangle,draw] {\sym{expression}};
 \node  at (12,-3)[circle,draw] {$)$};
-\node  at (6,-4)[rectangle,draw] {\sym{callstmt}};
+\node  at (6,-4)[rectangle,draw] {\sym{fcallstmt}};
 \end{tikzpicture}

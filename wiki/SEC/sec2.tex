@@ -44,13 +44,14 @@ const numbera=0, numberb=1; // 常量定义
 var i, j, sum: integer;     // 变量定义
 procedure  test();          // 过程声明部分
   test 的程序（略）
-function add();             // 函数声明部分
+function add():integer;     // 函数声明部分
 begin
   sum := numbera + numberb; // add 的分程序部分
+  add := sum
 end
                             // 复合语句部分
 begin
-  i := sum;
+  i := sum
 end
 \end{verbatim}
 说明：
@@ -107,11 +108,11 @@ begin
   for i := 1 to 10 do
     sum := sum + i
   //过程调用语句
-  testproc()
+  testproc();
   //读语句
-  read (k, sum)
+  read (k, sum);
   //写语句
-  write("hello world!")
+  write("hello world!");
   write(sum)
 end
 \end{verbatim}
@@ -185,12 +186,13 @@ a / 1 * 5
 \end{figure}
 \subsection{因子}
 \input{./GRAM/24.tex}
+\input{./GRAM/25.tex}
 因子的语法图见Figure~\ref{factor}。
 下面是一些因子的样例:
 \begin{verbatim}
 const a = 1;
 var A:array[3] of integer;
-function somefun();
+function somefun(): integer;
   somefun程序略;
 // 下面的是因子
 a 

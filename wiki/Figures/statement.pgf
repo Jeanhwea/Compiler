@@ -65,7 +65,7 @@
 \node  at (11,-6) [ellipse,draw] {\keyword{until}};
 \node  at (14,-6) [rectangle,draw] {\sym{condititon}};
 %8
-\draw[-] (0,-8) -- node {\sym{callstmt}} (4,-8);
+\draw[-] (0,-8) -- node {\sym{pcallstmt}} (4,-8);
 \draw[->] (7.4,-8) -- node {\sym{arglist}} (10.9,-8);
 \draw[->] (4,-8) -- (4.3,-8);
 \draw[->] (5.7,-8) -- (6.55,-8);
@@ -75,7 +75,7 @@
 \draw[-] (10.5,-9) -- (11.7,-9);
 \draw[->] (10.5,-9) -- (10.5,-8.1);
 \draw[->] (12,-8.3) -- (12,-8.7);
-%callstmt
+%pcallstmt
 \node  at (5,-8) [rectangle,draw] {\sym{ident}};
 \node  at (7,-8) [circle,draw] {$($};
 \node  at (12,-8) [rectangle,draw] {\sym{argument}};

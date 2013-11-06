@@ -73,7 +73,7 @@
 \]
 \[ \begin{aligned}
 	\sym{statement} \define
-		& \sym{assignstmt} | \sym{ifstmt} | \sym{repeatstmt} | \sym{callstmt} \\
+		& \sym{assignstmt} | \sym{ifstmt} | \sym{repeatstmt} | \sym{pcallstmt} \\
 		& \quad | \sym{compstmt} | \sym{readstmt} | \sym{writestmt} | \sym{forstmt} | \sym{nullstmt}
 \end{aligned} \]
 \[ \begin{aligned}
@@ -96,11 +96,11 @@
 \[
 	\sym{factor} \define
 		\sym{ident} | \sym{ident} '[' \sym{expression} ']' | \sym{unsign} |
-			'(' \sym{expression} ')' | \sym{callstmt}
+			'(' \sym{expression} ')' | \sym{fcallstmt}
 \]
 \[
-	\sym{callstmt} \define
-		\sym{ident} '(' \sym{arglist} ')'
+	\sym{fcallstmt} \define
+		\sym{ident} '('[ \sym{arglist} ]')'
 \]
 \[
 	\sym{arglist} \define
@@ -143,7 +143,7 @@
 			\sym{expression} \keyword{do} \sym{statement}
 \]
 \[
-	\sym{callstmt} \define
+	\sym{pcallstmt} \define
 		\sym{ident} '(' [ \sym{arglist}] ')'
 \]
 \[
