@@ -21,9 +21,9 @@ char tokenString[MAXTOKENSIZE + 1];
 #define BUFLEN 1024
 
 static char lineBuf[BUFLEN]; // hold the current line
-static int linepos = 0; // current position in lineBuf
-static int bufsize = 0; // current size of buffered string
-static int EOF_flag = FLASE; // for ungetchar behavior
+static int linepos = 0;      // current position in lineBuf
+static int bufsize = 0;      // current size of buffered string
+static int EOF_flag = FALSE; // for ungetchar behavior
 
 static int getNextChar(void)
 {
@@ -31,7 +31,7 @@ static int getNextChar(void)
 		return lineBuf[linepos++];
 	}
 	lineno++;
-	if (fget(lineBuf,BUFLEN-1,source)) {
+	if (fgets(lineBuf,BUFLEN-1,source)) {
 		if(PrintSource)
 			fprintf(listing, "%4d: %s",lineno, lineBuf);
 		bufsize = strlen(lineBuf);
@@ -39,6 +39,8 @@ static int getNextChar(void)
 		return lineBuf[linepos++];
 	} else {
 		EOF_flag = TRUE;
+		//fprintf(listing, "*** File end ***\n");
+		exit(0);
 		return EOF;
 	}
 }
@@ -106,7 +108,7 @@ TokenType getToken(void)
 			} else if (isdigit(c)) {
 				state = INUNS;
 			} else if (c == '"') {
-				save = FLASE;
+				save = FALSE;
 				state = INSTR;
 			} else if (isalpha(c)) {
 				state = INIDE;
@@ -124,8 +126,7 @@ TokenType getToken(void)
 					currentToken = ENDFILE;
 					break;
 				case '.':
-					save = FLASE;
-					currentToken = ENDFILE;
+					currentToken = DOT;
 					break;
 				case '+':
 					currentToken = PLUS;
@@ -157,8 +158,17 @@ TokenType getToken(void)
 				case ']':
 					currentToken = RBRA;
 					break;
-				case ''':
+				case '{':
+					currentToken = LBBR;
+					break;
+				case '}':
+					currentToken = RBBR;
+					break;
+				case '\'':
 					currentToken = SQUO;
+					break;
+				case '"':
+					currentToken = DQUO;
 					break;
 				default:
 					currentToken = ERROR;
@@ -168,7 +178,7 @@ TokenType getToken(void)
 			break;
 		case INSTR:
 			if (c == '"') {
-				ungetNextChar();
+			//	ungetNextChar();
 				save = FALSE;
 				state = DONE;
 				currentToken = STRING;
@@ -178,7 +188,7 @@ TokenType getToken(void)
 		case INUNS:
 			if (!isdigit(c)) {
 				ungetNextChar();
-				save = FLASE;
+				save = FALSE;
 				state = DONE;
 				currentToken = NUM;
 			}
@@ -186,7 +196,7 @@ TokenType getToken(void)
 		case INIDE:
 			if (!(isdigit(c) || isalpha(c))) {
 				ungetNextChar();
-				save = FLASE;
+				save = FALSE;
 				state = DONE;
 				currentToken = ID;
 			}
@@ -199,7 +209,7 @@ TokenType getToken(void)
 				currentToken = NEQ;
 			} else {
 				ungetNextChar();
-				save = FLASE;
+				save = FALSE;
 				currentToken = LST;
 			}
 			break;
@@ -209,17 +219,17 @@ TokenType getToken(void)
 				currentToken = ASSIGN;
 			} else {
 				ungetNextChar();
-				save = FLASE;
-				currentToken = COMMA;
+				save = FALSE;
+				currentToken = COLON;
 			}
 			break;
 		case INGRE:
 			state = DONE;
 			if (c == '=') {
 				currentToken = GEQ;
-			} else if {
+			} else {
 				ungetNextChar();
-				save = FLASE;
+				save = FALSE;
 				currentToken = GTT;
 			}
 			break;
@@ -235,14 +245,14 @@ TokenType getToken(void)
 		}
 		if (state == DONE) {
 			tokenString[tokenStringIndex] = '\0';
-			if (currentToken == INIDE) {
-				currentToken = reservedWords(tokenString);	
+			if (currentToken == ID) {
+				currentToken = reservedLookup(tokenString);	
 			}
 		}
 	}
 
 	if (TraceScan) {
-		fprintf(listing, "\t%d", lineno);
+//		fprintf(listing, "%d ", lineno);
 		printToken(currentToken, tokenString);
 	}
 	return currentToken;

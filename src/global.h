@@ -32,11 +32,11 @@ typedef enum {
 	FOR, FUNCTION, IF, INTEGER, OF, PROCEDURE, READ,
 	REPEAT, THEN, TO, UNTIL, VAR, WRITE,
 	/* muticharacter tokens */
-	ID, NUM, STRING,
+	ID, CH, NUM, STRING,
 	/* special symbol */
 	PLUS, MINUS, STAR, OVER, EQU, LST, LEQ, GTT, GEQ,
 	NEQ, COMMA, SEMI, ASSIGN, LPAR, RPAR, LBRA, RBRA,
-	SQUO, COLON
+	LBBR, RBBR, SQUO, DQUO, COLON, DOT
 } TokenType;
 
 extern FILE *source; /* source code text file */
@@ -52,12 +52,19 @@ typedef enum {
 	AssignK, IfK, ReapetK, CallK, CompK, ReadK, WriteK,
 	ForK, NullK
 } StmtKind;
+typedef enum {
+	OpK
+} ExprKind;
+typedef enum {
+	Void
+} ExpType;
 
+#define MAXCHILDREN 3
 typedef struct _TreeNode {
 	struct _TreeNode *child[MAXCHILDREN];
 	struct _TreeNode *sibling;
 	int lineno;
-	NodoKind nodekind;
+	NodeKind nodekind;
 	union {
 		StmtKind stmt;
 		ExprKind expr;
