@@ -21,6 +21,11 @@ int main(int argc, const char *argv[])
 	char pgm[120] = "input.pas";
 	char tkn[120] = "11061191_token.txt";
 	TokenType t;
+	if (argc != 2) {
+		fprintf(stdout, "usage: ./compiler <filename>\n");
+		exit(1);
+	}
+	strcpy(pgm,argv[1]);
 	source = fopen(pgm, "r");
 	if (source == NULL) {
 		fprintf(stderr, "File %s not found\n", pgm);
@@ -32,10 +37,9 @@ int main(int argc, const char *argv[])
 //		exit(1);
 //	}
 	listing = stdout;
-	t = getToken();
-	while (t != ENDFILE) {
+	do {
 		t = getToken();
-	}
+	} while (t != ENDFILE);
 	fclose(source);
 //	fclose(listing);
 }

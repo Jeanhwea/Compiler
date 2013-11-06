@@ -11,7 +11,8 @@
 /* state define for DFA */
 typedef enum {
 	START, INSTR, INUNS, INIDE,
-	INLES, INCOM, INGRE, DONE
+	INLES, INCOM, INGRE, INCHA,
+	DONE
 } StateType;
 
 /* lexeme or identifier or reserved word */
@@ -25,10 +26,17 @@ static int linepos = 0;      // current position in lineBuf
 static int bufsize = 0;      // current size of buffered string
 static int EOF_flag = FALSE; // for ungetchar behavior
 
-static int getNextChar(void)
+static int getNextChar(int flag)
 {
+	/**
+	 * the flag means whether get next character seriously
+	 * if flag is TRUE
+	 *    we will get next character
+	 * else if flag is FALSE
+	 *    we just have a peek at next character
+	 */
 	if (linepos < bufsize) {
-		return lineBuf[linepos++];
+		return (flag)? lineBuf[linepos++]: lineBuf[linepos];
 	}
 	lineno++;
 	if (fgets(lineBuf,BUFLEN-1,source)) {
@@ -36,11 +44,11 @@ static int getNextChar(void)
 			fprintf(listing, "%4d: %s",lineno, lineBuf);
 		bufsize = strlen(lineBuf);
 		linepos = 0;
-		return lineBuf[linepos++];
+		return (flag)? lineBuf[linepos++]: lineBuf[linepos];
 	} else {
 		EOF_flag = TRUE;
 		//fprintf(listing, "*** File end ***\n");
-		exit(0);
+		//exit(0);
 		return EOF;
 	}
 }
@@ -91,14 +99,15 @@ static TokenType reservedLookup(char *s)
 	return ID;
 } /* lookup reserved words */
 
+
 TokenType getToken(void)
 {
 	int tokenStringIndex = 0;
 	TokenType currentToken;
 	StateType state = START;
-	int save;
+	int save; /* whether the current character be saved */
 	while (state != DONE) {
-		int c = getNextChar();
+		int c = getNextChar(TRUE);
 		save = TRUE;
 		switch (state) {
 		case START:
@@ -110,6 +119,9 @@ TokenType getToken(void)
 			} else if (c == '"') {
 				save = FALSE;
 				state = INSTR;
+			} else if (c == '\'') {
+				save = FALSE;
+				state = INCHA;
 			} else if (isalpha(c)) {
 				state = INIDE;
 			} else if (c == ':') {
@@ -136,6 +148,9 @@ TokenType getToken(void)
 					break;
 				case '*':
 					currentToken = STAR;
+					break;
+				case '/':
+					currentToken = OVER;
 					break;
 				case '=':
 					currentToken = EQU;
@@ -164,12 +179,6 @@ TokenType getToken(void)
 				case '}':
 					currentToken = RBBR;
 					break;
-				case '\'':
-					currentToken = SQUO;
-					break;
-				case '"':
-					currentToken = DQUO;
-					break;
 				default:
 					currentToken = ERROR;
 					break;
@@ -178,12 +187,31 @@ TokenType getToken(void)
 			break;
 		case INSTR:
 			if (c == '"') {
-			//	ungetNextChar();
 				save = FALSE;
 				state = DONE;
 				currentToken = STRING;
 			}
 			// TODO: check if the string character is printable
+			break;
+		case INCHA:
+			if (isdigit(c) || isalpha(c)) {
+				state = DONE;
+				if (getNextChar(FALSE) == '\'') {
+					getNextChar(TRUE);
+					currentToken = CH;
+				} else {
+					currentToken = ERROR;
+				}
+			} else {
+				if (getNextChar(FALSE) == '\'') {
+					getNextChar(TRUE);
+				}
+				save = FALSE;
+				state = DONE;
+				currentToken = ERROR;
+			}
+			// TODO: check if the string character is
+			//       digit or character
 			break;
 		case INUNS:
 			if (!isdigit(c)) {
@@ -250,9 +278,8 @@ TokenType getToken(void)
 			}
 		}
 	}
-
 	if (TraceScan) {
-//		fprintf(listing, "%d ", lineno);
+		//fprintf(listing, "%d ", lineno);
 		printToken(currentToken, tokenString);
 	}
 	return currentToken;

@@ -22,11 +22,19 @@ void printToken(TokenType token, const char *tokenString)
 					++tokenCount, tokenString);
 			break;
 		case CH:
+			fprintf(listing, "%d QMARK '\n",
+					++tokenCount, tokenString);
 			fprintf(listing, "%d CHARCON %s\n",
+					++tokenCount, tokenString);
+			fprintf(listing, "%d QMARK '\n",
 					++tokenCount, tokenString);
 			break;
 		case STRING:
+			fprintf(listing, "%d DQMARK \"\n",
+					++tokenCount, tokenString);
 			fprintf(listing, "%d STRCON %s\n",
+					++tokenCount, tokenString);
+			fprintf(listing, "%d DQMARK \"\n",
 					++tokenCount, tokenString);
 			break;
 		case CONST:
@@ -205,8 +213,10 @@ void printToken(TokenType token, const char *tokenString)
 			fprintf(listing, "%d RBRACE %s\n",
 					++tokenCount, tokenString);
 			break;
+		case ERROR:
+			fprintf(listing, "ERROR %s\n", tokenString);
 		default:
-			fprintf(listing, "unknown token: %s\n",tokenString);
+			//fprintf(listing, "unknown token: %s\n",tokenString);
 			++tokenCount;
 	}
 }
