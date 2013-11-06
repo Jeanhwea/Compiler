@@ -117,10 +117,8 @@ TokenType getToken(void)
 			} else if (isdigit(c)) {
 				state = INUNS;
 			} else if (c == '"') {
-				save = FALSE;
 				state = INSTR;
 			} else if (c == '\'') {
-				save = FALSE;
 				state = INCHA;
 			} else if (isalpha(c)) {
 				state = INIDE;
@@ -187,28 +185,15 @@ TokenType getToken(void)
 			break;
 		case INSTR:
 			if (c == '"') {
-				save = FALSE;
 				state = DONE;
 				currentToken = STRING;
 			}
 			// TODO: check if the string character is printable
 			break;
 		case INCHA:
-			if (isdigit(c) || isalpha(c)) {
+			if (c == '\'') {
 				state = DONE;
-				if (getNextChar(FALSE) == '\'') {
-					getNextChar(TRUE);
-					currentToken = CH;
-				} else {
-					currentToken = ERROR;
-				}
-			} else {
-				if (getNextChar(FALSE) == '\'') {
-					getNextChar(TRUE);
-				}
-				save = FALSE;
-				state = DONE;
-				currentToken = ERROR;
+				currentToken = CH;
 			}
 			// TODO: check if the string character is
 			//       digit or character

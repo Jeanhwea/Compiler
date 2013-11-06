@@ -46,15 +46,31 @@ extern FILE *code; /* code text file */
 extern int lineno; /* source line number for listing */
 
 typedef enum {
-	StmtK, ExpK
+	PgmK, BloK, DecK, StmtK, ExpK
 } NodeKind;
+/**
+ * PgmK:
+ * 	------ BloK
+ * 	------ .
+ *
+ * BloK:
+ * 	------ ConstDecK
+ * 	------ VarDecK
+ * 	------ ProcDecK || FunDeck
+ * 	------ CompK
+ *
+ */
 typedef enum {
-	AssignK, IfK, ReapetK, CallK, CompK, ReadK, WriteK,
-	ForK, NullK
+	ConstDecK, VarDecK, ProcDecK, FunDeck
+} DecKind;
+typedef enum {
+	AssignK, IfK, ReapetK, PcallK, CompK, ReadK,
+	WriteK, ForK, NullK
 } StmtKind;
 typedef enum {
-	OpK
+	OpK, ConsK, IdK
 } ExprKind;
+
 typedef enum {
 	Void
 } ExpType;
@@ -66,6 +82,7 @@ typedef struct _TreeNode {
 	int lineno;
 	NodeKind nodekind;
 	union {
+		DecKind  dec;
 		StmtKind stmt;
 		ExprKind expr;
 	} kind;
