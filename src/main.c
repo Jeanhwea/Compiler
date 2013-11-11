@@ -7,9 +7,11 @@
 #include "global.h"
 #include "util.h"
 #include "scan.h"
+#include "parse.h"
 
 FILE *source;
 FILE *listing;
+FILE *errlist;
 int lineno = 0;
 
 int TraceScan = TRUE;
@@ -17,7 +19,7 @@ int PrintSource = TRUE;
 
 int main(int argc, const char *argv[])
 {
-	TreeNode *ast; /* abstract syntax tree */
+	PgmSP ast; /* abstract syntax tree */
 	char pgm[120] = "input.pas";
 	char tkn[120] = "11061191_token.txt";
 	TokenType t;
@@ -39,6 +41,7 @@ int main(int argc, const char *argv[])
 	 *}
 	 */
 	listing = stdout;
+	errlist = stderr;
 	do {
 		t = getToken();
 	} while (t != ENDFILE);

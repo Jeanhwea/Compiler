@@ -7,6 +7,7 @@
 #include "global.h"
 #include "util.h"
 #include "scan.h"
+#include "error.h"
 
 /* state define for DFA */
 typedef enum {
@@ -24,9 +25,9 @@ char tokenString[MAXTOKENSIZE + 1];
 static char lineBuf[BUFLEN]; // hold the current line
 static int linepos = 0;      // current position in lineBuf
 static int bufsize = 0;      // current size of buffered string
-static int EOF_flag = FALSE; // for ungetchar behavior
+static BOOL EOF_flag = FALSE; // for ungetchar behavior
 
-static int getNextChar(int flag)
+static int getNextChar(BOOL flag)
 {
 	/**
 	 * the flag means whether get next character seriously
@@ -187,23 +188,44 @@ TokenType getToken(void)
 			if (c == '"') {
 				state = DONE;
 				currentToken = STRING;
+			} else if (c >= 32 && c <= 126) {
+			// check if the string character is printable
+			} else {
+				if (c == EOF) {
+					save = FALSE;
+					tokenStringIndex = 0;
+					currentToken = ENDFILE;
+					state = DONE;
+				}
+				lexError(ERRSTRINGTYPE);
 			}
-			// TODO: check if the string character is printable
 			break;
 		case INCHA:
 			if (c == '\'') {
 				state = DONE;
 				currentToken = CH;
-			}
+			} else if (isdigit(c) || isalpha(c)) {
 			// TODO: check if the string character is
 			//       digit or character
+				if (strlen(tokenString)>1) {
+					lexError(ERRCHARLEN);
+				}
+			} else {
+				if (c == EOF) {
+					save = FALSE;
+					tokenStringIndex = 0;
+					currentToken = ENDFILE;
+					state = DONE;
+				}
+				lexError(ERRCHARTYPE);
+			}
 			break;
 		case INUNS:
 			if (!isdigit(c)) {
 				ungetNextChar();
 				save = FALSE;
 				state = DONE;
-				currentToken = NUM;
+				currentToken = UNS;
 			}
 			break;
 		case INIDE:
@@ -255,6 +277,10 @@ TokenType getToken(void)
 		}
 		if ((save) && (tokenStringIndex <= MAXTOKENSIZE)) {
 			tokenString[tokenStringIndex++] = (char)c;
+			tokenString[tokenStringIndex] = '\0';	
+		} else if (tokenStringIndex > MAXTOKENSIZE) {
+			fprintf(errlist, "\nlineno:%d: token size is too long\n",
+					lineno);
 		}
 		if (state == DONE) {
 			tokenString[tokenStringIndex] = '\0';
@@ -264,7 +290,7 @@ TokenType getToken(void)
 		}
 	}
 	if (TraceScan) {
-		//fprintf(listing, "%d ", lineno);
+		fprintf(listing, "lineno:%d: ", lineno);
 		printToken(currentToken, tokenString);
 	}
 	return currentToken;

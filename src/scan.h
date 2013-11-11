@@ -8,6 +8,21 @@
 
 #define SCAN_H
 
+typedef enum {
+	/* book-keeping tokens */
+	ENDFILE, ERROR,
+	/* reserved words */
+	ARRAY, BEGIN, CHAR, CONST, DO, DOWNTO, ELSE, END,
+	FOR, FUNCTION, IF, INTEGER, OF, PROCEDURE, READ,
+	REPEAT, THEN, TO, UNTIL, VAR, WRITE,
+	/* muticharacter tokens */
+	ID, CH, UNS, STRING,
+	/* special symbol */
+	PLUS, MINUS, STAR, OVER, EQU, LST, LEQ, GTT, GEQ,
+	NEQ, COMMA, SEMI, ASSIGN, LPAR, RPAR, LBRA, RBRA,
+	LBBR, RBBR, SQUO, DQUO, COLON, DOT
+} TokenType;
+
 /* MAXTOKENSIZE is the max length of a token */
 #define MAXTOKENSIZE 256
 
