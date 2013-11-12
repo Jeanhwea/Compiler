@@ -184,7 +184,7 @@ TokenType getToken(void)
 				}
 			}
 			break;
-		case INSTR:
+		case INSTR: /* in string */
 			if (c == '"') {
 				state = DONE;
 				currentToken = STRING;
@@ -200,7 +200,7 @@ TokenType getToken(void)
 				lexError(ERRSTRINGTYPE);
 			}
 			break;
-		case INCHA:
+		case INCHA: /* in character */
 			if (c == '\'') {
 				state = DONE;
 				currentToken = CH;
@@ -220,7 +220,7 @@ TokenType getToken(void)
 				lexError(ERRCHARTYPE);
 			}
 			break;
-		case INUNS:
+		case INUNS: /* in unsign number */
 			if (!isdigit(c)) {
 				ungetNextChar();
 				save = FALSE;
@@ -228,7 +228,7 @@ TokenType getToken(void)
 				currentToken = UNS;
 			}
 			break;
-		case INIDE:
+		case INIDE: /* in identifier */
 			if (!(isdigit(c) || isalpha(c))) {
 				ungetNextChar();
 				save = FALSE;
@@ -236,7 +236,7 @@ TokenType getToken(void)
 				currentToken = ID;
 			}
 			break;
-		case INLES:
+		case INLES: /* in less than */
 			state = DONE;
 			if (c == '=') {
 				currentToken = LEQ;
@@ -248,7 +248,7 @@ TokenType getToken(void)
 				currentToken = LST;
 			}
 			break;
-		case INCOM:
+		case INCOM: /* in comma */
 			state = DONE;
 			if (c == '=') {
 				currentToken = ASSIGN;
@@ -258,7 +258,7 @@ TokenType getToken(void)
 				currentToken = COLON;
 			}
 			break;
-		case INGRE:
+		case INGRE: /* in great than */
 			state = DONE;
 			if (c == '=') {
 				currentToken = GEQ;

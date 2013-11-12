@@ -69,8 +69,9 @@ static inline BOOL match(TokenType expected)
 		return TRUE;
 	} else {
 		fprintf(errlist, "***********************\n");
-		fprintf(errlist, "missing match at line : %d\n", lineno);
+		fprintf(errlist, "missing match at line %d\n", lineno);
 		printToken(expected, tokenString);
+		fprintf(errlist, "***********************\n");
 		return FALSE;
 	}
 }
@@ -124,14 +125,12 @@ ConstDecSP ConstDecB(void)
 	MALLOC(ConstDecS, t);
 	match(CONST);
 	t->constdefp = ConstDefB();
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
 		MALLOC(ConstDecS, q);
 		p->next = q;
 		q->constdefp = ConstDefB();
-		q->head = t;
 		q->next = NULL;
 	}
 	match(SEMI);
@@ -167,14 +166,12 @@ VarDecSP VarDecB(void)
 	match(VAR);
 	MALLOC(VarDecS, t);
 	t->vardefp = VarDefB();
-	t->head = t;
 	t->next = NULL;
 	match(SEMI);
 	for (p = t; TEST(ID); p = q) {
 		MALLOC(VarDecS, q);
 		p->next = q;
 		q->vardefp = VarDefB();
-		q->head = t;
 		q->next = NULL;
 		match(SEMI);
 	}
@@ -191,21 +188,21 @@ VarDefSP VarDefB(void)
 	int arraylength = 0;
 	MALLOC(VarDefS, t);
 	t->varp = VarB();
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
 		MALLOC(VarDefS, q);
 		p->next = q;
 		q->varp = VarB();
-		q->head = t;
 		q->next = NULL;
 	}
 	match(COLON);
-	/* do type check and type write back */
+	/* type write back */
 	switch (token) {
 	case INTEGER:
 		match(INTEGER);
+		// every initial type is INTEGER
+		// we just leave it as before
 		break;
 	case CHAR:
 		match(CHAR);
@@ -231,11 +228,10 @@ VarDefSP VarDefB(void)
 				p->varp->type = CharArr_Var_t;
 				p->varp->length = arraylength;
 			}
-		} else {
-
-		}
+		} else fprintf(errlist, "should never happen:231\n");
 		break;
 	default:
+		fprintf(errlist, "should never happen:234\n");
 		break;
 	}
 	return t;
@@ -261,9 +257,9 @@ PFDecListSP PFDecListB(void)
 		t->fdecp = FunDecB();
 		break;
 	default:
+		fprintf(errlist, "should never happen:260\n");
 		break;
 	}
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(FUNCTION) || TEST(PROCEDURE); p = q) {
 		MALLOC(PFDecListS, q);
@@ -280,9 +276,9 @@ PFDecListSP PFDecListB(void)
 			q->fdecp = FunDecB();
 			break;
 		default:
+			fprintf(errlist, "should never happen:279\n");
 			break;
 		}
-		q->head = t;
 		q->next = NULL;
 	}
 	return t;
@@ -297,14 +293,12 @@ ProcDecSP ProcDecB(void)
 	ProcDecSP t, p, q;
 	MALLOC(ProcDecS, t);
 	t->procp = ProcB();
-	t->head = t;
 	t->next = NULL;
 	match(SEMI);
 	for (p = t; TEST(PROCEDURE); p = q) {
 		MALLOC(ProcDecS, q);
 		p->next = q;
 		q->procp = ProcB();
-		q->head = t;
 		q->next = NULL;
 		match(SEMI);
 	}
@@ -351,14 +345,12 @@ FunDecSP FunDecB(void)
 	FunDecSP t, p, q;
 	MALLOC(FunDecS, t);
 	t->funp = FunB();
-	t->head = t;
 	t->next = NULL;
 	match(SEMI);
 	for (p = t; TEST(FUNCTION); p = q) {
 		MALLOC(FunDecS, q);
 		p->next =  q;
 		q->funp = FunB();
-		q->head = t;
 		q->next = NULL;
 		match(SEMI);
 	}
@@ -404,6 +396,7 @@ FunHeadSP FunHeadB(void)
 		t->rettype = Char_Funret_t;
 		break;
 	default:
+		fprintf(errlist, "should never happen:399\n");
 		break;
 	}
 	match(SEMI);
@@ -460,14 +453,11 @@ StmtSP StmtB(void)
 		} else if (TEST(ASSIGN) ||  TEST(LBRA)) {
 			t->type = Assgin_Statement_t;
 			t->assignp = AssignstmtB();
-		} else {
-
-		}
+		} else fprintf(errlist, "should never happen:456\n");
 		break;
 	default:
 		t->type = Null_Statement_t;
 		break;
-
 	}
 	return t;
 }
@@ -502,6 +492,7 @@ AssignstmtSP AssignstmtB(void)
 		t->rexprp = ExprB();
 		break;
 	default:
+		fprintf(errlist, "should never happen:495\n");
 		break;
 	}
 	return t;
@@ -560,9 +551,7 @@ ForstmtSP ForstmtB(void)
 	} else if (TEST(DOWNTO)) {
 		match(DOWNTO);
 		t->type = Downto_For_t;
-	} else {
-
-	}
+	} else fprintf(errlist, "should never happen:554\n");
 	t->highp = ExprB();
 	match(DO);
 	t->stmtp = StmtB();
@@ -621,14 +610,12 @@ CompstmtSP CompstmtB(void)
 	MALLOC(CompstmtS, t);
 	match(BEGIN);
 	t->curr = StmtB();
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(SEMI) ; p = q) {
 		match(SEMI);
 		MALLOC(CompstmtS, q);
 		p->next = q;
 		q->curr = StmtB();
-		q->head = t;
 		q->next = NULL;
 	}
 	match(END);
@@ -646,14 +633,12 @@ ReadstmtSP ReadstmtB(void)
 	match(READ);
 	match(LPAR);
 	t->identp = IdentB(READCURR);
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
 		MALLOC(ReadstmtS, q);
 		p->next = q;
 		q->identp = IdentB(READCURR);
-		q->head = t;
 		q->next = NULL;
 	}
 	match(RPAR);
@@ -681,9 +666,7 @@ WritestmtSP WritestmtB(void)
 		|| TEST(UNS) || TEST(LPAR)) {
 		t->type = Id_Write_t;
 		t->exprp = ExprB();
-	} else {
-	
-	}
+	} else fprintf(errlist, "should never happen:669\n");
 	if (TEST(COMMA) && t->type == Str_Write_t) {
 		match(COMMA);
 		t->type = StrId_Write_t;
@@ -707,24 +690,21 @@ ExprSP ExprB(void)
 		t->op = Add_Addop_t;
 		t->termp = TermB();
 		break;
+	case MINUS:
+		match(MINUS);
+		t->op = Minus_Addop_t;
+		t->termp = TermB();
+		break;
 	case ID:
-		match(ID);
 		t->op = Add_Addop_t;
 		t->termp = TermB();
 		break;
 	case UNS:
-		match(UNS);
 		t->op = Add_Addop_t;
 		t->termp = TermB();
 		break;
 	case LPAR:
-		match(LPAR);
 		t->op = Add_Addop_t;
-		t->termp = TermB();
-		break;
-	case MINUS:
-		match(MINUS);
-		t->op = Minus_Addop_t;
 		t->termp = TermB();
 		break;
 	default:
@@ -732,7 +712,6 @@ ExprSP ExprB(void)
 		t->termp = NULL;
 		break;
 	}
-	t->head =  t;
 	t->next = NULL;
 	for (p = t; TEST(PLUS) || TEST(MINUS); p = q) {
 		MALLOC(ExprS, q);
@@ -752,7 +731,6 @@ ExprSP ExprB(void)
 			break;
 		}
 		q->termp = TermB();
-		q->head =  t;
 		q->next = NULL;
 	}
 	return t;
@@ -768,7 +746,6 @@ TermSP TermB(void)
 	MALLOC(TermS, t);
 	t->op = Nop_Multop_t;
 	t->factorp = FactorB();
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(STAR) || TEST(OVER); p = q) {
 		MALLOC(TermS, t);
@@ -783,10 +760,10 @@ TermSP TermB(void)
 			q->op = Div_Multop_t;
 			break;
 		default:
+			fprintf(errlist, "should never happen:767\n");
 			break;
 		}
 		q->factorp = FactorB();
-		q->head = t;
 		q->next = NULL;
 	}
 	return t;
@@ -833,6 +810,7 @@ FactorSP FactorB(void)
 		}
 		break;
 	default:
+		fprintf(errlist, "should never happen:816\n");
 		break;
 	}
 	return t;
@@ -859,6 +837,7 @@ ConstSP ConstB(void)
 			t->value = - atoi(tokenString);
 			break;
 		default:
+			fprintf(errlist, "should never happen:843\n");
 			break;
 		}
 		match(UNS);
@@ -870,9 +849,7 @@ ConstSP ConstB(void)
 		t->type = Char_Const_t;
 		t->value = (int) tokenString[1];
 		match(CH);
-	} else {
-	
-	}
+	} else fprintf(errlist, "should never happen:855\n");
 	return t;
 }
 
@@ -906,6 +883,7 @@ IdentSP IdentB(IDREADMODE mode)
 		t->name = copyString(prevTokenString);
 		break;
 	default:
+		fprintf(errlist, "should never happen:889\n");
 		break;
 	}
 	return t;
@@ -946,6 +924,7 @@ CondSP CondB(void)
 		t->op = Neq_Rela_t;
 		break;
 	default:
+		fprintf(errlist, "should never happen:930\n");
 		break;
 	}
 	t->rexprp = ExprB();
@@ -963,14 +942,12 @@ ParalistSP ParalistB(void)
 	if (TEST(VAR)) 
 		match(VAR);
 	t->parap = ParaB();
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(SEMI) ; p = q) {
 		match(SEMI);
 		MALLOC(ParalistS, q);
 		p->next = q;
 		q->parap = ParaB();
-		q->head = t;
 		q->next = NULL;
 	}
 	return t;
@@ -985,14 +962,12 @@ ParaSP ParaB(void)
 	ParaSP t, p, q;
 	MALLOC(ParaS, t);
 	t->identp = IdentB(READCURR);
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
 		MALLOC(ParaS, q);
 		p->next = q;
 		q->identp = IdentB(READCURR);
-		q->head = t;
 		q->next = NULL;
 	}
 	match(COLON);
@@ -1009,6 +984,7 @@ ParaSP ParaB(void)
 			p->identp->type = CharPara_Ident_t;
 		break;
 	default:
+		fprintf(errlist, "should never happen:990\n");
 		break;
 	}
 	return t;
@@ -1026,14 +1002,12 @@ ArglistSP ArglistB(void)
 	ArglistSP t, p, q;
 	MALLOC(ArglistS, t);
 	t->argp = ExprB();
-	t->head = t;
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
 		MALLOC(ArglistS, q);
 		p->next = q;
 		q->argp = ExprB();
-		q->head = t;
 		q->next = NULL;
 	}
 	return t;

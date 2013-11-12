@@ -14,7 +14,7 @@ FILE *listing;
 FILE *errlist;
 int lineno = 0;
 
-int TraceScan = TRUE;
+int TraceScan = FALSE;
 int PrintSource = TRUE;
 
 int main(int argc, const char *argv[])

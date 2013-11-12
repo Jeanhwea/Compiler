@@ -107,7 +107,6 @@ typedef struct _BlokS {
 	CompstmtSP compstmtp;
 } BlokS;
 typedef struct _ConstDecS {
-	ConstDecSP head;
 	ConstDecSP next;
 	ConstDefSP constdefp;
 } ConstDecS;
@@ -116,25 +115,21 @@ typedef struct _ConstDefS {
 	ConstSP constp;
 } ConstDefS;
 typedef struct _VarDecS {
-	VarDecSP head;
 	VarDecSP next;
 	VarDefSP vardefp;
 } VarDecS;
 typedef struct _VarDefS {
-	VarDefSP head;
 	VarDefSP next;
 	VarSP varp;
 } VarDefS;
 typedef struct _PFDecListS {
 	PFDec_t type;
-	PFDecListSP head;
 	PFDecListSP next;
 	/* ProcDecSP or FunDecSP */
 	ProcDecSP pdecp; 
 	FunDecSP fdecp; 
 } PFDecListS;
 typedef struct _ProcDecS {
-	ProcDecSP head;
 	ProcDecSP next;
 	ProcSP procp;
 } ProcDecS;
@@ -147,9 +142,8 @@ typedef struct _ProcHeadS {
 	ParalistSP paralistp;
 } ProcHeadS;
 typedef struct _FunDecS {
-	FunDecSP head;
-	FunDecSP next;
 	FunSP funp;
+	FunDecSP next;
 } FunDecS;
 typedef struct _FunS {
 	FunHeadSP funheadp;
@@ -203,14 +197,12 @@ typedef struct _FcallstmtS {
 	ArglistSP arglistp;
 } FcallstmtS;
 typedef struct _CompstmtS {
-	CompstmtSP head;
-	CompstmtSP next;
 	StmtSP curr;
+	CompstmtSP next;
 } CompstmtS;
 typedef struct _ReadstmtS {
-	ReadstmtSP head;
-	ReadstmtSP next;
 	IdentSP identp;
+	ReadstmtSP next;
 } ReadstmtS;
 typedef struct _WritestmtS {
 	Write_t type;
@@ -221,13 +213,11 @@ typedef struct _WritestmtS {
 typedef struct _ExprS {
 	Addop_t op;
 	TermSP termp;
-	ExprSP head;
 	ExprSP next;
 } ExprS;
 typedef struct _TermS {
 	Multop_t op;
 	FactorSP factorp;
-	TermSP head;
 	TermSP next;
 } TermS;
 typedef struct _FactorS {
@@ -259,19 +249,16 @@ typedef struct _CondS {
 	ExprSP rexprp;
 } CondS;
 typedef struct _ParalistS {
-	ParalistSP head;
-	ParalistSP next;
 	ParaSP parap;
+	ParalistSP next;
 } ParalistS;
 typedef struct _ParaS {
-	ParaSP head;
 	ParaSP next;
 	IdentSP identp;
 } ParaS;
 typedef struct _ArglistS {
-	ArglistSP head;
-	ArglistSP next;
 	ExprSP argp;
+	ArglistSP next;
 } ArglistS;
 
 
