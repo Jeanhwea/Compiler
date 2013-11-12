@@ -2,21 +2,27 @@ CC = gcc
 
 CFLAGS = -g
 
-OBJS = main.o util.o scan.o
+OBJS = main.o util.o scan.o error.o parse.o
 
 compiler: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o compiler
 
-main.o: main.c globals.h util.h scan.h
+main.o: main.c global.h util.h scan.h parse.h
 	$(CC) $(CFLAGS) -c main.c
 
-util.o: util.c util.h globals.h
-	$(CC) $(CFLAGS) -c util.c
+parse.o: parse.c parse.h scan.h util.h global.h error.h
+	$(CC) $(CFLAGS) -c parse.c
 
-scan.o: scan.c scan.h util.h globals.h
+scan.o: scan.c scan.h util.h global.h error.h
 	$(CC) $(CFLAGS) -c scan.c
 
+error.o: error.c error.h
+	$(CC) $(CFLAGS) -c error.c
+
+util.o: util.c util.h global.h
+	$(CC) $(CFLAGS) -c util.c
+
+.PHONY: clean
 clean:
 	-rm compiler
-	-rm tm
 	-rm $(OBJS)

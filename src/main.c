@@ -42,9 +42,12 @@ int main(int argc, const char *argv[])
 	 */
 	listing = stdout;
 	errlist = stderr;
-	do {
-		t = getToken();
-	} while (t != ENDFILE);
+	/*
+	 *do {
+	 *        t = getToken();
+	 *} while (t != ENDFILE);
+	 */
+	ast = parse();
 	fclose(source);
 	/*
 	 *fclose(listing);

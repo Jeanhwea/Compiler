@@ -59,40 +59,22 @@ static inline void getsym(void)
 	strncpy(prevTokenString, tokenString, MAXTOKENSIZE);
 	prevToken = token;
 	/* get next token */
-	getToken();
+	token = getToken();
 }
 
 static inline BOOL match(TokenType expected)
 {
 	if (TEST(expected)) {
-		token = getsym();
+		getsym();
 		return TRUE;
 	} else {
+		fprintf(errlist, "***********************\n");
+		fprintf(errlist, "missing match at line : %d\n", lineno);
+		printToken(expected, tokenString);
 		return FALSE;
 	}
 }
 
-/** the same as macro TEST 
- *  however, it dealing with more parameter
- */
-static inline BOOL test(int n, ...)
-{
-	int i = 0;
-	TokenType tokToTest;
-	BOOL r = FALSE;
-	va_list = vl;
-	va_start(vl, n);
-	do {
-		tokToTest = va_arg(vl, TokenType);
-		if (tokToTest == token) {
-			r = TRUE;
-			break;
-		}
-		++i;
-	} while (i < n);
-	va_end(vl);
-	return r;
-}
 /**
  * program ->
  * 	block .
@@ -101,7 +83,7 @@ PgmSP PgmB(void)
 {
 	PgmSP t;
 	MALLOC(PgmS, t);
-	t->blockp = Blok();
+	t->blockp = BlokB();
 	if (!match(DOT)) {
 		syntaxError(MISSDOT);
 	}
@@ -124,7 +106,7 @@ BlokSP BlokB(void)
 		t->vardecp = VarDecB();
 	} else t->vardecp = NULL;
 	
-	if (test(2, FUNCTION, PROCEDURE)) {
+	if (TEST(FUNCTION) || TEST(PROCEDURE)) {
 		t->pflistp = PFDecListB();
 	} else t->pflistp = NULL;
 	
@@ -139,8 +121,8 @@ BlokSP BlokB(void)
 ConstDecSP ConstDecB(void)
 {
 	ConstDecSP t, p, q;
-	match(CONST);
 	MALLOC(ConstDecS, t);
+	match(CONST);
 	t->constdefp = ConstDefB();
 	t->head = t;
 	t->next = NULL;
@@ -148,7 +130,7 @@ ConstDecSP ConstDecB(void)
 		match(COMMA);
 		MALLOC(ConstDecS, q);
 		p->next = q;
-		q->constdecp = ConstDefB();
+		q->constdefp = ConstDefB();
 		q->head = t;
 		q->next = NULL;
 	}
@@ -162,13 +144,14 @@ ConstDecSP ConstDecB(void)
  */
 ConstDefSP ConstDefB(void)
 {
-	ConstDecSP t;
-	MALLOC(ConstDecS, t);
+	ConstDefSP t;
+	MALLOC(ConstDefS, t);
 	if (TEST(ID)) {
 		t->identp = IdentB(READCURR);
 	} else t->identp = NULL;
 	match(EQU);
-	if (TEST(CONST)) {
+	if (TEST(PLUS) || TEST(MINUS) ||
+		TEST(UNS) || TEST(CH)) {
 		t->constp = ConstB();
 	} else t->constp = NULL;
 	return t;
@@ -193,6 +176,7 @@ VarDecSP VarDecB(void)
 		q->vardefp = VarDefB();
 		q->head = t;
 		q->next = NULL;
+		match(SEMI);
 	}
 	return t;
 }
@@ -232,27 +216,27 @@ VarDefSP VarDefB(void)
 		match(ARRAY);
 		match(LBRA);
 		arraylength = atoi(tokenString);
+		match(UNS);
 		match(RBRA);
 		match(OF);
-		switch (token) {
-		case INTEGER: 
+		if (TEST(INTEGER)) {
 			match(INTEGER);
 			for (p = t; p != NULL; p = p->next) {
 				p->varp->type = IntArr_Var_t;
 				p->varp->length = arraylength;
 			}
-			break;
-		case CHAR: 
+		} else if (TEST(CHAR)) {
 			match(CHAR);
 			for (p = t; p != NULL; p = p->next) {
 				p->varp->type = CharArr_Var_t;
 				p->varp->length = arraylength;
 			}
-			break;
-		default:
+		} else {
+
 		}
 		break;
 	default:
+		break;
 	}
 	return t;
 }
@@ -277,10 +261,11 @@ PFDecListSP PFDecListB(void)
 		t->fdecp = FunDecB();
 		break;
 	default:
+		break;
 	}
 	t->head = t;
 	t->next = NULL;
-	for (p = t; test(2, FUNCTION, PROCEDURE); p = q) {
+	for (p = t; TEST(FUNCTION) || TEST(PROCEDURE); p = q) {
 		MALLOC(PFDecListS, q);
 		p->next = q;
 		switch (token) {
@@ -295,6 +280,7 @@ PFDecListSP PFDecListB(void)
 			q->fdecp = FunDecB();
 			break;
 		default:
+			break;
 		}
 		q->head = t;
 		q->next = NULL;
@@ -348,7 +334,7 @@ ProcHeadSP ProcHeadB(void)
 	match(PROCEDURE);
 	t->identp = IdentB(READCURR);
 	match(LPAR);
-	if (test(2, VAR, ID))
+	if (TEST(VAR) || TEST(ID))
 		t->paralistp = ParalistB();
 	else t->paralistp = NULL;
 	match(RPAR);
@@ -362,7 +348,7 @@ ProcHeadSP ProcHeadB(void)
  */
 FunDecSP FunDecB(void)
 {
-	FunDecSP t;
+	FunDecSP t, p, q;
 	MALLOC(FunDecS, t);
 	t->funp = FunB();
 	t->head = t;
@@ -403,7 +389,7 @@ FunHeadSP FunHeadB(void)
 	match(FUNCTION);
 	t->identp = IdentB(READCURR);
 	match(LPAR);
-	if (test(2, VAR, ID))
+	if (TEST(VAR) || TEST(ID))
 		t->paralistp = ParalistB();
 	else t->paralistp = NULL;
 	match(RPAR);
@@ -418,6 +404,7 @@ FunHeadSP FunHeadB(void)
 		t->rettype = Char_Funret_t;
 		break;
 	default:
+		break;
 	}
 	match(SEMI);
 	return t;
@@ -470,7 +457,7 @@ StmtSP StmtB(void)
 		if (TEST(LPAR)) {	
 			t->type = Pcall_Statement_t;
 			t->pcallp = PcallstmtB();
-		} else if (test(2, ASSIGN, LBRA)) {
+		} else if (TEST(ASSIGN) ||  TEST(LBRA)) {
 			t->type = Assgin_Statement_t;
 			t->assignp = AssignstmtB();
 		} else {
@@ -515,6 +502,7 @@ AssignstmtSP AssignstmtB(void)
 		t->rexprp = ExprB();
 		break;
 	default:
+		break;
 	}
 	return t;
 }
@@ -533,6 +521,7 @@ IfstmtSP IfstmtB(void)
 	match(THEN);
 	t->thenp = StmtB();
 	if (TEST(ELSE)) {
+		match(ELSE);
 		t->elsep = StmtB();
 	} else t->elsep = NULL;
 	return t;
@@ -593,7 +582,8 @@ PcallstmtSP PcallstmtB(void)
 	MALLOC(PcallstmtS, t);
 	t->identp = IdentB(READPREV);
 	match(LPAR);
-	if (test(5, ID, PLUS, MINUS, UNS, LPAR)) {
+	if (TEST(ID) || TEST(PLUS) || TEST(MINUS) ||
+		TEST(UNS) || TEST(LPAR)) {
 		t->arglistp = ArglistB();
 	} else t->arglistp = NULL;
 	match(RPAR);
@@ -613,7 +603,8 @@ FcallstmtSP FcallstmtB(void)
 	MALLOC(FcallstmtS, t);
 	t->identp = IdentB(READPREV);
 	match(LPAR);
-	if (test(5, ID, PLUS, MINUS, UNS, LPAR)) {
+	if (TEST(ID) || TEST(PLUS) || TEST(MINUS) ||
+		TEST(UNS) || TEST(LPAR)) {
 		t->arglistp = ArglistB();
 	} else t->arglistp = NULL;
 	match(RPAR);
@@ -684,8 +675,10 @@ WritestmtSP WritestmtB(void)
 	t->exprp = NULL;
 	if (TEST(STRING)) {
 		t->type = Str_Write_t;
-		copyString(t->stringp, tokenString);
-	} else if (test(5, ID, PLUS, MINUS, UNS, LPAR)) {
+		t->stringp = copyString(tokenString);
+		match(STRING);
+	} else if (TEST(ID) || TEST(PLUS) ||TEST(MINUS)
+		|| TEST(UNS) || TEST(LPAR)) {
 		t->type = Id_Write_t;
 		t->exprp = ExprB();
 	} else {
@@ -714,6 +707,21 @@ ExprSP ExprB(void)
 		t->op = Add_Addop_t;
 		t->termp = TermB();
 		break;
+	case ID:
+		match(ID);
+		t->op = Add_Addop_t;
+		t->termp = TermB();
+		break;
+	case UNS:
+		match(UNS);
+		t->op = Add_Addop_t;
+		t->termp = TermB();
+		break;
+	case LPAR:
+		match(LPAR);
+		t->op = Add_Addop_t;
+		t->termp = TermB();
+		break;
 	case MINUS:
 		match(MINUS);
 		t->op = Minus_Addop_t;
@@ -722,10 +730,11 @@ ExprSP ExprB(void)
 	default:
 		q->op = Add_Addop_t;
 		t->termp = NULL;
+		break;
 	}
 	t->head =  t;
 	t->next = NULL;
-	for (p = t; test(2, PLUS, MINUS); p = q) {
+	for (p = t; TEST(PLUS) || TEST(MINUS); p = q) {
 		MALLOC(ExprS, q);
 		p->next = q;
 		switch (token) {
@@ -740,6 +749,7 @@ ExprSP ExprB(void)
 		default:
 			q->op = Add_Addop_t;
 			q->termp = NULL;
+			break;
 		}
 		q->termp = TermB();
 		q->head =  t;
@@ -760,7 +770,7 @@ TermSP TermB(void)
 	t->factorp = FactorB();
 	t->head = t;
 	t->next = NULL;
-	for (p = t; test(2, STAR, OVER); p = q) {
+	for (p = t; TEST(STAR) || TEST(OVER); p = q) {
 		MALLOC(TermS, t);
 		p->next = q;
 		switch (token) {
@@ -773,6 +783,7 @@ TermSP TermB(void)
 			q->op = Div_Multop_t;
 			break;
 		default:
+			break;
 		}
 		q->factorp = FactorB();
 		q->head = t;
@@ -822,6 +833,7 @@ FactorSP FactorB(void)
 		}
 		break;
 	default:
+		break;
 	}
 	return t;
 }
@@ -833,7 +845,8 @@ FactorSP FactorB(void)
 ConstSP ConstB(void)
 {
 	ConstSP t;
-	if (test(2, PLUS, MINUS)) {
+	MALLOC(ConstS, t);
+	if (TEST(PLUS) || TEST(MINUS)) {
 		switch (token) {
 		case PLUS:
 			match(PLUS);
@@ -846,6 +859,7 @@ ConstSP ConstB(void)
 			t->value = - atoi(tokenString);
 			break;
 		default:
+			break;
 		}
 		match(UNS);
 	} else if (TEST(UNS)) {
@@ -885,12 +899,14 @@ IdentSP IdentB(IDREADMODE mode)
 	t->type = ID_Ident_t;
 	switch (mode) {
 	case READCURR:
-		copyString(t->name, tokenString);
+		t->name = copyString(tokenString);
+		match(ID);
 		break;
 	case READPREV:
-		copyString(t->name, prevTokenString);
+		t->name = copyString(prevTokenString);
 		break;
 	default:
+		break;
 	}
 	return t;
 }
@@ -930,6 +946,7 @@ CondSP CondB(void)
 		t->op = Neq_Rela_t;
 		break;
 	default:
+		break;
 	}
 	t->rexprp = ExprB();
 	return t;
@@ -992,6 +1009,7 @@ ParaSP ParaB(void)
 			p->identp->type = CharPara_Ident_t;
 		break;
 	default:
+		break;
 	}
 	return t;
 }
@@ -1019,4 +1037,11 @@ ArglistSP ArglistB(void)
 		q->next = NULL;
 	}
 	return t;
+}
+
+
+PgmSP parse(void)
+{
+	token = getToken();
+	return PgmB();
 }
