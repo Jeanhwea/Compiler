@@ -748,7 +748,7 @@ TermSP TermB(void)
 	t->factorp = FactorB();
 	t->next = NULL;
 	for (p = t; TEST(STAR) || TEST(OVER); p = q) {
-		MALLOC(TermS, t);
+		MALLOC(TermS, q);
 		p->next = q;
 		switch (token) {
 		case STAR:
@@ -874,6 +874,7 @@ IdentSP IdentB(IDREADMODE mode)
 	IdentSP	t;
 	MALLOC(IdentS, t);
 	t->type = ID_Ident_t;
+	t->line = lineno;
 	switch (mode) {
 	case READCURR:
 		t->name = copyString(tokenString);

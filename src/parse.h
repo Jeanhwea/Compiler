@@ -241,6 +241,7 @@ typedef struct _VarS {
 } VarS;
 typedef struct _IdentS {
 	Ident_t type;
+	int line;
 	char *name;
 } IdentS;
 typedef struct _CondS {

@@ -1,3 +1,8 @@
+/**
+ * File: error.c
+ * Date: Nov 10, 2013
+ * Author: Jeanhwea
+ */
 #include "global.h"
 #include "error.h" 
 

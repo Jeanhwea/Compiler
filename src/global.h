@@ -43,4 +43,5 @@ extern int lineno; /* source line number for listing */
 /* some global flags */
 extern BOOL PrintSource;
 extern BOOL TraceScan;
+extern BOOL ShowAST;
 #endif /* end of include guard: GLOBAL_H */

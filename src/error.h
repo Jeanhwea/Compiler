@@ -1,3 +1,8 @@
+/**
+ * File: error.h
+ * Date: Nov 10, 2013
+ * Author: Jeanhwea
+ */
 #ifndef ERROR_H
 
 #define ERROR_H

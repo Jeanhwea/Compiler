@@ -15,4 +15,8 @@ void printToken(TokenType, const char *);
 /* allocate and copy a string */
 char *copyString(char *);
 
+void printHead(char *);
+void printTail(char *);
+void printInner(int, ...);
+void printInnerInt(int);
 #endif /* end of include guard: UTIL_H */

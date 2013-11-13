@@ -391,3 +391,51 @@ char *copyString(char *s)
  *}
  */
 
+static int indentno = 0;
+void printIndent(void)
+{
+	int i;
+	for (i = 0; i < indentno; i++) {
+		if (ShowAST)
+			fprintf(listing, "\t");
+	}
+}
+
+void printHead(char *cont)
+{
+	printIndent();
+	indentno += 1;
+	if (ShowAST)
+		fprintf(listing, "<%s>\n", cont);
+}
+
+void printInner(int n, ...)
+{
+	int i;
+	char *chp;
+	va_list vl;
+	printIndent();
+	va_start(vl, n);
+	for (i = 0; i < n; i++) {
+		chp = va_arg(vl, char *);
+		if (ShowAST)
+			fprintf(listing, "%s", chp);
+	}
+	va_end(vl);
+	fprintf(listing, "\n");
+}
+
+void printInnerInt(int val)
+{
+	printIndent();
+	if (ShowAST)
+		fprintf(listing, "%d\n", val);
+}
+
+void printTail(char *cont)
+{
+	indentno -= 1;
+	printIndent();
+	if (ShowAST)
+		fprintf(listing, "</%s>\n", cont);
+}

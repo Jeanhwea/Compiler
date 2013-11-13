@@ -8,14 +8,16 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
+#include "analyse.h"
 
 FILE *source;
 FILE *listing;
 FILE *errlist;
 int lineno = 0;
 
-int TraceScan = FALSE;
-int PrintSource = TRUE;
+BOOL TraceScan = FALSE;
+BOOL PrintSource = TRUE;
+BOOL ShowAST = TRUE;
 
 int main(int argc, const char *argv[])
 {
@@ -48,6 +50,7 @@ int main(int argc, const char *argv[])
 	 *} while (t != ENDFILE);
 	 */
 	ast = parse();
+	analyse(ast);
 	fclose(source);
 	/*
 	 *fclose(listing);
