@@ -1,5 +1,4 @@
 CC = gcc
-
 CFLAGS = -g
 
 OBJS = main.o util.o scan.o error.o parse.o analyse.o

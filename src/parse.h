@@ -9,45 +9,43 @@
 
 /* declaretion of a bundle of struct pointer */
 typedef struct _PgmS *PgmSP;
-typedef struct _BlokS *BlokSP;
+typedef struct _BlockS *BlockSP;
 typedef struct _ConstDecS *ConstDecSP;
 typedef struct _ConstDefS *ConstDefSP;
 typedef struct _VarDecS *VarDecSP;
 typedef struct _VarDefS *VarDefSP;
 typedef struct _PFDecListS *PFDecListSP;
 typedef struct _ProcDecS *ProcDecSP;
-typedef struct _ProcS *ProcSP;
+typedef struct _ProcDefS *ProcDefSP;
 typedef struct _ProcHeadS *ProcHeadSP;
 typedef struct _FunDecS *FunDecSP;
-typedef struct _FunS *FunSP;
+typedef struct _FunDefS *FunDefSP;
 typedef struct _FunHeadS *FunHeadSP;
 typedef struct _StmtS *StmtSP;
-typedef struct _AssignstmtS *AssignstmtSP;
-typedef struct _IfstmtS *IfstmtSP;
-typedef struct _RepestmtS *RepestmtSP;
-typedef struct _ForstmtS *ForstmtSP;
-typedef struct _PcallstmtS *PcallstmtSP;
-typedef struct _FcallstmtS *FcallstmtSP;
-typedef struct _CompstmtS *CompstmtSP;
-typedef struct _ReadstmtS *ReadstmtSP;
-typedef struct _WritestmtS *WritestmtSP;
+typedef struct _AssignStmtS *AssignStmtSP;
+typedef struct _IfStmtS *IfStmtSP;
+typedef struct _RepeStmtS *RepeStmtSP;
+typedef struct _ForStmtS *ForStmtSP;
+typedef struct _PcallStmtS *PcallStmtSP;
+typedef struct _FcallStmtS *FcallStmtSP;
+typedef struct _CompStmtS *CompStmtSP;
+typedef struct _ReadStmtS *ReadStmtSP;
+typedef struct _WriteStmtS *WriteStmtSP;
 typedef struct _ExprS *ExprSP;
 typedef struct _TermS *TermSP;
 typedef struct _FactorS *FactorSP;
-typedef struct _ConstS *ConstSP;
-typedef struct _VarS *VarSP;
-typedef struct _IdentS *IdentSP;
 typedef struct _CondS *CondSP;
-typedef struct _ParalistS *ParalistSP;
-typedef struct _ParaS *ParaSP;
-typedef struct _ArglistS *ArglistSP;
+typedef struct _IdentS *IdentSP;
+typedef struct _ParaListS *ParaListSP;
+typedef struct _ParaDefS *ParaDefSP;
+typedef struct _ArgListS *ArgListSP;
 
 /* declaretion of a bundle of node type */
 typedef enum { 
 	Fun_PFDec_t , Proc_PFDec_t 
 } PFDec_t;
 typedef enum {
-	Add_Addop_t, Minus_Addop_t 
+	Nop_Addop_t, Add_Addop_t, Minus_Addop_t 
 } Addop_t;
 typedef enum { 
 	Nop_Multop_t, Mult_Multop_t, Div_Multop_t 
@@ -57,29 +55,28 @@ typedef enum {
 	Geq_Rela_t, Lst_Rela_t, Leq_Rela_t 
 } Rela_t;
 typedef enum { 
-	Num_Const_t, Char_Const_t 
-} Const_t;
-typedef enum { 
-	Int_Funret_t, Char_Funret_t 
-} Funret_t;
-typedef enum { 
-	Int_Para_t, Char_Para_t, Array_Para_t 
-} Para_t;
-typedef enum { 
-	Int_Var_t, Char_Var_t, IntArr_Var_t, 
-	CharArr_Var_t 
-} Var_t;
-typedef enum { 
-	ID_Ident_t, Proc_Ident_t, Fun_Ident_t, 
-	Arr_Ident_t, IntPara_Ident_t, CharPara_Ident_t
+	/* normal identifier type */
+	Init_Ident_t, Proc_Ident_t, Fun_Ident_t, 
+	/* const identifier type */
+	Int_Const_Ident_t, Char_Const_Ident_t,
+	/* variable identifier type */
+	Int_Var_Ident_t, Char_Var_Ident_t,
+	IntArr_Var_Ident_t, CharArr_Var_Ident_t,
+	/* parameter identifier type */
+	/* call by value */
+	Int_Para_Val_Ident_t, Char_Para_Val_Ident_t,
+	/* call by address */
+	Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
 } Ident_t;
 typedef enum { 
-	Assgin_Statement_t, IF_Statement_t, 
-	Repeat_Statement_t, Pcall_Statement_t, 
-	Comp_Statement_t, Read_Statement_t,
-	Write_Statement_t, For_Statement_t, 
-	Null_Statement_t 
-} Statement_t;
+	Int_Funret_t, Char_Funret_t 
+} Return_t;
+typedef enum { 
+	Assgin_Stmt_t, IF_Stmt_t, Repeat_Stmt_t,
+	Pcall_Stmt_t, Comp_Stmt_t, Read_Stmt_t,
+	Write_Stmt_t,  For_Stmt_t, 
+	Null_Stmt_t 
+} Stmt_t;
 typedef enum { 
 	Norm_Assgin_t, Fun_Assgin_t, Array_Assgin_t 
 } Assgin_t;
@@ -97,170 +94,163 @@ typedef enum {
 /* declaretion of a bundle of struct */
 /* Program */
 typedef struct _PgmS {
-	BlokSP blockp;
+	BlockSP bp;
 } PgmS;
 /* block */
-typedef struct _BlokS {
-	ConstDecSP constdecp;
-	VarDecSP vardecp;
-	PFDecListSP pflistp;
-	CompstmtSP compstmtp;
-} BlokS;
+typedef struct _BlockS {
+	ConstDecSP cdp;
+	VarDecSP vdp;
+	PFDecListSP pfdlp;
+	CompStmtSP csp;
+} BlockS;
 typedef struct _ConstDecS {
+	ConstDefSP cdp;
 	ConstDecSP next;
-	ConstDefSP constdefp;
 } ConstDecS;
 typedef struct _ConstDefS {
-	IdentSP identp;
-	ConstSP constp;
+	IdentSP idp;
 } ConstDefS;
 typedef struct _VarDecS {
+	VarDefSP vdp;
 	VarDecSP next;
-	VarDefSP vardefp;
 } VarDecS;
 typedef struct _VarDefS {
+	IdentSP idp;
 	VarDefSP next;
-	VarSP varp;
 } VarDefS;
 typedef struct _PFDecListS {
 	PFDec_t type;
+	ProcDecSP pdp; 
+	FunDecSP fdp; 
 	PFDecListSP next;
-	/* ProcDecSP or FunDecSP */
-	ProcDecSP pdecp; 
-	FunDecSP fdecp; 
 } PFDecListS;
 typedef struct _ProcDecS {
+	ProcDefSP pdp;
 	ProcDecSP next;
-	ProcSP procp;
 } ProcDecS;
-typedef struct _ProcS {
-	ProcHeadSP procheadp;
-	BlokSP blockp;
-} ProcS;
+typedef struct _ProcDefS {
+	ProcHeadSP php;
+	BlockSP bp;
+} ProcDefS;
 typedef struct _ProcHeadS {
-	IdentSP identp;
-	ParalistSP paralistp;
+	IdentSP idp;
+	ParaListSP plp;
 } ProcHeadS;
 typedef struct _FunDecS {
-	FunSP funp;
+	FunDefSP fdp;
 	FunDecSP next;
 } FunDecS;
-typedef struct _FunS {
-	FunHeadSP funheadp;
-	BlokSP blockp;
-} FunS;
+typedef struct _FunDefS {
+	FunHeadSP fhp;
+	BlockSP bp;
+} FunDefS;
 typedef struct _FunHeadS {
-	IdentSP identp;
-	ParalistSP paralistp;
-	Funret_t rettype;
+	IdentSP idp;
+	ParaListSP plp;
+	Return_t type;
 } FunHeadS;
 /* statement */
 typedef struct _StmtS {
-	Statement_t type;
-	AssignstmtSP assignp;
-	IfstmtSP ifp;
-	RepestmtSP repep;
-	ForstmtSP forp;
-	PcallstmtSP pcallp;
-	CompstmtSP compp;
-	ReadstmtSP readp;
-	WritestmtSP writep;
+	Stmt_t type;
+	AssignStmtSP asp;
+	IfStmtSP ifp;
+	RepeStmtSP rpp;
+	ForStmtSP frp;
+	PcallStmtSP pcp;
+	CompStmtSP cpp;
+	ReadStmtSP rdp;
+	WriteStmtSP wtp;
 } StmtS;
-typedef struct _AssignstmtS {
+typedef struct _AssignStmtS {
 	Assgin_t type;
 	IdentSP idp;
-	ExprSP lexprp;
-	ExprSP rexprp;
-} AssignstmtS;
-typedef struct _IfstmtS {
-	CondSP condp;
-	StmtSP thenp;
-	StmtSP elsep;
-} IfstmtS;
-typedef struct _RepestmtS {
-	StmtSP stmtp;
-	CondSP condp;
-} RepestmtS;
-typedef struct _ForstmtS {
+	ExprSP lep;
+	ExprSP rep;
+} AssignStmtS;
+typedef struct _IfStmtS {
+	CondSP cp;
+	/* then */
+	StmtSP tp;
+	/* else */
+	StmtSP ep;
+} IfStmtS;
+typedef struct _RepeStmtS {
+	StmtSP sp;
+	CondSP cp;
+} RepeStmtS;
+typedef struct _ForStmtS {
 	For_t type;
-	IdentSP identp;
-	ExprSP lowp;
-	ExprSP highp;
-	StmtSP stmtp;
-} ForstmtS;
-typedef struct _PcallstmtS {
-	IdentSP identp;
-	ArglistSP arglistp;
-} PcallstmtS;
-typedef struct _FcallstmtS {
-	IdentSP identp;
-	ArglistSP arglistp;
-} FcallstmtS;
-typedef struct _CompstmtS {
-	StmtSP curr;
-	CompstmtSP next;
-} CompstmtS;
-typedef struct _ReadstmtS {
-	IdentSP identp;
-	ReadstmtSP next;
-} ReadstmtS;
-typedef struct _WritestmtS {
+	IdentSP idp;
+	ExprSP lep;
+	ExprSP rep;
+	StmtSP sp;
+} ForStmtS;
+typedef struct _PcallStmtS {
+	IdentSP idp;
+	ArgListSP alp;
+} PcallStmtS;
+typedef struct _FcallStmtS {
+	IdentSP idp;
+	ArgListSP alp;
+} FcallStmtS;
+typedef struct _CompStmtS {
+	StmtSP sp;
+	CompStmtSP next;
+} CompStmtS;
+typedef struct _ReadStmtS {
+	IdentSP idp;
+	ReadStmtSP next;
+} ReadStmtS;
+typedef struct _WriteStmtS {
 	Write_t type;
-	char *stringp;
-	ExprSP exprp;
-} WritestmtS;
-/* expression term factor*/
+	/* string pointer */
+	char *sp;
+	ExprSP ep;
+} WriteStmtS;
+/* expression term factor condition */
 typedef struct _ExprS {
 	Addop_t op;
-	TermSP termp;
+	TermSP tp;
 	ExprSP next;
 } ExprS;
 typedef struct _TermS {
 	Multop_t op;
-	FactorSP factorp;
+	FactorSP fp;
 	TermSP next;
 } TermS;
 typedef struct _FactorS {
 	Factor_t type;
-	IdentSP identp;
-	ExprSP exprp;
-	int unsignint;
-	FcallstmtSP fcallstmtp;
+	IdentSP idp;
+	ExprSP ep;
+	/* unsign int */
+	int usi;
+	FcallStmtSP fcsp;
 } FactorS;
-/* ident condition arguments*/
-typedef struct _ConstS {
-	Const_t type;
-	/* int or char */
-	int value;
-} ConstS;
-typedef struct _VarS {
-	IdentSP identp;
-	/* length for array */
-	int length;
-	Var_t type;
-} VarS;
+typedef struct _CondS {
+	ExprSP lep;
+	Rela_t op;
+	ExprSP rep;
+} CondS;
+/* ident parameter argument*/
 typedef struct _IdentS {
 	Ident_t type;
-	int line;
 	char *name;
+	int val;
+	int length;
+	int line;
 } IdentS;
-typedef struct _CondS {
-	ExprSP lexprp;
-	Rela_t op;
-	ExprSP rexprp;
-} CondS;
-typedef struct _ParalistS {
-	ParaSP parap;
-	ParalistSP next;
-} ParalistS;
-typedef struct _ParaS {
-	ParaSP next;
-	IdentSP identp;
-} ParaS;
-typedef struct _ArglistS {
-	ExprSP argp;
-	ArglistSP next;
-} ArglistS;
+typedef struct _ParaListS {
+	ParaDefSP pdp;
+	ParaListSP next;
+} ParaListS;
+typedef struct _ParaDefS {
+	IdentSP idp;
+	ParaDefSP next;
+} ParaDefS;
+typedef struct _ArgListS {
+	ExprSP ep;
+	ArgListSP next;
+} ArgListS;
 
 
 typedef int IDREADMODE; 
@@ -278,7 +268,13 @@ do{ \
 } while(0)
 /* just test if current token match what we expect */
 /* we won't get next token */
-#define TEST(expect) (token==(expect))
+#define TEST(a) (token==(a))
+#define TEST2(a,b) (token==(a)||token==(b))
+#define TEST3(a,b,c) (token==(a)||token==(b)||token==(c))
+#define TEST4(a,b,c,d) (token==(a)||token==(b)||token==(c)||token==(d))
+#define TEST5(a,b,c,d,e) (token==(a)||token==(b)||token==(c)||token==(d)||token==(e))
+#define TEST6(a,b,c,d,e,f) (token==(a)||token==(b)||token==(c)||token==(d)||token==(e)||token==(f))
 
 PgmSP parse(void);
+
 #endif /* end of include guard: PARSE_H */

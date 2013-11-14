@@ -27,6 +27,7 @@ static int linepos = 0;      // current position in lineBuf
 static int bufsize = 0;      // current size of buffered string
 static BOOL EOF_flag = FALSE; // for ungetchar behavior
 
+BOOL char_to_long = FALSE;
 static int getNextChar(BOOL flag)
 {
 	/**
@@ -118,8 +119,10 @@ TokenType getToken(void)
 			} else if (isdigit(c)) {
 				state = INUNS;
 			} else if (c == '"') {
+				save = FALSE;
 				state = INSTR;
 			} else if (c == '\'') {
+				save = FALSE;
 				state = INCHA;
 			} else if (isalpha(c)) {
 				state = INIDE;
@@ -187,15 +190,16 @@ TokenType getToken(void)
 		case INSTR: /* in string */
 			if (c == '"') {
 				state = DONE;
+				save = FALSE;
 				currentToken = STRING;
 			} else if (c >= 32 && c <= 126) {
 			// check if the string character is printable
 			} else {
+				state = DONE;
 				if (c == EOF) {
 					save = FALSE;
 					tokenStringIndex = 0;
 					currentToken = ENDFILE;
-					state = DONE;
 				}
 				lexError(ERRSTRINGTYPE);
 			}
@@ -203,13 +207,15 @@ TokenType getToken(void)
 		case INCHA: /* in character */
 			if (c == '\'') {
 				state = DONE;
+				save = FALSE;
 				currentToken = CH;
 			} else if (isdigit(c) || isalpha(c)) {
 			// TODO: check if the string character is
 			//       digit or character
-				if (strlen(tokenString)>1) {
+				if (char_to_long) {
 					lexError(ERRCHARLEN);
 				}
+				char_to_long = TRUE;
 			} else {
 				if (c == EOF) {
 					save = FALSE;
@@ -287,6 +293,7 @@ TokenType getToken(void)
 			if (currentToken == ID) {
 				currentToken = reservedLookup(tokenString);	
 			}
+			char_to_long = FALSE;
 		}
 	}
 	if (TraceScan) {

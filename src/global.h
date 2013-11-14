@@ -32,6 +32,7 @@ extern FILE *source; /* source code text file */
 extern FILE *listing; /* listing output text file */
 extern FILE *code; /* code text file */
 extern FILE *errlist; /* errors text file */
+extern FILE *tiplist; /* tip list, using for debug */
 
 extern int lineno; /* source line number for listing */
 

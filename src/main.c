@@ -13,6 +13,7 @@
 FILE *source;
 FILE *listing;
 FILE *errlist;
+FILE *tiplist;
 int lineno = 0;
 
 BOOL TraceScan = FALSE;
@@ -44,6 +45,7 @@ int main(int argc, const char *argv[])
 	 */
 	listing = stdout;
 	errlist = stderr;
+	tiplist = stderr;
 	/*
 	 *do {
 	 *        t = getToken();
@@ -54,5 +56,7 @@ int main(int argc, const char *argv[])
 	fclose(source);
 	/*
 	 *fclose(listing);
+	 *fclose(errlist);
+	 *fclose(tiplist);
 	 */
 }
