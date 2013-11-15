@@ -185,8 +185,8 @@ ConstDefSP ConstDefB(void)
 VarDecSP VarDecB(void)
 {
 	VarDecSP t, p, q;
-	match(VAR);
 	MALLOC(VarDecS, t);
+	match(VAR);
 	t->vdp = VarDefB();
 	t->next = NULL;
 	match(SEMI);
@@ -287,8 +287,8 @@ PFDecListSP PFDecListB(void)
 	for (p = t; TEST2(FUNCTION, PROCEDURE); p = q) {
 		MALLOC(PFDecListS, q);
 		p->next = q;
-		p->pdp = NULL;
-		p->fdp = NULL;
+		q->pdp = NULL;
+		q->fdp = NULL;
 		switch (token) {
 		case PROCEDURE:
 			q->type = Proc_PFDec_t;

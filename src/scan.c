@@ -13,7 +13,7 @@
 typedef enum {
 	START, INSTR, INUNS, INIDE,
 	INLES, INCOM, INGRE, INCHA,
-	DONE
+	COMMENT, DONE
 } StateType;
 
 /* lexeme or identifier or reserved word */
@@ -49,8 +49,6 @@ static int getNextChar(BOOL flag)
 		return (flag)? lineBuf[linepos++]: lineBuf[linepos];
 	} else {
 		EOF_flag = TRUE;
-		//fprintf(listing, "*** File end ***\n");
-		//exit(0);
 		return EOF;
 	}
 }
@@ -101,7 +99,6 @@ static TokenType reservedLookup(char *s)
 	return ID;
 } /* lookup reserved words */
 
-
 TokenType getToken(void)
 {
 	int tokenStringIndex = 0;
@@ -124,6 +121,9 @@ TokenType getToken(void)
 			} else if (c == '\'') {
 				save = FALSE;
 				state = INCHA;
+			} else if (c == '{') {
+				save = FALSE;
+				state = COMMENT;
 			} else if (isalpha(c)) {
 				state = INIDE;
 			} else if (c == ':') {
@@ -185,6 +185,15 @@ TokenType getToken(void)
 					currentToken = ERROR;
 					break;
 				}
+			}
+			break;
+		case COMMENT:
+			save = FALSE;
+			if (c == EOF) {
+				state = DONE;
+				currentToken = ENDFILE;
+			} else if (c == '}') {
+				state = START;
 			}
 			break;
 		case INSTR: /* in string */

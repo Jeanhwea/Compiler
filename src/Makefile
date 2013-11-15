@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g
+CFLAGS = -g -Wall
 
 OBJS = main.o util.o scan.o error.o parse.o analyse.o
 
@@ -18,7 +18,7 @@ parse.o: parse.c parse.h scan.h util.h global.h error.h
 scan.o: scan.c scan.h util.h global.h error.h
 	$(CC) $(CFLAGS) -c scan.c
 
-error.o: error.c error.h
+error.o: error.c error.h global.h
 	$(CC) $(CFLAGS) -c error.c
 
 util.o: util.c util.h global.h
@@ -26,5 +26,4 @@ util.o: util.c util.h global.h
 
 .PHONY: clean
 clean:
-	-rm compiler
 	-rm $(OBJS)

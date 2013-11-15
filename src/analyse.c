@@ -5,11 +5,11 @@
  */
 
 #include "global.h"
-#include "analyse.h"
-#include "parse.h"
 #include "util.h"
-#include "scan.h"
 #include "error.h"
+#include "scan.h"
+#include "parse.h"
+#include "analyse.h"
 
 static void PgmV(PgmSP t);
 static void BlockV(BlockSP t);
@@ -63,6 +63,7 @@ void BlockV(BlockSP t)
 	}
 	tailPr("Block");
 }
+
 void ConstDecV(ConstDecSP t)
 {
 	headPr("ConstDec");
@@ -71,6 +72,7 @@ void ConstDecV(ConstDecSP t)
 	}
 	tailPr("ConstDec");
 }
+
 void ConstDefV(ConstDefSP t)
 {
 	headPr("ConstDef");
@@ -79,6 +81,7 @@ void ConstDefV(ConstDefSP t)
 	}
 	tailPr("ConstDef");
 }
+
 void VarDecV(VarDecSP t)
 {
 	headPr("VarDec");
@@ -87,6 +90,7 @@ void VarDecV(VarDecSP t)
 	}
 	tailPr("VarDec");
 }
+
 void VarDefV(VarDefSP t)
 {
 	headPr("VarDef");
@@ -95,6 +99,7 @@ void VarDefV(VarDefSP t)
 	}
 	tailPr("VarDef");
 }
+
 void PFDecListV(PFDecListSP t)
 {
 	headPr("PFDecList");
@@ -112,6 +117,7 @@ void PFDecListV(PFDecListSP t)
 	}
 	tailPr("PFDecList");
 }
+
 void ProcDecV(ProcDecSP t)
 {
 	headPr("ProcDec");
@@ -120,6 +126,7 @@ void ProcDecV(ProcDecSP t)
 	}
 	tailPr("ProcDec");
 }
+
 void ProcDefV(ProcDefSP t)
 {
 	headPr("ProcDef");
@@ -129,6 +136,7 @@ void ProcDefV(ProcDefSP t)
 	}
 	tailPr("ProcDef");
 }
+
 void ProcHeadV(ProcHeadSP t)
 {
 	headPr("ProcHead");
@@ -138,6 +146,7 @@ void ProcHeadV(ProcHeadSP t)
 	}
 	tailPr("ProcHead");
 }
+
 void FunDecV(FunDecSP t)
 {
 	headPr("FunDec");
@@ -146,6 +155,7 @@ void FunDecV(FunDecSP t)
 	}
 	tailPr("FunDec");
 }
+
 void FunDefV(FunDefSP t)
 {
 	headPr("FunDef");
@@ -155,6 +165,7 @@ void FunDefV(FunDefSP t)
 	}
 	tailPr("FunDef");
 }
+
 void FunHeadV(FunHeadSP t)
 {
 	headPr("FunHead");
@@ -174,6 +185,7 @@ void FunHeadV(FunHeadSP t)
 	}
 	tailPr("FunHead");
 }
+
 void StmtV(StmtSP t)
 {
 	headPr("Stmt");
@@ -212,6 +224,7 @@ void StmtV(StmtSP t)
 	}
 	tailPr("Stmt");
 }
+
 void AssignStmtV(AssignStmtSP t)
 {
 	headPr("AssignStmt");
@@ -230,11 +243,14 @@ void AssignStmtV(AssignStmtSP t)
 			fprintf(errlist, "ANALYSER BUG:210\n");
 		}
 		IdentV(t->idp);
+		innerIdnlnPr(1,"**left");
 		ExprV(t->lep);
+		innerIdnlnPr(1,"**right");
 		ExprV(t->rep);
 	}
 	tailPr("AssignStmt");
 }
+
 void IfStmtV(IfStmtSP t)
 {
 	headPr("IfStmt");
@@ -249,6 +265,7 @@ void IfStmtV(IfStmtSP t)
 	}
 	tailPr("IfStmt");
 }
+
 void RepeStmtV(RepeStmtSP t)
 {
 	headPr("RepeStmt");
@@ -260,6 +277,7 @@ void RepeStmtV(RepeStmtSP t)
 	}
 	tailPr("RepeStmt");
 }
+
 void ForStmtV(ForStmtSP t)
 {
 	headPr("ForStmt");
@@ -284,6 +302,7 @@ void ForStmtV(ForStmtSP t)
 	}
 	tailPr("ForStmt");
 }
+
 void PcallStmtV(PcallStmtSP t)
 {
 	headPr("PcallStmt");
@@ -293,6 +312,7 @@ void PcallStmtV(PcallStmtSP t)
 	}
 	tailPr("PcallStmt");
 }
+
 void FcallStmtV(FcallStmtSP t)
 {
 	headPr("FcallStmt");
@@ -302,6 +322,7 @@ void FcallStmtV(FcallStmtSP t)
 	}
 	tailPr("FcallStmt");
 }
+
 void CompStmtV(CompStmtSP t)
 {
 	headPr("CompStmt");
@@ -310,6 +331,7 @@ void CompStmtV(CompStmtSP t)
 	}
 	tailPr("CompStmt");
 }
+
 void ReadStmtV(ReadStmtSP t)
 {
 	headPr("ReadStmt");
@@ -318,6 +340,7 @@ void ReadStmtV(ReadStmtSP t)
 	}
 	tailPr("ReadStmt");
 }
+
 void WriteStmtV(WriteStmtSP t)
 {
 	headPr("WriteStmt");
@@ -333,7 +356,7 @@ void WriteStmtV(WriteStmtSP t)
 			innerlnPr(1,t->sp);
 			break;
 		case StrId_Write_t:
-			innerIdnlnPr(2,"type","StrId_Write_tid");
+			innerIdnlnPr(2,"type=","StrId_Write_tid");
 			innerIdnPr(1,"string=");
 			innerlnPr(1,t->sp);
 			ExprV(t->ep);
@@ -344,6 +367,7 @@ void WriteStmtV(WriteStmtSP t)
 	}
 	tailPr("WriteStmt");
 }
+
 void ExprV(ExprSP t)
 {
 	headPr("Expr");
@@ -365,6 +389,7 @@ void ExprV(ExprSP t)
 	}
 	tailPr("Expr");
 }
+
 void TermV(TermSP t)
 {
 	headPr("Term");
@@ -386,6 +411,7 @@ void TermV(TermSP t)
 	}
 	tailPr("Term");
 }
+
 void FactorV(FactorSP t)
 {
 	headPr("Factor");
@@ -402,7 +428,7 @@ void FactorV(FactorSP t)
 			break;
 		case Unsign_Factor_t:
 			innerIdnlnPr(2,"type=","Unsign_Factor_t");
-			innerIdnPr(1,"unsignint=");
+			innerIdnPr(1,"usi=");
 			innerIntPr(t->usi);
 			break;
 		case Expr_Factor_t:
@@ -419,6 +445,7 @@ void FactorV(FactorSP t)
 	}
 	tailPr("Factor");
 }
+
 void CondV(CondSP t)
 {
 	headPr("Cond");
@@ -452,6 +479,7 @@ void CondV(CondSP t)
 	}
 	tailPr("Cond");
 }
+
 void IdentV(IdentSP t)
 {
 	headPr("Ident");
@@ -459,57 +487,114 @@ void IdentV(IdentSP t)
 		switch (t->type) {
 		case Init_Ident_t:
 			innerIdnlnPr(2,"type=","Init_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"val=");
+			innerIntPr(t->val);
+			innerIdnPr(1,"length=");
+			innerIntPr(t->length);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Proc_Ident_t:
 			innerIdnlnPr(2,"type=","Proc_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Fun_Ident_t:
 			innerIdnlnPr(2,"type=","Fun_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Int_Const_Ident_t:
 			innerIdnlnPr(2,"type=","Int_Const_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"val=");
+			innerIntPr(t->val);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Char_Const_Ident_t:
 			innerIdnlnPr(2,"type=","Char_Const_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"val=");
+			innerCharPr( (char) t->val);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Int_Var_Ident_t:
 			innerIdnlnPr(2,"type=","Int_Var_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Char_Var_Ident_t:
 			innerIdnlnPr(2,"type=","Char_Var_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case IntArr_Var_Ident_t:
 			innerIdnlnPr(2,"type=","IntArr_Var_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"length=");
+			innerIntPr(t->length);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case CharArr_Var_Ident_t:
 			innerIdnlnPr(2,"type=","CharArr_Var_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"length=");
+			innerIntPr(t->length);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Int_Para_Val_Ident_t:
 			innerIdnlnPr(2,"type=","Int_Para_Val_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Char_Para_Val_Ident_t:
 			innerIdnlnPr(2,"type=","Char_Para_Val_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Int_Para_Ref_Ident_t:
 			innerIdnlnPr(2,"type=","Int_Para_Ref_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		case Char_Para_Ref_Ident_t:
 			innerIdnlnPr(2,"type=","Char_Para_Ref_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
 			break;
 		default:
 			fprintf(errlist, "ANALYSER BUG:503\n");
 		}
-		innerIdnPr(1,"name=");
-		innerlnPr(1,t->name);
-		innerIdnPr(1,"val=");
-		innerIntPr(t->val);
-		innerIdnPr(1,"length=");
-		innerIntPr(t->length);
-		innerIdnPr(1,"line=");
-		innerIntPr(t->line);
 	}
 	tailPr("Ident");
 }
+
 void ParaListV(ParaListSP t)
 {
 	headPr("ParaList");
@@ -518,6 +603,7 @@ void ParaListV(ParaListSP t)
 	}
 	tailPr("ParaList");
 }
+
 void ParaDefV(ParaDefSP t)
 {
 	headPr("ParaDef");
@@ -526,6 +612,7 @@ void ParaDefV(ParaDefSP t)
 	}
 	tailPr("ParaDef");
 }
+
 void ArgListV(ArgListSP t)
 {
 	headPr("ArgList");

@@ -182,13 +182,14 @@ char *copyString(char *s)
 		fprintf(errlist, "Out of memory error at line %d\n", lineno);
 	} else {
 		strcpy(t, s);
-		/*fprintf(tiplist, "%s\n", s);*/
+		if (ShowTip)
+			fprintf(tiplist, "%s\n", s);
 	}
 	return t;
 }
 
 static int indentno = 0;
-void Indent(void)
+static void Indent(void)
 {
 	int i;
 	for (i = 0; i < indentno; i++) {
@@ -273,6 +274,12 @@ void innerIntPr(int val)
 {
 	if (ShowAST)
 		fprintf(listing, "%d\n", val);
+}
+
+void innerCharPr(char val)
+{
+	if (ShowAST)
+		fprintf(listing, "%c\n", val);
 }
 
 void tailPr(char *cont)

@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include <stdarg.h>
 
 #ifndef FALSE
 #define FALSE 0
@@ -45,4 +44,5 @@ extern int lineno; /* source line number for listing */
 extern BOOL PrintSource;
 extern BOOL TraceScan;
 extern BOOL ShowAST;
+extern BOOL ShowTip;
 #endif /* end of include guard: GLOBAL_H */

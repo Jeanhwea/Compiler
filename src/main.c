@@ -17,15 +17,14 @@ FILE *tiplist;
 int lineno = 0;
 
 BOOL TraceScan = FALSE;
-BOOL PrintSource = TRUE;
+BOOL PrintSource = FALSE;
 BOOL ShowAST = TRUE;
+BOOL ShowTip = FALSE;
 
 int main(int argc, const char *argv[])
 {
 	PgmSP ast; /* abstract syntax tree */
 	char pgm[120] = "input.pas";
-	char tkn[120] = "11061191_token.txt";
-	TokenType t;
 	if (argc != 2) {
 		fprintf(stdout, "usage: ./compiler <filename>\n");
 		exit(1);
@@ -36,21 +35,9 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "File %s not found\n", pgm);
 		exit(1);
 	}
-	/*
-	 *listing = fopen(tkn,"w");
-	 *if (listing == NULL) {
-	 *        fprintf(stderr, "File %s cannot be created\n", tkn);
-	 *        exit(1);
-	 *}
-	 */
 	listing = stdout;
 	errlist = stderr;
 	tiplist = stderr;
-	/*
-	 *do {
-	 *        t = getToken();
-	 *} while (t != ENDFILE);
-	 */
 	ast = parse();
 	analyse(ast);
 	fclose(source);
@@ -59,4 +46,5 @@ int main(int argc, const char *argv[])
 	 *fclose(errlist);
 	 *fclose(tiplist);
 	 */
+	return 0;
 }
