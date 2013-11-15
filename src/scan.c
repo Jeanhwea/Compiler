@@ -18,6 +18,8 @@ typedef enum {
 
 /* lexeme or identifier or reserved word */
 char tokenString[MAXTOKENSIZE + 1];
+/* hold current token location, which line */
+int tokenLocation;
 
 /* BUFLEN = the length of source line buffer */
 #define BUFLEN 1024
@@ -299,6 +301,7 @@ TokenType getToken(void)
 		}
 		if (state == DONE) {
 			tokenString[tokenStringIndex] = '\0';
+			tokenLocation = lineno;
 			if (currentToken == ID) {
 				currentToken = reservedLookup(tokenString);	
 			}

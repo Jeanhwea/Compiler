@@ -28,6 +28,8 @@ typedef enum {
 
 /* tokenString array stores the lexeme of each token */
 extern char tokenString[MAXTOKENSIZE + 1];
+/* hold current token location, which line */
+extern int tokenLocation;
 
 /* function getToken return the next token in source file */
 TokenType getToken(void);

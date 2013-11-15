@@ -17,6 +17,7 @@ static TokenType token; /* hold current token*/
  * dealing with joint FIRST set problem
  */
 static char prevTokenString[MAXTOKENSIZE + 1];
+static int preTokenLocation;
 static TokenType prevToken;
 
 static PgmSP PgmB(void);
@@ -56,6 +57,7 @@ static inline void getsym(void)
 	/* store current token type and token string */
 	strncpy(prevTokenString, tokenString, MAXTOKENSIZE);
 	prevToken = token;
+	preTokenLocation = tokenLocation;
 	/* get next token */
 	token = getToken();
 }
@@ -884,16 +886,20 @@ IdentSP IdentB(IDREADMODE mode)
 {
 	IdentSP	t;
 	MALLOC(IdentS, t);
-	t->type = Init_Ident_t;
-	t->val = 0;
-	t->length = 0;
-	t->line = lineno;
 	switch (mode) {
 	case READCURR:
+		t->type = Init_Ident_t;
+		t->val = 0;
+		t->length = 0;
+		t->line = lineno;
 		t->name = copyString(tokenString);
 		match(ID);
 		break;
 	case READPREV:
+		t->type = Init_Ident_t;
+		t->val = 0;
+		t->length = 0;
+		t->line = preTokenLocation;
 		t->name = copyString(prevTokenString);
 		break;
 	default:
