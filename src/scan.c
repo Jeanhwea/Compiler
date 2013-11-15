@@ -309,7 +309,7 @@ TokenType getToken(void)
 		}
 	}
 	if (TraceScan) {
-		fprintf(listing, "lineno:%d: ", lineno);
+		fprintf(tiplist, "lineno:%d: ", lineno);
 		printToken(currentToken, tokenString);
 	}
 	return currentToken;

@@ -813,6 +813,7 @@ FactorSP FactorB(void)
 		match(LPAR);
 		t->type = Expr_Factor_t;
 		t->ep = ExprB();
+		match(RPAR);
 		break;
 	case ID:
 		getsym();
