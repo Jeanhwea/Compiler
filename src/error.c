@@ -25,3 +25,9 @@ void syntaxError(ERRNO errno)
 	fprintf(errlist, "\nsyntax error:%d: ", lineno);
 	fprintf(errlist, "%s\n", ERRVEC[errno]);
 }
+
+void sematicError(ERRNO errno)
+{
+	fprintf(errlist, "\nsematic error:%d: ", lineno);
+	fprintf(errlist, "%s\n", ERRVEC[errno]);
+}

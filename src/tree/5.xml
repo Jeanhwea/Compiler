@@ -26,7 +26,7 @@
 				<FunDef>
 					<FunHead>
 						<Ident>
-							type=Fun_Ident_t
+							type=Int_Fun_Ident_t
 							name=max
 							line=3
 						</Ident>
@@ -44,7 +44,6 @@
 								</Ident>
 							</ParaDef>
 						</ParaList>
-						type=Int_Funret_t
 					</FunHead>
 					<Block>
 						<ConstDec>

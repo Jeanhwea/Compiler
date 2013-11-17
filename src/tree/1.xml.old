@@ -96,7 +96,7 @@
 				<FunDef>
 					<FunHead>
 						<Ident>
-							type=Fun_Ident_t
+							type=Int_Fun_Ident_t
 							name=FunctionName1
 							line=15
 						</Ident>
@@ -114,7 +114,6 @@
 								</Ident>
 							</ParaDef>
 						</ParaList>
-						type=Int_Funret_t
 					</FunHead>
 					<Block>
 						<ConstDec>
@@ -284,14 +283,14 @@
 										<Ident>
 											type=Proc_Ident_t
 											name=ProcedureName2
-											line=22
+											line=23
 										</Ident>
 										<ParaList>
 											<ParaDef>
 												<Ident>
 													type=Int_Para_Ref_Ident_t
 													name=num
-													line=22
+													line=23
 												</Ident>
 											</ParaDef>
 										</ParaList>
@@ -303,7 +302,7 @@
 													type=Int_Const_Ident_t
 													name=silly
 													val=-2
-													line=23
+													line=24
 												</Ident>
 											</ConstDef>
 											<ConstDef>
@@ -311,7 +310,7 @@
 													type=Char_Const_Ident_t
 													name=foo
 													val=p
-													line=23
+													line=24
 												</Ident>
 											</ConstDef>
 										</ConstDec>
@@ -340,25 +339,24 @@
 				<FunDef>
 					<FunHead>
 						<Ident>
-							type=Fun_Ident_t
+							type=Char_Fun_Ident_t
 							name=FunctionName2
-							line=27
+							line=28
 						</Ident>
 						<ParaList>
 							<ParaDef>
 								<Ident>
 									type=Int_Para_Ref_Ident_t
 									name=x
-									line=27
+									line=28
 								</Ident>
 								<Ident>
 									type=Int_Para_Ref_Ident_t
 									name=y
-									line=27
+									line=28
 								</Ident>
 							</ParaDef>
 						</ParaList>
-						type=Char_Funret_t
 					</FunHead>
 					<Block>
 						<ConstDec>
@@ -368,7 +366,7 @@
 								<Ident>
 									type=Int_Var_Ident_t
 									name=z
-									line=28
+									line=29
 								</Ident>
 							</VarDef>
 						</VarDec>
@@ -377,13 +375,12 @@
 								<FunDef>
 									<FunHead>
 										<Ident>
-											type=Fun_Ident_t
+											type=Int_Fun_Ident_t
 											name=FunctionName3
-											line=29
+											line=30
 										</Ident>
 										<ParaList>
 										</ParaList>
-										type=Int_Funret_t
 									</FunHead>
 									<Block>
 										<ConstDec>
@@ -410,7 +407,7 @@
 										name=A
 										val=0
 										length=0
-										line=33
+										line=34
 									</Ident>
 									**left
 									<Expr>
@@ -435,7 +432,7 @@
 													name=x
 													val=0
 													length=0
-													line=33
+													line=34
 												</Ident>
 											</Factor>
 										</Term>
@@ -449,7 +446,7 @@
 													name=y
 													val=0
 													length=0
-													line=33
+													line=34
 												</Ident>
 											</Factor>
 										</Term>
@@ -464,7 +461,7 @@
 										name=FunctionName2
 										val=0
 										length=0
-										line=34
+										line=35
 									</Ident>
 									**left
 									<Expr>
@@ -481,7 +478,7 @@
 													name=z
 													val=0
 													length=0
-													line=34
+													line=35
 												</Ident>
 											</Factor>
 										</Term>
@@ -495,7 +492,7 @@
 													name=y
 													val=0
 													length=0
-													line=34
+													line=35
 												</Ident>
 											</Factor>
 										</Term>
@@ -515,7 +512,7 @@
 						name=p
 						val=0
 						length=0
-						line=40
+						line=41
 					</Ident>
 				</ReadStmt>
 			</Stmt>
@@ -526,14 +523,14 @@
 						name=p
 						val=0
 						length=0
-						line=41
+						line=42
 					</Ident>
 					<Ident>
 						type=Init_Ident_t
 						name=q
 						val=0
 						length=0
-						line=41
+						line=42
 					</Ident>
 				</ReadStmt>
 			</Stmt>
@@ -544,7 +541,7 @@
 						name=ProcedureName1
 						val=0
 						length=0
-						line=42
+						line=43
 					</Ident>
 					<ArgList>
 					</ArgList>
@@ -566,7 +563,7 @@
 										name=head
 										val=0
 										length=0
-										line=44
+										line=45
 									</Ident>
 								</Factor>
 							</Term>
@@ -605,7 +602,7 @@
 											name=head
 											val=0
 											length=0
-											line=47
+											line=48
 										</Ident>
 									</Factor>
 								</Term>
@@ -622,7 +619,7 @@
 						name=p
 						val=0
 						length=0
-						line=49
+						line=50
 					</Ident>
 					**left
 					<Expr>
@@ -639,7 +636,7 @@
 									name=a
 									val=0
 									length=0
-									line=49
+									line=50
 								</Ident>
 							</Factor>
 							op=Mult_Multop_t
@@ -655,7 +652,7 @@
 									name=r
 									val=0
 									length=0
-									line=49
+									line=50
 								</Ident>
 							</Factor>
 						</Term>
@@ -670,7 +667,7 @@
 						name=r
 						val=0
 						length=0
-						line=50
+						line=51
 					</Ident>
 					**left
 					<Expr>
@@ -687,7 +684,7 @@
 									name=r
 									val=0
 									length=0
-									line=50
+									line=51
 								</Ident>
 							</Factor>
 						</Term>
@@ -709,7 +706,7 @@
 						name=i
 						val=0
 						length=0
-						line=52
+						line=53
 					</Ident>
 					type=Downto_For_t
 					**start
@@ -740,7 +737,7 @@
 									name=a
 									val=0
 									length=0
-									line=52
+									line=53
 								</Ident>
 							</Factor>
 						</Term>
@@ -754,7 +751,7 @@
 								name=sum
 								val=0
 								length=0
-								line=53
+								line=54
 							</Ident>
 							**left
 							<Expr>
@@ -771,7 +768,7 @@
 											name=sum
 											val=0
 											length=0
-											line=53
+											line=54
 										</Ident>
 									</Factor>
 								</Term>
@@ -785,7 +782,7 @@
 											name=i
 											val=0
 											length=0
-											line=53
+											line=54
 										</Ident>
 									</Factor>
 								</Term>
@@ -799,7 +796,7 @@
 											name=pp
 											val=0
 											length=0
-											line=53
+											line=54
 										</Ident>
 									</Factor>
 								</Term>
@@ -815,7 +812,7 @@
 						name=FunctionName2
 						val=0
 						length=0
-						line=54
+						line=55
 					</Ident>
 					<ArgList>
 						<Expr>
@@ -829,7 +826,7 @@
 										name=pa
 										val=0
 										length=0
-										line=54
+										line=55
 									</Ident>
 								</Factor>
 							</Term>
@@ -845,7 +842,7 @@
 										name=ra
 										val=0
 										length=0
-										line=54
+										line=55
 									</Ident>
 								</Factor>
 							</Term>
@@ -860,7 +857,7 @@
 						name=i
 						val=0
 						length=0
-						line=55
+						line=56
 					</Ident>
 					type=To_For_t
 					**start
@@ -894,7 +891,7 @@
 								name=sum
 								val=0
 								length=0
-								line=56
+								line=57
 							</Ident>
 							**left
 							<Expr>
@@ -911,7 +908,7 @@
 											name=sum
 											val=0
 											length=0
-											line=56
+											line=57
 										</Ident>
 									</Factor>
 									op=Mult_Multop_t
@@ -922,7 +919,7 @@
 											name=i
 											val=0
 											length=0
-											line=56
+											line=57
 										</Ident>
 									</Factor>
 								</Term>
@@ -950,7 +947,7 @@
 												name=head
 												val=0
 												length=0
-												line=59
+												line=60
 											</Ident>
 										</Factor>
 									</Term>
@@ -983,7 +980,7 @@
 													name=head
 													val=0
 													length=0
-													line=60
+													line=61
 												</Ident>
 											</Factor>
 										</Term>
@@ -1007,7 +1004,7 @@
 										name=head
 										val=0
 										length=0
-										line=61
+										line=62
 									</Ident>
 								</Factor>
 							</Term>

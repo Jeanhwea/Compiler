@@ -56,7 +56,8 @@ typedef enum {
 } Rela_t;
 typedef enum { 
 	/* normal identifier type */
-	Init_Ident_t, Proc_Ident_t, Fun_Ident_t, 
+	Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t, 
+	Char_Fun_Ident_t,
 	/* const identifier type */
 	Int_Const_Ident_t, Char_Const_Ident_t,
 	/* variable identifier type */
@@ -68,9 +69,6 @@ typedef enum {
 	/* call by address */
 	Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
 } Ident_t;
-typedef enum { 
-	Int_Funret_t, Char_Funret_t 
-} Return_t;
 typedef enum { 
 	Assgin_Stmt_t, IF_Stmt_t, Repeat_Stmt_t,
 	Pcall_Stmt_t, Comp_Stmt_t, Read_Stmt_t,
@@ -147,7 +145,6 @@ typedef struct _FunDefS {
 typedef struct _FunHeadS {
 	IdentSP idp;
 	ParaListSP plp;
-	Return_t type;
 } FunHeadS;
 /* statement */
 typedef struct _StmtS {
@@ -257,23 +254,27 @@ typedef int IDREADMODE;
 #define READCURR 0
 #define READPREV 1
 
+
 /* some helpful macros */
-/* s = struct name, v = variable, a struct pointer */
-#define MALLOC(s, v) \
+/* s = struct name for a node, v = variable, a struct pointer */
+#define NEWNODE(s, v) \
 do{ \
-	v = (s##P) malloc(sizeof(s));                                    \
-	if (v == NULL){                                                  \
-		fprintf(errlist, "out of memory at line %d\n", lineno);  \
-	}                                                                \
+	v = (s##P) malloc(sizeof(s));					\
+	if (v == NULL){							\
+		fprintf(errlist, "OUTOFMEM: at line %d\n", lineno);	\
+	}								\
 } while(0)
+
 /* just test if current token match what we expect */
 /* we won't get next token */
 #define TEST(a) (token==(a))
 #define TEST2(a,b) (token==(a)||token==(b))
 #define TEST3(a,b,c) (token==(a)||token==(b)||token==(c))
 #define TEST4(a,b,c,d) (token==(a)||token==(b)||token==(c)||token==(d))
-#define TEST5(a,b,c,d,e) (token==(a)||token==(b)||token==(c)||token==(d)||token==(e))
-#define TEST6(a,b,c,d,e,f) (token==(a)||token==(b)||token==(c)||token==(d)||token==(e)||token==(f))
+#define TEST5(a,b,c,d,e) (token==(a)||token==(b)||token==(c)		\
+		||token==(d)||token==(e))
+#define TEST6(a,b,c,d,e,f) (token==(a)||token==(b)||token==(c) 		\
+				||token==(d)||token==(e)||token==(f))
 
 PgmSP parse(void);
 

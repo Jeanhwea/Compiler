@@ -2,18 +2,22 @@ sys_exit	equ	1
 sys_write	equ	4
 stdout		equ	1
 
+section .data
+	hello: db "hello", 10
+	len: equ $-hello
+
 section	.text
 	global _start
 
 _start:
-	mov	ecx, 0x40
+	mov	ecx, hello
+	mov	edx, len
 	jmp	write
 
 
 write:
 	mov	eax, sys_write
 	mov	ebx, stdout
-	mov	edx, 1
 	int	0x80
 	jmp	exit
 

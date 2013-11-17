@@ -9,6 +9,7 @@
 #include "error.h"
 #include "scan.h"
 #include "parse.h"
+#include "symtab.h"
 #include "analyse.h"
 
 static void PgmV(PgmSP t);
@@ -172,16 +173,6 @@ void FunHeadV(FunHeadSP t)
 	if (t != NULL) {
 		IdentV(t->idp);
 		ParaListV(t->plp);
-		switch (t->type) {
-		case Int_Funret_t:
-			innerIdnlnPr(2,"type=","Int_Funret_t");
-			break;
-		case Char_Funret_t:
-			innerIdnlnPr(2,"type=","Char_Funret_t");
-			break;
-		default:
-			fprintf(errlist, "ANALYSER BUG:159\n");
-		}
 	}
 	tailPr("FunHead");
 }
@@ -503,8 +494,15 @@ void IdentV(IdentSP t)
 			innerIdnPr(1,"line=");
 			innerIntPr(t->line);
 			break;
-		case Fun_Ident_t:
-			innerIdnlnPr(2,"type=","Fun_Ident_t");
+		case Int_Fun_Ident_t:
+			innerIdnlnPr(2,"type=","Int_Fun_Ident_t");
+			innerIdnPr(1,"name=");
+			innerlnPr(1,t->name);
+			innerIdnPr(1,"line=");
+			innerIntPr(t->line);
+			break;
+		case Char_Fun_Ident_t:
+			innerIdnlnPr(2,"type=","Char_Fun_Ident_t");
 			innerIdnPr(1,"name=");
 			innerlnPr(1,t->name);
 			innerIdnPr(1,"line=");

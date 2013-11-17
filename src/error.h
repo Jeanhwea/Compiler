@@ -21,5 +21,6 @@ extern char *ERRVEC[MAXERROR];
 
 void lexError(ERRNO errno);
 void syntaxError(ERRNO errno);
+void sematicError(ERRNO errno);
 
 #endif /* end of include guard: ERROR_H */

@@ -83,7 +83,7 @@ static inline BOOL match(TokenType expected)
 PgmSP PgmB(void)
 {
 	PgmSP t;
-	MALLOC(PgmS, t);
+	NEWNODE(PgmS, t);
 	t->bp = BlockB();
 	match(DOT);
 	return t;
@@ -96,7 +96,7 @@ PgmSP PgmB(void)
 BlockSP BlockB(void)
 {
 	BlockSP t;
-	MALLOC(BlockS, t);
+	NEWNODE(BlockS, t);
 	if (TEST(CONST)) {
 		t->cdp = ConstDecB();
 	} else t->cdp = NULL;
@@ -121,12 +121,12 @@ ConstDecSP ConstDecB(void)
 {
 	ConstDecSP t, p, q;
 	match(CONST);
-	MALLOC(ConstDecS, t);
+	NEWNODE(ConstDecS, t);
 	t->cdp = ConstDefB();
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
-		MALLOC(ConstDecS, q);
+		NEWNODE(ConstDecS, q);
 		p->next = q;
 		q->cdp = ConstDefB();
 		q->next = NULL;
@@ -142,7 +142,7 @@ ConstDecSP ConstDecB(void)
 ConstDefSP ConstDefB(void)
 {
 	ConstDefSP t;
-	MALLOC(ConstDefS, t);
+	NEWNODE(ConstDefS, t);
 	if (TEST(ID)) {
 		t->idp = IdentB(READCURR);
 	} else t->idp = NULL;
@@ -187,13 +187,13 @@ ConstDefSP ConstDefB(void)
 VarDecSP VarDecB(void)
 {
 	VarDecSP t, p, q;
-	MALLOC(VarDecS, t);
+	NEWNODE(VarDecS, t);
 	match(VAR);
 	t->vdp = VarDefB();
 	t->next = NULL;
 	match(SEMI);
 	for (p = t; TEST(ID); p = q) {
-		MALLOC(VarDecS, q);
+		NEWNODE(VarDecS, q);
 		p->next = q;
 		q->vdp = VarDefB();
 		q->next = NULL;
@@ -210,12 +210,12 @@ VarDefSP VarDefB(void)
 {
 	VarDefSP t, p, q;
 	int arraylength = 0;
-	MALLOC(VarDefS, t);
+	NEWNODE(VarDefS, t);
 	t->idp = IdentB(READCURR);
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
-		MALLOC(VarDefS, q);
+		NEWNODE(VarDefS, q);
 		p->next = q;
 		q->idp = IdentB(READCURR);
 		q->next = NULL;
@@ -269,7 +269,7 @@ VarDefSP VarDefB(void)
 PFDecListSP PFDecListB(void)
 {
 	PFDecListSP t, p, q;
-	MALLOC(PFDecListS, t);
+	NEWNODE(PFDecListS, t);
 	t->pdp = NULL;
 	t->fdp = NULL;
 	switch (token) {
@@ -287,7 +287,7 @@ PFDecListSP PFDecListB(void)
 	}
 	t->next = NULL;
 	for (p = t; TEST2(FUNCTION, PROCEDURE); p = q) {
-		MALLOC(PFDecListS, q);
+		NEWNODE(PFDecListS, q);
 		p->next = q;
 		q->pdp = NULL;
 		q->fdp = NULL;
@@ -315,12 +315,12 @@ PFDecListSP PFDecListB(void)
 ProcDecSP ProcDecB(void)
 {
 	ProcDecSP t, p, q;
-	MALLOC(ProcDecS, t);
+	NEWNODE(ProcDecS, t);
 	t->pdp = ProcDefB();
 	t->next = NULL;
 	match(SEMI);
 	for (p = t; TEST(PROCEDURE); p = q) {
-		MALLOC(ProcDecS, q);
+		NEWNODE(ProcDecS, q);
 		p->next = q;
 		q->pdp = ProcDefB();
 		q->next = NULL;
@@ -336,7 +336,7 @@ ProcDecSP ProcDecB(void)
 ProcDefSP ProcDefB(void)
 {
 	ProcDefSP t;
-	MALLOC(ProcDefS, t);
+	NEWNODE(ProcDefS, t);
 	t->php = ProcHeadB();
 	t->bp = BlockB();
 	return t;
@@ -349,7 +349,7 @@ ProcDefSP ProcDefB(void)
 ProcHeadSP ProcHeadB(void)
 {
 	ProcHeadSP t;
-	MALLOC(ProcHeadS, t);
+	NEWNODE(ProcHeadS, t);
 	match(PROCEDURE);
 	t->idp = IdentB(READCURR);
 	/* PROCEDURE identifier type write back */
@@ -370,12 +370,12 @@ ProcHeadSP ProcHeadB(void)
 FunDecSP FunDecB(void)
 {
 	FunDecSP t, p, q;
-	MALLOC(FunDecS, t);
+	NEWNODE(FunDecS, t);
 	t->fdp = FunDefB();
 	t->next = NULL;
 	match(SEMI);
 	for (p = t; TEST(FUNCTION); p = q) {
-		MALLOC(FunDecS, q);
+		NEWNODE(FunDecS, q);
 		p->next =  q;
 		q->fdp = FunDefB();
 		q->next = NULL;
@@ -391,7 +391,7 @@ FunDecSP FunDecB(void)
 FunDefSP FunDefB(void)
 {
 	FunDefSP t;
-	MALLOC(FunDefS, t);
+	NEWNODE(FunDefS, t);
 	t->fhp = FunHeadB();
 	t->bp = BlockB();
 	return t;
@@ -404,11 +404,9 @@ FunDefSP FunDefB(void)
 FunHeadSP FunHeadB(void)
 {
 	FunHeadSP t;
-	MALLOC(FunHeadS, t);
+	NEWNODE(FunHeadS, t);
 	match(FUNCTION);
 	t->idp = IdentB(READCURR);
-	/* FUNCTION identifier type write back */
-	t->idp->type = Fun_Ident_t;
 	match(LPAR);
 	if (TEST(VAR) || TEST(ID))
 		t->plp = ParaListB();
@@ -418,11 +416,11 @@ FunHeadSP FunHeadB(void)
 	switch (token) {
 	case INTEGER:
 		match(INTEGER);
-		t->type = Int_Funret_t;
+		t->idp->type = Int_Fun_Ident_t;
 		break;
 	case CHAR:
 		match(CHAR);
-		t->type = Char_Funret_t;
+		t->idp->type = Char_Fun_Ident_t;
 		break;
 	default:
 		fprintf(errlist, "PARSE BUG:399\n");
@@ -440,7 +438,7 @@ FunHeadSP FunHeadB(void)
 StmtSP StmtB(void)
 {
 	StmtSP t;
-	MALLOC(StmtS, t);
+	NEWNODE(StmtS, t);
 	t->asp = NULL;
 	t->ifp = NULL;
 	t->rpp = NULL;
@@ -502,7 +500,7 @@ StmtSP StmtB(void)
 AssignStmtSP AssignStmtB(void)
 {
 	AssignStmtSP t;
-	MALLOC(AssignStmtS, t);
+	NEWNODE(AssignStmtS, t);
 	switch (token) {
 	case ASSIGN:
 		/* ident or funident */
@@ -536,7 +534,7 @@ AssignStmtSP AssignStmtB(void)
 IfStmtSP IfStmtB(void)
 {
 	IfStmtSP t;
-	MALLOC(IfStmtS, t);
+	NEWNODE(IfStmtS, t);
 	match(IF);
 	t->cp = CondB();
 	match(THEN);
@@ -555,7 +553,7 @@ IfStmtSP IfStmtB(void)
 RepeStmtSP RepeStmtB(void)
 {
 	RepeStmtSP t;
-	MALLOC(RepeStmtS, t);
+	NEWNODE(RepeStmtS, t);
 	match(REPEAT);
 	t->sp = StmtB();
 	match(UNTIL);
@@ -570,7 +568,7 @@ RepeStmtSP RepeStmtB(void)
 ForStmtSP ForStmtB(void)
 {
 	ForStmtSP t;
-	MALLOC(ForStmtS, t);
+	NEWNODE(ForStmtS, t);
 	match(FOR);
 	t->idp = IdentB(READCURR);
 	match(ASSIGN);
@@ -598,7 +596,7 @@ ForStmtSP ForStmtB(void)
 PcallStmtSP PcallStmtB(void)
 {
 	PcallStmtSP t;
-	MALLOC(PcallStmtS, t);
+	NEWNODE(PcallStmtS, t);
 	t->idp = IdentB(READPREV);
 	match(LPAR);
 	if (TEST5(ID, PLUS, MINUS, UNS, LPAR)) {
@@ -618,7 +616,7 @@ PcallStmtSP PcallStmtB(void)
 FcallStmtSP FcallStmtB(void)
 {
 	FcallStmtSP t;
-	MALLOC(FcallStmtS, t);
+	NEWNODE(FcallStmtS, t);
 	t->idp = IdentB(READPREV);
 	match(LPAR);
 	if (TEST5(ID, PLUS, MINUS, UNS, LPAR)) {
@@ -635,13 +633,13 @@ FcallStmtSP FcallStmtB(void)
 CompStmtSP CompStmtB(void)
 {
 	CompStmtSP t, p, q;
-	MALLOC(CompStmtS, t);
+	NEWNODE(CompStmtS, t);
 	match(BEGIN);
 	t->sp = StmtB();
 	t->next = NULL;
 	for (p = t; TEST(SEMI) ; p = q) {
 		match(SEMI);
-		MALLOC(CompStmtS, q);
+		NEWNODE(CompStmtS, q);
 		p->next = q;
 		q->sp = StmtB();
 		q->next = NULL;
@@ -657,14 +655,14 @@ CompStmtSP CompStmtB(void)
 ReadStmtSP ReadStmtB(void)
 {
 	ReadStmtSP t, p, q;
-	MALLOC(ReadStmtS, t);
+	NEWNODE(ReadStmtS, t);
 	match(READ);
 	match(LPAR);
 	t->idp = IdentB(READCURR);
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
-		MALLOC(ReadStmtS, q);
+		NEWNODE(ReadStmtS, q);
 		p->next = q;
 		q->idp = IdentB(READCURR);
 		q->next = NULL;
@@ -681,7 +679,7 @@ ReadStmtSP ReadStmtB(void)
 WriteStmtSP WriteStmtB(void)
 {
 	WriteStmtSP t;
-	MALLOC(WriteStmtS, t);
+	NEWNODE(WriteStmtS, t);
 	match(WRITE);
 	match(LPAR);
 	t->sp = NULL;
@@ -710,7 +708,7 @@ WriteStmtSP WriteStmtB(void)
 ExprSP ExprB(void)
 {
 	ExprSP t, p, q;
-	MALLOC(ExprS, t);
+	NEWNODE(ExprS, t);
 	switch (token) {
 	case PLUS:
 		match(PLUS);
@@ -736,7 +734,7 @@ ExprSP ExprB(void)
 	}
 	t->next = NULL;
 	for (p = t; TEST2(PLUS, MINUS); p = q) {
-		MALLOC(ExprS, q);
+		NEWNODE(ExprS, q);
 		p->next = q;
 		switch (token) {
 		case PLUS:
@@ -764,12 +762,12 @@ ExprSP ExprB(void)
 TermSP TermB(void)
 {
 	TermSP t, p, q;
-	MALLOC(TermS, t);
+	NEWNODE(TermS, t);
 	t->op = Nop_Multop_t;
 	t->fp = FactorB();
 	t->next = NULL;
 	for (p = t; TEST2(STAR, OVER); p = q) {
-		MALLOC(TermS, q);
+		NEWNODE(TermS, q);
 		p->next = q;
 		switch (token) {
 		case STAR:
@@ -798,7 +796,7 @@ TermSP TermB(void)
 FactorSP FactorB(void)
 {
 	FactorSP t;
-	MALLOC(FactorS, t);
+	NEWNODE(FactorS, t);
 	t->idp = NULL;
 	t->ep = NULL;
 	t->usi = 0;
@@ -845,7 +843,7 @@ FactorSP FactorB(void)
 CondSP CondB(void)
 {
 	CondSP t;
-	MALLOC(CondS, t);
+	NEWNODE(CondS, t);
 	t->lep = ExprB();
 	switch (token) {
 	case EQU:
@@ -886,7 +884,7 @@ CondSP CondB(void)
 IdentSP IdentB(IDREADMODE mode)
 {
 	IdentSP	t;
-	MALLOC(IdentS, t);
+	NEWNODE(IdentS, t);
 	switch (mode) {
 	case READCURR:
 		t->type = Init_Ident_t;
@@ -918,12 +916,12 @@ IdentSP IdentB(IDREADMODE mode)
 ParaListSP ParaListB(void)
 {
 	ParaListSP t, p, q;
-	MALLOC(ParaListS, t);
+	NEWNODE(ParaListS, t);
 	t->pdp = ParaDefB();
 	t->next = NULL;
 	for (p = t; TEST(SEMI) ; p = q) {
 		match(SEMI);
-		MALLOC(ParaListS, q);
+		NEWNODE(ParaListS, q);
 		p->next = q;
 		q->pdp = ParaDefB();
 		q->next = NULL;
@@ -939,7 +937,7 @@ ParaDefSP ParaDefB(void)
 {
 	ParaDefSP t, p, q;
 	BOOL flag; // if TURE, then call by value
-	MALLOC(ParaDefS, t);
+	NEWNODE(ParaDefS, t);
 	if (TEST(VAR)) {
 		match(VAR);
 		flag = FALSE;
@@ -948,7 +946,7 @@ ParaDefSP ParaDefB(void)
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
-		MALLOC(ParaDefS, q);
+		NEWNODE(ParaDefS, q);
 		p->next = q;
 		q->idp = IdentB(READCURR);
 		q->next = NULL;
@@ -993,12 +991,12 @@ ParaDefSP ParaDefB(void)
 ArgListSP ArgListB(void)
 {
 	ArgListSP t, p, q;
-	MALLOC(ArgListS, t);
+	NEWNODE(ArgListS, t);
 	t->ep = ExprB();
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
 		match(COMMA);
-		MALLOC(ArgListS, q);
+		NEWNODE(ArgListS, q);
 		p->next = q;
 		q->ep = ExprB();
 		q->next = NULL;

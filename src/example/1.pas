@@ -11,15 +11,16 @@ var
 	q, p:integer; 
 	Aint:array[3] of integer;
 	Achar:array[5] of char;
-
-function FunctionName1(funvar1, funvar2:char): integer; { pass by value }
+{ pass by value}
+function FunctionName1(funvar1, funvar2:char): integer;
 begin
 	A[0] := (funvar1 * funvar2 / 6 ) + 4;
 	FunctionName1 := a * ( 4 + funvar2)
 end;
 
 procedure ProcedureName1();
-	procedure ProcedureName2(var num:integer); { pass by reference }
+	{ pass by reference }
+	procedure ProcedureName2(var num:integer);
 	const silly = -2, foo = 'p';
 	begin end;
 begin end;

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 
 #ifndef FALSE
 #define FALSE 0
@@ -34,10 +35,6 @@ extern FILE *errlist; /* errors text file */
 extern FILE *tiplist; /* tip list, using for debug */
 
 extern int lineno; /* source line number for listing */
-
-
-/* begin for scan */
-/* end for scan */
 
 
 /* some global flags */
