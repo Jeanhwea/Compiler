@@ -6,7 +6,6 @@
 #ifndef ANALYSE_H
 
 #define ANALYSE_H
-#include "parse.h"
 
 void analyse(PgmSP);
 

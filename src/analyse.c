@@ -7,10 +7,11 @@
 #include "global.h"
 #include "util.h"
 #include "error.h"
-#include "scan.h"
 #include "parse.h"
 #include "symtab.h"
 #include "analyse.h"
+#include "nspace.h"
+#include "quad.h"
 
 static void PgmV(PgmSP t);
 static void BlockV(BlockSP t);
@@ -48,6 +49,7 @@ void PgmV(PgmSP t)
 {
 	headPr("Pgm");
 	if (t != NULL) {
+		Ninit();
 		BlockV(t->bp);
 	}
 	tailPr("Pgm");
@@ -55,12 +57,23 @@ void PgmV(PgmSP t)
 
 void BlockV(BlockSP t)
 {
+	SymTabSP st;
+	int i;
 	headPr("Block");
 	if (t != NULL) {
+		NEWSYMTAB(st);
+		for (i = 0; i < HASHSIZE; i++) {
+			/* initial symtab */
+			*(st->sbp + i) = NULL;
+		}
+		push(st);
 		ConstDecV(t->cdp);
 		VarDecV(t->vdp);
 		PFDecListV(t->pfdlp);
 		CompStmtV(t->csp);
+		printTab(st);
+		pop();
+		Npop();
 	}
 	tailPr("Block");
 }
@@ -79,6 +92,7 @@ void ConstDefV(ConstDefSP t)
 	headPr("ConstDef");
 	if (t != NULL) {
 		IdentV(t->idp);
+		sym_insert_const(t->idp);
 	}
 	tailPr("ConstDef");
 }
@@ -97,6 +111,7 @@ void VarDefV(VarDefSP t)
 	headPr("VarDef");
 	for (; t != NULL; t = t->next) {
 		IdentV(t->idp);
+		sym_insert_var(t->idp);
 	}
 	tailPr("VarDef");
 }
@@ -143,6 +158,7 @@ void ProcHeadV(ProcHeadSP t)
 	headPr("ProcHead");
 	if (t != NULL) {
 		IdentV(t->idp);
+		sym_insert_proc(t->idp, t->plp);
 		ParaListV(t->plp);
 	}
 	tailPr("ProcHead");
@@ -172,6 +188,7 @@ void FunHeadV(FunHeadSP t)
 	headPr("FunHead");
 	if (t != NULL) {
 		IdentV(t->idp);
+		sym_insert_fun(t->idp, t->plp);
 		ParaListV(t->plp);
 	}
 	tailPr("FunHead");

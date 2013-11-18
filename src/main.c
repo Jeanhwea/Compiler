@@ -5,8 +5,8 @@
  */
 
 #include "global.h"
-#include "util.h"
 #include "scan.h"
+#include "util.h"
 #include "parse.h"
 #include "analyse.h"
 
@@ -20,6 +20,7 @@ BOOL TraceScan = FALSE;
 BOOL PrintSource = FALSE;
 BOOL ShowAST = FALSE;
 BOOL ShowTip = FALSE;
+BOOL ShowQuad = FALSE;
 
 int main(int argc, const char *argv[])
 {

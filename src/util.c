@@ -5,6 +5,7 @@
  */
 
 #include "global.h"
+#include "scan.h"
 #include "util.h"
 
 /* tokenCount is the number of current token */

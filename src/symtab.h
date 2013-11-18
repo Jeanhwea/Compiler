@@ -7,9 +7,14 @@
 
 #define SYMTAB_H
 /* hash size */
-int HASHSIZE = 211;
+extern int HASHSIZE;
 /* hash shift */
-int SHIFT = 4;
+extern int SHIFT;
+
+typedef struct _SymTabS *SymTabSP;
+typedef struct _SymLineS *SymLineSP;
+typedef struct _SymBucketS *SymBucketSP;
+typedef struct _SymTabES *SymTabESP;
 
 typedef enum {
 	Const_Obj_t, Var_Obj_t, Nop_Obj_t,
@@ -21,13 +26,6 @@ typedef enum {
 	Nop_Type_t
 } Type_t;
 
-typedef struct _SymTabS *SymTabSP;
-typedef struct _SymLineS *SymLineSP;
-typedef struct _SymBucketS *SymBucketSP;
-typedef struct _SymTabES *SymTabESP;
-typedef struct _ASymTabS *ASymTabSP;
-typedef struct _BSymTabS *BSymTabSP;
-
 /**
  * symbol table stack 
  * is a stack that
@@ -36,6 +34,7 @@ typedef struct _BSymTabS *BSymTabSP;
  */
 typedef struct _SymTabS {
 	SymBucketSP *sbp;
+	char *ns; 		// namespace for a block
 	SymTabSP prev;
 	SymTabSP next;
 } SymTabS;
@@ -60,26 +59,13 @@ typedef struct _SymBucketS {
 
 typedef struct _SymTabES {
 	char *name;		// identifier name
-	int lev;		// level
+	char *label;		// namespace label
+	int len;		// array length
 	SymLineSP lines;	// referenced lines
 	Obj_t obj;		// object type
 	Type_t type;		// type 
-	ASymTabSP ap; 		// array vector pointer
-	BSymTabSP bp;		// block vector pointer
 	SymTabSP stp; 		// point to symbol table
 } SymTabES;
-
-typedef struct _ASymTabS {	// array vector struct
-	Type_t type;
-	int length;
-} ASymTabS;
-
-typedef struct _BSymTabS {	// block vector struct
-	SymBucketSP last;
-	SymBucketSP lastpar;
-	int psize;
-	int vsize;
-} BSymTabS;
 
 /* some helpful macros */
 /** 
@@ -94,8 +80,8 @@ do { \
 	} else {								\
 		v->prev = NULL;							\
 		v->next = NULL;							\
-		v->ep = (SymBucketSP *) malloc( HASHSIZE * sizeof(SymListSP));	\
-		if (v->ep == NULL) {						\
+		v->sbp = (SymBucketSP *) malloc( HASHSIZE * sizeof(SymBucketS));\
+		if (v->sbp == NULL) {						\
 			fprintf(errlist, "OUTOFMEM: on allocte bucket\n");	\
 			exit(1);						\
 		}								\
@@ -115,4 +101,11 @@ do { \
 	}									\
 } while(0)
 
+SymTabSP pop(void);
+void push(SymTabSP);
+void sym_insert_const(IdentSP);
+void sym_insert_var(IdentSP);
+void sym_insert_fun(IdentSP, ParaListSP);
+void sym_insert_proc(IdentSP, ParaListSP);
+void printTab(SymTabSP);
 #endif /* end of include guard: SYMTAB_H */

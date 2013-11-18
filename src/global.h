@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 #ifndef FALSE
 #define FALSE 0
@@ -42,4 +43,5 @@ extern BOOL PrintSource;
 extern BOOL TraceScan;
 extern BOOL ShowAST;
 extern BOOL ShowTip;
+extern BOOL ShowQuad;
 #endif /* end of include guard: GLOBAL_H */
