@@ -1,47 +1,20 @@
-section .data
-section .bss
-	extern putchar
+%include "io.asm"
+
 section .text
 	global main
 
+section .data
+	msg: db "Hello World", 10, 0
+
 main:
 	nop
-	enter 	0, 0
-	pusha
-	pushf
-
-	mov	eax, 0x50
-	call	print_char_ln
-
-	popf
-	popa
-	mov	eax, 0 
-	leave
-	ret
-
-print_char_ln:
-	enter 0, 0
-	pusha
-	pushf
-	push	eax
+	push	ebp
+	mov	ebp, esp
+	mov	eax, msg
+	call	print_string
+	call	scan_int
 	call	print_char
-	mov	eax, 0x0a
-	call	print_char
-	pop	eax
-	popf
-	popa
-	leave
-	ret
-
-print_char:
-	enter	0,0
-	pusha
-	pushf
-	push	eax
-	call	putchar
-	pop	eax
-	popf
-	popa
+	xor	eax, eax
 	leave
 	ret
 

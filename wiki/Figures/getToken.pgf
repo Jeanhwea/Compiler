@@ -5,18 +5,20 @@
        on grid,
        auto
      ]
-	\node[initial,initial text=,state] (START) {START};
+	\node[initial,initial text=start,state] (START) {START};
 	\node[state] (INSTR) [above left of=START] {INSTR};
 	\node[state] (INUNS) [below left of=START] {INUNS};
 	\node[state] (INIDE) [above right of=START] {INIDE};
 	\node[state] (INLES) [below right of=START] {INLES};
 	\node[state] (INCOM) [right of=INIDE] {INCOM};
 	\node[state] (INGRE) [right of=INLES] {INGRE};
+	\node[state] (INCHA) [ left of=INUNS] {INCHA};
+	\node[state] (COMME) [ left of=INSTR] {COMME};
 	\node[state,accepting] (DONE1) [below right of=INCOM] {DONE};
-	\node[state,accepting] (DONE2) [above of=START] {DONE};
-	\node[state,accepting] (DONE3) [below of=START] {DONE};
+	\node[state,accepting] (DONE2) [above right of=INSTR] {DONE};
+	\node[state,accepting] (DONE3) [below right of=INUNS] {DONE};
 
-	\path[->] (START) edge[loop below] node{white space} (START);
+	\path[->] (START) edge[loop below] node{white space} (START);		
 	\path[->] (START) edge[bend left] node{$"$} (INSTR);
 	\path[->] (START) edge[bend right] node{digit} (INUNS);
 	\path[->] (START) edge node{letter} (INIDE);
@@ -27,6 +29,13 @@
 
 	\path[->] (INSTR) edge[loop above] node{other} (INSTR);
 	\path[->] (INSTR) edge node{$"$} (DONE2);
+
+	\path[->] (COMME) edge[loop below] node{other} (COMME);
+	\path[->] (START) edge[] node{$\{$} (COMME);
+	\path[->] (COMME) edge[bend left] node{$\}$} (DONE2);
+
+	\path[->] (START) edge[] node{$'$} (INCHA);
+	\path[->] (INCHA) edge[bend right] node{$'$} (DONE3);
 	
 	\path[->] (INIDE) edge[loop above] node{digit$|$letter} (INIDE);
 	\path[->] (INIDE) edge[bend right] node{other} (DONE2);

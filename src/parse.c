@@ -717,7 +717,7 @@ ExprSP ExprB(void)
 		break;
 	case MINUS:
 		match(MINUS);
-		t->op = Minus_Addop_t;
+		t->op = Neg_Addop_t;
 		t->tp = TermB();
 		break;
 	case ID:

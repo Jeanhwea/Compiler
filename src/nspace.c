@@ -6,7 +6,7 @@ int nspacelen = 0;
 
 void Ninit(void)
 {
-	strcpy(nspace,"NICE");
+	strcpy(nspace,"J");
 	nspacelen = strlen(nspace);
 }
 

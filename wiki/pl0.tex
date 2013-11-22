@@ -3,17 +3,25 @@
 \usepackage{graphicx}
 \usepackage{CJK}
 \usepackage[left=2.0cm,right=2.0cm]{geometry}
+\usepackage{listings} 
+\lstset {
+	language = c,
+	numbers = left,
+	stepnumber=1,
+	tabsize=4
+}
 \newcommand{\sym}[1]{~\emph{#1}~}
 \newcommand{\keyword}[1]{\textbf{#1}} 
 \newcommand{\define}{\quad ::= \quad} 
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
-\title{Extended PL/0 Compiler}
+\title{Extended PL/0 Compiler 详细设计文档}
 \author{胡京徽(11061191)}
 \date{\today}
-%\maketitle
+\maketitle
 \clearpage
-\input{./SEC/sec1.tex}
+%\input{./SEC/sec1.tex}
 %\input{./SEC/sec2.tex}
+\input{./SEC/sec3.tex}
 \end{CJK*}
 \end{document}

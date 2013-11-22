@@ -17,13 +17,16 @@ typedef struct _SymBucketS *SymBucketSP;
 typedef struct _SymTabES *SymTabESP;
 
 typedef enum {
-	Const_Obj_t, Var_Obj_t, Nop_Obj_t,
-	Proc_Obj_t, Fun_Obj_t
+	Nop_Obj_t, Const_Obj_t, Var_Obj_t,
+	Proc_Obj_t, Fun_Obj_t, Array_Obj_t,
+	Para_Val_Obj_t, Para_Ref_Obj_t,
+	/* additional type for quad */
+	Tmp_Obj_t, Label_Obj_t, Num_Obj_t,
+	String_Obj_t
 } Obj_t;
 
 typedef enum {
-	Int_Type_t, Char_Type_t, Array_Type_t,
-	Nop_Type_t
+	Int_Type_t, Char_Type_t, Nop_Type_t
 } Type_t;
 
 /**
@@ -60,8 +63,12 @@ typedef struct _SymBucketS {
 typedef struct _SymTabES {
 	char *name;		// identifier name
 	char *label;		// namespace label
-	int len;		// array length
+	int val;		// array length
+				// or const value
+				// or unsign value
 	SymLineSP lines;	// referenced lines
+	int level;		// level
+	int posi;		// on which position
 	Obj_t obj;		// object type
 	Type_t type;		// type 
 	SymTabSP stp; 		// point to symbol table
@@ -102,10 +109,17 @@ do { \
 } while(0)
 
 SymTabSP pop(void);
+SymTabSP newstab(void);
 void push(SymTabSP);
-void sym_insert_const(IdentSP);
-void sym_insert_var(IdentSP);
-void sym_insert_fun(IdentSP, ParaListSP);
-void sym_insert_proc(IdentSP, ParaListSP);
+SymTabESP sym_insert_const(IdentSP);
+SymTabESP sym_insert_var(IdentSP);
+SymTabESP sym_insert_para(IdentSP);
+SymTabESP sym_insert_fun(IdentSP, ParaListSP);
+SymTabESP sym_insert_proc(IdentSP, ParaListSP);
+SymTabESP sym_insert_tmp(void);
+SymTabESP sym_make_usi(int);
+SymTabESP sym_make_label(void);
+SymTabESP sym_make_string(char *);
+SymTabESP sym_lookup(char *);
 void printTab(SymTabSP);
 #endif /* end of include guard: SYMTAB_H */

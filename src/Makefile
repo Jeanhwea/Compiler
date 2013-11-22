@@ -2,13 +2,19 @@ CC = gcc
 CFLAGS = -g -Wall
 
 OBJS = main.o util.o scan.o error.o parse.o analyse.o \
-       nspace.o symtab.o
+       nspace.o symtab.o quad.o code.o
 
 compiler: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o compiler
 
 main.o: main.c global.h util.h parse.h analyse.h
 	$(CC) $(CFLAGS) -c main.c
+
+code.o: code.c global.h parse.h symtab.h quad.h code.h
+	$(CC) $(CFLAGS) -c code.c
+
+quad.o: quad.c global.h parse.h symtab.h quad.h
+	$(CC) $(CFLAGS) -c quad.c
 
 symtab.o: symtab.c global.h parse.h symtab.h nspace.h
 	$(CC) $(CFLAGS) -c symtab.c

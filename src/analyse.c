@@ -12,6 +12,7 @@
 #include "analyse.h"
 #include "nspace.h"
 #include "quad.h"
+#include "code.h"
 
 static void PgmV(PgmSP t);
 static void BlockV(BlockSP t);
@@ -47,9 +48,12 @@ static void ArgListV(ArgListSP t);
 
 void PgmV(PgmSP t)
 {
+	SymTabSP st;
 	headPr("Pgm");
 	if (t != NULL) {
 		Ninit();
+		st = newstab();
+		push(st);
 		BlockV(t->bp);
 	}
 	tailPr("Pgm");
@@ -58,21 +62,16 @@ void PgmV(PgmSP t)
 void BlockV(BlockSP t)
 {
 	SymTabSP st;
-	int i;
 	headPr("Block");
 	if (t != NULL) {
-		NEWSYMTAB(st);
-		for (i = 0; i < HASHSIZE; i++) {
-			/* initial symtab */
-			*(st->sbp + i) = NULL;
-		}
-		push(st);
 		ConstDecV(t->cdp);
 		VarDecV(t->vdp);
 		PFDecListV(t->pfdlp);
+		fprintf(code, "\n");
 		CompStmtV(t->csp);
+		CompStmtG(t->csp);
+		st = pop();
 		printTab(st);
-		pop();
 		Npop();
 	}
 	tailPr("Block");
@@ -155,10 +154,15 @@ void ProcDefV(ProcDefSP t)
 
 void ProcHeadV(ProcHeadSP t)
 {
+	SymTabSP st;
+	SymTabESP e;
 	headPr("ProcHead");
 	if (t != NULL) {
 		IdentV(t->idp);
-		sym_insert_proc(t->idp, t->plp);
+		e = sym_insert_proc(t->idp, t->plp);
+		fprintf(code, "%s:", e->label);
+		st = newstab();
+		push(st);
 		ParaListV(t->plp);
 	}
 	tailPr("ProcHead");
@@ -185,10 +189,15 @@ void FunDefV(FunDefSP t)
 
 void FunHeadV(FunHeadSP t)
 {
+	SymTabSP st;
+	SymTabESP e;
 	headPr("FunHead");
 	if (t != NULL) {
 		IdentV(t->idp);
-		sym_insert_fun(t->idp, t->plp);
+		e = sym_insert_fun(t->idp, t->plp);
+		fprintf(code, "%s:", e->label);
+		st = newstab();
+		push(st);
 		ParaListV(t->plp);
 	}
 	tailPr("FunHead");
@@ -379,6 +388,11 @@ void WriteStmtV(WriteStmtSP t)
 void ExprV(ExprSP t)
 {
 	headPr("Expr");
+	if (t != NULL) {
+		/*
+		 *ExprG(t);
+		 */
+	}
 	for (; t != NULL; t = t->next) {
 		switch (t->op) {
 		case Nop_Addop_t:
@@ -386,6 +400,9 @@ void ExprV(ExprSP t)
 			break;
 		case Add_Addop_t:
 			innerIdnlnPr(2,"op=","Add_Addop_t");
+			break;
+		case Neg_Addop_t:
+			innerIdnlnPr(2,"op=","Neg_Addop_t");
 			break;
 		case Minus_Addop_t:
 			innerIdnlnPr(2,"op=","Minus_Addop_t");
@@ -624,6 +641,7 @@ void ParaDefV(ParaDefSP t)
 	headPr("ParaDef");
 	for (; t != NULL; t = t->next) {
 		IdentV(t->idp);
+		sym_insert_para(t->idp);
 	}
 	tailPr("ParaDef");
 }

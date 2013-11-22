@@ -12,6 +12,7 @@
 
 FILE *source;
 FILE *listing;
+FILE *code;
 FILE *errlist;
 FILE *tiplist;
 int lineno = 0;
@@ -20,7 +21,7 @@ BOOL TraceScan = FALSE;
 BOOL PrintSource = FALSE;
 BOOL ShowAST = FALSE;
 BOOL ShowTip = FALSE;
-BOOL ShowQuad = FALSE;
+BOOL ShowQuad = TRUE;
 
 int main(int argc, const char *argv[])
 {
@@ -51,6 +52,7 @@ int main(int argc, const char *argv[])
 		exit(1);
 	}
 	listing = stdout;
+	code = stdout;
 	errlist = stderr;
 	tiplist = stderr;
 	ast = parse();

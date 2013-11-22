@@ -45,7 +45,8 @@ typedef enum {
 	Fun_PFDec_t , Proc_PFDec_t 
 } PFDec_t;
 typedef enum {
-	Nop_Addop_t, Add_Addop_t, Minus_Addop_t 
+	Nop_Addop_t, Add_Addop_t, Neg_Addop_t,
+	Minus_Addop_t 
 } Addop_t;
 typedef enum { 
 	Nop_Multop_t, Mult_Multop_t, Div_Multop_t 

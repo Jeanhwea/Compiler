@@ -1,0 +1,604 @@
+\section{详细设计}
+\subsection{程序结构}
+程序的文件列表如下：
+\begin{verbatim}
+analyse.c analyse.h code.c code.h error.c error.h
+global.h main.c nspace.c nspace.h parse.c parse.h
+quad.c quad.h scan.c scan.h symtab.c symtab.h
+util.c util.h elf.h elf.c
+\end{verbatim}
+\verb|main| 是主函数入口； \verb|scan| 做词法分析； \verb|parse| 做语法分析生成
+语法树； \verb|analyse| 对语法树打印，并进行一些分析；\verb|code| 语义分析，
+解析语法树，
+生成四元式；\verb|symtab| 管理符号表；\verb|nspace| 管理命名空间；\verb|quad|
+发射四元式；\verb|elf| 将四元式生成x86汇编；\verb|util| 是一些工具函数。
+\subsection{函数功能}
+捡几个比较重要的说。\\
+getToken():词法分析，获取单词\\
+parse():语法分析，生成语法树\\
+analyse():分析语法树\\
+code():生成四元式
+\subsection{调用关系}
+main $->$ parse $->$ analyse $->$ code \\
+parse 使用递归下降分析法建立语法树。
+里面有很多建立节点的函数，这些节点定义根据文法而来，具体如下：
+\begin{verbatim}
+static PgmSP PgmB(void);
+static BlockSP BlockB(void);
+static ConstDecSP ConstDecB(void);
+static ConstDefSP ConstDefB(void);
+static VarDecSP VarDecB(void);
+static VarDefSP VarDefB(void);
+static PFDecListSP PFDecListB(void);
+static ProcDecSP ProcDecB(void);
+static ProcDefSP ProcDefB(void);
+static ProcHeadSP ProcHeadB(void);
+static FunDecSP FunDecB(void);
+static FunDefSP FunDefB(void);
+static FunHeadSP FunHeadB(void);
+static StmtSP StmtB(void);
+static AssignStmtSP AssignStmtB(void);
+static IfStmtSP IfStmtB(void);
+static RepeStmtSP RepeStmtB(void);
+static ForStmtSP ForStmtB(void);
+static PcallStmtSP PcallStmtB(void);
+static FcallStmtSP FcallStmtB(void);
+static CompStmtSP CompStmtB(void);
+static ReadStmtSP ReadStmtB(void);
+static WriteStmtSP WriteStmtB(void);
+static ExprSP ExprB(void);
+static TermSP TermB(void);
+static FactorSP FactorB(void);
+static CondSP CondB(void);
+static IdentSP IdentB(IDREADMODE mode);
+static ParaListSP ParaListB(void);
+static ParaDefSP ParaDefB(void);
+static ArgListSP ArgListB(void);
+\end{verbatim}
+每个节点的数据结构，如下：
+\begin{verbatim}
+typedef struct _PgmS *PgmSP;
+typedef struct _BlockS *BlockSP;
+typedef struct _ConstDecS *ConstDecSP;
+typedef struct _ConstDefS *ConstDefSP;
+typedef struct _VarDecS *VarDecSP;
+typedef struct _VarDefS *VarDefSP;
+typedef struct _PFDecListS *PFDecListSP;
+typedef struct _ProcDecS *ProcDecSP;
+typedef struct _ProcDefS *ProcDefSP;
+typedef struct _ProcHeadS *ProcHeadSP;
+typedef struct _FunDecS *FunDecSP;
+typedef struct _FunDefS *FunDefSP;
+typedef struct _FunHeadS *FunHeadSP;
+typedef struct _StmtS *StmtSP;
+typedef struct _AssignStmtS *AssignStmtSP;
+typedef struct _IfStmtS *IfStmtSP;
+typedef struct _RepeStmtS *RepeStmtSP;
+typedef struct _ForStmtS *ForStmtSP;
+typedef struct _PcallStmtS *PcallStmtSP;
+typedef struct _FcallStmtS *FcallStmtSP;
+typedef struct _CompStmtS *CompStmtSP;
+typedef struct _ReadStmtS *ReadStmtSP;
+typedef struct _WriteStmtS *WriteStmtSP;
+typedef struct _ExprS *ExprSP;
+typedef struct _TermS *TermSP;
+typedef struct _FactorS *FactorSP;
+typedef struct _CondS *CondSP;
+typedef struct _IdentS *IdentSP;
+typedef struct _ParaListS *ParaListSP;
+typedef struct _ParaDefS *ParaDefSP;
+typedef struct _ArgListS *ArgListSP;
+/* declaretion of a bundle of node type */
+typedef enum { 
+        Fun_PFDec_t , Proc_PFDec_t 
+} PFDec_t;
+typedef enum {
+        Nop_Addop_t, Add_Addop_t, Neg_Addop_t,
+        Minus_Addop_t 
+} Addop_t;
+typedef enum { 
+        Nop_Multop_t, Mult_Multop_t, Div_Multop_t 
+} Multop_t;
+typedef enum { 
+        Equ_Rela_t, Neq_Rela_t, Gtt_Rela_t, 
+        Geq_Rela_t, Lst_Rela_t, Leq_Rela_t 
+} Rela_t;
+typedef enum { 
+        /* normal identifier type */
+        Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t, 
+        Char_Fun_Ident_t,
+        /* const identifier type */
+        Int_Const_Ident_t, Char_Const_Ident_t,
+        /* variable identifier type */
+        Int_Var_Ident_t, Char_Var_Ident_t,
+        IntArr_Var_Ident_t, CharArr_Var_Ident_t,
+        /* parameter identifier type */
+        /* call by value */
+        Int_Para_Val_Ident_t, Char_Para_Val_Ident_t,
+        /* call by address */
+        Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
+} Ident_t;
+typedef enum { 
+        Assgin_Stmt_t, IF_Stmt_t, Repeat_Stmt_t,
+        Pcall_Stmt_t, Comp_Stmt_t, Read_Stmt_t,
+        Write_Stmt_t,  For_Stmt_t, 
+        Null_Stmt_t 
+} Stmt_t;
+typedef enum { 
+        Norm_Assgin_t, Fun_Assgin_t, Array_Assgin_t 
+} Assgin_t;
+typedef enum { 
+        To_For_t, Downto_For_t 
+} For_t;
+typedef enum { 
+        Id_Factor_t, Array_Factor_t, Unsign_Factor_t,
+        Expr_Factor_t, Funcall_Factor_t 
+} Factor_t;
+typedef enum { 
+        StrId_Write_t, Str_Write_t, Id_Write_t 
+} Write_t;
+/* declaretion of a bundle of struct */
+/* Program */
+typedef struct _PgmS {
+        BlockSP bp;
+} PgmS;
+/* block */
+typedef struct _BlockS {
+        ConstDecSP cdp;
+        VarDecSP vdp;
+        PFDecListSP pfdlp;
+        CompStmtSP csp;
+} BlockS;
+typedef struct _ConstDecS {
+        ConstDefSP cdp;
+        ConstDecSP next;
+} ConstDecS;
+typedef struct _ConstDefS {
+        IdentSP idp;
+} ConstDefS;
+typedef struct _VarDecS {
+        VarDefSP vdp;
+        VarDecSP next;
+} VarDecS;
+typedef struct _VarDefS {
+        IdentSP idp;
+        VarDefSP next;
+} VarDefS;
+typedef struct _PFDecListS {
+        PFDec_t type;
+        ProcDecSP pdp; 
+        FunDecSP fdp; 
+        PFDecListSP next;
+} PFDecListS;
+typedef struct _ProcDecS {
+        ProcDefSP pdp;
+        ProcDecSP next;
+} ProcDecS;
+typedef struct _ProcDefS {
+        ProcHeadSP php;
+        BlockSP bp;
+} ProcDefS;
+typedef struct _ProcHeadS {
+        IdentSP idp;
+        ParaListSP plp;
+} ProcHeadS;
+typedef struct _FunDecS {
+        FunDefSP fdp;
+        FunDecSP next;
+} FunDecS;
+typedef struct _FunDefS {
+        FunHeadSP fhp;
+        BlockSP bp;
+} FunDefS;
+typedef struct _FunHeadS {
+        IdentSP idp;
+        ParaListSP plp;
+} FunHeadS;
+/* statement */
+typedef struct _StmtS {
+        Stmt_t type;
+        AssignStmtSP asp;
+        IfStmtSP ifp;
+        RepeStmtSP rpp;
+        ForStmtSP frp;
+        PcallStmtSP pcp;
+        CompStmtSP cpp;
+        ReadStmtSP rdp;
+        WriteStmtSP wtp;
+} StmtS;
+typedef struct _AssignStmtS {
+        Assgin_t type;
+        IdentSP idp;
+        ExprSP lep;
+        ExprSP rep;
+} AssignStmtS;
+typedef struct _IfStmtS {
+        CondSP cp;
+        /* then */
+        StmtSP tp;
+        /* else */
+        StmtSP ep;
+} IfStmtS;
+typedef struct _RepeStmtS {
+        StmtSP sp;
+        CondSP cp;
+} RepeStmtS;
+typedef struct _ForStmtS {
+        For_t type;
+        IdentSP idp;
+        ExprSP lep;
+        ExprSP rep;
+        StmtSP sp;
+} ForStmtS;
+typedef struct _PcallStmtS {
+        IdentSP idp;
+        ArgListSP alp;
+} PcallStmtS;
+typedef struct _FcallStmtS {
+        IdentSP idp;
+        ArgListSP alp;
+} FcallStmtS;
+typedef struct _CompStmtS {
+        StmtSP sp;
+        CompStmtSP next;
+} CompStmtS;
+typedef struct _ReadStmtS {
+        IdentSP idp;
+        ReadStmtSP next;
+} ReadStmtS;
+typedef struct _WriteStmtS {
+        Write_t type;
+        /* string pointer */
+        char *sp;
+        ExprSP ep;
+} WriteStmtS;
+/* expression term factor condition */
+typedef struct _ExprS {
+        Addop_t op;
+        TermSP tp;
+        ExprSP next;
+} ExprS;
+typedef struct _TermS {
+        Multop_t op;
+        FactorSP fp;
+        TermSP next;
+} TermS;
+typedef struct _FactorS {
+        Factor_t type;
+        IdentSP idp;
+        ExprSP ep;
+        /* unsign int */
+        int usi;
+        FcallStmtSP fcsp;
+} FactorS;
+typedef struct _CondS {
+        ExprSP lep;
+        Rela_t op;
+        ExprSP rep;
+} CondS;
+/* ident parameter argument*/
+typedef struct _IdentS {
+        Ident_t type;
+        char *name;
+        int val;
+        int length;
+        int line;
+} IdentS;
+typedef struct _ParaListS {
+        ParaDefSP pdp;
+        ParaListSP next;
+} ParaListS;
+typedef struct _ParaDefS {
+        IdentSP idp;
+        ParaDefSP next;
+} ParaDefS;
+typedef struct _ArgListS {
+        ExprSP ep;
+        ArgListSP next;
+} ArgListS;
+\end{verbatim}
+analyse 做语法分析， code 遍历语法树各个节点，生成四元式。数据结构有点
+多，就不粘贴了。
+\subsection{符号表管理}
+符号表采用栈式符号表，每个函数或过程进入是申请符号表，退出时弹出。
+每个符号表项使用符号名hash查找，从栈顶往栈底查。
+数据结构如下：
+\begin{verbatim}
+/* hash size */
+extern int HASHSIZE;
+/* hash shift */
+extern int SHIFT;
+
+typedef struct _SymTabS *SymTabSP;
+typedef struct _SymLineS *SymLineSP;
+typedef struct _SymBucketS *SymBucketSP;
+typedef struct _SymTabES *SymTabESP;
+
+typedef enum { 表项类型
+        Nop_Obj_t, Const_Obj_t, Var_Obj_t,
+        Proc_Obj_t, Fun_Obj_t, Array_Obj_t,
+        Para_Obj_t, Tmp_Obj_t
+} Obj_t;
+
+typedef enum { 符号类型
+        Int_Type_t, Char_Type_t, Nop_Type_t
+} Type_t;
+
+/**
+ * symbol table stack 
+ * is a stack that
+ * manage symbol table in
+ * each function
+ */
+typedef struct _SymTabS { 符号表链，使用栈式符号表
+        SymBucketSP *sbp;       hash 符号索引表头
+        char *ns;               // namespace for a block
+        SymTabSP prev;
+        SymTabSP next;
+} SymTabS;
+
+/**
+ * store which line a varible
+ * be referenced
+ */
+typedef struct _SymLineS { 符号的行号记录
+        int lineno;
+        SymLineSP next;
+} SymLineS;
+
+/**
+ * symbol table entry 
+ * bucket list
+ */
+typedef struct _SymBucketS {
+        SymTabESP ep;           // element infomation
+        SymBucketSP next;
+} SymBucketS;
+
+typedef struct _SymTabES { 符号表项
+        char *name;             // identifier name
+        char *label;            // namespace label
+        int val;                // array length
+                                // or const value
+        SymLineSP lines;        // referenced lines
+        Obj_t obj;              // object type
+        Type_t type;            // type 
+        SymTabSP stp;           // point to symbol table
+} SymTabES;
+对应的符号表操作
+SymTabSP pop(void);
+SymTabSP newstab(void);
+void push(SymTabSP);
+char *mkUsi(int);
+SymTabESP sym_insert_const(IdentSP);
+SymTabESP sym_insert_var(IdentSP);
+SymTabESP sym_insert_para(IdentSP);
+SymTabESP sym_insert_fun(IdentSP, ParaListSP);
+SymTabESP sym_insert_proc(IdentSP, ParaListSP);
+SymTabESP sym_insert_tmp();
+char *genLabel(void);
+SymTabESP sym_lookup(char *);
+void printTab(SymTabSP);
+\end{verbatim}
+\section{存储分配}
+暂定常量，数组和变量静态分配
+临时变量和参数压每个函数栈
+\clearpage
+\section{四元式设计}
+四元式设计如下：\\
+算术指令：\\
+\begin{tabular}{r|c}
+	\hline
+	ADD  r, s, d & d = r + s \\ \hline
+	SUB  r, s, d & d = r - s \\ \hline
+	MUL  r, s, d & d = r * s \\ \hline
+	DIV  r, s, d & d = r / s \\ \hline
+\end{tabular} \\
+关系指令：\\
+\begin{tabular}{r|c}
+	\hline
+	EQU  r, s, d & d = (r == s)?1:0 \\ \hline
+	NEQ  r, s, d & d = (r != s)?1:0 \\ \hline
+	GTT  r, s, d & d = (r $>$ s)?1:0 \\ \hline
+	GEQ  r, s, d & d = (r $>=$ s)?1:0 \\ \hline
+	LST  r, s, d & d = (r $<$ s)?1:0 \\ \hline
+	LEQ  r, s, d & d = (r $<=$ s)?1:0 \\ \hline
+\end{tabular} \\
+比较指令：\\
+\begin{tabular}{r|c}
+	\hline
+	BRZ  r, , label & jump to label if r = 0 \\ \hline
+	BNZ  r, , label & jump to label if r != 0 \\ \hline
+	BGT  r, s, label & jump to label if r $>$ s \\ \hline
+	BLT  r, s, label & jump to label if r $<$ s \\ \hline
+\end{tabular}\\
+跳转指令：\\
+\begin{tabular}{r|c}
+	\hline
+	JMP  , , label & jump to label\\ \hline
+\end{tabular}\\
+栈操作指令：\\
+\begin{tabular}{r|c}
+	\hline
+	PUSH  , , d & push d into stack\\ \hline
+	POP  , , d & pop d out of stack\\ \hline
+\end{tabular}\\
+函数调用：\\
+\begin{tabular}{r|c}
+	\hline
+	CALL  fun, , d & d = fun()\\ \hline
+	RET  , , & set function return value\\ \hline
+	END  , , & end of a function\\ \hline
+\end{tabular}\\
+IO指令：\\
+\begin{tabular}{r|c}
+	\hline
+	READ  , , d & d = fun()\\ \hline
+	WRITE  r, , & write a identifier\\ \hline
+	WRITES  , s, & write a string\\ \hline
+\end{tabular}
+\section{错误处理}
+\begin{enumerate}
+        \item 该标识符未定义
+        \item 识符重复定义
+        \item 应是标识符
+        \item 应是‘ ( ’
+        \item 应是‘ : ’，在说明类型时必须有此冒号
+        \item 非法符号，编译将跳读该符号和后面的某些符号
+        \item 形式参数表中，形参说明应该以标识符或var开头
+        \item 应是of
+        \item 应是‘ ( ’
+        \item 类型定义必须以array或基本类型开头
+        \item 应是‘ [ ’
+        \item 应是‘ ] ’
+        \item 应是‘ ; ’
+        \item 函数结果必须是integer或char类型
+        \item 应是‘ = ’，‘ := ’只能在赋值语句里使用，而不能在说明中使用
+        \item 在if后面必须是条件
+        \item 在for后面的循环变量只能是integer或char型
+        \item for语句中初值或终值表达式必须与循环变量类型相同
+        \item 数太大
+        \item 程序结尾是‘ . ’，请检查相应的begin和end
+        \item 非法字符
+        \item 在常量定义中，等号后面必须是常数
+        \item 下标表达式类型必须是integer型
+        \item 数组说明中，下界小于0，类型不是integer型。
+        \item 没有这样的数组
+        \item 该算术表达式的类型不合法。注意，数组整体不能作为算术运算的操作数
+        \item 实参和对应形参类型应相同
+        \item 应是变量
+        \item 实参个数与形参个数不等
+        \item 表达式中不能出现类型或过程标识符
+        \item 应是变量或过程/函数标识符
+        \item 在赋值语句中被赋值变量应与表达式类型相同
+        \item 数组越界
+        \item 应是常量
+        \item 应是‘ := ’
+        \item 应是then
+        \item 应是do
+        \item 应是to
+        \item 应是begin
+        \item 应是end
+        \item 因子必须以标识符、常量或‘ ( ’开始
+\end{enumerate}
+\section{测试程序}
+做语法分析的测试程序：
+\begin{verbatim}
+{ syntax test }
+const 
+        a = 1, 
+        b = -3, 
+        c = +28, 
+        let = 'c', 
+        nuh = '4';
+var 
+        v : integer;
+        head, ch2:char; 
+        q, p:integer; 
+        Aint:array[3] of integer;
+        Achar:array[5] of char;
+{ pass by value}
+function FunctionName1(funvar1, funvar2:char): integer;
+begin
+        A[0] := (funvar1 * funvar2 / 6 ) + 4;
+        FunctionName1 := a * ( 4 + funvar2)
+end;
+procedure ProcedureName1();
+        { pass by reference }
+        procedure ProcedureName2(var num:integer);
+        const silly = -2, foo = 'p';
+        begin end;
+begin end;
+function FunctionName2(var x, y: integer):char;
+        var z:integer;
+        function FunctionName3(): integer;
+        begin { null statement } end;
+        begin
+                { array assign }
+                A[2] := - x + y;
+                FunctionName2 := z - y 
+        end;
+{ main }
+begin
+        { read test }
+        read(p);
+        read(p, q);
+        ProcedureName1();
+        { if test }
+        if head > 0 then
+                write("yes")
+        else
+                write(head);
+        { normal assign }
+        p := a * 9 / r;
+        r := r - 4;
+        { for test }
+        for i := 20 downto + 10 * a do
+                sum := sum + i + pp;
+        FunctionName2(pa,ra);
+        for i := 1 to 10 do
+                sum := sum * i;
+        { repeate test }
+        repeat
+                if head <= 4 then
+                        write (" head = ",head)
+        until head <> 7
+end.
+\end{verbatim}
+冒泡排序，进行语义分析
+\begin{verbatim}
+{program bubble sort;}
+var
+        a:array[5] of integer {= (4, 5, 2, 7, 0)};
+        i, j: integer;
+procedure swap(var x,y:integer);
+        var
+                t: integer;
+        begin
+                t := x;
+                x := y;
+                y := t
+        end;
+begin { main }
+        for i := 1 to 5 do
+        begin
+                for j := i to 5 do
+                begin
+                        if a[i] > a[j] then
+                        begin
+                                swap(a[i], a[j])
+                        end;
+                end;
+        end;
+        for i := 1 to 5 do
+        begin
+                write(a[i])
+                {write(' ')}
+        end
+        {writeln()}
+end.
+\end{verbatim}
+基本语句的测试
+\begin{verbatim}
+const INT = 9;
+var i, a, A, B, C, D, E: integer;
+        AAA:array[100] of integer;
+function FOO(): integer;
+var A, B:integer;
+begin
+        a := -32+FOO()-AAA[A+B]*INT-(C-E);
+end;
+begin
+        if E < 0 then
+        begin
+                a := 88
+        end;
+        repeat
+                a := -32+FOO()-AAA[A+B]*INT-(C-E)
+        until a>A;
+        for i := 1 to 3 do
+        begin
+                i := i + 1
+        end;
+end.
+\end{verbatim}
