@@ -1,3 +1,9 @@
+/**
+ * File: nspace.c
+ * Date: Nov 19, 2013
+ * Author: Jeanhwea
+ */
+
 #include "global.h"
 #include "parse.h"
 #include "nspace.h"

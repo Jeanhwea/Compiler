@@ -23,12 +23,6 @@ static SymTabSP TOP = NULL;
  */
 /* hold current level */
 static int LEVEL = 0;
-/* hold current var position */
-static int posi_var = 0;
-/* hold current parameter position */
-static int posi_para = 0;
-/* hold current temporary var position */
-static int posi_tmp = 0;
 
 /* for generate quad */
 /* hold the number of current tmp variable */
@@ -37,13 +31,6 @@ static int tmpcount = 0;
 static int labelcount = 0;
 /* a string buffer for store tmp and label */
 static char stringBuf[100];
-
-static inline void clear()
-{
-	posi_var = 0;
-	posi_para = 0;
-	posi_tmp = 0;
-}
 
 SymTabSP newstab(void)
 {
@@ -54,6 +41,9 @@ SymTabSP newstab(void)
 		/* initial symtab */
 		*(st->sbp + i) = NULL;
 	}
+	st->posi_var = 0;
+	st->posi_para = 0;
+	st->posi_tmp = 0;
 	return st;
 }
 
@@ -67,7 +57,6 @@ SymTabSP pop(void)
 			TOP->next = NULL;
 	} else t = NULL;
 	--LEVEL;
-	clear();
 	return t;
 }
 
@@ -237,7 +226,7 @@ SymTabESP sym_insert_var(IdentSP idp)
 		e->label = Nappend(idp->name);
 		e->lines = l;
 		e->level = LEVEL;
-		e->posi = posi_var++;
+		e->posi = TOP->posi_var++;
 		switch (idp->type) {
 		case Int_Var_Ident_t:
 			e->type = Int_Type_t;
@@ -393,7 +382,7 @@ SymTabESP sym_insert_para(IdentSP idp)
 		e->val = -1;
 		e->lines = l;
 		e->level = LEVEL;
-		e->posi = ++posi_para;
+		e->posi = TOP->posi_para++;
 		switch (idp->type) {
 		case Int_Para_Val_Ident_t:
 			e->obj = Para_Val_Obj_t;
@@ -450,7 +439,7 @@ SymTabESP sym_insert_tmp(void)
 		e->val = -1;
 		e->lines = l;
 		e->level = LEVEL;
-		e->posi = ++posi_tmp;
+		e->posi = TOP->posi_tmp++;
 		e->obj = Tmp_Obj_t;
 		e->type = Int_Type_t;
 		e->stp = TOP;
@@ -605,5 +594,7 @@ void printTab(SymTabSP t)
 					p->ep->val, p->ep->level, p->ep->posi);
 			}
 		}
+		fprintf(tiplist, "var = %d; tmp = %d; para = %d\n", 
+			t->posi_var, t->posi_tmp, t->posi_para);
 	}
 }

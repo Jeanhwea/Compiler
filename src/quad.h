@@ -25,7 +25,7 @@ typedef enum {
 	/**/
 	PUSH_op, POP_op,
 	/**/
-	CALL_op, SRET_op, FIN_op,
+	CALL_op, SRET_op, ENTER_op, FIN_op,
 	/**/
 	READ_op, WRS_op, WRI_op, WRC_op,
 	/**/
@@ -37,6 +37,7 @@ typedef struct _QuadS {
 	SymTabESP r;
 	SymTabESP s;
 	SymTabESP d;
+	QuadSP prev;
 	QuadSP next;
 } QuadS;
 
@@ -69,6 +70,7 @@ do { \
 		fprintf(errlist, "OUTOFMEM: on build quad\n");	\
 		exit(1);					\
 	}							\
+	v->prev = NULL;						\
 	v->next = NULL;						\
 } while(0)
 

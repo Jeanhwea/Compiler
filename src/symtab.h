@@ -37,7 +37,9 @@ typedef enum {
  */
 typedef struct _SymTabS {
 	SymBucketSP *sbp;
-	char *ns; 		// namespace for a block
+	int posi_var;		// last var position
+	int posi_para;		// last parameter position
+	int posi_tmp;		// last tmp position
 	SymTabSP prev;
 	SymTabSP next;
 } SymTabS;
@@ -108,8 +110,8 @@ do { \
 	}									\
 } while(0)
 
-SymTabSP pop(void);
 SymTabSP newstab(void);
+SymTabSP pop(void);
 void push(SymTabSP);
 SymTabESP sym_insert_const(IdentSP);
 SymTabESP sym_insert_var(IdentSP);

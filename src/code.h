@@ -6,7 +6,6 @@
 #ifndef CODE_H
 
 #define CODE_H
-void CompStmtG(CompStmtSP);
 
 #define OBJ(a) (res->obj==(a))
 #define OBJ2(a,b) ((res->obj==(a))||(res->obj==(b)))
@@ -21,4 +20,5 @@ void CompStmtG(CompStmtSP);
 #define TYPE4(a,b,c,d) ((res->type==(a))||(res->type==(b))\
 		||(res->type==(c))||(res->type==(d)))
 
+void coder(PgmSP t);
 #endif /* end of include guard: CODE_H */

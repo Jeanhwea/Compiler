@@ -9,6 +9,7 @@
 #include "util.h"
 #include "parse.h"
 #include "analyse.h"
+#include "code.h"
 
 FILE *source;
 FILE *listing;
@@ -57,6 +58,7 @@ int main(int argc, const char *argv[])
 	tiplist = stderr;
 	ast = parse();
 	analyse(ast);
+	coder(ast);
 	fclose(source);
 	/*
 	 *fclose(listing);

@@ -1,3 +1,9 @@
+/**
+ * File: nspace.h
+ * Date: Nov 19, 2013
+ * Author: Jeanhwea
+ */
+
 #ifndef NSPACE_H
 
 #define NSPACE_H

@@ -4,28 +4,198 @@
  * Author: Jeanhwea
  */
 #include "global.h"
+#include "util.h"
+#include "error.h"
 #include "parse.h"
 #include "symtab.h"
+#include "analyse.h"
+#include "nspace.h"
 #include "quad.h"
 #include "code.h"
 
-void StmtG(StmtSP t);
-void AssignStmtG(AssignStmtSP t);
-void IfStmtG(IfStmtSP t);
-void RepeStmtG(RepeStmtSP t);
-void ForStmtG(ForStmtSP t);
-void PcallStmtG(PcallStmtSP t);
-void ReadStmtG(ReadStmtSP t);
-void WriteStmtG(WriteStmtSP t);
-void CompStmtG(CompStmtSP t);
-SymTabESP ExprG(ExprSP t);
-SymTabESP TermG(TermSP t);
-SymTabESP FactorG(FactorSP t);
-SymTabESP FcallStmtG(FcallStmtSP t);
-SymTabESP CondG(CondSP t);
+static void PgmG(PgmSP t);
+static void BlockG(BlockSP t);
+static void ConstDecfG(ConstDecSP t);
+static void VarDecfG(VarDecSP t);
+static void PFDecListG(PFDecListSP t);
+static void ProcDecfG(ProcDecSP t);
+static SymTabESP ProcHeadG(ProcHeadSP t);
+static void FunDecfG(FunDecSP t);
+static SymTabESP FunHeadG(FunHeadSP t);
+static void StmtG(StmtSP t);
+static void AssignStmtG(AssignStmtSP t);
+static void IfStmtG(IfStmtSP t);
+static void RepeStmtG(RepeStmtSP t);
+static void ForStmtG(ForStmtSP t);
+static void PcallStmtG(PcallStmtSP t);
+static void ReadStmtG(ReadStmtSP t);
+static void WriteStmtG(WriteStmtSP t);
+static void CompStmtG(CompStmtSP t);
+static SymTabESP ExprG(ExprSP t);
+static SymTabESP TermG(TermSP t);
+static SymTabESP FactorG(FactorSP t);
+static SymTabESP FcallStmtG(FcallStmtSP t);
+static SymTabESP CondG(CondSP t);
+static void ParaListG(ParaListSP t);
+static void ArgListG(ArgListSP t);
+
+void PgmG(PgmSP t)
+{
+	SymTabSP st;
+	if (t == NULL) return;
+	Ninit();
+	st = newstab();
+	push(st);
+	BlockG(t->bp);
+	st = pop();
+	printTab(st);
+	Npop();
+	// printAllQuad();
+}
+
+void BlockG(BlockSP t)
+{
+	if (t == NULL) return;
+	ConstDecfG(t->cdp);
+	VarDecfG(t->vdp);
+	PFDecListG(t->pfdlp);
+	CompStmtG(t->csp);
+}
+
+void ConstDecfG(ConstDecSP t)
+{
+	for (; t != NULL; t = t->next) {
+		if (t->cdp != NULL) {
+			sym_insert_const(t->cdp->idp);
+		} else {
+			fprintf(errlist, "CODE BUG:70\n");
+		}
+	}
+}
+
+void VarDecfG(VarDecSP t)
+{
+	VarDefSP p;
+	for (; t != NULL; t = t->next) {
+		for (p = t->vdp; p != NULL; p = p->next) {
+			if (p != NULL) {
+				sym_insert_var(p->idp);
+			} else {
+				fprintf(errlist, "CODE BUG:81\n");
+			}
+		}
+	}
+}
+
+void PFDecListG(PFDecListSP t)
+{
+	for (; t != NULL; t = t->next) {
+		switch (t->type) {
+		case Proc_PFDec_t:			
+			ProcDecfG(t->pdp);
+			break;
+		case Fun_PFDec_t:
+			FunDecfG(t->fdp);
+			break;
+		default:
+			fprintf(errlist, "CODE BUG:104\n");
+		}
+	}
+}
+
+void ProcDecfG(ProcDecSP t)
+{
+	QuadSP q;
+	SymTabSP st;
+	for (; t != NULL; t = t->next) {
+		if (t->pdp == NULL) {
+			fprintf(errlist, "CODE BUG:112\n");
+			continue;
+		}
+		ProcHeadG(t->pdp->php);
+		BlockG(t->pdp->bp);
+		NEWQUAD(q);
+		q->op = FIN_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = NULL;
+		emit(q);
+		st = pop();
+		printTab(st);
+		Npop();
+	}
+}
+
+SymTabESP ProcHeadG(ProcHeadSP t)
+{
+	SymTabSP st;
+	SymTabESP e;
+	QuadSP q;
+	if (t == NULL) return NULL;
+	e = sym_insert_proc(t->idp, t->plp);
+	if (e == NULL) {
+		fprintf(errlist, "CODE BUG:122\n");
+		abort();
+	}
+	NEWQUAD(q);
+	q->op = ENTER_op;
+	q->r = NULL;
+	q->s = NULL;
+	q->d = e;
+	emit(q);
+	st = newstab();
+	e->stp = st;
+	push(st);
+	ParaListG(t->plp);
+	return e;
+}
+
+void FunDecfG(FunDecSP t)
+{
+	QuadSP q;
+	SymTabSP st;
+	for (; t != NULL; t = t->next) {
+		FunHeadG(t->fdp->fhp);
+		BlockG(t->fdp->bp);
+		NEWQUAD(q);
+		q->op = FIN_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = NULL;
+		emit(q);
+		st = pop();
+		printTab(st);
+		Npop();
+	}
+}
+
+SymTabESP FunHeadG(FunHeadSP t)
+{
+	SymTabSP st;
+	SymTabESP e;
+	QuadSP q;
+	if (t == NULL) return NULL;
+	e = sym_insert_fun(t->idp, t->plp);
+	if (e == NULL) {
+		fprintf(errlist, "CODE BUG:143\n");
+		abort();
+	}
+	NEWQUAD(q);
+	q->op = ENTER_op;
+	q->r = NULL;
+	q->s = NULL;
+	q->d = e;
+	emit(q);
+	st = newstab();
+	e->stp = st;
+	push(st);
+	ParaListG(t->plp);
+	return e;
+}
 
 void StmtG(StmtSP t)
 {
+	if (t == NULL) return;
 	switch (t->type) {
 	case Assgin_Stmt_t:
 		AssignStmtG(t->asp);
@@ -62,6 +232,7 @@ void AssignStmtG(AssignStmtSP t)
 {
 	SymTabESP res;
 	QuadSP q;
+	if (t == NULL) return ;
 	switch (t->type) {
 	case Norm_Assgin_t:
 	case Fun_Assgin_t:
@@ -73,11 +244,12 @@ void AssignStmtG(AssignStmtSP t)
 		if (OBJ(Fun_Obj_t)) {
 			NEWQUAD(q);
 			q->op = SRET_op;
-			q->r = NULL;
-			q->s = ExprG(t->rep);
-			q->d = NULL;
+			q->r = ExprG(t->rep);
+			q->s = NULL;
+			q->d = res;
 			emit(q);
-		} else if (OBJ3(Var_Obj_t,Para_Val_Obj_t,Para_Ref_Obj_t)) {
+		} else if (OBJ3(Var_Obj_t,Para_Val_Obj_t,
+			Para_Ref_Obj_t)) {
 			NEWQUAD(q);
 			q->op = ASS_op;
 			q->r = ExprG(t->rep);
@@ -105,14 +277,16 @@ void AssignStmtG(AssignStmtSP t)
 		fprintf(errlist, "CODE BUG:84\n");
 	}
 }
+
 void IfStmtG(IfStmtSP t)
 {
-	QuadSP q, el, out;
-	NEWQUAD(el);
-	el->op = LABEL_op;
-	el->r = NULL;
-	el->s = NULL;
-	el->d = sym_make_label();
+	QuadSP q, els, out;
+	if (t == NULL) return ;
+	NEWQUAD(els);
+	els->op = LABEL_op;
+	els->r = NULL;
+	els->s = NULL;
+	els->d = sym_make_label();
 	NEWQUAD(out);
 	out->op = LABEL_op;
 	out->r = NULL;
@@ -122,7 +296,7 @@ void IfStmtG(IfStmtSP t)
 	q->op = BRZ_op;
 	q->r = CondG(t->cp);
 	q->s = NULL;
-	q->d = el->d;
+	q->d = els->d;
 	emit(q);
 	StmtG(t->tp);
 	NEWQUAD(q);
@@ -131,7 +305,7 @@ void IfStmtG(IfStmtSP t)
 	q->s = NULL;
 	q->d = out->d;
 	emit(q);
-	emit(el);
+	emit(els);
 	if (t->ep != NULL) {
 		StmtG(t->ep);
 	}
@@ -141,6 +315,7 @@ void IfStmtG(IfStmtSP t)
 void RepeStmtG(RepeStmtSP t)
 {
 	QuadSP q, loop;
+	if (t == NULL) return ;
 	NEWQUAD(loop);
 	loop->op = LABEL_op;
 	loop->r = NULL;
@@ -160,6 +335,7 @@ void ForStmtG(ForStmtSP t)
 {
 	QuadSP q, start, out;
 	SymTabESP res, le, re;
+	if (t == NULL) return ;
 	NEWQUAD(start);
 	start->op = LABEL_op;
 	start->r = NULL;
@@ -229,6 +405,25 @@ void ForStmtG(ForStmtSP t)
 
 void PcallStmtG(PcallStmtSP t)
 {
+	SymTabESP res;
+	QuadSP q;
+	if (t == NULL) return ;
+	res = sym_lookup(t->idp->name);
+	if (res == NULL) {
+		fprintf(errlist, "undefined procedure\n");
+		abort();
+	}
+	if (OBJ(Proc_Obj_t)) {
+		ArgListG(t->alp);
+		NEWQUAD(q);
+		q->op = CALL_op;
+		q->r = res;
+		q->s = NULL;
+		q->d = NULL;
+		emit(q);
+	} else {
+		fprintf(errlist, "unknow procedure\n");
+	}
 }
 
 void ReadStmtG(ReadStmtSP t)
@@ -253,6 +448,7 @@ void ReadStmtG(ReadStmtSP t)
 void WriteStmtG(WriteStmtSP t)
 {
 	QuadSP q;
+	if (t == NULL) return ;
 	switch (t->type) {
 	case Str_Write_t:
 		NEWQUAD(q);
@@ -397,6 +593,10 @@ SymTabESP FactorG(FactorSP t)
 {
 	SymTabESP res, d;
 	QuadSP q;
+	if (t == NULL) {
+		fprintf(errlist, "CODE BUG:546\n");
+		return NULL;
+	}
 	d = NULL;
 	switch (t->type) {
 	case Id_Factor_t:
@@ -405,7 +605,8 @@ SymTabESP FactorG(FactorSP t)
 			fprintf(errlist, "SYMNOFOUND:138\n");
 			abort();
 		}
-		if (OBJ5(Const_Obj_t,Var_Obj_t,Para_Val_Obj_t,Para_Ref_Obj_t,Tmp_Obj_t)) {
+		if (OBJ5(Const_Obj_t,Var_Obj_t,
+			Para_Val_Obj_t, Para_Ref_Obj_t,Tmp_Obj_t)) {
 			d = res;
 		} else {
 			fprintf(errlist, "undifined variable\n");
@@ -448,12 +649,17 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 {
 	SymTabESP res, d;
 	QuadSP q;
+	if (t == NULL) {
+		fprintf(errlist, "CODE BUG:601\n");
+		return NULL;
+	}
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
 		fprintf(errlist, "SYMNOFOUND:138\n");
 		abort();
 	}
 	if (OBJ(Fun_Obj_t)) {
+		ArgListG(t->alp);
 		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = CALL_op;
@@ -472,6 +678,10 @@ SymTabESP CondG(CondSP t)
 	SymTabESP d;
 	QuadSP q;
 	d = NULL;
+	if (t == NULL) {
+		fprintf(errlist, "CODE BUG:629\n");
+		return NULL;
+	}
 	switch (t->op) {
 	case Equ_Rela_t:
 		d = sym_insert_tmp();
@@ -531,4 +741,39 @@ SymTabESP CondG(CondSP t)
 		fprintf(errlist, "CODE BUG:194\n");
 	}
 	return d;
+}
+
+void ParaListG(ParaListSP t)
+{
+	ParaDefSP p;
+	for (; t != NULL; t = t->next) {
+		for (p = t->pdp; p != NULL; p = p->next) {
+			if (p != NULL) {
+				sym_insert_para(p->idp);
+			} else {
+				fprintf(errlist, "CODE BUG:682\n");
+			}
+		}
+	}
+}
+
+void ArgListG(ArgListSP t)
+{
+	SymTabESP d;
+	QuadSP q;
+	for (; t != NULL; t = t->next) {
+		d = ExprG(t->ep);
+		NEWQUAD(q);
+		q->op = PUSH_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = d;
+		emit(q);
+	}
+}
+
+void coder(PgmSP t)
+{
+	if (t != NULL)
+		PgmG(t);
 }

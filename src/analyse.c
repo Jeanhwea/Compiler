@@ -48,12 +48,8 @@ static void ArgListV(ArgListSP t);
 
 void PgmV(PgmSP t)
 {
-	SymTabSP st;
 	headPr("Pgm");
 	if (t != NULL) {
-		Ninit();
-		st = newstab();
-		push(st);
 		BlockV(t->bp);
 	}
 	tailPr("Pgm");
@@ -61,18 +57,12 @@ void PgmV(PgmSP t)
 
 void BlockV(BlockSP t)
 {
-	SymTabSP st;
 	headPr("Block");
 	if (t != NULL) {
 		ConstDecV(t->cdp);
 		VarDecV(t->vdp);
 		PFDecListV(t->pfdlp);
-		fprintf(code, "\n");
 		CompStmtV(t->csp);
-		CompStmtG(t->csp);
-		st = pop();
-		printTab(st);
-		Npop();
 	}
 	tailPr("Block");
 }
@@ -91,7 +81,6 @@ void ConstDefV(ConstDefSP t)
 	headPr("ConstDef");
 	if (t != NULL) {
 		IdentV(t->idp);
-		sym_insert_const(t->idp);
 	}
 	tailPr("ConstDef");
 }
@@ -110,7 +99,6 @@ void VarDefV(VarDefSP t)
 	headPr("VarDef");
 	for (; t != NULL; t = t->next) {
 		IdentV(t->idp);
-		sym_insert_var(t->idp);
 	}
 	tailPr("VarDef");
 }
@@ -154,15 +142,9 @@ void ProcDefV(ProcDefSP t)
 
 void ProcHeadV(ProcHeadSP t)
 {
-	SymTabSP st;
-	SymTabESP e;
 	headPr("ProcHead");
 	if (t != NULL) {
 		IdentV(t->idp);
-		e = sym_insert_proc(t->idp, t->plp);
-		fprintf(code, "%s:", e->label);
-		st = newstab();
-		push(st);
 		ParaListV(t->plp);
 	}
 	tailPr("ProcHead");
@@ -189,15 +171,9 @@ void FunDefV(FunDefSP t)
 
 void FunHeadV(FunHeadSP t)
 {
-	SymTabSP st;
-	SymTabESP e;
 	headPr("FunHead");
 	if (t != NULL) {
 		IdentV(t->idp);
-		e = sym_insert_fun(t->idp, t->plp);
-		fprintf(code, "%s:", e->label);
-		st = newstab();
-		push(st);
 		ParaListV(t->plp);
 	}
 	tailPr("FunHead");
@@ -641,7 +617,6 @@ void ParaDefV(ParaDefSP t)
 	headPr("ParaDef");
 	for (; t != NULL; t = t->next) {
 		IdentV(t->idp);
-		sym_insert_para(t->idp);
 	}
 	tailPr("ParaDef");
 }

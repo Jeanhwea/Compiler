@@ -1,5 +1,10 @@
+r = DEBUG
 CC = gcc
+ifeq ($r, )
+CFLAGS =
+else
 CFLAGS = -g -Wall
+endif
 
 OBJS = main.o util.o scan.o error.o parse.o analyse.o \
        nspace.o symtab.o quad.o code.o
@@ -7,10 +12,11 @@ OBJS = main.o util.o scan.o error.o parse.o analyse.o \
 compiler: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o compiler
 
-main.o: main.c global.h util.h parse.h analyse.h
+main.o: main.c global.h util.h parse.h analyse.h code.h
 	$(CC) $(CFLAGS) -c main.c
 
-code.o: code.c global.h parse.h symtab.h quad.h code.h
+code.o: code.c global.h util.h parse.h analyse.h \
+	   symtab.h quad.h error.h nspace.h
 	$(CC) $(CFLAGS) -c code.c
 
 quad.o: quad.c global.h parse.h symtab.h quad.h

@@ -16,12 +16,14 @@ static void printQuad(QuadSP);
 void emit(QuadSP q)
 {
 	if (qtail == NULL) {
+		q->prev = qtail;
+		q->next = NULL;
 		qlst = qtail = q;
-		qtail->next = NULL;
 	} else {
+		q->prev = qtail;
+		q->next = NULL;
 		qtail->next = q;
 		qtail = q;
-		qtail->next = NULL;
 	}
 	if (ShowQuad) {
 		printQuad(q);
@@ -149,14 +151,22 @@ void printQuad(QuadSP q)
 		fprintf(code, "\tPOP\t-, -, %s\n", q->d->label);
 		break;
 	case CALL_op:
-		NEED2(r,d);
-		fprintf(code, "\tCALL\t%s, -, %s\n",
-			q->r->label, q->d->label);
+		NEED(r);
+		if (q->d != NULL) {
+			fprintf(code, "\tCALL\t%s, -, %s\n",
+				q->r->label, q->d->label);
+		} else {
+			fprintf(code, "\tCALL\t%s, -, -\n", q->r->label);
+		}
 		break;
 	case SRET_op:
 		NEED2(r,d);
 		fprintf(code, "\tSRET\t%s, -, %s\n",
 			q->r->label, q->d->label);
+		break;
+	case ENTER_op:
+		NEED(d);
+		fprintf(code, "%s:\n", q->d->label);
 		break;
 	case FIN_op:
 		fprintf(code, "\tFIN\t-, -, -\n");
