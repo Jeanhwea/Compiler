@@ -14,7 +14,6 @@
 #include "code.h"
 
 static void PgmG(PgmSP t);
-static void BlockG(BlockSP t);
 static void ConstDecfG(ConstDecSP t);
 static void VarDecfG(VarDecSP t);
 static void PFDecListG(PFDecListSP t);
@@ -42,30 +41,46 @@ static void ArgListG(ArgListSP t);
 void PgmG(PgmSP t)
 {
 	SymTabSP st;
-	if (t == NULL) return;
+	QuadSP q;
+	BlockSP b;
+	if (t == NULL) {
+		fprintf(errlist, "CODE BUG:47\n");
+		abort();
+	}
 	Ninit();
 	st = newstab();
 	push(st);
-	BlockG(t->bp);
+	b = t->bp;
+	if (b == NULL) {
+		fprintf(errlist, "CODE BUG:52\n");
+		abort();
+	}
+	ConstDecfG(b->cdp);
+	VarDecfG(b->vdp);
+	PFDecListG(b->pfdlp);
+	NEWQUAD(q);
+	q->op = ENTER_op;
+	q->r = NULL;
+	q->s = NULL;
+	q->d = sym_make_main();
+	emit(q);
+	CompStmtG(b->csp);
+	NEWQUAD(q);
+	q->op = FIN_op;
+	q->r = NULL;
+	q->s = NULL;
+	q->d = NULL;
+	emit(q);
 	st = pop();
 	printTab(st);
 	Npop();
 	// printAllQuad();
 }
 
-void BlockG(BlockSP t)
-{
-	if (t == NULL) return;
-	ConstDecfG(t->cdp);
-	VarDecfG(t->vdp);
-	PFDecListG(t->pfdlp);
-	CompStmtG(t->csp);
-}
-
 void ConstDecfG(ConstDecSP t)
 {
 	for (; t != NULL; t = t->next) {
-		if (t->cdp != NULL) {
+		if (t->cdp != NULL && t->cdp->idp != NULL) {
 			sym_insert_const(t->cdp->idp);
 		} else {
 			fprintf(errlist, "CODE BUG:70\n");
@@ -78,7 +93,7 @@ void VarDecfG(VarDecSP t)
 	VarDefSP p;
 	for (; t != NULL; t = t->next) {
 		for (p = t->vdp; p != NULL; p = p->next) {
-			if (p != NULL) {
+			if (p != NULL && p->idp != NULL) {
 				sym_insert_var(p->idp);
 			} else {
 				fprintf(errlist, "CODE BUG:81\n");
@@ -107,13 +122,29 @@ void ProcDecfG(ProcDecSP t)
 {
 	QuadSP q;
 	SymTabSP st;
+	SymTabESP e;
+	BlockSP b;
 	for (; t != NULL; t = t->next) {
 		if (t->pdp == NULL) {
 			fprintf(errlist, "CODE BUG:112\n");
 			continue;
 		}
-		ProcHeadG(t->pdp->php);
-		BlockG(t->pdp->bp);
+		e = ProcHeadG(t->pdp->php);
+		b = t->pdp->bp;
+		if (b == NULL) {
+			fprintf(errlist, "CODE BUG:120\n");
+			continue;
+		}
+		ConstDecfG(b->cdp);
+		VarDecfG(b->vdp);
+		PFDecListG(b->pfdlp);
+		NEWQUAD(q);
+		q->op = ENTER_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = e;
+		emit(q);
+		CompStmtG(b->csp);
 		NEWQUAD(q);
 		q->op = FIN_op;
 		q->r = NULL;
@@ -130,19 +161,12 @@ SymTabESP ProcHeadG(ProcHeadSP t)
 {
 	SymTabSP st;
 	SymTabESP e;
-	QuadSP q;
 	if (t == NULL) return NULL;
 	e = sym_insert_proc(t->idp, t->plp);
 	if (e == NULL) {
 		fprintf(errlist, "CODE BUG:122\n");
 		abort();
 	}
-	NEWQUAD(q);
-	q->op = ENTER_op;
-	q->r = NULL;
-	q->s = NULL;
-	q->d = e;
-	emit(q);
 	st = newstab();
 	e->stp = st;
 	push(st);
@@ -154,9 +178,29 @@ void FunDecfG(FunDecSP t)
 {
 	QuadSP q;
 	SymTabSP st;
+	SymTabESP e;
+	BlockSP b;
 	for (; t != NULL; t = t->next) {
-		FunHeadG(t->fdp->fhp);
-		BlockG(t->fdp->bp);
+		if (t->fdp == NULL) {
+			fprintf(errlist, "CODE BUG:168\n");
+			continue;
+		}
+		e = FunHeadG(t->fdp->fhp);
+		b = t->fdp->bp;
+		if (b == NULL) {
+			fprintf(errlist, "CODE BUG:174\n");
+			continue;
+		}
+		ConstDecfG(b->cdp);
+		VarDecfG(b->vdp);
+		PFDecListG(b->pfdlp);
+		NEWQUAD(q);
+		q->op = ENTER_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = e;
+		emit(q);
+		CompStmtG(b->csp);
 		NEWQUAD(q);
 		q->op = FIN_op;
 		q->r = NULL;
@@ -173,19 +217,15 @@ SymTabESP FunHeadG(FunHeadSP t)
 {
 	SymTabSP st;
 	SymTabESP e;
-	QuadSP q;
-	if (t == NULL) return NULL;
+	if (t == NULL) {
+		return NULL;
+		fprintf(errlist, "CODE BUG:222\n");
+	}
 	e = sym_insert_fun(t->idp, t->plp);
 	if (e == NULL) {
 		fprintf(errlist, "CODE BUG:143\n");
 		abort();
 	}
-	NEWQUAD(q);
-	q->op = ENTER_op;
-	q->r = NULL;
-	q->s = NULL;
-	q->d = e;
-	emit(q);
 	st = newstab();
 	e->stp = st;
 	push(st);
@@ -195,7 +235,10 @@ SymTabESP FunHeadG(FunHeadSP t)
 
 void StmtG(StmtSP t)
 {
-	if (t == NULL) return;
+	if (t == NULL) {
+		fprintf(errlist, "CODE BUG:236\n");
+		return;
+	}
 	switch (t->type) {
 	case Assgin_Stmt_t:
 		AssignStmtG(t->asp);
@@ -238,7 +281,7 @@ void AssignStmtG(AssignStmtSP t)
 	case Fun_Assgin_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:57\n");
+			fprintf(errlist, "SYMNOFOUND:283\n");
 			abort();
 		}
 		if (OBJ(Fun_Obj_t)) {
@@ -262,11 +305,15 @@ void AssignStmtG(AssignStmtSP t)
 		break;
 	case Array_Assgin_t:
 		res = sym_lookup(t->idp->name);
+		if (res == NULL) {
+			fprintf(errlist, "SYMNOFOUND:309\n");
+			abort();
+		}
 		if (OBJ(Array_Obj_t)) {
 			NEWQUAD(q);
 			q->op = AARR_op;
-			q->r = ExprG(t->lep);
-			q->s = ExprG(t->rep);
+			q->r = ExprG(t->rep);
+			q->s = ExprG(t->lep);
 			q->d = res;
 			emit(q);
 		} else {
@@ -350,7 +397,7 @@ void ForStmtG(ForStmtSP t)
 	re = ExprG(t->rep);
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
-		fprintf(errlist, "undifined symbol\n");
+		fprintf(errlist, "SYMNOFOUND:400\n");
 		abort();
 	}
 	NEWQUAD(q);
@@ -410,7 +457,7 @@ void PcallStmtG(PcallStmtSP t)
 	if (t == NULL) return ;
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
-		fprintf(errlist, "undefined procedure\n");
+		fprintf(errlist, "SYMNOFOUND:460\n");
 		abort();
 	}
 	if (OBJ(Proc_Obj_t)) {
@@ -433,7 +480,7 @@ void ReadStmtG(ReadStmtSP t)
 	for (; t != NULL; t = t->next) {
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "undifined symbol\n");
+			fprintf(errlist, "SYMNOFOUND:483\n");
 			abort();
 		}
 		NEWQUAD(q);
@@ -602,7 +649,7 @@ SymTabESP FactorG(FactorSP t)
 	case Id_Factor_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:138\n");
+			fprintf(errlist, "SYMNOFOUND:652\n");
 			abort();
 		}
 		if (OBJ5(Const_Obj_t,Var_Obj_t,
@@ -615,7 +662,7 @@ SymTabESP FactorG(FactorSP t)
 	case Array_Factor_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:138\n");
+			fprintf(errlist, "SYMNOFOUND:665\n");
 			abort();
 		}
 		if (OBJ(Array_Obj_t)) {
@@ -655,7 +702,7 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 	}
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
-		fprintf(errlist, "SYMNOFOUND:138\n");
+		fprintf(errlist, "SYMNOFOUND:705\n");
 		abort();
 	}
 	if (OBJ(Fun_Obj_t)) {

@@ -1,11 +1,11 @@
-section .data
+SECTION .DATA
 	fmt_int_r:  db "%d", 0
 	fmt_int_w:  db "%d", 10, 0
 	fmt_char_r: db "%c", 10, 0
 	fmt_char_w: db "%c", 0
 	fmt_string:  db "%s", 0
 
-section .text
+SECTION .TEXT
 	extern	scanf, printf
 	global	scan_int, scan_char
 	global	print_int, print_char, print_string
@@ -14,13 +14,13 @@ scan_int:
 	push	ebp
 	mov	ebp, esp
 	sub	esp, 0x4
-	lea	eax, [ebp - 4]
+	lea	eax, [ebp]
 	push	eax
 	push	fmt_int_r
 	call	scanf
 	pop	ecx
 	pop	ecx
-	mov	eax, [ebp - 4]
+	mov	eax, [ebp]
 	leave
 	ret
 
@@ -28,13 +28,13 @@ scan_char:
 	push	ebp
 	mov	ebp, esp
 	sub	esp, 0x4
-	lea	eax, [ebp - 4]
+	lea	eax, [ebp]
 	push	eax
 	push	fmt_char_r
 	call	scanf
 	pop	ecx
 	pop	ecx
-	mov	eax, [ebp - 4]
+	mov	eax, [ebp]
 	leave
 	ret
 

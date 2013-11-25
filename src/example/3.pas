@@ -1,14 +1,25 @@
+const INT = 9;
+var i, a, A, B, C, D, E: integer;
+	AAA:array[100] of integer;
+function FOO(): integer;
+var A, B:integer;
 begin
- for i:=+vaa*6+vaa downto -5+8*r do
- a:=b*c;
-
-
-repeat a:=a+1 until a=a;
-
-d:=e*f+s;
-
-if  a=b then param(1,23) else kkaa(22,1,2);
-read(a,b,c);
-write("assa",b)
-
+	a := -32+AAA[A+B]*INT-(C-E);
+end;
+begin
+	read(C, D, E);
+	if E < 0 then
+	begin
+		a := 88
+	end;
+	repeat
+		a := -32+FOO()-AAA[A+B]*INT-(C-E)
+	until a>A;
+	for i := 1 to 3 do
+	begin
+		i := i + 1
+	end;
+	write("Hello world*****");
+	write("Hello world",B);
+	write(A);
 end.

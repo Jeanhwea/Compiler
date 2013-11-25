@@ -4,3 +4,10 @@
  * Author: Jeanhwea
  */
 
+#ifndef ELF_H
+
+#define ELF_H
+
+void elf(void);
+
+#endif /* end of include guard: ELF_H */

@@ -67,7 +67,7 @@ char *signature(IdentSP idp, ParaListSP plp)
 	n = strlen(idp->name);
 	for (p = plp; p != NULL; p = p->next) {
 		for (q = p->pdp; q != NULL; q = q->next) {
-			n += 2;
+			n += 3;
 		}
 	}
 	t = (char *) malloc((n+1)*sizeof(char));
@@ -80,12 +80,16 @@ char *signature(IdentSP idp, ParaListSP plp)
 		for (q = p->pdp; q != NULL; q = q->next) {
 			switch (q->idp->type) {
 			case Int_Para_Val_Ident_t:
+				strcat(t,"$IV");
+				break;
 			case Int_Para_Ref_Ident_t:
-				strcat(t,"$I");
+				strcat(t,"$IR");
 				break;
 			case Char_Para_Val_Ident_t:
+				strcat(t,"$CV");
+				break;
 			case Char_Para_Ref_Ident_t:
-				strcat(t,"$C");
+				strcat(t,"$CR");
 				break;
 			default:
 				fprintf(errlist, "NSPACE BUG:87\n");

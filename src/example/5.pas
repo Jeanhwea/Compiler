@@ -1,3 +1,4 @@
+const bc=2, cc = 2;
 var
 	a, b, ret:integer;
 function max(num1, num2: integer): integer;

@@ -74,6 +74,7 @@ do { \
 	v->next = NULL;						\
 } while(0)
 
+extern QuadSP qlst;
 void emit(QuadSP);
 void printAllQuad();
 

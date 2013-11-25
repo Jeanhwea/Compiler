@@ -10,10 +10,12 @@
 #include "parse.h"
 #include "analyse.h"
 #include "code.h"
+#include "elf.h"
 
 FILE *source;
 FILE *listing;
 FILE *code;
+FILE *asmlist;
 FILE *errlist;
 FILE *tiplist;
 int lineno = 0;
@@ -52,13 +54,15 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "File %s not found\n", pgm);
 		exit(1);
 	}
-	listing = stdout;
-	code = stdout;
+	listing = stderr;
+	code = stderr;
+	asmlist = stdout;
 	errlist = stderr;
 	tiplist = stderr;
 	ast = parse();
 	analyse(ast);
 	coder(ast);
+	elf();
 	fclose(source);
 	/*
 	 *fclose(listing);

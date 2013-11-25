@@ -44,6 +44,7 @@ SymTabSP newstab(void)
 	st->posi_var = 0;
 	st->posi_para = 0;
 	st->posi_tmp = 0;
+	st->level = ++LEVEL;
 	return st;
 }
 
@@ -67,7 +68,6 @@ void push(SymTabSP t)
 	if (TOP != NULL)
 		TOP->next = t;
 	TOP = t;
-	++LEVEL;
 }
 
 static char *genLabel(void)
@@ -226,27 +226,31 @@ SymTabESP sym_insert_var(IdentSP idp)
 		e->label = Nappend(idp->name);
 		e->lines = l;
 		e->level = LEVEL;
-		e->posi = TOP->posi_var++;
+		e->posi = TOP->posi_var;
 		switch (idp->type) {
 		case Int_Var_Ident_t:
 			e->type = Int_Type_t;
 			e->obj = Var_Obj_t;
 			e->val = -1;
+			TOP->posi_var++;
 			break;
 		case Char_Var_Ident_t:
 			e->type = Char_Type_t;
 			e->obj = Var_Obj_t;
 			e->val = -1;
+			TOP->posi_var++;
 			break;
 		case IntArr_Var_Ident_t:
 			e->type = Int_Type_t;
 			e->obj = Array_Obj_t;
 			e->val = idp->length;
+			TOP->posi_var += e->val;
 			break;
 		case CharArr_Var_Ident_t:
 			e->type = Char_Type_t;
 			e->obj = Array_Obj_t;
 			e->val = idp->length;
+			TOP->posi_var += e->val;
 			break;
 		default:
 			fprintf(errlist, "SYMTAB BUG: 143\n");
@@ -495,6 +499,27 @@ SymTabESP sym_make_label(void)
 	return e;
 }
 
+SymTabESP sym_make_main(void)
+{
+	SymTabESP e;
+	SymLineSP l;
+	e = NULL;
+	ENTRY(SymLineS, l);
+	l->lineno = -1;
+	l->next = NULL;
+	ENTRY(SymTabES, e);
+	e->name = "main";
+	e->label = "main"; 
+	e->val = -1;
+	e->lines = l;
+	e->level = LEVEL;
+	e->posi = -1;
+	e->obj = Fun_Obj_t;
+	e->type = Int_Type_t;
+	e->stp = TOP;
+	return e;
+}
+
 SymTabESP sym_make_string(char *str)
 {
 	SymTabESP e;
@@ -540,7 +565,8 @@ void printTab(SymTabSP t)
 	SymBucketSP p;
 	int i;
 	if (t != NULL) {
-		fprintf(tiplist, "\n\n    name\t  label  \t    line");
+		fprintf(tiplist, "\n***********************************************************\n");
+		fprintf(tiplist, "    name\t  label  \t    line");
 		fprintf(tiplist, "\t object \t  type       value ");
 		fprintf(tiplist, "   level    posi\n");
 		for (i = 0; i < HASHSIZE; i++) {
@@ -594,7 +620,10 @@ void printTab(SymTabSP t)
 					p->ep->val, p->ep->level, p->ep->posi);
 			}
 		}
-		fprintf(tiplist, "var = %d; tmp = %d; para = %d\n", 
-			t->posi_var, t->posi_tmp, t->posi_para);
+		fprintf(tiplist, "-----------------------------------------------------------\n");
+		fprintf(tiplist, 
+			"var = %d; tmp = %d; para = %d; level = %d\n",
+			t->posi_var, t->posi_tmp, t->posi_para, t->level);
+		fprintf(tiplist, "***********************************************************\n");
 	}
 }

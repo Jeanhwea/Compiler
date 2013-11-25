@@ -5,20 +5,6 @@
 section .text
 	global main
 
-main:
-	push	ebp
-	mov	ebp, esp
-	call	scan_int
-	push	eax
-	call	sum
-	; add	eip, 4
-	; push	eip
-	; jmp	sum
-	call	print_int
-	pop	ecx
-	pop	ebp
-	ret
-
 sum:
 	push	ebp
 	mov 	ebp, esp
@@ -47,3 +33,18 @@ end:
 	;call	print_int
 	;pop	eax
 	;jmp	esi
+
+main:
+	push	ebp
+	mov	ebp, esp
+	call	scan_int
+	push	eax
+	call	sum
+	; add	eip, 4
+	; push	eip
+	; jmp	sum
+	call	print_int
+	pop	ecx
+	pop	ebp
+	ret
+

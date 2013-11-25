@@ -3,8 +3,8 @@ const
 	a = 1, 
 	b = -3, 
 	c = +28, 
-	letterch = 'c', 
-	numberch = '4';
+	let = 'c', 
+	nuh = '4';
 var 
 	v : integer;
 	head, ch2:char; 

@@ -40,6 +40,7 @@ typedef struct _SymTabS {
 	int posi_var;		// last var position
 	int posi_para;		// last parameter position
 	int posi_tmp;		// last tmp position
+	int level;		// current level
 	SymTabSP prev;
 	SymTabSP next;
 } SymTabS;
@@ -121,6 +122,7 @@ SymTabESP sym_insert_proc(IdentSP, ParaListSP);
 SymTabESP sym_insert_tmp(void);
 SymTabESP sym_make_usi(int);
 SymTabESP sym_make_label(void);
+SymTabESP sym_make_main(void);
 SymTabESP sym_make_string(char *);
 SymTabESP sym_lookup(char *);
 void printTab(SymTabSP);
