@@ -128,6 +128,8 @@ void movRA_asm(SymTabESP e, char *offsetreg, char *reg)
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tlea\tedi, [ebp - %d]\t; %s\n",
 				VAROFFSET, e->label);
+			fprintf(asmlist, "\timul\t%s, %s, 4\n",
+				offsetreg, offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t%s, [edi]\n", reg);
 		} else if (e->level < lvl) {
@@ -135,6 +137,8 @@ void movRA_asm(SymTabESP e, char *offsetreg, char *reg)
 				DISPLAY);
 			fprintf(asmlist, "\tlea\tedi, [esi - %d]\t; %s\n",
 				VAROFFSET, e->label);
+			fprintf(asmlist, "\timul\t%s, %s, 4\n",
+				offsetreg, offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t%s, [edi]\n", reg);
 		}
@@ -151,6 +155,8 @@ void movAR_asm(SymTabESP e, char *offsetreg, char *reg)
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tlea\tedi, [ebp - %d]\t; %s\n",
 				VAROFFSET, e->label);
+			fprintf(asmlist, "\timul\t%s, %s, 4\n",
+				offsetreg, offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t[edi], %s\n", reg);
 		} else if (e->level < lvl) {
@@ -158,6 +164,8 @@ void movAR_asm(SymTabESP e, char *offsetreg, char *reg)
 				DISPLAY);
 			fprintf(asmlist, "\tlea\tedi, [esi - %d]\t; %s\n",
 				VAROFFSET, e->label);
+			fprintf(asmlist, "\timul\t%s, %s, 4\n",
+				offsetreg, offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t[edi], %s\n", reg);
 		}

@@ -54,6 +54,8 @@ nspace.o: nspace.c nspace.h global.h parse.h
 util.o: util.c util.h global.h scan.h
 	$(CC) $(CFLAGS) -c util.c
 
+all: nice compiler
+
 nice: nice.o
 	$(LK) $(LFLAG) -o nice nice.o
 
