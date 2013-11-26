@@ -34,9 +34,9 @@ static SymTabESP ExprG(ExprSP t);
 static SymTabESP TermG(TermSP t);
 static SymTabESP FactorG(FactorSP t);
 static SymTabESP FcallStmtG(FcallStmtSP t);
-static SymTabESP CondG(CondSP t);
+static void CondG(CondSP t, SymTabESP label);
 static void ParaListG(ParaListSP t);
-static void ArgListG(ArgListSP t);
+static void ArgListG(ArgListSP t, SymBucketSP info);
 
 void PgmG(PgmSP t)
 {
@@ -327,55 +327,63 @@ void AssignStmtG(AssignStmtSP t)
 
 void IfStmtG(IfStmtSP t)
 {
-	QuadSP q, els, out;
+	QuadSP q, start, out;
+	SymTabESP startlabel, outlabel;
 	if (t == NULL) return ;
-	NEWQUAD(els);
-	els->op = LABEL_op;
-	els->r = NULL;
-	els->s = NULL;
-	els->d = sym_make_label();
+	startlabel = sym_make_label();
+	NEWQUAD(start);
+	start->op = LABEL_op;
+	start->r = NULL;
+	start->s = NULL;
+	start->d = startlabel;
+	outlabel = sym_make_label();
 	NEWQUAD(out);
 	out->op = LABEL_op;
 	out->r = NULL;
 	out->s = NULL;
-	out->d = sym_make_label();
-	NEWQUAD(q);
-	q->op = BRZ_op;
-	q->r = CondG(t->cp);
-	q->s = NULL;
-	q->d = els->d;
-	emit(q);
-	StmtG(t->tp);
+	out->d = outlabel;
+	CondG(t->cp, startlabel);
+	if (t->ep != NULL) {
+		StmtG(t->ep);
+	}
 	NEWQUAD(q);
 	q->op = JMP_op;
 	q->r = NULL;
 	q->s = NULL;
-	q->d = out->d;
+	q->d = outlabel;
 	emit(q);
-	emit(els);
-	if (t->ep != NULL) {
-		StmtG(t->ep);
-	}
+	emit(start);
+	StmtG(t->tp);
 	emit(out);
 }
 
 void RepeStmtG(RepeStmtSP t)
 {
-	QuadSP q, loop;
+	QuadSP q, loop, out;
+	SymTabESP looplabel, outlabel;
 	if (t == NULL) return ;
+	looplabel = sym_make_label();
 	NEWQUAD(loop);
 	loop->op = LABEL_op;
 	loop->r = NULL;
 	loop->s = NULL;
-	loop->d = sym_make_label();
+	loop->d = looplabel;
+	outlabel = sym_make_label();
+	NEWQUAD(out);
+	out->op = LABEL_op;
+	out->r = NULL;
+	out->s = NULL;
+	out->d = outlabel;
 	emit(loop);
 	StmtG(t->sp);
+	CondG(t->cp, outlabel);
 	NEWQUAD(q);
-	q->op = BNZ_op;
-	q->r = CondG(t->cp);
+	q->op = JMP_op;
+	q->r = NULL;
 	q->s = NULL;
-	q->d = loop->d;
+	q->d = looplabel;
 	emit(q);
+	emit(out);
 }
 
 void ForStmtG(ForStmtSP t)
@@ -410,7 +418,7 @@ void ForStmtG(ForStmtSP t)
 	switch (t->type) {
 	case To_For_t:
 		NEWQUAD(q);
-		q->op = BGT_op;
+		q->op = GTT_op;
 		q->r = res;
 		q->s = re;
 		q->d = out->d;
@@ -425,7 +433,7 @@ void ForStmtG(ForStmtSP t)
 		break;
 	case Downto_For_t:
 		NEWQUAD(q);
-		q->op = BLT_op;
+		q->op = LST_op;
 		q->r = res;
 		q->s = re;
 		q->d = out->d;
@@ -461,7 +469,7 @@ void PcallStmtG(PcallStmtSP t)
 		abort();
 	}
 	if (OBJ(Proc_Obj_t)) {
-		ArgListG(t->alp);
+		ArgListG(t->alp, res->stp->headinfo);
 		NEWQUAD(q);
 		q->op = CALL_op;
 		q->r = res;
@@ -706,7 +714,7 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 		abort();
 	}
 	if (OBJ(Fun_Obj_t)) {
-		ArgListG(t->alp);
+		ArgListG(t->alp, res->stp->headinfo);
 		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = CALL_op;
@@ -720,74 +728,65 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 	return d;
 }
 
-SymTabESP CondG(CondSP t)
+void CondG(CondSP t, SymTabESP label)
 {
-	SymTabESP d;
 	QuadSP q;
-	d = NULL;
 	if (t == NULL) {
 		fprintf(errlist, "CODE BUG:629\n");
-		return NULL;
+		return ;
 	}
 	switch (t->op) {
 	case Equ_Rela_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = EQU_op;
 		q->r = ExprG(t->lep);
 		q->s = ExprG(t->rep);
-		q->d = d;
+		q->d = label;
 		emit(q);
 		break;
 	case Neq_Rela_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = NEQ_op;
 		q->r = ExprG(t->lep);
 		q->s = ExprG(t->rep);
-		q->d = d;
+		q->d = label;
 		emit(q);
 		break;
 	case Gtt_Rela_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = GTT_op;
 		q->r = ExprG(t->lep);
 		q->s = ExprG(t->rep);
-		q->d = d;
+		q->d = label;
 		emit(q);
 		break;
 	case Geq_Rela_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = GEQ_op;
 		q->r = ExprG(t->lep);
 		q->s = ExprG(t->rep);
-		q->d = d;
+		q->d = label;
 		emit(q);
 		break;
 	case Lst_Rela_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = LST_op;
 		q->r = ExprG(t->lep);
 		q->s = ExprG(t->rep);
-		q->d = d;
+		q->d = label;
 		emit(q);
 		break;
 	case Leq_Rela_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = LEQ_op;
 		q->r = ExprG(t->lep);
 		q->s = ExprG(t->rep);
-		q->d = d;
+		q->d = label;
 		emit(q);
 		break;
 	default:
 		fprintf(errlist, "CODE BUG:194\n");
 	}
-	return d;
 }
 
 void ParaListG(ParaListSP t)
@@ -804,18 +803,38 @@ void ParaListG(ParaListSP t)
 	}
 }
 
-void ArgListG(ArgListSP t)
+void ArgListG(ArgListSP t, SymBucketSP info)
 {
 	SymTabESP d;
+	SymBucketSP b;
 	QuadSP q;
-	for (; t != NULL; t = t->next) {
-		d = ExprG(t->ep);
-		NEWQUAD(q);
-		q->op = PUSH_op;
-		q->r = NULL;
-		q->s = NULL;
-		q->d = d;
-		emit(q);
+	for (b = info; t != NULL && b != NULL; t = t->next, b = b->next) {
+		switch (b->ep->obj) {
+		case Para_Val_Obj_t:
+			d = ExprG(t->ep);
+			NEWQUAD(q);
+			q->op = PUSH_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = d;
+			emit(q);
+			break;
+		case Para_Ref_Obj_t:
+			d = ExprG(t->ep);
+			if (d->obj != Var_Obj_t) {
+				fprintf(errlist, "CODE BUG:826\n");
+				abort();
+			}
+			NEWQUAD(q);
+			q->op = PUSHA_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = d;
+			emit(q);
+			break;
+		default:
+			fprintf(errlist, "CODE BUG:833\n");
+		}
 	}
 }
 

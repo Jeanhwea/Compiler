@@ -45,6 +45,8 @@ SymTabSP newstab(void)
 	st->posi_para = 0;
 	st->posi_tmp = 0;
 	st->level = ++LEVEL;
+	st->headinfo = NULL;
+	st->tailinfo = NULL;
 	return st;
 }
 
@@ -68,6 +70,23 @@ void push(SymTabSP t)
 	if (TOP != NULL)
 		TOP->next = t;
 	TOP = t;
+}
+
+static void recParaInfo(SymTabESP t)
+{
+	SymBucketSP p;
+	ENTRY(SymBucketS, p);
+	if (TOP->headinfo == NULL) {
+		p->ep = t;
+		p->next = NULL;
+		TOP->headinfo = p;
+		TOP->tailinfo = p;
+	} else {
+		p->ep = t;
+		p->next = NULL;
+		TOP->tailinfo->next = p;
+		TOP->tailinfo = p;
+	}
 }
 
 static char *genLabel(void)
@@ -408,6 +427,7 @@ SymTabESP sym_insert_para(IdentSP idp)
 			fprintf(errlist, "SYMTAB BUG: 291\n");
 		}
 		e->stp = TOP;
+		recParaInfo(e);
 		ENTRY(SymBucketS, p);
 		p->ep = e;
 		p->next = NULL;
@@ -624,6 +644,9 @@ void printTab(SymTabSP t)
 		fprintf(tiplist, 
 			"var = %d; tmp = %d; para = %d; level = %d\n",
 			t->posi_var, t->posi_tmp, t->posi_para, t->level);
+		for (p = t->headinfo; p != NULL; p = p->next) {
+			fprintf(tiplist, "paralist = %s\n", p->ep->label);
+		}
 		fprintf(tiplist, "***********************************************************\n");
 	}
 }

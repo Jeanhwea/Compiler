@@ -76,8 +76,38 @@ void movRM_asm(char *reg, SymTabESP e)
 			fprintf(errlist, "ASM BUG:107\n");
 		}
 		break;
+	case Para_Ref_Obj_t:
+		if (e->level == lvl) {
+			fprintf(asmlist, "\tlea\tesi, [ebp + %d]\t; *%s\n", 
+				PARAOFFSET, e->label);
+			fprintf(asmlist, "\tmov\t%s, [esi]\n", reg);
+		} else {
+			fprintf(errlist, "ASM BUG:85\n");
+		}
+		break;
 	case Num_Obj_t:
 		fprintf(asmlist, "\tmov\t%s, %s\n", reg, e->label);
+		break;
+	default:
+		fprintf(errlist, "ASM BUG:88\n");
+	}
+}
+
+void leaRM_asm(char *reg, SymTabESP e)
+{
+	switch (e->obj) {
+	case Var_Obj_t:
+		if (e->level == lvl) {
+			fprintf(asmlist, "\tlea\t%s, [ebp - %d]\t; %s\n", 
+				reg, VAROFFSET, e->label);
+		} else if (e->level < lvl) {
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; %s\n",
+				DISPLAY, e->label);
+			fprintf(asmlist, "\tlea\t%s, [esi - %d]\n",
+				reg, VAROFFSET);
+		} else {
+			fprintf(errlist, "ASM BUG:109\n");
+		}
 		break;
 	default:
 		fprintf(errlist, "ASM BUG:88\n");
@@ -92,7 +122,7 @@ void movMR_asm(SymTabESP e, char *reg)
 			fprintf(asmlist, "\tmov\t[ebp - %d], %s\t; %s\n",
 				VAROFFSET, reg, e->label);
 		} else if (e->level < lvl) {
-			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\n",
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; display\n",
 				DISPLAY);
 			fprintf(asmlist, "\tmov\t[esi - %d], %s\t; %s\n",
 				VAROFFSET, reg, e->label);
@@ -114,6 +144,21 @@ void movMR_asm(SymTabESP e, char *reg)
 				PARAOFFSET, reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:117\n");
+		}
+		break;
+	case Para_Ref_Obj_t:
+		if (e->level == lvl) {
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; *%s\n",
+				PARAOFFSET, e->label);
+			fprintf(asmlist, "\tmov\t[esi], %s\t\n", reg);
+		} else if (e->level < lvl) {
+			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\t; display\n", 
+				DISPLAY);
+			fprintf(asmlist, "\tmov\tesi, [edi + %d]\t; *%s\n",
+				PARAOFFSET, e->label);
+			fprintf(asmlist, "\tmov\t[esi], %s\t\n", reg);
+		} else {
+			fprintf(errlist, "ASM BUG:143\n");
 		}
 		break;
 	default:
@@ -180,6 +225,11 @@ void movRR_asm(char *reg, char *reg2)
 	fprintf(asmlist, "\tmov\t%s, %s\n", reg, reg2);
 }
 
+void movRI_asm(char *reg, int imm)
+{
+	fprintf(asmlist, "\tmov\t%s, %d\n", reg, imm);
+}
+
 void addRI_asm(char *reg, int imm)
 {
 	fprintf(asmlist, "\tadd\t%s, %d\n", reg, imm);
@@ -190,7 +240,27 @@ void addRR_asm(char *reg, char *reg2)
 	fprintf(asmlist, "\tadd\t%s, %s\n", reg, reg2);
 }
 
-void push_asm(SymTabESP e)
+void subRR_asm(char *reg, char *reg2)
+{
+	fprintf(asmlist, "\tsub\t%s, %s\n", reg, reg2);
+}
+
+void neg_asm(char *reg)
+{
+	fprintf(asmlist, "\tneg\t%s\n", reg);
+}
+
+void inc_asm(char *reg)
+{
+	fprintf(asmlist, "\tinc\t%s\n", reg);
+}
+
+void dec_asm(char *reg)
+{
+	fprintf(asmlist, "\tdec\t%s\n", reg);
+}
+
+void pusha_asm(SymTabESP e)
 {
 	fprintf(asmlist, "\tpush\t%s\n", e->label);
 }
@@ -243,10 +313,82 @@ void label_asm(SymTabESP e)
 {
 	if (e->obj == Fun_Obj_t || e->obj == Proc_Obj_t) {
 		fprintf(asmlist, "\nSECTION .TEXT\n");
-		// fprintf(asmlist, "\tALIGN 16\n");
 		fprintf(asmlist, "\tGLOBAL %s\n", e->label);
 		fprintf(asmlist, "%s:\n", e->label);
 	} else if (e->obj == Label_Obj_t) {
 		fprintf(asmlist, "%s:\n", e->label);
 	}
+}
+
+void jmp_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjmp\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:264\n");
+	}
+}
+
+void cmpRR_asm(char *reg, char *reg2)
+{
+	fprintf(asmlist, "\tcmp\t%s, %s\t\n", reg, reg2);
+}
+
+void jz_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjz\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:283\n");
+	}
+}
+
+void jnz_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjnz\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:292\n");
+	}
+}
+
+void jg_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjg\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:300\n");
+	}
+}
+
+void jng_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjng\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:310\n");
+	}
+}
+
+void jl_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjl\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:319\n");
+	}
+}
+
+void jnl_asm(SymTabESP e)
+{
+	if (e->obj == Label_Obj_t) {
+		fprintf(asmlist, "\tjnl\t%s\n", e->label);
+	} else {
+		fprintf(errlist, "ASM BUG:328\n");
+	}
+}
+
+void retval_asm(char *reg)
+{
+	fprintf(asmlist, "\tmov\t[ebp - 4], %s\t; set return value\n", reg);
 }

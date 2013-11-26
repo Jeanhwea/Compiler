@@ -10,25 +10,24 @@
 typedef struct _QuadS *QuadSP;
 
 typedef enum {
-	/**/
+	/* Arith */
 	ADD_op, SUB_op, MUL_op, DIV_op,
-	/**/
+	/* unary */
 	INC_op, DEC_op, NEG_op,
-	/**/
+	/* save and store */
 	LOAD_op, ASS_op, AARR_op,
-	/**/
+	/* conditional branch */
 	EQU_op, NEQ_op, GTT_op, GEQ_op,
 	LST_op, LEQ_op,
-	/**/
-	BRZ_op, BNZ_op, BGT_op, BLT_op,
+	/* unconditional branch */
 	JMP_op,
-	/**/
-	PUSH_op, POP_op,
-	/**/
+	/* stack management */
+	PUSH_op, PUSHA_op, POP_op,
+	/* function management */
 	CALL_op, SRET_op, ENTER_op, FIN_op,
-	/**/
+	/* I/O management */
 	READ_op, WRS_op, WRI_op, WRC_op,
-	/**/
+	/* label marker */
 	LABEL_op
 } Quad_t;
 

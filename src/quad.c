@@ -118,26 +118,6 @@ void printQuad(QuadSP q)
 		fprintf(code, "\tLEQ\t%s, %s, %s\n",
 			q->r->label, q->s->label, q->d->label);
 		break;
-	case BRZ_op:
-		NEED2(r,d);
-		fprintf(code, "\tBRZ\t%s, -, %s\n",
-			q->r->label, q->d->label);
-		break;
-	case BNZ_op:
-		NEED2(r,d);
-		fprintf(code, "\tBNZ\t%s, -, %s\n",
-			q->r->label, q->d->label);
-		break;
-	case BGT_op:
-		NEED3(r,s,d);
-		fprintf(code, "\tBGT\t%s, %s, %s\n",
-			q->r->label, q->s->label, q->d->label);
-		break;
-	case BLT_op:
-		NEED3(r,s,d);
-		fprintf(code, "\tBLT\t%s, %s, %s\n",
-			q->r->label, q->s->label, q->d->label);
-		break;
 	case JMP_op:
 		NEED(d);
 		fprintf(code, "\tJMP\t-, -, %s\n", q->d->label);
@@ -145,6 +125,10 @@ void printQuad(QuadSP q)
 	case PUSH_op:
 		NEED(d);
 		fprintf(code, "\tPUSH\t-, -, %s\n", q->d->label);
+		break;
+	case PUSHA_op:
+		NEED(d);
+		fprintf(code, "\tPUSHA\t-, -, *%s\n", q->d->label);
 		break;
 	case POP_op:
 		NEED(d);

@@ -36,11 +36,13 @@ typedef enum {
  * each function
  */
 typedef struct _SymTabS {
-	SymBucketSP *sbp;
+	SymBucketSP *sbp;	// hashed symbol table contents
 	int posi_var;		// last var position
 	int posi_para;		// last parameter position
 	int posi_tmp;		// last tmp position
 	int level;		// current level
+	SymBucketSP headinfo;	// head parameter info
+	SymBucketSP tailinfo;	// tail parameter info
 	SymTabSP prev;
 	SymTabSP next;
 } SymTabS;
@@ -126,4 +128,5 @@ SymTabESP sym_make_main(void);
 SymTabESP sym_make_string(char *);
 SymTabESP sym_lookup(char *);
 void printTab(SymTabSP);
+
 #endif /* end of include guard: SYMTAB_H */
