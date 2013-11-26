@@ -150,7 +150,7 @@ void printQuad(QuadSP q)
 		break;
 	case ENTER_op:
 		NEED(d);
-		fprintf(code, "%s: @LEVEL%d\n", q->d->label, q->d->level);
+		fprintf(code, "%s:\n", q->d->label);
 		break;
 	case FIN_op:
 		fprintf(code, "\tFIN\t-, -, -\n");

@@ -15,6 +15,7 @@
 FILE *source;
 FILE *listing;
 FILE *code;
+FILE *stablist;
 FILE *asmlist;
 FILE *errlist;
 FILE *tiplist;
@@ -56,6 +57,7 @@ int main(int argc, const char *argv[])
 	}
 	listing = stderr;
 	code = stderr;
+	stablist = stderr;
 	asmlist = stdout;
 	errlist = stderr;
 	tiplist = stderr;

@@ -82,16 +82,18 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Var_Obj_t:
 	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 		movRM_asm("ecx", r);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:57\n");
+		fprintf(asmlist, "ELF BUG:89\n");
 	}
 	switch (s->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 		movRM_asm("edx", s);
 		break;
@@ -147,6 +149,7 @@ void LOADA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", s);
 		break;
 	default:
@@ -170,6 +173,7 @@ void ASSA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", r);
 		break;
 	default:
@@ -193,6 +197,7 @@ void AARRA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", r);
 		break;
 	default:
@@ -203,6 +208,7 @@ void AARRA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", s);
 		break;
 	default:
@@ -218,6 +224,7 @@ void EQUA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", r);
 		break;
 	default:
@@ -228,6 +235,7 @@ void EQUA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", s);
 		break;
 	default:
@@ -244,6 +252,7 @@ void NEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", r);
 		break;
 	default:
@@ -254,6 +263,7 @@ void NEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", s);
 		break;
 	default:
@@ -270,6 +280,7 @@ void GTTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", r);
 		break;
 	default:
@@ -280,6 +291,7 @@ void GTTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", s);
 		break;
 	default:
@@ -296,6 +308,7 @@ void GEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", r);
 		break;
 	default:
@@ -306,6 +319,7 @@ void GEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", s);
 		break;
 	default:
@@ -322,6 +336,7 @@ void LSTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", r);
 		break;
 	default:
@@ -332,6 +347,7 @@ void LSTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", s);
 		break;
 	default:
@@ -348,6 +364,7 @@ void LEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("eax", r);
 		break;
 	default:
@@ -358,6 +375,7 @@ void LEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Num_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", s);
 		break;
 	default:

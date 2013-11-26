@@ -585,68 +585,68 @@ void printTab(SymTabSP t)
 	SymBucketSP p;
 	int i;
 	if (t != NULL) {
-		fprintf(tiplist, "\n***********************************************************\n");
-		fprintf(tiplist, "    name\t  label  \t    line");
-		fprintf(tiplist, "\t object \t  type       value ");
-		fprintf(tiplist, "   level    posi\n");
+		fprintf(stablist, "\n***********************************************************\n");
+		fprintf(stablist, "    name\t  label  \t    line");
+		fprintf(stablist, "\t object \t  type       value ");
+		fprintf(stablist, "   level    posi\n");
 		for (i = 0; i < HASHSIZE; i++) {
 			for (p = *(t->sbp + i); p != NULL; p = p->next) {
-				fprintf(tiplist, "%8s%24s%8d\t",
+				fprintf(stablist, "%8s%24s%8d\t",
 					p->ep->name, p->ep->label, 
 					p->ep->lines->lineno);
 				switch (p->ep->obj) {
 				case Const_Obj_t:
-					fprintf(tiplist, "Const_Obj_t");
+					fprintf(stablist, "Const_Obj_t");
 					break;
 				case Var_Obj_t:
-					fprintf(tiplist, "Var_Obj_t");
+					fprintf(stablist, "Var_Obj_t");
 					break;
 				case Proc_Obj_t:
-					fprintf(tiplist, "Proc_Obj_t");
+					fprintf(stablist, "Proc_Obj_t");
 					break;
 				case Fun_Obj_t:
-					fprintf(tiplist, "Fun_Obj_t");
+					fprintf(stablist, "Fun_Obj_t");
 					break;
 				case Array_Obj_t:
-					fprintf(tiplist, "Array_Obj_t");
+					fprintf(stablist, "Array_Obj_t");
 					break;
 				case Para_Val_Obj_t:
-					fprintf(tiplist, "Para_Val_Obj_t");
+					fprintf(stablist, "Para_Val_Obj_t");
 					break;
 				case Para_Ref_Obj_t:
-					fprintf(tiplist, "Para_Ref_Obj_t");
+					fprintf(stablist, "Para_Ref_Obj_t");
 					break;
 				case Tmp_Obj_t:
-					fprintf(tiplist, "Tmp_Obj_t");
+					fprintf(stablist, "Tmp_Obj_t");
 					break;
 				default:
 					fprintf(errlist, "SYMTAB BUG:210\n");
 				}
-				fprintf(tiplist, "\t");
+				fprintf(stablist, "\t");
 				switch (p->ep->type) {
 				case Int_Type_t:
-					fprintf(tiplist, "Int_Type_t");
+					fprintf(stablist, "Int_Type_t");
 					break;
 				case Char_Type_t:
-					fprintf(tiplist, "Char_Type_t");
+					fprintf(stablist, "Char_Type_t");
 					break;
 				case Nop_Type_t:
-					fprintf(tiplist, "Nop_Type_t");
+					fprintf(stablist, "Nop_Type_t");
 					break;
 				default:
 					fprintf(errlist, "SYMTAB BUG:226\n");
 				}
-				fprintf(tiplist, "%8d%8d%8d\n",
+				fprintf(stablist, "%8d%8d%8d\n",
 					p->ep->val, p->ep->level, p->ep->posi);
 			}
 		}
-		fprintf(tiplist, "-----------------------------------------------------------\n");
-		fprintf(tiplist, 
+		fprintf(stablist, "-----------------------------------------------------------\n");
+		fprintf(stablist, 
 			"var = %d; tmp = %d; para = %d; level = %d\n",
 			t->posi_var, t->posi_tmp, t->posi_para, t->level);
 		for (p = t->headinfo; p != NULL; p = p->next) {
-			fprintf(tiplist, "paralist = %s\n", p->ep->label);
+			fprintf(stablist, "paralist = %s\n", p->ep->label);
 		}
-		fprintf(tiplist, "***********************************************************\n");
+		fprintf(stablist, "***********************************************************\n");
 	}
 }
