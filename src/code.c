@@ -389,18 +389,20 @@ void RepeStmtG(RepeStmtSP t)
 void ForStmtG(ForStmtSP t)
 {
 	QuadSP q, start, out;
-	SymTabESP res, le, re;
+	SymTabESP res, le, re, startlabel, outlabel;
 	if (t == NULL) return ;
+	startlabel = sym_make_label();
 	NEWQUAD(start);
 	start->op = LABEL_op;
 	start->r = NULL;
 	start->s = NULL;
-	start->d = sym_make_label();
+	start->d = startlabel;
+	outlabel = sym_make_label();
 	NEWQUAD(out);
 	out->op = LABEL_op;
 	out->r = NULL;
 	out->s = NULL;
-	out->d = sym_make_label();
+	out->d = outlabel;
 	le = ExprG(t->lep);
 	re = ExprG(t->rep);
 	res = sym_lookup(t->idp->name);
@@ -421,7 +423,7 @@ void ForStmtG(ForStmtSP t)
 		q->op = GTT_op;
 		q->r = res;
 		q->s = re;
-		q->d = out->d;
+		q->d = outlabel;
 		emit(q);
 		StmtG(t->sp);
 		NEWQUAD(q);
@@ -436,7 +438,7 @@ void ForStmtG(ForStmtSP t)
 		q->op = LST_op;
 		q->r = res;
 		q->s = re;
-		q->d = out->d;
+		q->d = outlabel;
 		emit(q);
 		StmtG(t->sp);
 		NEWQUAD(q);
@@ -453,7 +455,7 @@ void ForStmtG(ForStmtSP t)
 	q->op = JMP_op;
 	q->r = NULL;
 	q->s = NULL;
-	q->d = start->d;
+	q->d = startlabel;
 	emit(q);
 	emit(out);
 }

@@ -63,7 +63,7 @@ nice.o: nice.asm asm/io.asm
 	$(AS) $(ASFLAG) nice.asm
 
 nice.asm: compiler example/untitled.pas
-	./compiler example/untitled.pas > nice.asm 2> /dev/null
+	./compiler example/untitled.pas > nice.asm 2> ./example/untitled.q
 
 .PHONY: clean
 clean:

@@ -22,7 +22,6 @@ int parac;
 void enter(SymTabESP e)
 {
 	SymTabSP st;
-	int offset;
 	if (e == NULL) {
 		fprintf(errlist, "ASM BUG:25\n");
 		exit(1);
@@ -37,8 +36,7 @@ void enter(SymTabESP e)
 		varc = st->posi_var;
 		tmpc = st->posi_tmp;
 		parac = st->posi_para;
-		offset = 4 * (1 + varc + tmpc);
-		fprintf(asmlist, "\tsub\tesp, %d\n", offset);
+		fprintf(asmlist, "\tsub\tesp, %d\n", RESERVED);
 	} else {
 		fprintf(asmlist, "ASM BUG:34\n");
 	}
@@ -52,10 +50,10 @@ void movRM_asm(char *reg, SymTabESP e)
 			fprintf(asmlist, "\tmov\t%s, [ebp - %d]\t; %s\n", 
 				reg, VAROFFSET, e->label);
 		} else if (e->level < lvl) {
-			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; %s\n",
-				DISPLAY, e->label);
-			fprintf(asmlist, "\tmov\t%s, [esi - %d]\n",
-				reg, VAROFFSET);
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\n",
+				DISPLAY);
+			fprintf(asmlist, "\tmov\t%s, [esi - %d]\t; %s\n",
+				reg, VAROFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:68\n");
 		}
@@ -78,9 +76,17 @@ void movRM_asm(char *reg, SymTabESP e)
 		break;
 	case Para_Ref_Obj_t:
 		if (e->level == lvl) {
-			fprintf(asmlist, "\tlea\tesi, [ebp + %d]\t; *%s\n", 
-				PARAOFFSET, e->label);
-			fprintf(asmlist, "\tmov\t%s, [esi]\n", reg);
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\n", 
+				PARAOFFSET);
+			fprintf(asmlist, "\tmov\t%s, [esi]\t; *%s\n", 
+				reg, e->label);
+		} else if (e->level < lvl) {
+			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\t; display\n", 
+				DISPLAY);
+			fprintf(asmlist, "\tmov\tesi, [edi + %d]\n",
+				PARAOFFSET);
+			fprintf(asmlist, "\tmov\t%s, [esi]\t; *%s\n",
+				reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:85\n");
 		}
@@ -122,7 +128,7 @@ void movMR_asm(SymTabESP e, char *reg)
 			fprintf(asmlist, "\tmov\t[ebp - %d], %s\t; %s\n",
 				VAROFFSET, reg, e->label);
 		} else if (e->level < lvl) {
-			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; display\n",
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; display var\n",
 				DISPLAY);
 			fprintf(asmlist, "\tmov\t[esi - %d], %s\t; %s\n",
 				VAROFFSET, reg, e->label);
@@ -148,15 +154,17 @@ void movMR_asm(SymTabESP e, char *reg)
 		break;
 	case Para_Ref_Obj_t:
 		if (e->level == lvl) {
-			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; *%s\n",
-				PARAOFFSET, e->label);
-			fprintf(asmlist, "\tmov\t[esi], %s\t\n", reg);
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\n",
+				PARAOFFSET);
+			fprintf(asmlist, "\tmov\t[esi], %s\t\t; *%s\n",
+				reg, e->label);
 		} else if (e->level < lvl) {
-			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\t; display\n", 
+			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\t; display para ref\n", 
 				DISPLAY);
-			fprintf(asmlist, "\tmov\tesi, [edi + %d]\t; *%s\n",
-				PARAOFFSET, e->label);
-			fprintf(asmlist, "\tmov\t[esi], %s\t\n", reg);
+			fprintf(asmlist, "\tmov\tesi, [edi + %d]\n",
+				PARAOFFSET);
+			fprintf(asmlist, "\tmov\t[esi], %s\t\t; *%s\n",
+				reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:143\n");
 		}
@@ -178,7 +186,7 @@ void movRA_asm(SymTabESP e, char *offsetreg, char *reg)
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t%s, [edi]\n", reg);
 		} else if (e->level < lvl) {
-			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\n",
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; display array\n",
 				DISPLAY);
 			fprintf(asmlist, "\tlea\tedi, [esi - %d]\t; %s\n",
 				VAROFFSET, e->label);
@@ -278,26 +286,28 @@ void pop_asm(char *reg)
 void call_asm(SymTabESP e)
 {
 	int i, offset;
-	if (e->level == lvl) {
-		fprintf(asmlist, "\tpush\tebp\t\t; display new\n");
-		for (i = 1; i < e->level; i++) {
-			offset = 4 * (e->level-1 + 2 - i);
+	int enterlevel = e->level+1;
+	if (enterlevel <= lvl) {
+		// fprintf(asmlist, "\tpush\tebp\t\t; display new\n");
+		for (i = 0; i < enterlevel-1; i++) {
+			offset = 4 * ( 2 + enterlevel-1 - i);
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\n",
 				offset);
 			fprintf(asmlist, "\tpush\tedi\t\t; display new\n");
 		}
 		fprintf(asmlist, "\tcall\t%s\n", e->label);
-		offset = 4 * (e->stp->posi_para + e->level);
+		offset = 4 * (e->stp->posi_para + enterlevel-1);
 		fprintf(asmlist, "\tadd\tesp, %d\n", offset);
-	} else if (e->level < lvl) {
-		for (i = 1; i < e->level; i++) {
-			offset = 4 * (e->level-1 + 2 - i);
+	} else if (enterlevel == lvl+1) {
+		fprintf(asmlist, "\tpush\tebp\t\t; display new\n");
+		for (i = 0; i < lvl-1; i++) {
+			offset = 4 * ( 2 + lvl-1 - i);
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\n",
 				offset);
-			fprintf(asmlist, "\tpush\tedi\t\t; display\n");
+			fprintf(asmlist, "\tpush\tedi\t\t; display low level\n");
 		}
 		fprintf(asmlist, "\tcall\t%s\n", e->label);
-		offset = 4 * (e->stp->posi_para + e->level);
+		offset = 4 * (e->stp->posi_para + enterlevel-1);
 		fprintf(asmlist, "\tadd\tesp, %d\n", offset);
 	} else {
 		fprintf(errlist, "ASM BUG:186\n");

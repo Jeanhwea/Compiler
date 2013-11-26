@@ -532,7 +532,7 @@ SymTabESP sym_make_main(void)
 	e->label = "main"; 
 	e->val = -1;
 	e->lines = l;
-	e->level = LEVEL;
+	e->level = 0;
 	e->posi = -1;
 	e->obj = Fun_Obj_t;
 	e->type = Int_Type_t;

@@ -38,6 +38,37 @@ void jl_asm(SymTabESP e);
 void jnl_asm(SymTabESP e);
 void retval_asm(char *reg);
 
+
+/**
+ *             RUNTIME STACK OVERVIEW
+ *
+ *                   high addr
+ *               |    ... ...   |
+ *               |    ... ...   |
+ *               | parameter(1) |
+ *               | parameter(2) |       ||
+ *               | parameter(3) |       ||
+ *               | saved ebp(3) |       ||
+ *               | saved ebp(2) |       ||
+ *      ebp+8 -> | saved ebp(1) |       ||
+ *      ebp+4 -> | return addr  |       || stack
+ *        ebp -> | prev ebp     |       || pointer
+ *               | return value |       || increase
+ *               | variables(1) |       ||
+ *               | variables(2) |      \||/
+ *               | variables(3) |       \/
+ *               | temporary(1) |
+ *               | temporary(2) |
+ *               | temporary(3) |
+ *               |    ... ...   |
+ *        esp -> |    ... ...   |
+ *
+ **                   low addr
+ */
+
+
+
+#define RESERVED (4 * (1 + varc + tmpc))
 #define DISPLAY (4 * (2 + e->level-1))
 #define VAROFFSET (4 * (1 + e->posi+1))
 #define TMPOFFSET (4 * (1 + varc + e->posi+1))
