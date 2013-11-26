@@ -69,7 +69,7 @@ void retval_asm(char *reg);
 
 
 #define RESERVED (4 * (1 + varc + tmpc))
-#define DISPLAY (4 * (2 + e->level-1))
+#define DISPLAY (4 * (2 + lvl-1))
 #define VAROFFSET (4 * (1 + e->posi+1))
 #define TMPOFFSET (4 * (1 + varc + e->posi+1))
 #define PARAOFFSET (4 * (2 + lvl-1 + parac - e->posi-1))
