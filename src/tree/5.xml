@@ -1,23 +1,39 @@
 <Pgm>
 	<Block>
 		<ConstDec>
+			<ConstDef>
+				<Ident>
+					type=Int_Const_Ident_t
+					name=bc
+					val=2
+					line=1
+				</Ident>
+			</ConstDef>
+			<ConstDef>
+				<Ident>
+					type=Int_Const_Ident_t
+					name=cc
+					val=2
+					line=1
+				</Ident>
+			</ConstDef>
 		</ConstDec>
 		<VarDec>
 			<VarDef>
 				<Ident>
 					type=Int_Var_Ident_t
 					name=a
-					line=2
+					line=3
 				</Ident>
 				<Ident>
 					type=Int_Var_Ident_t
 					name=b
-					line=2
+					line=3
 				</Ident>
 				<Ident>
 					type=Int_Var_Ident_t
 					name=ret
-					line=2
+					line=3
 				</Ident>
 			</VarDef>
 		</VarDec>
@@ -28,19 +44,19 @@
 						<Ident>
 							type=Int_Fun_Ident_t
 							name=max
-							line=3
+							line=4
 						</Ident>
 						<ParaList>
 							<ParaDef>
 								<Ident>
 									type=Int_Para_Val_Ident_t
 									name=num1
-									line=3
+									line=4
 								</Ident>
 								<Ident>
 									type=Int_Para_Val_Ident_t
 									name=num2
-									line=3
+									line=4
 								</Ident>
 							</ParaDef>
 						</ParaList>
@@ -53,7 +69,7 @@
 								<Ident>
 									type=Int_Var_Ident_t
 									name=result
-									line=5
+									line=6
 								</Ident>
 							</VarDef>
 						</VarDec>
@@ -76,7 +92,7 @@
 														name=num1
 														val=0
 														length=0
-														line=7
+														line=8
 													</Ident>
 												</Factor>
 											</Term>
@@ -93,7 +109,7 @@
 														name=num2
 														val=0
 														length=0
-														line=7
+														line=8
 													</Ident>
 												</Factor>
 											</Term>
@@ -108,7 +124,7 @@
 												name=result
 												val=0
 												length=0
-												line=8
+												line=9
 											</Ident>
 											**left
 											<Expr>
@@ -125,7 +141,7 @@
 															name=num1
 															val=0
 															length=0
-															line=8
+															line=9
 														</Ident>
 													</Factor>
 												</Term>
@@ -141,7 +157,7 @@
 												name=result
 												val=0
 												length=0
-												line=10
+												line=11
 											</Ident>
 											**left
 											<Expr>
@@ -158,7 +174,7 @@
 															name=num2
 															val=0
 															length=0
-															line=10
+															line=11
 														</Ident>
 													</Factor>
 												</Term>
@@ -175,7 +191,7 @@
 										name=max
 										val=0
 										length=0
-										line=11
+										line=12
 									</Ident>
 									**left
 									<Expr>
@@ -192,7 +208,7 @@
 													name=result
 													val=0
 													length=0
-													line=11
+													line=12
 												</Ident>
 											</Factor>
 										</Term>
@@ -216,7 +232,7 @@
 						name=a
 						val=0
 						length=0
-						line=15
+						line=16
 					</Ident>
 					**left
 					<Expr>
@@ -242,7 +258,7 @@
 						name=b
 						val=0
 						length=0
-						line=16
+						line=17
 					</Ident>
 					**left
 					<Expr>
@@ -268,7 +284,7 @@
 						name=ret
 						val=0
 						length=0
-						line=17
+						line=18
 					</Ident>
 					**left
 					<Expr>
@@ -286,7 +302,7 @@
 										name=max
 										val=0
 										length=0
-										line=17
+										line=18
 									</Ident>
 									<ArgList>
 										<Expr>
@@ -300,7 +316,7 @@
 														name=a
 														val=0
 														length=0
-														line=17
+														line=18
 													</Ident>
 												</Factor>
 											</Term>
@@ -316,7 +332,7 @@
 														name=b
 														val=0
 														length=0
-														line=17
+														line=18
 													</Ident>
 												</Factor>
 											</Term>
@@ -343,7 +359,7 @@
 									name=ret
 									val=0
 									length=0
-									line=18
+									line=19
 								</Ident>
 							</Factor>
 						</Term>
@@ -356,3 +372,21 @@
 		</CompStmt>
 	</Block>
 </Pgm>
+J_max$I$I:
+	GTT	J_max$I$I_num1, J_max$I$I_num2, J_max$I$I_&1
+	BRZ	J_max$I$I_&1, -, ..@l1
+	ASS	J_max$I$I_num1, -, J_max$I$I_result
+	JMP	-, -, ..@l2
+..@l1:
+	ASS	J_max$I$I_num2, -, J_max$I$I_result
+..@l2:
+	SRET	J_max$I$I_result, -, J_max$I$I
+	FIN	-, -, -
+	ASS	0x64, -, J_a
+	ASS	0xc8, -, J_b
+	PUSH	-, -, J_a
+	PUSH	-, -, J_b
+	CALL	J_max$I$I, -, J_&2
+	ASS	J_&2, -, J_ret
+	WRS	-, -, max number is: 
+	WRI	-, -, J_ret

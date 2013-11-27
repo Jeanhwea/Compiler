@@ -40,6 +40,8 @@
 									name=x
 									line=5
 								</Ident>
+							</ParaDef>
+							<ParaDef>
 								<Ident>
 									type=Int_Para_Ref_Ident_t
 									name=y
@@ -61,6 +63,134 @@
 							</VarDef>
 						</VarDec>
 						<PFDecList>
+							<FunDec>
+								<FunDef>
+									<FunHead>
+										<Ident>
+											type=Int_Fun_Ident_t
+											name=Fun
+											line=8
+										</Ident>
+										<ParaList>
+										</ParaList>
+									</FunHead>
+									<Block>
+										<ConstDec>
+										</ConstDec>
+										<VarDec>
+											<VarDef>
+												<Ident>
+													type=Int_Var_Ident_t
+													name=va
+													line=10
+												</Ident>
+												<Ident>
+													type=Int_Var_Ident_t
+													name=A
+													line=10
+												</Ident>
+												<Ident>
+													type=Int_Var_Ident_t
+													name=r
+													line=10
+												</Ident>
+												<Ident>
+													type=Int_Var_Ident_t
+													name=d
+													line=10
+												</Ident>
+											</VarDef>
+										</VarDec>
+										<PFDecList>
+										</PFDecList>
+										<CompStmt>
+											<Stmt>
+												<AssignStmt>
+													type=Array_Assgin_t
+													<Ident>
+														type=Init_Ident_t
+														name=a
+														val=0
+														length=0
+														line=12
+													</Ident>
+													**left
+													<Expr>
+														op=Nop_Addop_t
+														<Term>
+															op=Nop_Multop_t
+															<Factor>
+																type=Unsign_Factor_t
+																usi=4
+															</Factor>
+														</Term>
+													</Expr>
+													**right
+													<Expr>
+														op=Neg_Addop_t
+														<Term>
+															op=Nop_Multop_t
+															<Factor>
+																type=Id_Factor_t
+																<Ident>
+																	type=Init_Ident_t
+																	name=r
+																	val=0
+																	length=0
+																	line=12
+																</Ident>
+															</Factor>
+															op=Mult_Multop_t
+															<Factor>
+																type=Id_Factor_t
+																<Ident>
+																	type=Init_Ident_t
+																	name=d
+																	val=0
+																	length=0
+																	line=12
+																</Ident>
+															</Factor>
+														</Term>
+													</Expr>
+												</AssignStmt>
+											</Stmt>
+											<Stmt>
+												<AssignStmt>
+													type=Norm_Assgin_t
+													<Ident>
+														type=Init_Ident_t
+														name=A
+														val=0
+														length=0
+														line=13
+													</Ident>
+													**left
+													<Expr>
+													</Expr>
+													**right
+													<Expr>
+														op=Nop_Addop_t
+														<Term>
+															op=Nop_Multop_t
+															<Factor>
+																type=Id_Factor_t
+																<Ident>
+																	type=Init_Ident_t
+																	name=d
+																	val=0
+																	length=0
+																	line=13
+																</Ident>
+															</Factor>
+														</Term>
+													</Expr>
+												</AssignStmt>
+											</Stmt>
+										</CompStmt>
+									</Block>
+								</FunDef>
+							</FunDec>
 						</PFDecList>
 						<CompStmt>
 							<Stmt>
@@ -71,7 +201,7 @@
 										name=t
 										val=0
 										length=0
-										line=9
+										line=16
 									</Ident>
 									**left
 									<Expr>
@@ -88,7 +218,21 @@
 													name=x
 													val=0
 													length=0
-													line=9
+													line=16
+												</Ident>
+											</Factor>
+										</Term>
+										op=Add_Addop_t
+										<Term>
+											op=Nop_Multop_t
+											<Factor>
+												type=Id_Factor_t
+												<Ident>
+													type=Init_Ident_t
+													name=y
+													val=0
+													length=0
+													line=16
 												</Ident>
 											</Factor>
 										</Term>
@@ -103,7 +247,7 @@
 										name=x
 										val=0
 										length=0
-										line=10
+										line=17
 									</Ident>
 									**left
 									<Expr>
@@ -120,7 +264,7 @@
 													name=y
 													val=0
 													length=0
-													line=10
+													line=17
 												</Ident>
 											</Factor>
 										</Term>
@@ -135,7 +279,7 @@
 										name=y
 										val=0
 										length=0
-										line=11
+										line=18
 									</Ident>
 									**left
 									<Expr>
@@ -152,7 +296,7 @@
 													name=t
 													val=0
 													length=0
-													line=11
+													line=18
 												</Ident>
 											</Factor>
 										</Term>
@@ -172,7 +316,7 @@
 						name=i
 						val=0
 						length=0
-						line=14
+						line=21
 					</Ident>
 					type=To_For_t
 					**start
@@ -207,7 +351,7 @@
 										name=j
 										val=0
 										length=0
-										line=16
+										line=23
 									</Ident>
 									type=To_For_t
 									**start
@@ -222,7 +366,7 @@
 													name=i
 													val=0
 													length=0
-													line=16
+													line=23
 												</Ident>
 											</Factor>
 										</Term>
@@ -257,7 +401,7 @@
 																		name=a
 																		val=0
 																		length=0
-																		line=18
+																		line=25
 																	</Ident>
 																	<Expr>
 																		op=Nop_Addop_t
@@ -270,7 +414,7 @@
 																					name=i
 																					val=0
 																					length=0
-																					line=18
+																					line=25
 																				</Ident>
 																			</Factor>
 																		</Term>
@@ -290,7 +434,7 @@
 																		name=a
 																		val=0
 																		length=0
-																		line=18
+																		line=25
 																	</Ident>
 																	<Expr>
 																		op=Nop_Addop_t
@@ -303,7 +447,7 @@
 																					name=j
 																					val=0
 																					length=0
-																					line=18
+																					line=25
 																				</Ident>
 																			</Factor>
 																		</Term>
@@ -322,7 +466,7 @@
 																		name=swap
 																		val=0
 																		length=0
-																		line=20
+																		line=27
 																	</Ident>
 																	<ArgList>
 																		<Expr>
@@ -336,7 +480,7 @@
 																						name=a
 																						val=0
 																						length=0
-																						line=20
+																						line=27
 																					</Ident>
 																					<Expr>
 																						op=Nop_Addop_t
@@ -349,7 +493,7 @@
 																									name=i
 																									val=0
 																									length=0
-																									line=20
+																									line=27
 																								</Ident>
 																							</Factor>
 																						</Term>
@@ -368,7 +512,7 @@
 																						name=a
 																						val=0
 																						length=0
-																						line=20
+																						line=27
 																					</Ident>
 																					<Expr>
 																						op=Nop_Addop_t
@@ -381,7 +525,7 @@
 																									name=j
 																									val=0
 																									length=0
-																									line=20
+																									line=27
 																								</Ident>
 																							</Factor>
 																						</Term>
@@ -417,7 +561,7 @@
 						name=i
 						val=0
 						length=0
-						line=24
+						line=31
 					</Ident>
 					type=To_For_t
 					**start
@@ -459,7 +603,7 @@
 													name=a
 													val=0
 													length=0
-													line=26
+													line=33
 												</Ident>
 												<Expr>
 													op=Nop_Addop_t
@@ -472,7 +616,7 @@
 																name=i
 																val=0
 																length=0
-																line=26
+																line=33
 															</Ident>
 														</Factor>
 													</Term>
@@ -489,3 +633,47 @@
 		</CompStmt>
 	</Block>
 </Pgm>
+J_swap$I$I:
+J_swap$I$I_Fun:
+	MUL	J_swap$I$I_Fun_r, J_swap$I$I_Fun_d, J_swap$I$I_Fun_&2
+	NEG	-, -, J_swap$I$I_Fun_&1
+	AARR	0x4, J_swap$I$I_Fun_&1, J_a
+	ASS	J_swap$I$I_Fun_d, -, J_swap$I$I_Fun_A
+	FIN	-, -, -
+	ADD	J_swap$I$I_x, J_swap$I$I_y, J_swap$I$I_&3
+	ASS	J_swap$I$I_&3, -, J_swap$I$I_t
+	ASS	J_swap$I$I_y, -, J_swap$I$I_x
+	ASS	J_swap$I$I_t, -, J_swap$I$I_y
+	FIN	-, -, -
+	ASS	0x1, -, J_i
+..@l1:
+	BGT	J_i, 0x5, ..@l2
+	ASS	J_i, -, J_j
+..@l3:
+	BGT	J_j, 0x5, ..@l4
+	LOAD	J_a, J_i, J_&5
+	LOAD	J_a, J_j, J_&6
+	GTT	J_&5, J_&6, J_&4
+	BRZ	J_&4, -, ..@l5
+	LOAD	J_a, J_i, J_&7
+	PUSH	-, -, J_&7
+	LOAD	J_a, J_j, J_&8
+	PUSH	-, -, J_&8
+	CALL	J_swap$I$I, -, -
+	JMP	-, -, ..@l6
+..@l5:
+..@l6:
+	INC	-, -, J_j
+	JMP	-, -, ..@l3
+..@l4:
+	INC	-, -, J_i
+	JMP	-, -, ..@l1
+..@l2:
+	ASS	0x1, -, J_i
+..@l7:
+	BGT	J_i, 0x5, ..@l8
+	LOAD	J_a, J_i, J_&9
+	WRI	-, -, J_&9
+	INC	-, -, J_i
+	JMP	-, -, ..@l7
+..@l8:

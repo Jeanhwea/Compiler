@@ -1,12 +1,23 @@
 program ProgramName;
-function FunctionName(): integer;
-	procedure FunctionName();
+var vn, out: integer;
+procedure pcd(x:integer);
+	function sum( x:integer):integer;
+		var t: integer;
 		begin
-			writeln(4333333)
+			t := x-1;
+			writeln(t);
+			if x = 1 then 
+				sum := 1
+			else
+				sum := sum(t)+x;
 		end;
 	begin
-		FunctionName := 9
+		out := sum(x);
+		writeln(out)
 	end;
 begin
-	FunctionName();
+	vn := 3;
+	pcd(vn);
+	writeln(out)
 end.
+

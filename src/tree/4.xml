@@ -489,3 +489,40 @@
 		</CompStmt>
 	</Block>
 </Pgm>
+J_swap$I$I:
+	ASS	J_swap$I$I_x, -, J_swap$I$I_t
+	ASS	J_swap$I$I_y, -, J_swap$I$I_x
+	ASS	J_swap$I$I_t, -, J_swap$I$I_y
+	FIN	-, -, -
+	ASS	0x1, -, J_i
+..@l1:
+	BGT	J_i, 0x5, ..@l2
+	ASS	J_i, -, J_j
+..@l3:
+	BGT	J_j, 0x5, ..@l4
+	LOAD	J_a, J_i, J_&2
+	LOAD	J_a, J_j, J_&3
+	GTT	J_&2, J_&3, J_&1
+	BRZ	J_&1, -, ..@l5
+	LOAD	J_a, J_i, J_&4
+	PUSH	-, -, J_&4
+	LOAD	J_a, J_j, J_&5
+	PUSH	-, -, J_&5
+	CALL	J_swap$I$I, -, -
+	JMP	-, -, ..@l6
+..@l5:
+..@l6:
+	INC	-, -, J_j
+	JMP	-, -, ..@l3
+..@l4:
+	INC	-, -, J_i
+	JMP	-, -, ..@l1
+..@l2:
+	ASS	0x1, -, J_i
+..@l7:
+	BGT	J_i, 0x5, ..@l8
+	LOAD	J_a, J_i, J_&6
+	WRI	-, -, J_&6
+	INC	-, -, J_i
+	JMP	-, -, ..@l7
+..@l8:

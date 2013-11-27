@@ -28,7 +28,7 @@
 			<ConstDef>
 				<Ident>
 					type=Char_Const_Ident_t
-					name=letterch
+					name=let
 					val=c
 					line=6
 				</Ident>
@@ -36,7 +36,7 @@
 			<ConstDef>
 				<Ident>
 					type=Char_Const_Ident_t
-					name=numberch
+					name=nuh
 					val=4
 					line=7
 				</Ident>
