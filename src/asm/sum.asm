@@ -25,7 +25,7 @@ one:
 	mov	eax, 1
 	jmp	end
 end:
-	pop	ebp
+	leave
 	ret
 	;pop	esi
 	;push	eax
@@ -45,6 +45,7 @@ main:
 	; jmp	sum
 	call	print_int
 	pop	ecx
+	mov	esp, ebp
 	pop	ebp
 	ret
 

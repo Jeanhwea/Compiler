@@ -347,7 +347,7 @@ void jmp_asm(SymTabESP e)
 
 void cmpRR_asm(char *reg, char *reg2)
 {
-	fprintf(asmlist, "\tcmp\t%s, %s\t\n", reg, reg2);
+	fprintf(asmlist, "\tcmp\t%s, %s\n", reg, reg2);
 }
 
 void jz_asm(SymTabESP e)
