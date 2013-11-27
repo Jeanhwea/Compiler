@@ -395,6 +395,9 @@ void PUSHA(SymTabESP r, SymTabESP s, SymTabESP d)
 	switch (d->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
+	case Num_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", d);
 		pushR_asm("ecx");
 		break;

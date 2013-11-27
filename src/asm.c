@@ -290,10 +290,10 @@ void call_asm(SymTabESP e)
 	if (enterlevel <= lvl) {
 		// fprintf(asmlist, "\tpush\tebp\t\t; display new\n");
 		for (i = 0; i < enterlevel-1; i++) {
-			offset = 4 * ( 2 + enterlevel-1 - i);
+			offset = 4 * ( 2 + enterlevel-1 - i-1);
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\n",
 				offset);
-			fprintf(asmlist, "\tpush\tedi\t\t; display new\n");
+			fprintf(asmlist, "\tpush\tedi\t\t; display old\n");
 		}
 		fprintf(asmlist, "\tcall\t%s\n", e->label);
 		offset = 4 * (e->stp->posi_para + enterlevel-1);
@@ -301,7 +301,7 @@ void call_asm(SymTabESP e)
 	} else if (enterlevel == lvl+1) {
 		fprintf(asmlist, "\tpush\tebp\t\t; display new\n");
 		for (i = 0; i < lvl-1; i++) {
-			offset = 4 * ( 2 + lvl-1 - i);
+			offset = 4 * ( 2 + lvl-1 - i-1);
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\n",
 				offset);
 			fprintf(asmlist, "\tpush\tedi\t\t; display low level\n");
