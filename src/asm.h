@@ -12,13 +12,15 @@ void enter(SymTabESP e);
 void movRM_asm(char *reg, SymTabESP e);
 void leaRM_asm(char *reg, SymTabESP e);
 void movMR_asm(SymTabESP e, char *reg);
-void movRR_asm(char *reg, char *reg2);
-void movRI_asm(char *reg, int imm);
 void movRA_asm(SymTabESP e, char *offsetreg, char *reg);
 void movAR_asm(SymTabESP e, char *offsetreg, char *reg);
+void movRR_asm(char *reg, char *reg2);
+void movRI_asm(char *reg, int imm);
 void addRI_asm(char *reg, int imm);
 void addRR_asm(char *reg, char *reg2);
 void subRR_asm(char *reg, char *reg2);
+void mulRR_asm(char *reg, char *reg2);
+void divR_asm(char *reg);
 void neg_asm(char *reg);
 void inc_asm(char *reg);
 void dec_asm(char *reg);
@@ -37,7 +39,7 @@ void jng_asm(SymTabESP e);
 void jl_asm(SymTabESP e);
 void jnl_asm(SymTabESP e);
 void retval_asm(char *reg);
-
+void clsR_asm(char *reg);
 
 /**
  *             RUNTIME STACK OVERVIEW

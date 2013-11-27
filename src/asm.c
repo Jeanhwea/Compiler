@@ -181,8 +181,7 @@ void movRA_asm(SymTabESP e, char *offsetreg, char *reg)
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tlea\tedi, [ebp - %d]\t; %s\n",
 				VAROFFSET, e->label);
-			fprintf(asmlist, "\timul\t%s, %s, 4\n",
-				offsetreg, offsetreg);
+			fprintf(asmlist, "\timul\t%s, 4\n", offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t%s, [edi]\n", reg);
 		} else if (e->level < lvl) {
@@ -190,8 +189,7 @@ void movRA_asm(SymTabESP e, char *offsetreg, char *reg)
 				DISPLAY);
 			fprintf(asmlist, "\tlea\tedi, [esi - %d]\t; %s\n",
 				VAROFFSET, e->label);
-			fprintf(asmlist, "\timul\t%s, %s, 4\n",
-				offsetreg, offsetreg);
+			fprintf(asmlist, "\timul\t%s, 4\n", offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t%s, [edi]\n", reg);
 		}
@@ -208,8 +206,7 @@ void movAR_asm(SymTabESP e, char *offsetreg, char *reg)
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tlea\tedi, [ebp - %d]\t; %s\n",
 				VAROFFSET, e->label);
-			fprintf(asmlist, "\timul\t%s, %s, 4\n",
-				offsetreg, offsetreg);
+			fprintf(asmlist, "\timul\t%s, 4\n", offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t[edi], %s\n", reg);
 		} else if (e->level < lvl) {
@@ -217,8 +214,7 @@ void movAR_asm(SymTabESP e, char *offsetreg, char *reg)
 				DISPLAY);
 			fprintf(asmlist, "\tlea\tedi, [esi - %d]\t; %s\n",
 				VAROFFSET, e->label);
-			fprintf(asmlist, "\timul\t%s, %s, 4\n",
-				offsetreg, offsetreg);
+			fprintf(asmlist, "\timul\t%s, 4\n", offsetreg);
 			fprintf(asmlist, "\tsub\tedi, %s\n", offsetreg);
 			fprintf(asmlist, "\tmov\t[edi], %s\n", reg);
 		}
@@ -251,6 +247,16 @@ void addRR_asm(char *reg, char *reg2)
 void subRR_asm(char *reg, char *reg2)
 {
 	fprintf(asmlist, "\tsub\t%s, %s\n", reg, reg2);
+}
+
+void mulRR_asm(char *reg, char *reg2)
+{
+	fprintf(asmlist, "\timul\t%s, %s\n", reg, reg2);
+}
+
+void divR_asm(char *reg)
+{
+	fprintf(asmlist, "\tdiv\t%s\n", reg);
 }
 
 void neg_asm(char *reg)
@@ -293,18 +299,18 @@ void call_asm(SymTabESP e)
 			offset = 4 * ( 2 + enterlevel-1 - i-1);
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\n",
 				offset);
-			fprintf(asmlist, "\tpush\tedi\t\t; display old\n");
+			fprintf(asmlist, "\tpush\tedi\t\t; dup old ebp\n");
 		}
 		fprintf(asmlist, "\tcall\t%s\n", e->label);
 		offset = 4 * (e->stp->posi_para + enterlevel-1);
 		fprintf(asmlist, "\tadd\tesp, %d\n", offset);
 	} else if (enterlevel == lvl+1) {
-		fprintf(asmlist, "\tpush\tebp\t\t; display new\n");
+		fprintf(asmlist, "\tpush\tebp\t\t; push current ebp\n");
 		for (i = 0; i < lvl-1; i++) {
 			offset = 4 * ( 2 + lvl-1 - i-1);
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\n",
 				offset);
-			fprintf(asmlist, "\tpush\tedi\t\t; display low level\n");
+			fprintf(asmlist, "\tpush\tedi\t\t; push old ebp\n");
 		}
 		fprintf(asmlist, "\tcall\t%s\n", e->label);
 		offset = 4 * (e->stp->posi_para + enterlevel-1);
@@ -401,4 +407,9 @@ void jnl_asm(SymTabESP e)
 void retval_asm(char *reg)
 {
 	fprintf(asmlist, "\tmov\t[ebp - 4], %s\t; set return value\n", reg);
+}
+
+void clsR_asm(char *reg)
+{
+	fprintf(asmlist, "\txor\t%s, %s\n", reg, reg);
 }

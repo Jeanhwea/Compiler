@@ -68,6 +68,8 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 	switch (d->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		addRR_asm("ecx", "edx");
 		movMR_asm(d, "ecx");
 		break;
@@ -103,6 +105,8 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 	switch (d->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		subRR_asm("ecx", "edx");
 		movMR_asm(d, "ecx");
 		break;
@@ -113,12 +117,86 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 
 void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
-	fprintf(asmlist, "TODO\n");
+	switch (r->obj) {
+	case Var_Obj_t:
+	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
+	case Num_Obj_t:
+		movRM_asm("ecx", r);
+		break;
+	default:
+		fprintf(asmlist, "ELF BUG:128\n");
+	}
+	switch (s->obj) {
+	case Var_Obj_t:
+	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
+	case Num_Obj_t:
+		movRM_asm("edx", s);
+		break;
+	default:
+		fprintf(asmlist, "ELF BUG:140\n");
+	}
+	switch (d->obj) {
+	case Var_Obj_t:
+	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
+		mulRR_asm("ecx", "edx");
+		movMR_asm(d, "ecx");
+		break;
+	default:
+		fprintf(asmlist, "ELF BUG:150\n");
+	}
 }
 
 void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
-	fprintf(asmlist, "TODO\n");
+	switch (r->obj) {
+	case Var_Obj_t:
+	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
+	case Num_Obj_t:
+		clsR_asm("edx");
+		movRM_asm("eax", r);
+		break;
+	default:
+		fprintf(asmlist, "ELF BUG:167\n");
+	}
+	switch (s->obj) {
+	case Var_Obj_t:
+	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
+	case Num_Obj_t:
+		movRM_asm("ecx", s);
+		break;
+	default:
+		fprintf(asmlist, "ELF BUG:139\n");
+	}
+	switch (d->obj) {
+	case Var_Obj_t:
+	case Tmp_Obj_t:
+	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
+	/**
+	 * div r/imm32
+	 * edx:eax / r/imm32
+	 *
+	 * result:
+	 * eax <- quotient
+	 * edx <- remainder
+	 *
+	 */
+		divR_asm("ecx");
+		movMR_asm(d, "eax");
+		break;
+	default:
+		fprintf(asmlist, "ELF BUG:177\n");
+	}
 }
 
 void INCA(SymTabESP r, SymTabESP s, SymTabESP d)
@@ -593,6 +671,7 @@ void elf(void)
 	QuadSP q;
 	fprintf(asmlist, "; ELF32 on Ubuntu 12.04 \n");
 	fprintf(asmlist, "; NASM version 2.09.10 \n");
+	fprintf(asmlist, "; GCC version 4.6.3 \n");
 	fprintf(asmlist, "%%include \"asm/io.asm\"\n");
 	for (q = qlst; q != NULL; q = q->next) {
 		cgen(q);
