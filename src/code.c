@@ -807,8 +807,9 @@ void ParaListG(ParaListSP t)
 
 void ArgListG(ArgListSP t, SymBucketSP info)
 {
-	SymTabESP d;
+	SymTabESP d, res;
 	SymBucketSP b;
+	FactorSP f;
 	QuadSP q;
 	for (b = info; t != NULL && b != NULL; t = t->next, b = b->next) {
 		switch (b->ep->obj) {
@@ -822,17 +823,56 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 			emit(q);
 			break;
 		case Para_Ref_Obj_t:
-			d = ExprG(t->ep);
-			if (d->obj != Var_Obj_t) {
-				fprintf(errlist, "CODE BUG:826\n");
+			f = NULL;
+			if ((t->ep != NULL) && (t->ep->next == NULL) &&
+			    (t->ep->tp != NULL) && (t->ep->tp->next == NULL)
+				&& (t->ep->tp->fp !=NULL)) {
+				f = t->ep->tp->fp;
+			} else {
+				fprintf(errlist, "CODE BUG:831\n");
 				abort();
 			}
-			NEWQUAD(q);
-			q->op = PUSHA_op;
-			q->r = NULL;
-			q->s = NULL;
-			q->d = d;
-			emit(q);
+			switch (f->type) {
+			case Id_Factor_t:
+				res = sym_lookup(f->idp->name);
+				if (res == NULL) {
+					fprintf(errlist, "SYMNOFOUND:840\n");
+					abort();
+				}
+				if (OBJ3(Var_Obj_t, Para_Val_Obj_t,
+					Para_Ref_Obj_t)) {
+					d = res;
+				} else {
+					fprintf(errlist, "undifined variable\n");
+				}
+				NEWQUAD(q);
+				q->op = PUSHA_op;
+				q->r = NULL;
+				q->s = NULL;
+				q->d = d;
+				emit(q);
+				break;
+			case Array_Factor_t:
+				res = sym_lookup(f->idp->name);
+				if (res == NULL) {
+					fprintf(errlist, "SYMNOFOUND:859\n");
+					abort();
+				}
+				if (OBJ(Array_Obj_t)) {
+					d = res;
+				} else {
+					fprintf(errlist, "undifined array\n");
+				}
+				NEWQUAD(q);
+				q->op = PUSHA_op;
+				q->r = NULL;
+				q->s = ExprG(f->ep);
+				q->d = d;
+				emit(q);
+				break;
+			default:
+				fprintf(errlist, "CODE BUG:880\n");
+			}
 			break;
 		default:
 			fprintf(errlist, "CODE BUG:833\n");

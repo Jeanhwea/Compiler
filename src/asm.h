@@ -11,6 +11,7 @@
 void enter(SymTabESP e);
 void movRM_asm(char *reg, SymTabESP e);
 void leaRM_asm(char *reg, SymTabESP e);
+void leaRA_asm(char *reg, char *offsetreg, SymTabESP e);
 void movMR_asm(SymTabESP e, char *reg);
 void movRA_asm(SymTabESP e, char *offsetreg, char *reg);
 void movAR_asm(SymTabESP e, char *offsetreg, char *reg);

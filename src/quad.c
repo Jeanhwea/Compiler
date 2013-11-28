@@ -128,7 +128,12 @@ void printQuad(QuadSP q)
 		break;
 	case PUSHA_op:
 		NEED(d);
-		fprintf(code, "\tPUSHA\t-, -, *%s\n", q->d->label);
+		if (q->s == NULL) {
+			fprintf(code, "\tPUSHA\t-, -, *%s\n", q->d->label);
+		} else {
+			fprintf(code, "\tPUSHA\t-, %s, *%s\n",
+				q->s->label, q->d->label);			
+		}
 		break;
 	case POP_op:
 		NEED(d);

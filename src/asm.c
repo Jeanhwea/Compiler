@@ -120,6 +120,34 @@ void leaRM_asm(char *reg, SymTabESP e)
 	}
 }
 
+void leaRA_asm(char *reg, char *offsetreg, SymTabESP e)
+{
+	switch (e->obj) {
+	case Array_Obj_t:
+		if (e->level == lvl) {
+			fprintf(asmlist, "\tlea\t%s, [ebp - %d]\t; %s\n",
+				reg, VAROFFSET, e->label);
+			fprintf(asmlist, "\timul\t%s, 4\n", offsetreg);
+			fprintf(asmlist, "\tsub\t%s, %s\n", 
+				reg, offsetreg);
+		} else if (e->level < lvl) {
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; %s\n",
+				DISPLAY, e->label);
+			fprintf(asmlist, "\tlea\t%s, [esi - %d]\t; %s\n",
+				reg, VAROFFSET, e->label);
+			fprintf(asmlist, "\timul\t%s, 4\n", offsetreg);
+			fprintf(asmlist, "\tsub\t%s, %s\n", 
+				reg, offsetreg);
+		} else {
+			fprintf(errlist, "ASM BUG:142\n");
+		}
+		break;
+	default:
+		fprintf(errlist, "ASM BUG:146\n");
+	}
+}
+
+
 void movMR_asm(SymTabESP e, char *reg)
 {
 	switch (e->obj) {
