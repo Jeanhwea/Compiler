@@ -19,6 +19,11 @@ int tmpc;
 /* current length of parameter region */
 int parac;
 
+StringS *strlst = NULL;
+StringS *strlsttail = NULL;
+int strcount = 1;
+char strBuf[100];
+
 void enter(SymTabESP e)
 {
 	SymTabSP st;
@@ -93,6 +98,10 @@ void movRM_asm(char *reg, SymTabESP e)
 		break;
 	case Num_Obj_t:
 		fprintf(asmlist, "\tmov\t%s, %s\n", reg, e->label);
+		break;
+	case Const_Obj_t:
+		fprintf(asmlist, "\tmov\t%s, %d\t\t; %s\n", 
+			reg, e->val, e->label);
 		break;
 	default:
 		fprintf(errlist, "ASM BUG:88\n");
@@ -312,7 +321,7 @@ void pushR_asm(char *reg)
 	fprintf(asmlist, "\tpush\t%s\n", reg);
 }
 
-void pop_asm(char *reg)
+void popR_asm(char *reg)
 {
 	fprintf(asmlist, "\tpop\t%s\n", reg);
 }
@@ -440,4 +449,50 @@ void retval_asm(char *reg)
 void clsR_asm(char *reg)
 {
 	fprintf(asmlist, "\txor\t%s, %s\n", reg, reg);
+}
+
+char *allocs_asm(SymTabESP str)
+{
+	char *loc;
+	int len;
+	StringSP strs;
+	sprintf(strBuf, "..@s%d", strcount++);
+	len = strlen(strBuf);
+	loc = (char *) malloc((len + 1)* sizeof(char));
+	if (loc == NULL) {
+		fprintf(errlist, "OUTOFMEM: at asm.c\n");
+		abort();
+	}
+	strcpy(loc, strBuf);
+	strs = (StringS *) malloc(sizeof(StringS));
+	if (strs == NULL) {
+		fprintf(errlist, "OUTOFMEM: at asm.c:466\n");
+		abort();
+	}
+	strs->loc = loc;
+	strs->content = str->label;
+	if (strlst == NULL) {
+		strs->next = NULL;
+		strlst = strlsttail = strs;
+	} else {
+		strs->next = NULL;
+		strlsttail->next = strs;
+		strlsttail = strs;
+	}
+	return loc;
+}
+
+void setString_asm()
+{
+	StringSP p, q;
+	if (strlst != NULL)
+		fprintf(asmlist, "SECTION .DATA\n");
+	for (q = strlst; q != NULL; ) {
+		p = q;
+		fprintf(asmlist, "\t%s: DB \"%s\", 0\n", 
+			p->loc, p->content);
+		q = p->next;
+		free(p);
+	}
+	strlst = NULL;
 }

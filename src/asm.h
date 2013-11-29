@@ -8,6 +8,13 @@
 
 #define ASM_H
 
+typedef struct _String *StringSP;
+typedef struct _String {
+	char *loc;
+	char *content;
+	StringSP next;
+} StringS;
+
 void enter(SymTabESP e);
 void movRM_asm(char *reg, SymTabESP e);
 void leaRM_asm(char *reg, SymTabESP e);
@@ -27,7 +34,7 @@ void inc_asm(char *reg);
 void dec_asm(char *reg);
 void pusha_asm(SymTabESP e);
 void pushR_asm(char *reg);
-void pop_asm(char *reg);
+void popR_asm(char *reg);
 void call_asm(SymTabESP e);
 void ret_asm(void);
 void label_asm(SymTabESP e);
@@ -41,6 +48,8 @@ void jl_asm(SymTabESP e);
 void jnl_asm(SymTabESP e);
 void retval_asm(char *reg);
 void clsR_asm(char *reg);
+char *allocs_asm(SymTabESP str);
+void setString_asm();
 
 /**
  *             RUNTIME STACK OVERVIEW
@@ -63,6 +72,9 @@ void clsR_asm(char *reg);
  *               | temporary(1) |
  *               | temporary(2) |
  *               | temporary(3) |
+ *               | saved ebx    |
+ *               | saved esi    |
+ *               | saved edi    |
  *               |    ... ...   |
  *        esp -> |    ... ...   |
  *

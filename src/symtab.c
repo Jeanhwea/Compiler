@@ -125,15 +125,14 @@ static char *mkUsi(int inte)
 {
 	char *l;
 	int n;
-	sprintf(stringBuf, "%x", inte);
+	sprintf(stringBuf, "%d", inte);
 	n = strlen(stringBuf);
-	l = (char *) malloc( (n + 3) * sizeof(char));
+	l = (char *) malloc( (n + 1) * sizeof(char));
 	if (l == NULL) {
 		fprintf(errlist, "OUTOFMEM: in mkUsi\n");
 		return NULL;
 	}
-	strcpy(l,"0x");
-	strcat(l,stringBuf);
+	strcpy(l,stringBuf);
 	return l;
 }
 
