@@ -158,11 +158,15 @@ void printQuad(QuadSP q)
 		fprintf(code, "%s:\n", q->d->label);
 		break;
 	case FIN_op:
-		fprintf(code, "\tFIN\t-, -, -\n");
+		fprintf(code, "\tFIN\t-, -, -\n\n");
 		break;
 	case READ_op:
 		NEED(d);
 		fprintf(code, "\tREAD\t-, -, %s\n", q->d->label);
+		break;
+	case READC_op:
+		NEED(d);
+		fprintf(code, "\tREADC\t-, -, %s\n", q->d->label);
 		break;
 	case WRS_op:
 		NEED(d);

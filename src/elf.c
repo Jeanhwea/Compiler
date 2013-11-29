@@ -36,6 +36,7 @@ static void SRETA(SymTabESP r, SymTabESP s, SymTabESP d);
 static void ENTERA(SymTabESP r, SymTabESP s, SymTabESP d);
 static void FINA(SymTabESP r, SymTabESP s, SymTabESP d);
 static void READA(SymTabESP r, SymTabESP s, SymTabESP d);
+static void READCA(SymTabESP r, SymTabESP s, SymTabESP d);
 static void WRSA(SymTabESP r, SymTabESP s, SymTabESP d);
 static void WRIA(SymTabESP r, SymTabESP s, SymTabESP d);
 static void WRCA(SymTabESP r, SymTabESP s, SymTabESP d);
@@ -588,6 +589,12 @@ void READA(SymTabESP r, SymTabESP s, SymTabESP d)
 	movMR_asm(d, "eax");
 }
 
+void READCA(SymTabESP r, SymTabESP s, SymTabESP d)
+{
+	fprintf(asmlist, "\tcall\tscan_char\n");
+	movMR_asm(d, "eax");
+}
+
 void WRSA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
 	char *loc;
@@ -694,6 +701,9 @@ void cgen(QuadSP t)
 		break;
 	case READ_op:
 		READA(t->r, t->s, t->d);
+		break;
+	case READC_op:
+		READCA(t->r, t->s, t->d);
 		break;
 	case WRS_op:
 		WRSA(t->r, t->s, t->d);

@@ -26,7 +26,7 @@ typedef enum {
 	/* function management */
 	CALL_op, SRET_op, ENTER_op, FIN_op,
 	/* I/O management */
-	READ_op, WRS_op, WRI_op, WRC_op,
+	READ_op, READC_op, WRS_op, WRI_op, WRC_op,
 	/* label marker */
 	LABEL_op
 } Quad_t;

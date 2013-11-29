@@ -16,11 +16,6 @@ int SHIFT = 4;
 
 /* point to the topest symbol table */
 static SymTabSP TOP = NULL;
-/* point to saved symbol table list */
-/*
- *static SymTabSP savedSTAB = NULL;
- *static SymTabSP savedSTABhead = NULL;
- */
 /* hold current level */
 static int LEVEL = 0;
 
@@ -150,7 +145,7 @@ static inline int hash(char *key)
 	return h;
 }
 
-void sym_insert(SymBucketSP bp, SymTabSP st)
+static void sym_insert(SymBucketSP bp, SymTabSP st)
 {
 	int h;
 	SymBucketSP p;
@@ -584,7 +579,8 @@ void printTab(SymTabSP t)
 	SymBucketSP p;
 	int i;
 	if (t != NULL) {
-		fprintf(stablist, "\n***********************************************************\n");
+		fprintf(stablist, "********************************************");
+		fprintf(stablist, "******************************************\n");
 		fprintf(stablist, "    name\t  label  \t    line");
 		fprintf(stablist, "\t object \t  type       value ");
 		fprintf(stablist, "   level    posi\n");
@@ -639,13 +635,15 @@ void printTab(SymTabSP t)
 					p->ep->val, p->ep->level, p->ep->posi);
 			}
 		}
-		fprintf(stablist, "-----------------------------------------------------------\n");
+		fprintf(stablist, "--------------------------------------------");
+		fprintf(stablist, "------------------------------------------\n");
 		fprintf(stablist, 
 			"var = %d; tmp = %d; para = %d; level = %d\n",
 			t->posi_var, t->posi_tmp, t->posi_para, t->level);
 		for (p = t->headinfo; p != NULL; p = p->next) {
 			fprintf(stablist, "paralist = %s\n", p->ep->label);
 		}
-		fprintf(stablist, "***********************************************************\n");
+		fprintf(stablist, "********************************************");
+		fprintf(stablist, "******************************************\n");
 	}
 }

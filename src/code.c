@@ -493,18 +493,29 @@ void ReadStmtG(ReadStmtSP t)
 			fprintf(errlist, "SYMNOFOUND:483\n");
 			abort();
 		}
-		NEWQUAD(q);
-		q->op = READ_op;
-		q->r = NULL;
-		q->s = NULL;
-		q->d = res;
-		emit(q);
+		if (res->type == Char_Type_t) {
+			NEWQUAD(q);
+			q->op = READC_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = res;
+			emit(q);
+		} else {
+			NEWQUAD(q);
+			q->op = READ_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = res;
+			emit(q);
+		}
 	}
 }
 
 void WriteStmtG(WriteStmtSP t)
 {
 	QuadSP q;
+	SymTabESP res;
+	FactorSP f;
 	if (t == NULL) return ;
 	switch (t->type) {
 	case Str_Write_t:
@@ -516,12 +527,32 @@ void WriteStmtG(WriteStmtSP t)
 		emit(q);
 		break;
 	case Id_Write_t:
-		NEWQUAD(q);
-		q->op = WRI_op;
-		q->r = NULL;
-		q->s = NULL;
-		q->d = ExprG(t->ep);
-		emit(q);
+		f = NULL;
+		if ((t->ep != NULL) && (t->ep->next == NULL) &&
+		    (t->ep->tp != NULL) && (t->ep->tp->next == NULL)
+			&& (t->ep->tp->fp !=NULL)) {
+			f = t->ep->tp->fp;
+		}
+		if (f != NULL) {
+			res = sym_lookup(f->idp->name);
+		} else {
+			fprintf(errlist, "CODE BUG:530\n");
+		}
+		if (res->type == Char_Type_t) {
+			NEWQUAD(q);
+			q->op = WRC_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = ExprG(t->ep);
+			emit(q);
+		} else {
+			NEWQUAD(q);
+			q->op = WRI_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = ExprG(t->ep);
+			emit(q);
+		}
 		break;
 	case StrId_Write_t:
 		NEWQUAD(q);
@@ -530,12 +561,32 @@ void WriteStmtG(WriteStmtSP t)
 		q->s = NULL;
 		q->d = sym_make_string(t->sp);
 		emit(q);
-		NEWQUAD(q);
-		q->op = WRI_op;
-		q->r = NULL;
-		q->s = NULL;
-		q->d = ExprG(t->ep);
-		emit(q);
+		f = NULL;
+		if ((t->ep != NULL) && (t->ep->next == NULL) &&
+		    (t->ep->tp != NULL) && (t->ep->tp->next == NULL)
+			&& (t->ep->tp->fp !=NULL)) {
+			f = t->ep->tp->fp;
+		}
+		if (f != NULL) {
+			res = sym_lookup(f->idp->name);
+		} else {
+			fprintf(errlist, "CODE BUG:564\n");
+		}
+		if (res->type == Char_Type_t) {
+			NEWQUAD(q);
+			q->op = WRC_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = ExprG(t->ep);
+			emit(q);
+		} else {
+			NEWQUAD(q);
+			q->op = WRI_op;
+			q->r = NULL;
+			q->s = NULL;
+			q->d = ExprG(t->ep);
+			emit(q);
+		}
 		break;
 	default:
 		fprintf(errlist, "CODE BUG:290\n");

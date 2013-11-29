@@ -19,35 +19,28 @@ FILE *stablist;
 FILE *asmlist;
 FILE *errlist;
 FILE *tiplist;
+FILE *astlist;
 int lineno = 0;
+int runlevel = 1;
 
-BOOL TraceScan = FALSE;
-BOOL PrintSource = FALSE;
-BOOL ShowAST = FALSE;
-BOOL ShowTip = FALSE;
+BOOL TraceScan = TRUE;
+BOOL PrintSource = TRUE;
+BOOL ShowAST = TRUE;
+BOOL ShowTip = TRUE;
 BOOL ShowQuad = TRUE;
 
 int main(int argc, const char *argv[])
 {
 	PgmSP ast; /* abstract syntax tree */
 	char pgm[120] = "input.pas";
-	int i;
-	if (argc < 2) {
+	char *codef;
+	char *stablistf;
+	char *asmlistf;
+	char *astlistf;
+	int fnlen;
+	if (argc != 2) {
 		fprintf(stdout, "usage: ./compiler <filename>\n");
 		exit(1);
-	}
-	if (argc > 2) {
-		for (i = 0; i < strlen(argv[argc-2]); i++) {
-			if (argv[argc-2][i] == 's') {
-				TraceScan = TRUE;
-			} else if (argv[argc-2][i] == 'p') {
-				PrintSource = TRUE;
-			} else if (argv[argc-2][i] == 'a') {
-				ShowAST = TRUE;
-			} else if (argv[argc-2][i] == 't') {
-				ShowTip = TRUE;
-			}
-		}
 	}
 	strcpy(pgm,argv[argc-1]);
 	source = fopen(pgm, "r");
@@ -55,10 +48,48 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "File %s not found\n", pgm);
 		exit(1);
 	}
-	listing = stderr;
-	code = stderr;
-	stablist = stderr;
-	asmlist = stdout;
+	if (strchr(pgm, '.') == NULL) {
+		strcat(pgm, ".pas");
+	}
+	fnlen = strcspn(pgm, ".");
+
+	codef = (char *)calloc(fnlen + 3, sizeof(char));
+	strncpy(codef, pgm, fnlen);
+	strcat(codef, ".q");
+	code = fopen(codef, "w");
+	if (code == NULL) {
+		fprintf(stderr, "Unable to open %s\n", codef);
+		exit(1);
+	}
+
+	asmlistf = (char *)calloc(fnlen + 5, sizeof(char));
+	strncpy(asmlistf, pgm, fnlen);
+	strcat(asmlistf, ".asm");
+	asmlist = fopen(asmlistf, "w");
+	if (asmlist == NULL) {
+		fprintf(stderr, "Unable to open %s\n", asmlistf);
+		exit(1);
+	}
+
+	astlistf = (char *)calloc(fnlen + 5, sizeof(char));
+	strncpy(astlistf, pgm, fnlen);
+	strcat(astlistf, ".xml");
+	astlist = fopen(astlistf, "w");
+	if (astlist == NULL) {
+		fprintf(stderr, "Unable to open %s\n", astlistf);
+		exit(1);
+	}
+
+	stablistf = (char *)calloc(fnlen + 5, sizeof(char));
+	strncpy(stablistf, pgm, fnlen);
+	strcat(stablistf, ".stb");
+	stablist = fopen(stablistf, "w");
+	if (stablist == NULL) {
+		fprintf(stderr, "Unable to open %s\n", stablistf);
+		exit(1);
+	}
+
+	listing = stdout;
 	errlist = stderr;
 	tiplist = stderr;
 	ast = parse();
@@ -66,10 +97,12 @@ int main(int argc, const char *argv[])
 	coder(ast);
 	elf();
 	fclose(source);
-	/*
-	 *fclose(listing);
-	 *fclose(errlist);
-	 *fclose(tiplist);
-	 */
+	fclose(code);
+	fclose(asmlist);
+	fclose(astlist);
+	fclose(listing);
+	fclose(stablist);
+	fclose(errlist);
+	fclose(tiplist);
 	return 0;
 }

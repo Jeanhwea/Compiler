@@ -54,17 +54,6 @@ nspace.o: nspace.c nspace.h global.h parse.h
 util.o: util.c util.h global.h scan.h
 	$(CC) $(CFLAGS) -c util.c
 
-all: nice compiler
-
-nice: nice.o
-	$(LK) $(LFLAG) -o nice nice.o
-
-nice.o: nice.asm asm/io.asm
-	$(AS) $(ASFLAG) nice.asm
-
-nice.asm: compiler example/untitled.pas
-	./compiler example/untitled.pas > nice.asm 2> ./example/untitled.q
-
 .PHONY: clean
 clean:
-	-rm $(OBJS) nice.o
+	-rm $(OBJS)

@@ -183,8 +183,6 @@ char *copyString(char *s)
 		fprintf(errlist, "Out of memory error at line %d\n", lineno);
 	} else {
 		strcpy(t, s);
-		if (ShowTip)
-			fprintf(tiplist, "%s\n", s);
 	}
 	return t;
 }
@@ -195,7 +193,7 @@ static void Indent(void)
 	int i;
 	for (i = 0; i < indentno; i++) {
 		if (ShowAST)
-			fprintf(listing, "\t");
+			fprintf(astlist, "\t");
 	}
 }
 
@@ -204,7 +202,7 @@ void headPr(char *cont)
 	Indent();
 	indentno += 1;
 	if (ShowAST)
-		fprintf(listing, "<%s>\n", cont);
+		fprintf(astlist, "<%s>\n", cont);
 }
 
 void innerPr(int n, ...)
@@ -216,7 +214,7 @@ void innerPr(int n, ...)
 	for (i = 0; i < n; i++) {
 		chp = va_arg(vl, char *);
 		if (ShowAST)
-			fprintf(listing, "%s", chp);
+			fprintf(astlist, "%s", chp);
 	}
 	va_end(vl);
 }
@@ -231,7 +229,7 @@ void innerIdnPr(int n, ...)
 	for (i = 0; i < n; i++) {
 		chp = va_arg(vl, char *);
 		if (ShowAST)
-			fprintf(listing, "%s", chp);
+			fprintf(astlist, "%s", chp);
 	}
 	va_end(vl);
 }
@@ -245,11 +243,11 @@ void innerlnPr(int n, ...)
 	for (i = 0; i < n; i++) {
 		chp = va_arg(vl, char *);
 		if (ShowAST)
-			fprintf(listing, "%s", chp);
+			fprintf(astlist, "%s", chp);
 	}
 	va_end(vl);
 	if (ShowAST) {
-		fprintf(listing, "\n");
+		fprintf(astlist, "\n");
 	}
 }
 
@@ -263,24 +261,24 @@ void innerIdnlnPr(int n, ...)
 	for (i = 0; i < n; i++) {
 		chp = va_arg(vl, char *);
 		if (ShowAST)
-			fprintf(listing, "%s", chp);
+			fprintf(astlist, "%s", chp);
 	}
 	va_end(vl);
 	if (ShowAST) {
-		fprintf(listing, "\n");
+		fprintf(astlist, "\n");
 	}
 }
 
 void innerIntPr(int val)
 {
 	if (ShowAST)
-		fprintf(listing, "%d\n", val);
+		fprintf(astlist, "%d\n", val);
 }
 
 void innerCharPr(char val)
 {
 	if (ShowAST)
-		fprintf(listing, "%c\n", val);
+		fprintf(astlist, "%c\n", val);
 }
 
 void tailPr(char *cont)
@@ -288,5 +286,5 @@ void tailPr(char *cont)
 	indentno -= 1;
 	Indent();
 	if (ShowAST)
-		fprintf(listing, "</%s>\n", cont);
+		fprintf(astlist, "</%s>\n", cont);
 }
