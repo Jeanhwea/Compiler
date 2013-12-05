@@ -108,13 +108,19 @@ int main(int argc, const char *argv[])
 	tiplist = stderr;
 	if (runlevel > 2) {
 		ast = parse();
+	} else {
+		exit(1);
 	}
 	if (runlevel > 1) {
 		analyse(ast);
 		coder(ast);
+	} else {
+		exit(1);
 	}
 	if (runlevel > 0) {
 		elf();
+	} else {
+		exit(1);
 	}
 	fclose(source);
 	fclose(code);

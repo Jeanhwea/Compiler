@@ -124,6 +124,14 @@ void leaRM_asm(char *reg, SymTabESP e)
 			fprintf(errlist, "ASM BUG:109\n");
 		}
 		break;
+	case Para_Val_Obj_t:
+		if (e->level == lvl) {
+			fprintf(asmlist, "\tlea\t%s, [ebp + %d]\t; %s\n",
+				reg, PARAOFFSET, e->label);
+		} else {
+			fprintf(errlist, "ASM BUG:132\n");
+		}
+		break;
 	case Para_Ref_Obj_t:
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tmov\t%s, [ebp + %d]\t; %s\n",
@@ -201,14 +209,14 @@ void movMR_asm(SymTabESP e, char *reg)
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\n",
 				PARAOFFSET);
-			fprintf(asmlist, "\tmov\t[esi], %s\t\t; *%s\n",
+			fprintf(asmlist, "\tmov\t[esi], %s\t; *%s\n",
 				reg, e->label);
 		} else if (e->level < lvl) {
 			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\t; display para ref\n", 
 				DISPLAY);
 			fprintf(asmlist, "\tmov\tesi, [edi + %d]\n",
 				PARAOFFSET);
-			fprintf(asmlist, "\tmov\t[esi], %s\t\t; *%s\n",
+			fprintf(asmlist, "\tmov\t[esi], %s\t; *%s\n",
 				reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:143\n");

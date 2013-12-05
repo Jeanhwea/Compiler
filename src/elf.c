@@ -501,6 +501,7 @@ void PUSHA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Num_Obj_t:
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
+	case Para_Ref_Obj_t:
 		movRM_asm("ecx", d);
 		pushR_asm("ecx");
 		break;

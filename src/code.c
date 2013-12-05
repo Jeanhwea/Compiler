@@ -986,6 +986,7 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 
 void coder(PgmSP t)
 {
+	--runlevel;
 	if (t != NULL)
 		PgmG(t);
 }

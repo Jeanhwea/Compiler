@@ -67,7 +67,7 @@ void syntaxError(ERRNO errno, int lineno, BOOL fatal, char *msg)
 
 void semanticError(ERRNO errno, int lineno, BOOL fatal, char *msg)
 {
-	fprintf(errlist, "\nsemantic error:%d: ", lineno);
+	fprintf(errlist, "semantic error:%d: ", lineno);
 	if (msg != NULL) {
 		fprintf(errlist, "%s%s\n", ERRVEC[errno], msg);
 	} else {
