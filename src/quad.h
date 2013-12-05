@@ -44,21 +44,21 @@ typedef struct _QuadS {
 do { \
 	if (q->a == NULL) {					\
 		fprintf(errlist, "1)NULL POINT IN QUAD\n");	\
-		abort();					\
+		exit(1);					\
 	}							\
 } while(0)
 #define NEED2(a,b) \
 do { \
 	if (q->a == NULL || q->b == NULL) {			\
 		fprintf(errlist, "2)NULL POINT IN QUAD\n");	\
-		abort();					\
+		exit(1);					\
 	}							\
 } while(0)
 #define NEED3(a,b,c) \
 do { \
 	if (q->a == NULL || q->b == NULL || q->c == NULL) {	\
 		fprintf(errlist, "3)NULL POINT IN QUAD\n");	\
-		abort();					\
+		exit(1);					\
 	}							\
 } while(0)
 

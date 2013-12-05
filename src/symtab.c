@@ -7,6 +7,7 @@
 #include "global.h"
 #include "util.h"
 #include "parse.h"
+#include "error.h"
 #include "symtab.h"
 #include "nspace.h"
 /* hash size */
@@ -92,7 +93,7 @@ static char *genLabel(void)
 	n = strlen(stringBuf);
 	l = (char *) malloc( (n + 5) * sizeof(char));
 	if (l == NULL) {
-		fprintf(errlist, "OUTOFMEM: in genLabel\n");
+		fprintf(tiplist, "OUTOFMEM: in genLabel\n");
 		return NULL;
 	}
 	strcpy(l,"..@l");
@@ -108,7 +109,7 @@ static char *genTmp(void)
 	n = strlen(stringBuf);
 	l = (char *) malloc( (n + 2) * sizeof(char));
 	if (l == NULL) {
-		fprintf(errlist, "OUTOFMEM: in genTmp\n");
+		fprintf(tiplist, "OUTOFMEM: in genTmp\n");
 		return NULL;
 	}
 	strcpy(l,"&");
@@ -124,7 +125,7 @@ static char *mkUsi(int inte)
 	n = strlen(stringBuf);
 	l = (char *) malloc( (n + 1) * sizeof(char));
 	if (l == NULL) {
-		fprintf(errlist, "OUTOFMEM: in mkUsi\n");
+		fprintf(tiplist, "OUTOFMEM: in mkUsi\n");
 		return NULL;
 	}
 	strcpy(l,stringBuf);
@@ -136,7 +137,7 @@ static inline int hash(char *key)
 	int h = 0;
 	int i;
 	if (key == NULL) {
-		fprintf(errlist, "an error hash key\n");
+		fprintf(tiplist, "an error hash key\n");
 		return h;
 	}
 	for (i = 0; key[i] != '\0'; i++) {
@@ -151,7 +152,7 @@ static void sym_insert(SymBucketSP bp, SymTabSP st)
 	SymBucketSP p;
 	SymBucketSP *head;
 	if (bp == NULL || st == NULL) {
-		fprintf(errlist, "SYMTAB BUG:50\n");
+		fprintf(tiplist, "SYMTAB BUG:50\n");
 		return ;
 	}
 	h = hash(bp->ep->name);
@@ -174,24 +175,20 @@ SymTabESP sym_insert_const(IdentSP idp)
 {
 	SymBucketSP p;
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
 	int h = hash(idp->name);
 	if (TOP == NULL) 
-		fprintf(errlist, "SYMTAB BUG:57\n");
+		fprintf(tiplist, "SYMTAB BUG:57\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
 		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
 				break;
 	}
 	if (p == NULL) {
-		ENTRY(SymLineS, l);
-		l->lineno = idp->line;
-		l->next = NULL;
 		ENTRY(SymTabES, e);
 		e->name = copyString(idp->name);
 		e->label = Nappend(idp->name);
 		e->val = idp->val;
-		e->lines = l;
+		e->lineno = idp->line;
 		e->obj = Const_Obj_t;
 		e->level = LEVEL;
 		e->posi = -1;
@@ -203,7 +200,7 @@ SymTabESP sym_insert_const(IdentSP idp)
 			e->type = Char_Type_t;
 			break;
 		default:
-			fprintf(errlist, "SYMTAB BUG: 73\n");
+			fprintf(tiplist, "SYMTAB BUG: 73\n");
 		}
 		e->stp = TOP;
 		ENTRY(SymBucketS, p);
@@ -211,8 +208,8 @@ SymTabESP sym_insert_const(IdentSP idp)
 		p->next = NULL;
 		sym_insert(p, TOP);
 	} else {
-		fprintf(errlist, "\nduplicated const define: %s\n: %d",
-				idp->name, idp->line);
+		--runlevel;
+		semanticError(DUPSYM, idp->line, FALSE, idp->name);
 	}
 	return e;
 }
@@ -221,23 +218,19 @@ SymTabESP sym_insert_var(IdentSP idp)
 {
 	SymBucketSP p;
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
 	int h = hash(idp->name);
 	if (TOP == NULL) 
-		fprintf(errlist, "SYMTAB BUG:121\n");
+		fprintf(tiplist, "SYMTAB BUG:121\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
 		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
 				break;
 	}
 	if (p == NULL) {
-		ENTRY(SymLineS, l);
-		l->lineno = idp->line;
-		l->next = NULL;
 		ENTRY(SymTabES, e);
 		e->name = copyString(idp->name);
 		e->label = Nappend(idp->name);
-		e->lines = l;
+		e->lineno = idp->line;
 		e->level = LEVEL;
 		e->posi = TOP->posi_var;
 		switch (idp->type) {
@@ -266,7 +259,7 @@ SymTabESP sym_insert_var(IdentSP idp)
 			TOP->posi_var += e->val;
 			break;
 		default:
-			fprintf(errlist, "SYMTAB BUG: 143\n");
+			fprintf(tiplist, "SYMTAB BUG: 143\n");
 		}
 		e->stp = TOP;
 		ENTRY(SymBucketS, p);
@@ -274,8 +267,8 @@ SymTabESP sym_insert_var(IdentSP idp)
 		p->next = NULL;
 		sym_insert(p, TOP);
 	} else {
-		fprintf(errlist, "\nduplicated var define: %s\n: %d",
-				idp->name, idp->line);
+		--runlevel;
+		semanticError(DUPSYM, idp->line, FALSE, idp->name);
 	}
 	return e;
 }
@@ -286,28 +279,23 @@ SymTabESP sym_insert_proc(IdentSP idp, ParaListSP plp)
 	char *procsign;
 	SymBucketSP p;
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
 	int h = hash(idp->name);
 	procsign = signature(idp, plp);
 	proclabel = Nappend(procsign);
 	if (TOP == NULL) 
-		fprintf(errlist, "SYMTAB BUG:121\n");
+		fprintf(tiplist, "SYMTAB BUG:121\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) 
-			&& (!strcmp(proclabel, p->ep->label)) ) 
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) )
 				break;
 	}
 	if (p == NULL) {
-		ENTRY(SymLineS, l);
-		l->lineno = idp->line;
-		l->next = NULL;
 		ENTRY(SymTabES, e);
 		e->name = copyString(idp->name);
 		e->label = proclabel; 
 		Npush(procsign);
 		e->val = -1;
-		e->lines = l;
+		e->lineno = idp->line;
 		e->level = LEVEL;
 		e->posi = -1;
 		e->obj = Proc_Obj_t;
@@ -318,8 +306,8 @@ SymTabESP sym_insert_proc(IdentSP idp, ParaListSP plp)
 		p->next = NULL;
 		sym_insert(p, TOP);
 	} else {
-		fprintf(errlist, "\nduplicated procedure define: %s\n: %d",
-				idp->name, idp->line);
+		--runlevel;
+		semanticError(DUPSYM, idp->line, FALSE, idp->name);
 	}
 	return e;
 }
@@ -330,27 +318,22 @@ SymTabESP sym_insert_fun(IdentSP idp, ParaListSP plp)
 	char *funsign;
 	SymBucketSP p;
 	SymTabESP e;
-	SymLineSP l;
 	int h = hash(idp->name);
 	funsign = signature(idp, plp);
 	funlabel = Nappend(funsign);
 	if (TOP == NULL) 
-		fprintf(errlist, "SYMTAB BUG:121\n");
+		fprintf(tiplist, "SYMTAB BUG:121\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) 
-			&& (!strcmp(funlabel, p->ep->label)) ) 
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
 				break;
 	}
 	if (p == NULL) {
-		ENTRY(SymLineS, l);
-		l->lineno = idp->line;
-		l->next = NULL;
 		ENTRY(SymTabES, e);
 		e->name = copyString(idp->name);
 		e->label = funlabel; 
 		Npush(funsign);
 		e->val = -1;
-		e->lines = l;
+		e->lineno = idp->line;
 		e->level = LEVEL;
 		e->posi = -1;
 		e->obj = Fun_Obj_t;
@@ -362,7 +345,7 @@ SymTabESP sym_insert_fun(IdentSP idp, ParaListSP plp)
 			e->type = Char_Type_t;
 			break;
 		default:
-			fprintf(errlist, "SYMTAB BUG: 201\n");
+			fprintf(tiplist, "SYMTAB BUG: 201\n");
 		}
 		e->stp = TOP;
 		ENTRY(SymBucketS, p);
@@ -370,8 +353,8 @@ SymTabESP sym_insert_fun(IdentSP idp, ParaListSP plp)
 		p->next = NULL;
 		sym_insert(p, TOP);
 	} else {
-		fprintf(errlist, "\nduplicated funtion define: %s\n: %d",
-				idp->name, idp->line);
+		--runlevel;
+		semanticError(DUPSYM, idp->line, FALSE, idp->name);
 	}
 	return e;
 }
@@ -380,24 +363,20 @@ SymTabESP sym_insert_para(IdentSP idp)
 {
 	SymBucketSP p;
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
 	int h = hash(idp->name);
 	if (TOP == NULL) 
-		fprintf(errlist, "SYMTAB BUG:263\n");
+		fprintf(tiplist, "SYMTAB BUG:263\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
 		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
 				break;
 	}
 	if (p == NULL) {
-		ENTRY(SymLineS, l);
-		l->lineno = idp->line;
-		l->next = NULL;
 		ENTRY(SymTabES, e);
 		e->name = copyString(idp->name);
 		e->label = Nappend(idp->name); 
 		e->val = -1;
-		e->lines = l;
+		e->lineno = idp->line;
 		e->level = LEVEL;
 		e->posi = TOP->posi_para++;
 		switch (idp->type) {
@@ -418,7 +397,7 @@ SymTabESP sym_insert_para(IdentSP idp)
 			e->type = Char_Type_t;
 			break;
 		default:
-			fprintf(errlist, "SYMTAB BUG: 291\n");
+			fprintf(tiplist, "SYMTAB BUG: 291\n");
 		}
 		e->stp = TOP;
 		recParaInfo(e);
@@ -427,8 +406,8 @@ SymTabESP sym_insert_para(IdentSP idp)
 		p->next = NULL;
 		sym_insert(p, TOP);
 	} else {
-		fprintf(errlist, "\nduplicated parameter define: %s\n: %d",
-				idp->name, idp->line);
+		--runlevel;
+		semanticError(DUPSYM, idp->line, FALSE, idp->name);
 	}
 	return e;
 }
@@ -437,25 +416,21 @@ SymTabESP sym_insert_tmp(void)
 {
 	SymBucketSP p;
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
 	char *name = genTmp();
 	int h = hash(name);
 	if (TOP == NULL) 
-		fprintf(errlist, "SYMTAB BUG:363\n");
+		fprintf(tiplist, "SYMTAB BUG:363\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
 		if ((p->ep != NULL) && (!strcmp(name, p->ep->name)) ) 
 				break;
 	}
 	if (p == NULL) {
-		ENTRY(SymLineS, l);
-		l->lineno = -1;
-		l->next = NULL;
 		ENTRY(SymTabES, e);
 		e->name = copyString(name);
 		e->label = Nappend(name); 
 		e->val = -1;
-		e->lines = l;
+		e->lineno = -1;
 		e->level = LEVEL;
 		e->posi = TOP->posi_tmp++;
 		e->obj = Tmp_Obj_t;
@@ -466,7 +441,7 @@ SymTabESP sym_insert_tmp(void)
 		p->next = NULL;
 		sym_insert(p, TOP);
 	} else {
-		fprintf(errlist, "SYMTAB BUG:393");
+		fprintf(tiplist, "SYMTAB BUG:393");
 	}
 	return e;
 }
@@ -474,16 +449,12 @@ SymTabESP sym_insert_tmp(void)
 SymTabESP sym_make_usi(int usi)
 {
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
-	ENTRY(SymLineS, l);
-	l->lineno = -1;
-	l->next = NULL;
 	ENTRY(SymTabES, e);
 	e->name = NULL;
 	e->label = mkUsi(usi); 
 	e->val = usi;
-	e->lines = l;
+	e->lineno = -1;
 	e->level = LEVEL;
 	e->posi = -1;
 	e->obj = Num_Obj_t;
@@ -495,16 +466,12 @@ SymTabESP sym_make_usi(int usi)
 SymTabESP sym_make_label(void)
 {
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
-	ENTRY(SymLineS, l);
-	l->lineno = -1;
-	l->next = NULL;
 	ENTRY(SymTabES, e);
 	e->name = NULL;
 	e->label = genLabel(); 
 	e->val = -1;
-	e->lines = l;
+	e->lineno = -1;
 	e->level = LEVEL;
 	e->posi = -1;
 	e->obj = Label_Obj_t;
@@ -516,16 +483,12 @@ SymTabESP sym_make_label(void)
 SymTabESP sym_make_main(void)
 {
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
-	ENTRY(SymLineS, l);
-	l->lineno = -1;
-	l->next = NULL;
 	ENTRY(SymTabES, e);
 	e->name = "main";
 	e->label = "main"; 
 	e->val = -1;
-	e->lines = l;
+	e->lineno = -1;
 	e->level = 0;
 	e->posi = -1;
 	e->obj = Fun_Obj_t;
@@ -537,16 +500,12 @@ SymTabESP sym_make_main(void)
 SymTabESP sym_make_string(char *str)
 {
 	SymTabESP e;
-	SymLineSP l;
 	e = NULL;
-	ENTRY(SymLineS, l);
-	l->lineno = -1;
-	l->next = NULL;
 	ENTRY(SymTabES, e);
 	e->name = NULL;
 	e->label = str; 
 	e->val = -1;
-	e->lines = l;
+	e->lineno = -1;
 	e->level = LEVEL;
 	e->posi = -1;
 	e->obj = String_Obj_t;
@@ -561,7 +520,7 @@ SymTabESP sym_lookup(char *name)
 	SymBucketSP p;
 	int h = hash(name);
 	if (TOP == NULL) {
-		fprintf(errlist, "SYMTAB BUG:108\n");
+		fprintf(tiplist, "SYMTAB BUG:108\n");
 		abort();
 	}
 	for (t = TOP; t != NULL; t = t->prev) {
@@ -588,7 +547,7 @@ void printTab(SymTabSP t)
 			for (p = *(t->sbp + i); p != NULL; p = p->next) {
 				fprintf(stablist, "%8s%24s%8d\t",
 					p->ep->name, p->ep->label, 
-					p->ep->lines->lineno);
+					p->ep->lineno);
 				switch (p->ep->obj) {
 				case Const_Obj_t:
 					fprintf(stablist, "Const_Obj_t");
@@ -615,7 +574,7 @@ void printTab(SymTabSP t)
 					fprintf(stablist, "Tmp_Obj_t");
 					break;
 				default:
-					fprintf(errlist, "SYMTAB BUG:210\n");
+					fprintf(tiplist, "SYMTAB BUG:210\n");
 				}
 				fprintf(stablist, "\t");
 				switch (p->ep->type) {
@@ -629,7 +588,7 @@ void printTab(SymTabSP t)
 					fprintf(stablist, "Nop_Type_t");
 					break;
 				default:
-					fprintf(errlist, "SYMTAB BUG:226\n");
+					fprintf(tiplist, "SYMTAB BUG:226\n");
 				}
 				fprintf(stablist, "%8d%8d%8d\n",
 					p->ep->val, p->ep->level, p->ep->posi);

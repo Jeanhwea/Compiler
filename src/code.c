@@ -44,16 +44,16 @@ void PgmG(PgmSP t)
 	QuadSP q;
 	BlockSP b;
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:47\n");
-		abort();
+		fprintf(tiplist, "CODE BUG:47\n");
+		exit(1);
 	}
 	Ninit();
 	st = newstab();
 	push(st);
 	b = t->bp;
 	if (b == NULL) {
-		fprintf(errlist, "CODE BUG:52\n");
-		abort();
+		fprintf(tiplist, "CODE BUG:52\n");
+		exit(1);
 	}
 	ConstDecfG(b->cdp);
 	VarDecfG(b->vdp);
@@ -74,7 +74,8 @@ void PgmG(PgmSP t)
 	st = pop();
 	printTab(st);
 	Npop();
-	// printAllQuad();
+	if (runlevel > 0)
+		printAllQuad();
 }
 
 void ConstDecfG(ConstDecSP t)
@@ -83,7 +84,8 @@ void ConstDecfG(ConstDecSP t)
 		if (t->cdp != NULL && t->cdp->idp != NULL) {
 			sym_insert_const(t->cdp->idp);
 		} else {
-			fprintf(errlist, "CODE BUG:70\n");
+			fprintf(tiplist, "CODE BUG:70\n");
+			exit(1);
 		}
 	}
 }
@@ -96,7 +98,8 @@ void VarDecfG(VarDecSP t)
 			if (p != NULL && p->idp != NULL) {
 				sym_insert_var(p->idp);
 			} else {
-				fprintf(errlist, "CODE BUG:81\n");
+				fprintf(tiplist, "CODE BUG:81\n");
+				exit(1);
 			}
 		}
 	}
@@ -113,7 +116,8 @@ void PFDecListG(PFDecListSP t)
 			FunDecfG(t->fdp);
 			break;
 		default:
-			fprintf(errlist, "CODE BUG:104\n");
+			fprintf(tiplist, "CODE BUG:104\n");
+			exit(1);
 		}
 	}
 }
@@ -126,13 +130,13 @@ void ProcDecfG(ProcDecSP t)
 	BlockSP b;
 	for (; t != NULL; t = t->next) {
 		if (t->pdp == NULL) {
-			fprintf(errlist, "CODE BUG:112\n");
+			fprintf(tiplist, "CODE BUG:112\n");
 			continue;
 		}
 		e = ProcHeadG(t->pdp->php);
 		b = t->pdp->bp;
 		if (b == NULL) {
-			fprintf(errlist, "CODE BUG:120\n");
+			fprintf(tiplist, "CODE BUG:120\n");
 			continue;
 		}
 		ConstDecfG(b->cdp);
@@ -164,11 +168,11 @@ SymTabESP ProcHeadG(ProcHeadSP t)
 	if (t == NULL) return NULL;
 	e = sym_insert_proc(t->idp, t->plp);
 	if (e == NULL) {
-		fprintf(errlist, "CODE BUG:122\n");
-		abort();
+		return NULL;
 	}
 	st = newstab();
-	e->stp = st;
+	if (runlevel > 0)
+		e->stp = st;
 	push(st);
 	ParaListG(t->plp);
 	return e;
@@ -182,13 +186,13 @@ void FunDecfG(FunDecSP t)
 	BlockSP b;
 	for (; t != NULL; t = t->next) {
 		if (t->fdp == NULL) {
-			fprintf(errlist, "CODE BUG:168\n");
+			fprintf(tiplist, "CODE BUG:168\n");
 			continue;
 		}
 		e = FunHeadG(t->fdp->fhp);
 		b = t->fdp->bp;
 		if (b == NULL) {
-			fprintf(errlist, "CODE BUG:174\n");
+			fprintf(tiplist, "CODE BUG:174\n");
 			continue;
 		}
 		ConstDecfG(b->cdp);
@@ -219,15 +223,14 @@ SymTabESP FunHeadG(FunHeadSP t)
 	SymTabESP e;
 	if (t == NULL) {
 		return NULL;
-		fprintf(errlist, "CODE BUG:222\n");
 	}
 	e = sym_insert_fun(t->idp, t->plp);
 	if (e == NULL) {
-		fprintf(errlist, "CODE BUG:143\n");
-		abort();
+		return NULL;
 	}
 	st = newstab();
-	e->stp = st;
+	if (runlevel > 0)
+		e->stp = st;
 	push(st);
 	ParaListG(t->plp);
 	return e;
@@ -236,7 +239,6 @@ SymTabESP FunHeadG(FunHeadSP t)
 void StmtG(StmtSP t)
 {
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:236\n");
 		return;
 	}
 	switch (t->type) {
@@ -267,7 +269,8 @@ void StmtG(StmtSP t)
 	case Null_Stmt_t:
 		break;
 	default:
-		fprintf(errlist, "CODE BUG:43\n");
+		fprintf(tiplist, "CODE BUG:43\n");
+		exit(1);
 	}
 }
 
@@ -281,8 +284,9 @@ void AssignStmtG(AssignStmtSP t)
 	case Fun_Assgin_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:283\n");
-			abort();
+			--runlevel;
+			semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+			break;
 		}
 		if (OBJ(Fun_Obj_t)) {
 			NEWQUAD(q);
@@ -300,14 +304,16 @@ void AssignStmtG(AssignStmtSP t)
 			q->d = res;
 			emit(q);
 		} else{
-			fprintf(errlist, "CODE BUG:70\n");
+			--runlevel;
+			semanticError(NOPVAR, t->idp->line, FALSE, t->idp->name);
 		}
 		break;
 	case Array_Assgin_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:309\n");
-			abort();
+			--runlevel;
+			semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+			break;
 		}
 		if (OBJ(Array_Obj_t)) {
 			NEWQUAD(q);
@@ -317,11 +323,13 @@ void AssignStmtG(AssignStmtSP t)
 			q->d = res;
 			emit(q);
 		} else {
-			fprintf(errlist, "CODE BUG:76\n");
+			--runlevel;
+			semanticError(NOPARRAY, t->idp->line, FALSE, t->idp->name);
 		}
 		break;
 	default:
-		fprintf(errlist, "CODE BUG:84\n");
+		fprintf(tiplist, "CODE BUG:84\n");
+		exit(1);
 	}
 }
 
@@ -407,8 +415,9 @@ void ForStmtG(ForStmtSP t)
 	re = ExprG(t->rep);
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
-		fprintf(errlist, "SYMNOFOUND:400\n");
-		abort();
+		--runlevel;
+		semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+		return;
 	}
 	NEWQUAD(q);
 	q->op = ASS_op;
@@ -449,7 +458,8 @@ void ForStmtG(ForStmtSP t)
 		emit(q);
 		break;
 	default:
-		fprintf(errlist, "CODE BUG:161\n");
+		fprintf(tiplist, "CODE BUG:161\n");
+		exit(1);
 	}
 	NEWQUAD(q);
 	q->op = JMP_op;
@@ -467,8 +477,9 @@ void PcallStmtG(PcallStmtSP t)
 	if (t == NULL) return ;
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
-		fprintf(errlist, "SYMNOFOUND:460\n");
-		abort();
+		--runlevel;
+		semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+		return;
 	}
 	if (OBJ(Proc_Obj_t)) {
 		ArgListG(t->alp, res->stp->headinfo);
@@ -479,7 +490,8 @@ void PcallStmtG(PcallStmtSP t)
 		q->d = NULL;
 		emit(q);
 	} else {
-		fprintf(errlist, "unknow procedure\n");
+		--runlevel;
+		semanticError(NOPPROC, t->idp->line, FALSE, t->idp->name);
 	}
 }
 
@@ -490,8 +502,9 @@ void ReadStmtG(ReadStmtSP t)
 	for (; t != NULL; t = t->next) {
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:483\n");
-			abort();
+			--runlevel;
+			semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+			continue;
 		}
 		if (res->type == Char_Type_t) {
 			NEWQUAD(q);
@@ -533,26 +546,31 @@ void WriteStmtG(WriteStmtSP t)
 			&& (t->ep->tp->fp !=NULL)) {
 			f = t->ep->tp->fp;
 		}
-		if (f != NULL) {
+		if (f != NULL && (f->type == Id_Factor_t ||
+			f->type == Array_Factor_t)) {
 			res = sym_lookup(f->idp->name);
-		} else {
-			fprintf(errlist, "CODE BUG:530\n");
+			if (res == NULL) {
+				--runlevel;
+				semanticError(NULLSYM, f->idp->line,
+						FALSE, f->idp->name);
+				break;
+			}
+			if (res->type == Char_Type_t) {
+				NEWQUAD(q);
+				q->op = WRC_op;
+				q->r = NULL;
+				q->s = NULL;
+				q->d = ExprG(t->ep);
+				emit(q);
+				break;
+			} 
 		}
-		if (res->type == Char_Type_t) {
-			NEWQUAD(q);
-			q->op = WRC_op;
-			q->r = NULL;
-			q->s = NULL;
-			q->d = ExprG(t->ep);
-			emit(q);
-		} else {
-			NEWQUAD(q);
-			q->op = WRI_op;
-			q->r = NULL;
-			q->s = NULL;
-			q->d = ExprG(t->ep);
-			emit(q);
-		}
+		NEWQUAD(q);
+		q->op = WRI_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = ExprG(t->ep);
+		emit(q);
 		break;
 	case StrId_Write_t:
 		NEWQUAD(q);
@@ -567,29 +585,35 @@ void WriteStmtG(WriteStmtSP t)
 			&& (t->ep->tp->fp !=NULL)) {
 			f = t->ep->tp->fp;
 		}
-		if (f != NULL) {
+		if (f != NULL && (f->type == Id_Factor_t ||
+			f->type == Array_Factor_t)) {
 			res = sym_lookup(f->idp->name);
-		} else {
-			fprintf(errlist, "CODE BUG:564\n");
+			if (res == NULL) {
+				--runlevel;
+				semanticError(NULLSYM, f->idp->line,
+						FALSE, f->idp->name);
+				break;
+			}
+			if (res->type == Char_Type_t) {
+				NEWQUAD(q);
+				q->op = WRC_op;
+				q->r = NULL;
+				q->s = NULL;
+				q->d = ExprG(t->ep);
+				emit(q);
+				break;
+			} 
 		}
-		if (res->type == Char_Type_t) {
-			NEWQUAD(q);
-			q->op = WRC_op;
-			q->r = NULL;
-			q->s = NULL;
-			q->d = ExprG(t->ep);
-			emit(q);
-		} else {
-			NEWQUAD(q);
-			q->op = WRI_op;
-			q->r = NULL;
-			q->s = NULL;
-			q->d = ExprG(t->ep);
-			emit(q);
-		}
+		NEWQUAD(q);
+		q->op = WRI_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = ExprG(t->ep);
+		emit(q);
 		break;
 	default:
-		fprintf(errlist, "CODE BUG:290\n");
+		fprintf(tiplist, "CODE BUG:290\n");
+		exit(1);
 	}
 }
 
@@ -605,7 +629,7 @@ SymTabESP ExprG(ExprSP t)
 	SymTabESP r, d;
 	QuadSP q;
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:14\n");
+		fprintf(tiplist, "CODE BUG:14\n");
 		return NULL;
 	}
 	switch (t->op) {
@@ -624,7 +648,8 @@ SymTabESP ExprG(ExprSP t)
 		emit(q);
 		break;
 	default:
-		fprintf(errlist, "SYMTAB BUG:27\n");
+		fprintf(tiplist, "SYMTAB BUG:27\n");
+		exit(1);
 	}
 	for (r = d; t->next != NULL; t = t->next) {
 		switch (t->next->op) {
@@ -647,7 +672,8 @@ SymTabESP ExprG(ExprSP t)
 			emit(q);
 			break;
 		default:
-			fprintf(errlist, "SYMTAB BUG:49\n");
+			fprintf(tiplist, "SYMTAB BUG:49\n");
+			exit(1);
 		}
 		r = d;
 	}
@@ -659,7 +685,7 @@ SymTabESP TermG(TermSP t)
 	SymTabESP r, d;
 	QuadSP q;
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:54\n");
+		fprintf(tiplist, "CODE BUG:54\n");
 		return NULL;
 	}
 	switch (t->op) {
@@ -667,7 +693,8 @@ SymTabESP TermG(TermSP t)
 		d = FactorG(t->fp);
 		break;
 	default:
-		fprintf(errlist, "SYMTAB BUG:67\n");
+		fprintf(tiplist, "SYMTAB BUG:67\n");
+		exit(1);
 	}
 	for (r = d; t->next != NULL; t = t->next) {
 		switch (t->next->op) {
@@ -690,7 +717,8 @@ SymTabESP TermG(TermSP t)
 			emit(q);
 			break;
 		default:
-			fprintf(errlist, "SYMTAB BUG:89\n");
+			fprintf(tiplist, "SYMTAB BUG:89\n");
+			exit(1);
 		}
 		r = d;
 	}
@@ -702,7 +730,7 @@ SymTabESP FactorG(FactorSP t)
 	SymTabESP res, d;
 	QuadSP q;
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:546\n");
+		fprintf(tiplist, "CODE BUG:546\n");
 		return NULL;
 	}
 	d = NULL;
@@ -710,21 +738,24 @@ SymTabESP FactorG(FactorSP t)
 	case Id_Factor_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:652\n");
-			abort();
+			--runlevel;
+			semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+			break;
 		}
 		if (OBJ5(Const_Obj_t,Var_Obj_t,
 			Para_Val_Obj_t, Para_Ref_Obj_t,Tmp_Obj_t)) {
 			d = res;
 		} else {
-			fprintf(errlist, "undifined variable\n");
+			--runlevel;
+			syntaxError(NOPVAR, t->idp->line, FALSE, t->idp->name);
 		}
 		break;
 	case Array_Factor_t:
 		res = sym_lookup(t->idp->name);
 		if (res == NULL) {
-			fprintf(errlist, "SYMNOFOUND:665\n");
-			abort();
+			--runlevel;
+			semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+			break;
 		}
 		if (OBJ(Array_Obj_t)) {
 			d = sym_insert_tmp();
@@ -735,7 +766,8 @@ SymTabESP FactorG(FactorSP t)
 			q->d = d;
 			emit(q);
 		} else {
-			fprintf(errlist, "undifined array\n");
+			--runlevel;
+			syntaxError(NOPARRAY, t->idp->line, FALSE, t->idp->name);
 		}
 		break;
 	case Unsign_Factor_t:
@@ -748,7 +780,8 @@ SymTabESP FactorG(FactorSP t)
 		d = FcallStmtG(t->fcsp);
 		break;
 	default:
-		fprintf(errlist, "CODE BUG:129\n");
+		fprintf(tiplist, "CODE BUG:129\n");
+		exit(1);
 	}
 	return d;
 }
@@ -758,13 +791,14 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 	SymTabESP res, d;
 	QuadSP q;
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:601\n");
+		fprintf(tiplist, "CODE BUG:601\n");
 		return NULL;
 	}
 	res = sym_lookup(t->idp->name);
 	if (res == NULL) {
-		fprintf(errlist, "SYMNOFOUND:705\n");
-		abort();
+		--runlevel;
+		semanticError(NULLSYM, t->idp->line, FALSE, t->idp->name);
+		return NULL;
 	}
 	if (OBJ(Fun_Obj_t)) {
 		ArgListG(t->alp, res->stp->headinfo);
@@ -776,7 +810,8 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 		q->d = d;
 		emit(q);
 	} else {
-		fprintf(errlist, "undifined function\n");
+		--runlevel;
+		semanticError(NOPFUN, t->idp->line, FALSE, t->idp->name);
 	}
 	return d;
 }
@@ -785,7 +820,7 @@ void CondG(CondSP t, SymTabESP label)
 {
 	QuadSP q;
 	if (t == NULL) {
-		fprintf(errlist, "CODE BUG:629\n");
+		fprintf(tiplist, "CODE BUG:629\n");
 		return ;
 	}
 	switch (t->op) {
@@ -838,7 +873,8 @@ void CondG(CondSP t, SymTabESP label)
 		emit(q);
 		break;
 	default:
-		fprintf(errlist, "CODE BUG:194\n");
+		fprintf(tiplist, "CODE BUG:194\n");
+		exit(1);
 	}
 }
 
@@ -850,7 +886,8 @@ void ParaListG(ParaListSP t)
 			if (p != NULL) {
 				sym_insert_para(p->idp);
 			} else {
-				fprintf(errlist, "CODE BUG:682\n");
+				fprintf(tiplist, "CODE BUG:682\n");
+				exit(1);
 			}
 		}
 	}
@@ -880,21 +917,26 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 				&& (t->ep->tp->fp !=NULL)) {
 				f = t->ep->tp->fp;
 			} else {
-				fprintf(errlist, "CODE BUG:831\n");
-				abort();
+				fprintf(tiplist, "CODE BUG:831\n");
+				exit(1);
 			}
 			switch (f->type) {
 			case Id_Factor_t:
 				res = sym_lookup(f->idp->name);
 				if (res == NULL) {
-					fprintf(errlist, "SYMNOFOUND:840\n");
-					abort();
+					--runlevel;
+					semanticError(NULLSYM, f->idp->line, 
+						FALSE, f->idp->name);
+					break;
 				}
 				if (OBJ3(Var_Obj_t, Para_Val_Obj_t,
 					Para_Ref_Obj_t)) {
 					d = res;
 				} else {
-					fprintf(errlist, "undifined variable\n");
+					--runlevel;
+					semanticError(ERRREF, f->idp->line,
+						FALSE, f->idp->name);
+					break;
 				}
 				NEWQUAD(q);
 				q->op = PUSHA_op;
@@ -906,13 +948,18 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 			case Array_Factor_t:
 				res = sym_lookup(f->idp->name);
 				if (res == NULL) {
-					fprintf(errlist, "SYMNOFOUND:859\n");
-					abort();
+					--runlevel;
+					semanticError(NULLSYM, f->idp->line, 
+						FALSE, f->idp->name);
+					break;
 				}
 				if (OBJ(Array_Obj_t)) {
 					d = res;
 				} else {
-					fprintf(errlist, "undifined array\n");
+					--runlevel;
+					semanticError(ERRREF, f->idp->line,
+						FALSE, f->idp->name);
+					break;
 				}
 				NEWQUAD(q);
 				q->op = PUSHA_op;
@@ -922,12 +969,18 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 				emit(q);
 				break;
 			default:
-				fprintf(errlist, "CODE BUG:880\n");
+				fprintf(tiplist, "CODE BUG:880\n");
+				exit(1);
 			}
 			break;
 		default:
-			fprintf(errlist, "CODE BUG:833\n");
+			fprintf(tiplist, "CODE BUG:833\n");
+			exit(1);
 		}
+	}
+	if (b != NULL || t != NULL) {
+		--runlevel;
+		semanticError(ARGERROR, -1, FALSE, NULL);
 	}
 }
 

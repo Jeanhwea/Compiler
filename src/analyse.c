@@ -364,11 +364,6 @@ void WriteStmtV(WriteStmtSP t)
 void ExprV(ExprSP t)
 {
 	headPr("Expr");
-	if (t != NULL) {
-		/*
-		 *ExprG(t);
-		 */
-	}
 	for (; t != NULL; t = t->next) {
 		switch (t->op) {
 		case Nop_Addop_t:

@@ -48,15 +48,6 @@ typedef struct _SymTabS {
 } SymTabS;
 
 /**
- * store which line a varible
- * be referenced
- */
-typedef struct _SymLineS {
-	int lineno;
-	SymLineSP next;
-} SymLineS;
-
-/**
  * symbol table entry 
  * bucket list
  */
@@ -71,7 +62,7 @@ typedef struct _SymTabES {
 	int val;		// array length
 				// or const value
 				// or unsign value
-	SymLineSP lines;	// referenced lines
+	int lineno;		// referenced lines
 	int level;		// level
 	int posi;		// on which position
 	Obj_t obj;		// object type

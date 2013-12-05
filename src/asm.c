@@ -124,8 +124,16 @@ void leaRM_asm(char *reg, SymTabESP e)
 			fprintf(errlist, "ASM BUG:109\n");
 		}
 		break;
+	case Para_Ref_Obj_t:
+		if (e->level == lvl) {
+			fprintf(asmlist, "\tmov\t%s, [ebp + %d]\t; %s\n",
+				reg, PARAOFFSET, e->label);
+		} else {
+			fprintf(errlist, "ASM BUG:134\n");
+		}
+		break;
 	default:
-		fprintf(errlist, "ASM BUG:88\n");
+		fprintf(errlist, "ASM BUG:128\n");
 	}
 }
 

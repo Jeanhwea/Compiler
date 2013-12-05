@@ -26,7 +26,9 @@ void emit(QuadSP q)
 		qtail = q;
 	}
 	if (ShowQuad) {
-		printQuad(q);
+		if (runlevel > 0) {
+			/*printQuad(q);*/
+		}
 	}
 }
 

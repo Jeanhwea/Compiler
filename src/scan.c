@@ -212,11 +212,12 @@ TokenType getToken(void)
 					tokenStringIndex = 0;
 					currentToken = ENDFILE;
 				}
+				--runlevel;
 				lexError(ERRSTRINGTYPE);
 			}
 			break;
 		case INCHA: /* in character */
-			if (c == '\'') {
+			if (c == '\'' && char_to_long) {
 				state = DONE;
 				save = FALSE;
 				currentToken = CH;
@@ -224,6 +225,7 @@ TokenType getToken(void)
 			// TODO: check if the string character is
 			//       digit or character
 				if (char_to_long) {
+					--runlevel;
 					lexError(ERRCHARLEN);
 				}
 				char_to_long = TRUE;
@@ -234,6 +236,7 @@ TokenType getToken(void)
 					currentToken = ENDFILE;
 					state = DONE;
 				}
+				--runlevel;
 				lexError(ERRCHARTYPE);
 			}
 			break;
@@ -309,7 +312,7 @@ TokenType getToken(void)
 		}
 	}
 	if (TraceScan) {
-		fprintf(tiplist, "lineno:%d: ", lineno);
+		fprintf(listing, "lineno:%d: ", lineno);
 		printToken(currentToken, tokenString);
 	}
 	return currentToken;

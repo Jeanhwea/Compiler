@@ -68,10 +68,10 @@ static inline BOOL match(TokenType expected)
 		getsym();
 		return TRUE;
 	} else {
-		fprintf(errlist, "********************************\n");
-		fprintf(errlist, "missing match at line %d\n", lineno);
-		printToken(expected, tokenString);
-		fprintf(errlist, "********************************\n");
+		fprintf(tiplist, "********************************\n");
+		fprintf(tiplist, "missing match at line %d\n", lineno);
+		printToken(expected, prevTokenString);
+		fprintf(tiplist, "********************************\n");
 		return FALSE;
 	}
 }
@@ -85,7 +85,12 @@ PgmSP PgmB(void)
 	PgmSP t;
 	NEWNODE(PgmS, t);
 	t->bp = BlockB();
-	match(DOT);
+	if (TEST(DOT)) {
+		match(DOT);
+	} else {
+		--runlevel;
+		syntaxError(MISSDOT, lineno, FALSE, NULL);
+	}
 	return t;
 }
 
@@ -109,7 +114,12 @@ BlockSP BlockB(void)
 		t->pfdlp = PFDecListB();
 	} else t->pfdlp = NULL;
 
-	t->csp = CompStmtB();
+	if (TEST(BEGIN)) {
+		t->csp = CompStmtB();
+	} else {
+		--runlevel;
+		syntaxError(MISSBODY, lineno, FALSE, NULL);
+	}
 	return t;
 }
 
@@ -131,7 +141,12 @@ ConstDecSP ConstDecB(void)
 		q->cdp = ConstDefB();
 		q->next = NULL;
 	}
-	match(SEMI);
+	if (TEST(SEMI)) {
+		match(SEMI);
+	} else {
+		--runlevel;
+		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -146,22 +161,35 @@ ConstDefSP ConstDefB(void)
 	if (TEST(ID)) {
 		t->idp = IdentB(READCURR);
 	} else t->idp = NULL;
-	match(EQU);
+	if (TEST(EQU)) {
+		match(EQU);
+	} else {
+		--runlevel;
+		syntaxError(MISSEQU, lineno, FALSE, prevTokenString);
+	}
 	if (TEST4(PLUS, MINUS, UNS, CH)) {
 		switch (token) {
 		case PLUS:
 			match(PLUS);
 			t->idp->type = Int_Const_Ident_t;
-			if (TEST(UNS))
+			if (TEST(UNS)) {
 				t->idp->val = atoi(tokenString);
-			match(UNS);
+				match(UNS);
+			} else {
+				--runlevel;
+				syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
+			}
 			break;
 		case MINUS:
 			match(MINUS);
 			t->idp->type = Int_Const_Ident_t;
-			if (TEST(UNS))
+			if (TEST(UNS)) {
 				t->idp->val = - atoi(tokenString);
-			match(UNS);
+				match(UNS);
+			} else {
+				--runlevel;
+				syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
+			}
 			break;
 		case UNS:
 			t->idp->type = Int_Const_Ident_t;
@@ -174,7 +202,8 @@ ConstDefSP ConstDefB(void)
 			match(CH);
 			break;
 		default:
-			fprintf(errlist, "PASER BUG:177\n");
+			--runlevel;
+			syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		}
 	} else t->idp = NULL;
 	return t;
@@ -191,13 +220,23 @@ VarDecSP VarDecB(void)
 	match(VAR);
 	t->vdp = VarDefB();
 	t->next = NULL;
-	match(SEMI);
+	if (TEST(SEMI)) {
+		match(SEMI);
+	} else {
+		--runlevel;
+		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+	}
 	for (p = t; TEST(ID); p = q) {
 		NEWNODE(VarDecS, q);
 		p->next = q;
 		q->vdp = VarDefB();
 		q->next = NULL;
-		match(SEMI);
+		if (TEST(SEMI)) {
+			match(SEMI);
+		} else {
+			--runlevel;
+			syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+		}
 	}
 	return t;
 }
@@ -220,7 +259,12 @@ VarDefSP VarDefB(void)
 		q->idp = IdentB(READCURR);
 		q->next = NULL;
 	}
-	match(COLON);
+	if (TEST(COLON)) {
+		match(COLON);
+	} else {
+		--runlevel;
+		syntaxError(MISSCOLON, lineno, FALSE, prevTokenString);
+	}
 	/* type write back */
 	switch (token) {
 	case INTEGER:
@@ -235,12 +279,31 @@ VarDefSP VarDefB(void)
 		break;
 	case ARRAY:
 		match(ARRAY);
-		match(LBRA);
-		if (TEST(UNS))
+		if (TEST(LBRA)) {
+			match(LBRA);
+		} else {
+			--runlevel;
+			syntaxError(MISSLBRA, lineno, FALSE, prevTokenString);
+		}
+		if (TEST(UNS)) {
 			arraylength = atoi(tokenString);
-		match(UNS);
-		match(RBRA);
-		match(OF);
+			match(UNS);
+		} else {
+			--runlevel;
+			syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
+		}
+		if (TEST(RBRA)) {
+			match(RBRA);
+		} else {
+			--runlevel;
+			syntaxError(MISSRBRA, lineno, FALSE, prevTokenString);
+		}
+		if (TEST(OF)) {
+			match(OF);
+		} else {
+			--runlevel;
+			syntaxError(MISSOF, lineno, FALSE, prevTokenString);
+		}
 		if (TEST(INTEGER)) {
 			match(INTEGER);
 			for (p = t; p != NULL; p = p->next) {
@@ -253,10 +316,14 @@ VarDefSP VarDefB(void)
 				p->idp->type = CharArr_Var_Ident_t;
 				p->idp->length = arraylength;
 			}
-		} else fprintf(errlist, "PASER BUG:256\n");
+		} else {
+			--runlevel;
+			syntaxError(UNEXPECT, lineno, TRUE, tokenString);
+		}
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:259\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	return t;
@@ -282,7 +349,8 @@ PFDecListSP PFDecListB(void)
 		t->fdp = FunDecB();
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:260\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	t->next = NULL;
@@ -301,7 +369,8 @@ PFDecListSP PFDecListB(void)
 			q->fdp = FunDecB();
 			break;
 		default:
-			fprintf(errlist, "PARSE BUG:279\n");
+			--runlevel;
+			syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		}
 		q->next = NULL;
 	}
@@ -318,13 +387,23 @@ ProcDecSP ProcDecB(void)
 	NEWNODE(ProcDecS, t);
 	t->pdp = ProcDefB();
 	t->next = NULL;
-	match(SEMI);
+	if (TEST(SEMI)) {
+		match(SEMI);
+	} else {
+		--runlevel;
+		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+	}
 	for (p = t; TEST(PROCEDURE); p = q) {
 		NEWNODE(ProcDecS, q);
 		p->next = q;
 		q->pdp = ProcDefB();
 		q->next = NULL;
-		match(SEMI);
+		if (TEST(SEMI)) {
+			match(SEMI);
+		} else {
+			--runlevel;
+			syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+		}
 	}
 	return t;
 }
@@ -354,12 +433,27 @@ ProcHeadSP ProcHeadB(void)
 	t->idp = IdentB(READCURR);
 	/* PROCEDURE identifier type write back */
 	t->idp->type = Proc_Ident_t;
-	match(LPAR);
+	if (TEST(LPAR)) {
+		match(LPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSLPAR, lineno, FALSE, prevTokenString);
+	}
 	if (TEST(VAR) || TEST(ID))
 		t->plp = ParaListB();
 	else t->plp = NULL;
-	match(RPAR);
-	match(SEMI);
+	if (TEST(RPAR)) {
+		match(RPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSRPAR, lineno, FALSE, prevTokenString);
+	}
+	if (TEST(SEMI)) {
+		match(SEMI);
+	} else {
+		--runlevel;
+		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -373,13 +467,23 @@ FunDecSP FunDecB(void)
 	NEWNODE(FunDecS, t);
 	t->fdp = FunDefB();
 	t->next = NULL;
-	match(SEMI);
+	if (TEST(SEMI)) {
+		match(SEMI);
+	} else {
+		--runlevel;
+		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+	}
 	for (p = t; TEST(FUNCTION); p = q) {
 		NEWNODE(FunDecS, q);
 		p->next =  q;
 		q->fdp = FunDefB();
 		q->next = NULL;
-		match(SEMI);
+		if (TEST(SEMI)) {
+			match(SEMI);
+		} else {
+			--runlevel;
+			syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+		}
 	}
 	return t;
 }
@@ -407,12 +511,27 @@ FunHeadSP FunHeadB(void)
 	NEWNODE(FunHeadS, t);
 	match(FUNCTION);
 	t->idp = IdentB(READCURR);
-	match(LPAR);
+	if (TEST(LPAR)) {
+		match(LPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSLPAR, lineno, FALSE, prevTokenString);
+	}
 	if (TEST(VAR) || TEST(ID))
 		t->plp = ParaListB();
 	else t->plp = NULL;
-	match(RPAR);
-	match(COLON);
+	if (TEST(RPAR)) {
+		match(RPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSRPAR, lineno, FALSE, prevTokenString);
+	}
+	if (TEST(COLON)) {
+		match(COLON);
+	} else {
+		--runlevel;
+		syntaxError(MISSCOLON, lineno, FALSE, prevTokenString);
+	}
 	switch (token) {
 	case INTEGER:
 		match(INTEGER);
@@ -423,10 +542,16 @@ FunHeadSP FunHeadB(void)
 		t->idp->type = Char_Fun_Ident_t;
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:399\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
-	match(SEMI);
+	if (TEST(SEMI)) {
+		match(SEMI);
+	} else {
+		--runlevel;
+		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -480,7 +605,10 @@ StmtSP StmtB(void)
 		} else if (TEST(ASSIGN) ||  TEST(LBRA)) {
 			t->type = Assgin_Stmt_t;
 			t->asp = AssignStmtB();
-		} else fprintf(errlist, "PARSE BUG:456\n");
+		} else {
+			--runlevel;
+			syntaxError(UNEXPECT, lineno, TRUE, tokenString);
+		}
 		break;
 	default:
 		t->type = Null_Stmt_t;
@@ -515,12 +643,23 @@ AssignStmtSP AssignStmtB(void)
 		t->idp = IdentB(READPREV);
 		match(LBRA);
 		t->lep = ExprB();
-		match(RBRA);
-		match(ASSIGN);
+		if (TEST(RBRA)) {
+			match(RBRA);
+		} else {
+			--runlevel;
+			syntaxError(MISSRBRA, lineno, FALSE, prevTokenString);
+		}
+		if (TEST(ASSIGN)) {
+			match(ASSIGN);
+		} else {
+			--runlevel;
+			syntaxError(MISSASS, lineno, FALSE, prevTokenString);
+		}
 		t->rep = ExprB();
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:495\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	return t;
@@ -537,7 +676,12 @@ IfStmtSP IfStmtB(void)
 	NEWNODE(IfStmtS, t);
 	match(IF);
 	t->cp = CondB();
-	match(THEN);
+	if (TEST(THEN)) {
+		match(THEN);
+	} else {
+		--runlevel;
+		syntaxError(MISSTHEN, lineno, FALSE, prevTokenString);
+	}
 	t->tp = StmtB();
 	if (TEST(ELSE)) {
 		match(ELSE);
@@ -556,7 +700,12 @@ RepeStmtSP RepeStmtB(void)
 	NEWNODE(RepeStmtS, t);
 	match(REPEAT);
 	t->sp = StmtB();
-	match(UNTIL);
+	if (TEST(UNTIL)) {
+		match(UNTIL);
+	} else {
+		--runlevel;
+		syntaxError(MISSUNTIL, lineno, FALSE, prevTokenString);
+	}
 	t->cp = CondB();
 	return t;
 }
@@ -571,7 +720,12 @@ ForStmtSP ForStmtB(void)
 	NEWNODE(ForStmtS, t);
 	match(FOR);
 	t->idp = IdentB(READCURR);
-	match(ASSIGN);
+	if (TEST(ASSIGN)) {
+		match(ASSIGN);
+	} else {
+		--runlevel;
+		syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
+	}
 	t->lep = ExprB();
 	if (TEST(TO)) {
 		match(TO);
@@ -579,9 +733,17 @@ ForStmtSP ForStmtB(void)
 	} else if (TEST(DOWNTO)) {
 		match(DOWNTO);
 		t->type = Downto_For_t;
-	} else fprintf(errlist, "PARSE BUG:554\n");
+	} else {
+		--runlevel;
+		syntaxError(MISSTODOWN, lineno, FALSE, prevTokenString);
+	}
 	t->rep = ExprB();
-	match(DO);
+	if (TEST(DO)) {
+		match(DO);
+	} else {
+		--runlevel;
+		syntaxError(MISSDO, lineno, FALSE, prevTokenString);
+	}
 	t->sp = StmtB();
 	return t;
 }
@@ -598,11 +760,21 @@ PcallStmtSP PcallStmtB(void)
 	PcallStmtSP t;
 	NEWNODE(PcallStmtS, t);
 	t->idp = IdentB(READPREV);
-	match(LPAR);
+	if (TEST(LPAR)) {
+		match(LPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSLPAR, lineno, FALSE, prevTokenString);
+	}
 	if (TEST5(ID, PLUS, MINUS, UNS, LPAR)) {
 		t->alp = ArgListB();
 	} else t->alp = NULL;
-	match(RPAR);
+	if (TEST(RPAR)) {
+		match(RPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSRPAR, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -618,11 +790,21 @@ FcallStmtSP FcallStmtB(void)
 	FcallStmtSP t;
 	NEWNODE(FcallStmtS, t);
 	t->idp = IdentB(READPREV);
-	match(LPAR);
+	if (TEST(LPAR)) {
+		match(LPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSLPAR, lineno, FALSE, prevTokenString);
+	}
 	if (TEST5(ID, PLUS, MINUS, UNS, LPAR)) {
 		t->alp = ArgListB();
 	} else t->alp = NULL;
-	match(RPAR);
+	if (TEST(RPAR)) {
+		match(RPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSRPAR, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -644,7 +826,12 @@ CompStmtSP CompStmtB(void)
 		q->sp = StmtB();
 		q->next = NULL;
 	}
-	match(END);
+	if (TEST(END)) {
+		match(END);
+	} else {
+		--runlevel;
+		syntaxError(MISSEND, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -657,7 +844,12 @@ ReadStmtSP ReadStmtB(void)
 	ReadStmtSP t, p, q;
 	NEWNODE(ReadStmtS, t);
 	match(READ);
-	match(LPAR);
+	if (TEST(LPAR)) {
+		match(LPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSLPAR, lineno, FALSE, prevTokenString);
+	}
 	t->idp = IdentB(READCURR);
 	t->next = NULL;
 	for (p = t; TEST(COMMA); p = q) {
@@ -667,7 +859,12 @@ ReadStmtSP ReadStmtB(void)
 		q->idp = IdentB(READCURR);
 		q->next = NULL;
 	}
-	match(RPAR);
+	if (TEST(RPAR)) {
+		match(RPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSRPAR, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -681,7 +878,12 @@ WriteStmtSP WriteStmtB(void)
 	WriteStmtSP t;
 	NEWNODE(WriteStmtS, t);
 	match(WRITE);
-	match(LPAR);
+	if (TEST(LPAR)) {
+		match(LPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSLPAR, lineno, FALSE, prevTokenString);
+	}
 	t->sp = NULL;
 	t->ep = NULL;
 	if (TEST(STRING)) {
@@ -691,13 +893,21 @@ WriteStmtSP WriteStmtB(void)
 	} else if (TEST5(ID, PLUS, MINUS, UNS, LPAR)) {
 		t->type = Id_Write_t;
 		t->ep = ExprB();
-	} else fprintf(errlist, "PARSE BUG:669\n");
+	} else {
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
+	}
 	if (TEST(COMMA) && t->type == Str_Write_t) {
 		match(COMMA);
 		t->type = StrId_Write_t;
 		t->ep = ExprB();
 	}
-	match(RPAR);
+	if (TEST(RPAR)) {
+		match(RPAR);
+	} else {
+		--runlevel;
+		syntaxError(MISSRPAR, lineno, FALSE, prevTokenString);
+	}
 	return t;
 }
 
@@ -729,7 +939,8 @@ ExprSP ExprB(void)
 	default:
 		t->op = Nop_Addop_t;
 		t->tp = NULL;
-		fprintf(errlist, "PARSE BUG:708\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	t->next = NULL;
@@ -746,7 +957,8 @@ ExprSP ExprB(void)
 			q->op = Minus_Addop_t;
 			break;
 		default:
-			fprintf(errlist, "PARSE BUG:727\n");
+			--runlevel;
+			syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 			break;
 		}
 		q->tp = TermB();
@@ -779,7 +991,8 @@ TermSP TermB(void)
 			q->op = Div_Multop_t;
 			break;
 		default:
-			fprintf(errlist, "PARSE BUG:767\n");
+			--runlevel;
+			syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 			break;
 		}
 		q->fp = FactorB();
@@ -830,7 +1043,8 @@ FactorSP FactorB(void)
 		}
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:816\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	return t;
@@ -871,7 +1085,8 @@ CondSP CondB(void)
 		t->op = Neq_Rela_t;
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:930\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	t->rep = ExprB();
@@ -892,7 +1107,12 @@ IdentSP IdentB(IDREADMODE mode)
 		t->length = 0;
 		t->line = lineno;
 		t->name = copyString(tokenString);
-		match(ID);
+		if (TEST(ID)) {
+			match(ID);
+		} else {
+			--runlevel;
+			syntaxError(MISSID, lineno, FALSE, prevTokenString);
+		}
 		break;
 	case READPREV:
 		t->type = Init_Ident_t;
@@ -903,7 +1123,8 @@ IdentSP IdentB(IDREADMODE mode)
 		break;
 	default:
 		t->name = NULL;
-		fprintf(errlist, "PARSE BUG:889\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	return t;
@@ -936,7 +1157,7 @@ ParaListSP ParaListB(void)
 ParaDefSP ParaDefB(void)
 {
 	ParaDefSP t, p, q;
-	BOOL flag; // if TURE, then call by value
+	BOOL flag; // if TRUE, then call by value
 	NEWNODE(ParaDefS, t);
 	if (TEST(VAR)) {
 		match(VAR);
@@ -951,7 +1172,12 @@ ParaDefSP ParaDefB(void)
 		q->idp = IdentB(READCURR);
 		q->next = NULL;
 	}
-	match(COLON);
+	if (TEST(COLON)) {
+		match(COLON);
+	} else {
+		--runlevel;
+		syntaxError(MISSCOLON, lineno, FALSE, prevTokenString);
+	}
 	/* parameter identifier type write back */
 	switch (token) {
 	case INTEGER:
@@ -975,7 +1201,8 @@ ParaDefSP ParaDefB(void)
 		}
 		break;
 	default:
-		fprintf(errlist, "PARSE BUG:990\n");
+		--runlevel;
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		break;
 	}
 	return t;
@@ -1008,5 +1235,6 @@ ArgListSP ArgListB(void)
 PgmSP parse(void)
 {
 	token = getToken();
+	--runlevel;
 	return PgmB();
 }

@@ -21,9 +21,9 @@ FILE *errlist;
 FILE *tiplist;
 FILE *astlist;
 int lineno = 0;
-int runlevel = 1;
+int runlevel = 3;
 
-BOOL TraceScan = TRUE;
+BOOL TraceScan = FALSE;
 BOOL PrintSource = TRUE;
 BOOL ShowAST = TRUE;
 BOOL ShowTip = TRUE;
@@ -34,11 +34,12 @@ int main(int argc, const char *argv[])
 	PgmSP ast; /* abstract syntax tree */
 	char pgm[120] = "input.pas";
 	char *codef;
+	char *listingf;
 	char *stablistf;
 	char *asmlistf;
 	char *astlistf;
 	int fnlen;
-	if (argc != 2) {
+	if (argc < 2) {
 		fprintf(stdout, "usage: ./compiler <filename>\n");
 		exit(1);
 	}
@@ -59,6 +60,15 @@ int main(int argc, const char *argv[])
 	code = fopen(codef, "w");
 	if (code == NULL) {
 		fprintf(stderr, "Unable to open %s\n", codef);
+		exit(1);
+	}
+
+	listingf = (char *)calloc(fnlen + 5, sizeof(char));
+	strncpy(listingf, pgm, fnlen);
+	strcat(listingf, ".lst");
+	listing = fopen(listingf, "w");
+	if (listing == NULL) {
+		fprintf(stderr, "Unable to open %s\n", listingf);
 		exit(1);
 	}
 
@@ -89,13 +99,23 @@ int main(int argc, const char *argv[])
 		exit(1);
 	}
 
-	listing = stdout;
+	if (argv[argc-2][0] == 'd') {
+		listing = stdout;
+		code = stdout;
+		stablist = stdout;
+	}
 	errlist = stderr;
 	tiplist = stderr;
-	ast = parse();
-	analyse(ast);
-	coder(ast);
-	elf();
+	if (runlevel > 2) {
+		ast = parse();
+	}
+	if (runlevel > 1) {
+		analyse(ast);
+		coder(ast);
+	}
+	if (runlevel > 0) {
+		elf();
+	}
 	fclose(source);
 	fclose(code);
 	fclose(asmlist);
