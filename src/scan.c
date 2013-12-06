@@ -112,7 +112,7 @@ TokenType getToken(void)
 		save = TRUE;
 		switch (state) {
 		case START:
-			if ( c == ' ' || c == '\t' || c == '\n') {
+			if (isspace(c)) {
 				// white space
 				save = FALSE;
 			} else if (isdigit(c)) {
