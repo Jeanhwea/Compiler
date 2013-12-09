@@ -288,3 +288,83 @@ void tailPr(char *cont)
 	if (ShowAST)
 		fprintf(astlist, "</%s>\n", cont);
 }
+
+void ioasm(void)
+{
+	fprintf(asmlist, "SECTION .DATA\n");
+	fprintf(asmlist, "\tfmt_int_r:  DB \"%%d\", 0\n");
+	fprintf(asmlist, "\tfmt_int_w:  DB \"%%d\", 10, 0\n");
+	fprintf(asmlist, "\tfmt_char_r: DB 10, \"%%c\", 0\n");
+	fprintf(asmlist, "\tfmt_char_w: DB \"%%c\", 10, 0\n");
+	fprintf(asmlist, "\tfmt_string: DB \"%%s\", 0\n\n");
+
+	fprintf(asmlist, "SECTION .TEXT\n");
+	fprintf(asmlist, "\tEXTERN\tscanf, printf\n");
+	fprintf(asmlist, "\tGLOBAL\tscan_int, scan_char\n");
+	fprintf(asmlist, "\tGLOBAL\tprint_int, print_char, print_string\n\n");
+
+	fprintf(asmlist, "scan_int:\n");
+	fprintf(asmlist, "\tpush\tebp\n");
+	fprintf(asmlist, "\tmov\tebp, esp\n");
+	fprintf(asmlist, "\tsub\tesp, 0x4\n");
+	fprintf(asmlist, "\tlea\teax, [ebp - 4]\n");
+	fprintf(asmlist, "\tpush\teax\n");
+	fprintf(asmlist, "\tpush\tfmt_int_r\n");
+	fprintf(asmlist, "\tcall\tscanf\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tmov\teax, [ebp - 4]\n");
+	fprintf(asmlist, "\tmov\tesp, ebp\n");
+	fprintf(asmlist, "\tpop\tebp\n");
+	fprintf(asmlist, "\tret\n\n");
+
+	fprintf(asmlist, "scan_char:\n");
+	fprintf(asmlist, "\tpush\tebp\n");
+	fprintf(asmlist, "\tmov\tebp, esp\n");
+	fprintf(asmlist, "\tsub\tesp, 0x4\n");
+	fprintf(asmlist, "\tlea\teax, [ebp - 4]\n");
+	fprintf(asmlist, "\tpush\teax\n");
+	fprintf(asmlist, "\tpush\tfmt_char_r\n");
+	fprintf(asmlist, "\tcall\tscanf\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tmov\teax, [ebp - 4]\n");
+	fprintf(asmlist, "\tleave\n");
+	fprintf(asmlist, "\tret\n\n");
+
+	fprintf(asmlist, "print_int:\n");
+	fprintf(asmlist, "\tpush\tebp\n");
+	fprintf(asmlist, "\tmov\tebp, esp\n");
+	fprintf(asmlist, "\tpush\teax\n");
+	fprintf(asmlist, "\tpush\tfmt_int_w\n");
+	fprintf(asmlist, "\tcall\tprintf\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\txor\teax, eax\n");
+	fprintf(asmlist, "\tleave\n");
+	fprintf(asmlist, "\tret\n\n");
+
+	fprintf(asmlist, "print_char:\n");
+	fprintf(asmlist, "\tpush\tebp\n");
+	fprintf(asmlist, "\tmov\tebp, esp\n");
+	fprintf(asmlist, "\tpush\teax\n");
+	fprintf(asmlist, "\tpush\tfmt_char_w\n");
+	fprintf(asmlist, "\tcall\tprintf\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\txor\teax, eax\n");
+	fprintf(asmlist, "\tleave\n");
+	fprintf(asmlist, "\tret\n\n");
+
+	fprintf(asmlist, "print_string:\n");
+	fprintf(asmlist, "\tpush\tebp\n");
+	fprintf(asmlist, "\tmov\tebp, esp\n");
+	fprintf(asmlist, "\tpush\teax\n");
+	fprintf(asmlist, "\tpush\tfmt_string\n");
+	fprintf(asmlist, "\tcall\tprintf\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\tpop\tecx\n");
+	fprintf(asmlist, "\txor\teax, eax\n");
+	fprintf(asmlist, "\tleave\n");
+	fprintf(asmlist, "\tret\n\n");
+}

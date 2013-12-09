@@ -5,6 +5,7 @@
  */
 
 #include "global.h"
+#include "util.h"
 #include "parse.h"
 #include "symtab.h"
 #include "quad.h"
@@ -729,7 +730,8 @@ void elf(void)
 	fprintf(asmlist, "; ELF32 on Ubuntu 12.04 \n");
 	fprintf(asmlist, "; NASM version 2.09.10 \n");
 	fprintf(asmlist, "; GCC version 4.6.3 \n");
-	fprintf(asmlist, "%%include \"asm/io.asm\"\n");
+	ioasm();
+	//fprintf(asmlist, "%%include \"asm/io.asm\"\n");
 	for (q = qlst; q != NULL; q = q->next) {
 		cgen(q);
 	}
