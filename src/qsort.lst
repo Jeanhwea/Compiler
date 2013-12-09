@@ -1,0 +1,40 @@
+   1: var a: array [20] of char;
+   2: index,num:integer; temp:char;
+   3: procedure qsort(l,h:integer);
+   4: var i,j,t,m:integer;
+   5: 	procedure swap(var i, j:integer);
+   6: 	var temp:integer;
+   7: 	begin temp:=i;i:=j;j:=temp end;
+   8: 
+   9: begin
+  10: 	i:=l;
+  11: 	j:=h;
+  12: 	m:=a[(i+j) / 2];
+  13: 	repeat
+  14: 	begin
+  15: 		if a[i]<m then repeat i:=i+1 until a[i]>=m;
+  16: 		if m<a[j] then repeat j:=j-1 until m>=a[j];
+  17: 
+  18: 		if i<=j then
+  19: 		begin
+  20: 		swap(a[i],a[j]);
+  21: 		i:=i+1;
+  22: 		j:=j-1;
+  23: 		end;
+  24: 	end
+  25: 	until i>j;
+  26: 
+  27: 	if j>l then qsort(l,j);
+  28: 	if i<h then qsort(i,h);
+  29: end;
+  30: 
+  31: begin
+  32: write("please input number(<10): ");
+  33: read(num);
+  34: for index:=1 to num do begin 
+  35: write("please input number> ");read(temp); a[index-1]:=temp end;
+  36: 
+  37: qsort(0, num-1);
+  38: for index:=0 to num-1 do write(a[index]);
+  39: end.
+  40: 
