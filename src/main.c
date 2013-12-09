@@ -122,6 +122,7 @@ int main(int argc, const char *argv[])
 	} else {
 		exit(1);
 	}
+	// add optimization
 	fclose(source);
 	fclose(code);
 	fclose(asmlist);

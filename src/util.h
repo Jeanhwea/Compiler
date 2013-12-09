@@ -26,4 +26,5 @@ void innerIntPr(int );
 void innerCharPr(char );
 void tailPr(char *);
 
+void ioasm(void);
 #endif /* end of include guard: UTIL_H */
