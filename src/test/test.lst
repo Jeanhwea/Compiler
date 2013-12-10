@@ -1,0 +1,31 @@
+   1: var i, j, N , t:integer;A:array[20] of integer;
+   2: 	blank:char;
+   3: begin
+   4: 	A[0] := 1;
+   5: 	A[1] := -1;
+   6: 	A[2] := 0;
+   7: 	A[3] := 3;
+   8: 	A[4] := 32;
+   9: 	N := 4;
+  10: 	{for i:= 0 to N do}
+  11: 	{begin}
+  12: 		{write("enter a number -> ");}
+  13: 		{read(j);}
+  14: 		{A[i] := j}
+  15: 	{end;}
+  16: 	for i:= 0 to N do 
+  17: 		for j:= i to N do 
+  18: 			if A[i] > A[j] then
+  19: 			begin
+  20: 				t := A[i];
+  21: 				A[i] := A[j];
+  22: 				A[j] := t
+  23: 			end;
+  24: 	blank := 20;
+  25: 	write("after sorted");
+  26: 	write(blank);
+  27: 	for i:= 0 to N do
+  28: 	begin
+  29: 		write(A[i])
+  30: 	end;	
+  31: end.

@@ -17,6 +17,11 @@ source code -> scan into token -> parse into abstract syntax tree
 -> analysis ( or simple skip) -> general quadruples ->
 translate into x86 (nasm)
 
+Start doing optimazation
+======
+> 
+la la la
+
 About me
 ======
 > 

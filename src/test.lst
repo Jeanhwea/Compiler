@@ -1,0 +1,24 @@
+   1: const a = 'd';
+lineno:1: CONST const
+lineno:1: ID a
+lineno:1: EQU =
+lineno:1: CH d
+lineno:1: SEMI ;
+   2: var x, y:integer;
+lineno:2: VAR var
+lineno:2: ID x
+lineno:2: COMMA ,
+lineno:2: ID y
+lineno:2: COLON :
+lineno:2: INTEGER integer
+lineno:2: SEMI ;
+   3: procedure ProcedureName(var z:integer):integer;
+lineno:3: PROCEDURE procedure
+lineno:3: ID ProcedureName
+lineno:3: LPAR (
+lineno:3: VAR var
+lineno:3: ID z
+lineno:3: COLON :
+lineno:3: INTEGER integer
+lineno:3: RPAR )
+lineno:3: COLON :
