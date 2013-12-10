@@ -36,7 +36,7 @@ static SymTabESP FactorG(FactorSP t);
 static SymTabESP FcallStmtG(FcallStmtSP t);
 static void CondG(CondSP t, SymTabESP label);
 static void ParaListG(ParaListSP t);
-static void ArgListG(ArgListSP t, SymBucketSP info);
+static void ArgListG(ArgListSP t, SymTabESP pfste);
 
 void PgmG(PgmSP t)
 {
@@ -482,7 +482,7 @@ void PcallStmtG(PcallStmtSP t)
 		return;
 	}
 	if (OBJ(Proc_Obj_t)) {
-		ArgListG(t->alp, res->stp->headinfo);
+		ArgListG(t->alp, res);
 		NEWQUAD(q);
 		q->op = CALL_op;
 		q->r = res;
@@ -639,11 +639,11 @@ SymTabESP ExprG(ExprSP t)
 		d = TermG(t->tp);
 		break;
 	case Neg_Addop_t:
-		d = sym_insert_tmp();
 		NEWQUAD(q);
 		q->op = NEG_op;
 		q->r = TermG(t->tp);
 		q->s = NULL;
+		d = sym_insert_tmp(q->r->type);
 		q->d = d;
 		emit(q);
 		break;
@@ -654,20 +654,30 @@ SymTabESP ExprG(ExprSP t)
 	for (r = d; t->next != NULL; t = t->next) {
 		switch (t->next->op) {
 		case Add_Addop_t:
-			d = sym_insert_tmp();
 			NEWQUAD(q);
 			q->op = ADD_op;
 			q->r = r;
 			q->s = TermG(t->next->tp);
+			if (q->r->type == Char_Type_t 
+				&& q->s->type == Char_Type_t) {
+				d = sym_insert_tmp(Char_Type_t);
+			} else {
+				d = sym_insert_tmp(Int_Type_t);
+			}
 			q->d = d;
 			emit(q);
 			break;
 		case Minus_Addop_t:
-			d = sym_insert_tmp();
 			NEWQUAD(q);
 			q->op = SUB_op;
 			q->r = r;
 			q->s = TermG(t->next->tp);
+			if (q->r->type == Char_Type_t 
+				&& q->s->type == Char_Type_t) {
+				d = sym_insert_tmp(Char_Type_t);
+			} else {
+				d = sym_insert_tmp(Int_Type_t);
+			}
 			q->d = d;
 			emit(q);
 			break;
@@ -699,20 +709,30 @@ SymTabESP TermG(TermSP t)
 	for (r = d; t->next != NULL; t = t->next) {
 		switch (t->next->op) {
 		case Mult_Multop_t:
-			d = sym_insert_tmp();
 			NEWQUAD(q);
 			q->op = MUL_op;
 			q->r = r;
 			q->s = FactorG(t->next->fp);
+			if (q->r->type == Char_Type_t 
+				&& q->s->type == Char_Type_t) {
+				d = sym_insert_tmp(Char_Type_t);
+			} else {
+				d = sym_insert_tmp(Int_Type_t);
+			}
 			q->d = d;
 			emit(q);
 			break;
 		case Div_Multop_t:
-			d = sym_insert_tmp();
 			NEWQUAD(q);
 			q->op = DIV_op;
 			q->r = r;
 			q->s = FactorG(t->next->fp);
+			if (q->r->type == Char_Type_t 
+				&& q->s->type == Char_Type_t) {
+				d = sym_insert_tmp(Char_Type_t);
+			} else {
+				d = sym_insert_tmp(Int_Type_t);
+			}
 			q->d = d;
 			emit(q);
 			break;
@@ -758,11 +778,11 @@ SymTabESP FactorG(FactorSP t)
 			break;
 		}
 		if (OBJ(Array_Obj_t)) {
-			d = sym_insert_tmp();
 			NEWQUAD(q);
 			q->op = LOAD_op;
 			q->r = res;
 			q->s = ExprG(t->ep);
+			d = sym_insert_tmp(q->s->type);
 			q->d = d;
 			emit(q);
 		} else {
@@ -801,12 +821,12 @@ SymTabESP FcallStmtG(FcallStmtSP t)
 		return NULL;
 	}
 	if (OBJ(Fun_Obj_t)) {
-		ArgListG(t->alp, res->stp->headinfo);
-		d = sym_insert_tmp();
+		ArgListG(t->alp, res);
 		NEWQUAD(q);
 		q->op = CALL_op;
 		q->r = res;
 		q->s = NULL;
+		d = sym_insert_tmp(res->type);
 		q->d = d;
 		emit(q);
 	} else {
@@ -893,13 +913,16 @@ void ParaListG(ParaListSP t)
 	}
 }
 
-void ArgListG(ArgListSP t, SymBucketSP info)
+void ArgListG(ArgListSP t, SymTabESP pfste)
 {
 	SymTabESP d, res;
 	SymBucketSP b;
 	FactorSP f;
 	QuadSP q;
-	for (b = info; t != NULL && b != NULL; t = t->next, b = b->next) {
+	int parapos = 1;
+	for (b = pfste->stp->headinfo; 
+		t != NULL && b != NULL; 
+		t = t->next, b = b->next, ++parapos) {
 		switch (b->ep->obj) {
 		case Para_Val_Obj_t:
 			d = ExprG(t->ep);
@@ -907,6 +930,11 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 			q->op = PUSH_op;
 			q->r = NULL;
 			q->s = NULL;
+			if (d->type != b->ep->type) {
+				fprintf(errlist, 
+					"warning:%d: type miss match at %dth position -> %s\n",
+					pfste->lineno, parapos, pfste->name);
+			}
 			q->d = d;
 			emit(q);
 			break;
@@ -942,6 +970,11 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 				q->op = PUSHA_op;
 				q->r = NULL;
 				q->s = NULL;
+				if (d->type != b->ep->type) {
+					fprintf(errlist, 
+						"warning:%d: type miss match at %dth position -> %s\n",
+						pfste->lineno, parapos, pfste->name);
+				}
 				q->d = d;
 				emit(q);
 				break;
@@ -965,6 +998,11 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 				q->op = PUSHA_op;
 				q->r = NULL;
 				q->s = ExprG(f->ep);
+				if (d->type != b->ep->type) {
+					fprintf(errlist, 
+						"warning:%d: type miss match at %dth position -> %s\n",
+						pfste->lineno, parapos, pfste->name);
+				}
 				q->d = d;
 				emit(q);
 				break;
@@ -980,7 +1018,7 @@ void ArgListG(ArgListSP t, SymBucketSP info)
 	}
 	if (b != NULL || t != NULL) {
 		--runlevel;
-		semanticError(ARGERROR, -1, FALSE, NULL);
+		semanticError(ARGERROR, pfste->lineno, FALSE, pfste->name);
 	}
 }
 

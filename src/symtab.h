@@ -112,7 +112,7 @@ SymTabESP sym_insert_var(IdentSP);
 SymTabESP sym_insert_para(IdentSP);
 SymTabESP sym_insert_fun(IdentSP, ParaListSP);
 SymTabESP sym_insert_proc(IdentSP, ParaListSP);
-SymTabESP sym_insert_tmp(void);
+SymTabESP sym_insert_tmp(Type_t);
 SymTabESP sym_make_usi(int);
 SymTabESP sym_make_label(void);
 SymTabESP sym_make_main(void);

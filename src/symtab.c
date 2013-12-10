@@ -412,7 +412,7 @@ SymTabESP sym_insert_para(IdentSP idp)
 	return e;
 }
 
-SymTabESP sym_insert_tmp(void)
+SymTabESP sym_insert_tmp(Type_t tmp_type)
 {
 	SymBucketSP p;
 	SymTabESP e;
@@ -434,7 +434,7 @@ SymTabESP sym_insert_tmp(void)
 		e->level = LEVEL;
 		e->posi = TOP->posi_tmp++;
 		e->obj = Tmp_Obj_t;
-		e->type = Int_Type_t;
+		e->type = tmp_type;
 		e->stp = TOP;
 		ENTRY(SymBucketS, p);
 		p->ep = e;
