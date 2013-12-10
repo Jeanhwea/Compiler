@@ -1,2 +1,2 @@
 #!/bin/bash
-rm *.asm *.stb *.xml *.q *.lst
+rm *.asm *.stb *.xml *.qaud *.lst

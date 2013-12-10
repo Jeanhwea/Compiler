@@ -23,7 +23,7 @@ FILE *astlist;
 int lineno = 0;
 int runlevel = 3;
 
-BOOL TraceScan = FALSE;
+BOOL TraceScan = TRUE;
 BOOL PrintSource = TRUE;
 BOOL ShowAST = TRUE;
 BOOL ShowTip = TRUE;
@@ -54,9 +54,9 @@ int main(int argc, const char *argv[])
 	}
 	fnlen = strcspn(pgm, ".");
 
-	codef = (char *)calloc(fnlen + 3, sizeof(char));
+	codef = (char *)calloc(fnlen + 6, sizeof(char));
 	strncpy(codef, pgm, fnlen);
-	strcat(codef, ".q");
+	strcat(codef, ".qaud");
 	code = fopen(codef, "w");
 	if (code == NULL) {
 		fprintf(stderr, "Unable to open %s\n", codef);
