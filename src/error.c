@@ -41,7 +41,7 @@ char *ERRVEC[MAXERROR] =
 	"Should be var/fun/para symbol -> ",
 	"Should be a procedure type symbol -> ",
 	"Should be a function type symbol -> ",
-	"Different size of parameters and arguments -> ",
+	"Different size of parameters and arguments while using -> ",
 	"Error use pass value by reference -> "
 };
 

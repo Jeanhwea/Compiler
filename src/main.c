@@ -12,6 +12,12 @@
 #include "code.h"
 #include "elf.h"
 
+#include "symtab.h"
+#include "quad.h"
+#include "dag.h"
+#include "bblock.h"
+#include "fgraph.h"
+
 FILE *source;
 FILE *listing;
 FILE *code;
@@ -20,6 +26,7 @@ FILE *asmlist;
 FILE *errlist;
 FILE *tiplist;
 FILE *astlist;
+FILE *daglist;
 int lineno = 0;
 int runlevel = 3;
 
@@ -32,6 +39,7 @@ BOOL ShowQuad = TRUE;
 int main(int argc, const char *argv[])
 {
 	PgmSP ast; /* abstract syntax tree */
+	BOOL debug = FALSE;
 	char pgm[120] = "input.pas";
 	char *codef;
 	char *listingf;
@@ -54,23 +62,15 @@ int main(int argc, const char *argv[])
 	}
 	fnlen = strcspn(pgm, ".");
 
-	codef = (char *)calloc(fnlen + 6, sizeof(char));
-	strncpy(codef, pgm, fnlen);
-	strcat(codef, ".qaud");
-	code = fopen(codef, "w");
-	if (code == NULL) {
-		fprintf(stderr, "Unable to open %s\n", codef);
-		exit(1);
+	if (argv[argc-2][0] == 'd') {
+		debug = TRUE;
+		listing = stdout;
+		code = stdout;
+		stablist = stdout;
 	}
-
-	listingf = (char *)calloc(fnlen + 5, sizeof(char));
-	strncpy(listingf, pgm, fnlen);
-	strcat(listingf, ".lst");
-	listing = fopen(listingf, "w");
-	if (listing == NULL) {
-		fprintf(stderr, "Unable to open %s\n", listingf);
-		exit(1);
-	}
+	daglist = stdout;
+	errlist = stderr;
+	tiplist = stderr;
 
 	asmlistf = (char *)calloc(fnlen + 5, sizeof(char));
 	strncpy(asmlistf, pgm, fnlen);
@@ -81,6 +81,7 @@ int main(int argc, const char *argv[])
 		exit(1);
 	}
 
+
 	astlistf = (char *)calloc(fnlen + 5, sizeof(char));
 	strncpy(astlistf, pgm, fnlen);
 	strcat(astlistf, ".xml");
@@ -89,23 +90,35 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "Unable to open %s\n", astlistf);
 		exit(1);
 	}
+	
+	if (!debug) {
+		codef = (char *)calloc(fnlen + 6, sizeof(char));
+		strncpy(codef, pgm, fnlen);
+		strcat(codef, ".qaud");
+		code = fopen(codef, "w");
+		if (code == NULL) {
+			fprintf(stderr, "Unable to open %s\n", codef);
+			exit(1);
+		}
 
-	stablistf = (char *)calloc(fnlen + 5, sizeof(char));
-	strncpy(stablistf, pgm, fnlen);
-	strcat(stablistf, ".stb");
-	stablist = fopen(stablistf, "w");
-	if (stablist == NULL) {
-		fprintf(stderr, "Unable to open %s\n", stablistf);
-		exit(1);
-	}
+		listingf = (char *)calloc(fnlen + 5, sizeof(char));
+		strncpy(listingf, pgm, fnlen);
+		strcat(listingf, ".lst");
+		listing = fopen(listingf, "w");
+		if (listing == NULL) {
+			fprintf(stderr, "Unable to open %s\n", listingf);
+			exit(1);
+		}
 
-	if (argv[argc-2][0] == 'd') {
-		listing = stdout;
-		code = stdout;
-		stablist = stdout;
+		stablistf = (char *)calloc(fnlen + 5, sizeof(char));
+		strncpy(stablistf, pgm, fnlen);
+		strcat(stablistf, ".stb");
+		stablist = fopen(stablistf, "w");
+		if (stablist == NULL) {
+			fprintf(stderr, "Unable to open %s\n", stablistf);
+			exit(1);
+		}
 	}
-	errlist = stderr;
-	tiplist = stderr;
 	if (runlevel > 2) {
 		ast = parse();
 	} else {
@@ -119,17 +132,18 @@ int main(int argc, const char *argv[])
 	}
 	if (runlevel > 0) {
 		elf();
+		make_fgraph();
 	} else {
 		exit(1);
 	}
 	// add optimization
 	fclose(source);
-	fclose(code);
 	fclose(asmlist);
 	fclose(astlist);
-	fclose(listing);
-	fclose(stablist);
-	fclose(errlist);
-	fclose(tiplist);
+	if (!debug) {
+		fclose(code);
+		fclose(listing);
+		fclose(stablist);
+	}
 	return 0;
 }

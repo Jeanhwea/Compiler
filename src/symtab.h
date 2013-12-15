@@ -79,14 +79,14 @@ do { \
 	v = (SymTabSP) malloc(sizeof(SymTabS));					\
 	if (v == NULL) {							\
 		fprintf(errlist, "OUTOFMEM: on building symbol table\n");	\
-		exit(1);							\
+		assert(0);							\
 	} else {								\
 		v->prev = NULL;							\
 		v->next = NULL;							\
 		v->sbp = (SymBucketSP *) malloc( HASHSIZE * sizeof(SymBucketS));\
 		if (v->sbp == NULL) {						\
 			fprintf(errlist, "OUTOFMEM: on allocte bucket\n");	\
-			exit(1);						\
+			assert(0);						\
 		}								\
 	}									\
 } while(0)
@@ -100,7 +100,7 @@ do { \
 	v = (s##P) malloc(sizeof(s));						\
 	if (v == NULL) {							\
 		fprintf(errlist, "OUTOFMEM: on allocating entry\n");		\
-		exit(1);							\
+		assert(0);							\
 	}									\
 } while(0)
 

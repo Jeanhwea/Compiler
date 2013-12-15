@@ -55,7 +55,7 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("ecx", r);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:57\n");
+		fprintf(errlist, "ELF BUG:57\n");
 	}
 	switch (s->obj) {
 	case Var_Obj_t:
@@ -67,7 +67,7 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("edx", s);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:67\n");
+		fprintf(errlist, "ELF BUG:67\n");
 	}
 	switch (d->obj) {
 	case Var_Obj_t:
@@ -78,7 +78,7 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movMR_asm(d, "ecx");
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:75\n");
+		fprintf(errlist, "ELF BUG:75\n");
 	}
 }
 
@@ -94,7 +94,7 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("ecx", r);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:89\n");
+		fprintf(errlist, "ELF BUG:89\n");
 	}
 	switch (s->obj) {
 	case Var_Obj_t:
@@ -106,7 +106,7 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("edx", s);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:67\n");
+		fprintf(errlist, "ELF BUG:67\n");
 	}
 	switch (d->obj) {
 	case Var_Obj_t:
@@ -117,7 +117,7 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movMR_asm(d, "ecx");
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:109\n");
+		fprintf(errlist, "ELF BUG:109\n");
 	}
 }
 
@@ -133,7 +133,7 @@ void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("ecx", r);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:128\n");
+		fprintf(errlist, "ELF BUG:128\n");
 	}
 	switch (s->obj) {
 	case Var_Obj_t:
@@ -145,7 +145,7 @@ void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("edx", s);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:140\n");
+		fprintf(errlist, "ELF BUG:140\n");
 	}
 	switch (d->obj) {
 	case Var_Obj_t:
@@ -156,7 +156,7 @@ void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movMR_asm(d, "ecx");
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:150\n");
+		fprintf(errlist, "ELF BUG:150\n");
 	}
 }
 
@@ -173,7 +173,7 @@ void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("eax", r);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:167\n");
+		fprintf(errlist, "ELF BUG:167\n");
 	}
 	switch (s->obj) {
 	case Var_Obj_t:
@@ -185,7 +185,7 @@ void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movRM_asm("ecx", s);
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:139\n");
+		fprintf(errlist, "ELF BUG:139\n");
 	}
 	switch (d->obj) {
 	case Var_Obj_t:
@@ -193,8 +193,8 @@ void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
 	/**
-	 * div r/imm32
-	 * edx:eax / r/imm32
+	 * div (r/imm32)
+	 * edx:eax / (r/imm32)
 	 *
 	 * result:
 	 * eax <- quotient
@@ -205,7 +205,7 @@ void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 		movMR_asm(d, "eax");
 		break;
 	default:
-		fprintf(asmlist, "ELF BUG:177\n");
+		fprintf(errlist, "ELF BUG:177\n");
 	}
 }
 
@@ -732,7 +732,7 @@ void elf(void)
 	fprintf(asmlist, "; GCC version 4.6.3 \n");
 	ioasm();
 	//fprintf(asmlist, "%%include \"asm/io.asm\"\n");
-	for (q = qlst; q != NULL; q = q->next) {
+	for (q = qhead; q != NULL; q = q->next) {
 		cgen(q);
 	}
 }

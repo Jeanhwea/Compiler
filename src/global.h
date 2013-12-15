@@ -14,6 +14,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <assert.h>
 
 #ifndef FALSE
 #define FALSE 0
@@ -37,6 +38,7 @@ extern FILE *asmlist; /* x86 asm file */
 extern FILE *errlist; /* errors text file */
 extern FILE *tiplist; /* tip list, using for debug */
 extern FILE *astlist; /* abstract syntax tree listing */
+extern FILE *daglist;
 
 extern int lineno; /* source line number for listing */
 extern int runlevel; /* compiler run level */

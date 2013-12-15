@@ -167,7 +167,7 @@ static void sym_insert(SymBucketSP bp, SymTabSP st)
 	} else {
 		bp->next = *head;
 		*head = bp;
-		fprintf(tiplist, "\n************ duplicated insert ************\n");
+		assert(0);
 	}
 }
 
@@ -451,8 +451,8 @@ SymTabESP sym_make_usi(int usi)
 	SymTabESP e;
 	e = NULL;
 	ENTRY(SymTabES, e);
-	e->name = NULL;
-	e->label = mkUsi(usi); 
+	e->name = mkUsi(usi);
+	e->label = e->name; 
 	e->val = usi;
 	e->lineno = -1;
 	e->level = LEVEL;
@@ -468,8 +468,8 @@ SymTabESP sym_make_label(void)
 	SymTabESP e;
 	e = NULL;
 	ENTRY(SymTabES, e);
-	e->name = NULL;
-	e->label = genLabel(); 
+	e->name = genLabel();
+	e->label = e->name; 
 	e->val = -1;
 	e->lineno = -1;
 	e->level = LEVEL;
@@ -502,7 +502,7 @@ SymTabESP sym_make_string(char *str)
 	SymTabESP e;
 	e = NULL;
 	ENTRY(SymTabES, e);
-	e->name = NULL;
+	e->name = str;
 	e->label = str; 
 	e->val = -1;
 	e->lineno = -1;

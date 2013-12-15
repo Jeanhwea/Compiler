@@ -34,4 +34,6 @@ extern int tokenLocation;
 /* function getToken return the next token in source file */
 TokenType getToken(void);
 
+void printToken(TokenType , const char *);
+
 #endif /* end of include guard: SCAN_H */

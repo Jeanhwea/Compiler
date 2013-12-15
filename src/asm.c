@@ -29,7 +29,7 @@ void enter(SymTabESP e)
 	SymTabSP st;
 	if (e == NULL) {
 		fprintf(errlist, "ASM BUG:25\n");
-		exit(1);
+		assert(0);
 	}
 	if (e->obj == Fun_Obj_t || e->obj == Proc_Obj_t) {
 		st = e->stp;

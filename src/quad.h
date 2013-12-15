@@ -13,7 +13,9 @@ typedef enum {
 	/* Arith */
 	ADD_op, SUB_op, MUL_op, DIV_op,
 	/* unary */
-	INC_op, DEC_op, NEG_op,
+	INC_op, DEC_op, 
+	/* bineary */
+	NEG_op,
 	/* save and store */
 	LOAD_op, ASS_op, AARR_op,
 	/* conditional branch */
@@ -31,6 +33,8 @@ typedef enum {
 	LABEL_op
 } Quad_t;
 
+extern char *quadMap[30];
+
 typedef struct _QuadS {
 	Quad_t op;
 	SymTabESP r;
@@ -44,21 +48,21 @@ typedef struct _QuadS {
 do { \
 	if (q->a == NULL) {					\
 		fprintf(errlist, "1)NULL POINT IN QUAD\n");	\
-		exit(1);					\
+		assert(0);					\
 	}							\
 } while(0)
 #define NEED2(a,b) \
 do { \
 	if (q->a == NULL || q->b == NULL) {			\
 		fprintf(errlist, "2)NULL POINT IN QUAD\n");	\
-		exit(1);					\
+		assert(0);					\
 	}							\
 } while(0)
 #define NEED3(a,b,c) \
 do { \
 	if (q->a == NULL || q->b == NULL || q->c == NULL) {	\
 		fprintf(errlist, "3)NULL POINT IN QUAD\n");	\
-		exit(1);					\
+		assert(0);					\
 	}							\
 } while(0)
 
@@ -67,14 +71,17 @@ do { \
 	v = (QuadSP) malloc(sizeof(QuadS));			\
 	if (v == NULL) {					\
 		fprintf(errlist, "OUTOFMEM: on build quad\n");	\
-		exit(1);					\
+		assert(0);					\
 	}							\
 	v->prev = NULL;						\
 	v->next = NULL;						\
 } while(0)
 
-extern QuadSP qlst;
+extern QuadSP qhead;
 void emit(QuadSP);
+QuadSP dupQuad(QuadSP q);
 void printAllQuad();
+void printQuad(QuadSP q);
+void printAllQuads(QuadSP q);
 
 #endif /* end of include guard: QUAD_H */

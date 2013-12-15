@@ -45,7 +45,7 @@ void PgmG(PgmSP t)
 	BlockSP b;
 	if (t == NULL) {
 		fprintf(tiplist, "CODE BUG:47\n");
-		exit(1);
+		assert(0);
 	}
 	Ninit();
 	st = newstab();
@@ -53,7 +53,7 @@ void PgmG(PgmSP t)
 	b = t->bp;
 	if (b == NULL) {
 		fprintf(tiplist, "CODE BUG:52\n");
-		exit(1);
+		assert(0);
 	}
 	ConstDecfG(b->cdp);
 	VarDecfG(b->vdp);
@@ -85,7 +85,7 @@ void ConstDecfG(ConstDecSP t)
 			sym_insert_const(t->cdp->idp);
 		} else {
 			fprintf(tiplist, "CODE BUG:70\n");
-			exit(1);
+			assert(0);
 		}
 	}
 }
@@ -99,7 +99,7 @@ void VarDecfG(VarDecSP t)
 				sym_insert_var(p->idp);
 			} else {
 				fprintf(tiplist, "CODE BUG:81\n");
-				exit(1);
+				assert(0);
 			}
 		}
 	}
@@ -117,7 +117,7 @@ void PFDecListG(PFDecListSP t)
 			break;
 		default:
 			fprintf(tiplist, "CODE BUG:104\n");
-			exit(1);
+			assert(0);
 		}
 	}
 }
@@ -270,7 +270,7 @@ void StmtG(StmtSP t)
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:43\n");
-		exit(1);
+		assert(0);
 	}
 }
 
@@ -329,7 +329,7 @@ void AssignStmtG(AssignStmtSP t)
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:84\n");
-		exit(1);
+		assert(0);
 	}
 }
 
@@ -459,7 +459,7 @@ void ForStmtG(ForStmtSP t)
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:161\n");
-		exit(1);
+		assert(0);
 	}
 	NEWQUAD(q);
 	q->op = JMP_op;
@@ -613,7 +613,7 @@ void WriteStmtG(WriteStmtSP t)
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:290\n");
-		exit(1);
+		assert(0);
 	}
 }
 
@@ -649,7 +649,7 @@ SymTabESP ExprG(ExprSP t)
 		break;
 	default:
 		fprintf(tiplist, "SYMTAB BUG:27\n");
-		exit(1);
+		assert(0);
 	}
 	for (r = d; t->next != NULL; t = t->next) {
 		switch (t->next->op) {
@@ -683,7 +683,7 @@ SymTabESP ExprG(ExprSP t)
 			break;
 		default:
 			fprintf(tiplist, "SYMTAB BUG:49\n");
-			exit(1);
+			assert(0);
 		}
 		r = d;
 	}
@@ -704,7 +704,7 @@ SymTabESP TermG(TermSP t)
 		break;
 	default:
 		fprintf(tiplist, "SYMTAB BUG:67\n");
-		exit(1);
+		assert(0);
 	}
 	for (r = d; t->next != NULL; t = t->next) {
 		switch (t->next->op) {
@@ -738,7 +738,7 @@ SymTabESP TermG(TermSP t)
 			break;
 		default:
 			fprintf(tiplist, "SYMTAB BUG:89\n");
-			exit(1);
+			assert(0);
 		}
 		r = d;
 	}
@@ -801,7 +801,7 @@ SymTabESP FactorG(FactorSP t)
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:129\n");
-		exit(1);
+		assert(0);
 	}
 	return d;
 }
@@ -894,7 +894,7 @@ void CondG(CondSP t, SymTabESP label)
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:194\n");
-		exit(1);
+		assert(0);
 	}
 }
 
@@ -907,7 +907,7 @@ void ParaListG(ParaListSP t)
 				sym_insert_para(p->idp);
 			} else {
 				fprintf(tiplist, "CODE BUG:682\n");
-				exit(1);
+				assert(0);
 			}
 		}
 	}
@@ -930,9 +930,9 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 			q->op = PUSH_op;
 			q->r = NULL;
 			q->s = NULL;
-			if (d->type != b->ep->type) {
+			if (d != NULL && d->type != b->ep->type) {
 				fprintf(errlist, 
-					"warning:%d: type miss match at %dth position -> %s\n",
+					"warning:%d: type miss match at %dth position while using -> %s\n",
 					pfste->lineno, parapos, pfste->name);
 			}
 			q->d = d;
@@ -946,7 +946,7 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				f = t->ep->tp->fp;
 			} else {
 				fprintf(tiplist, "CODE BUG:831\n");
-				exit(1);
+				assert(0);
 			}
 			switch (f->type) {
 			case Id_Factor_t:
@@ -970,9 +970,9 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				q->op = PUSHA_op;
 				q->r = NULL;
 				q->s = NULL;
-				if (d->type != b->ep->type) {
+				if (d != NULL && d->type != b->ep->type) {
 					fprintf(errlist, 
-						"warning:%d: type miss match at %dth position -> %s\n",
+						"warning:%d: type miss match at %dth position while using -> %s\n",
 						pfste->lineno, parapos, pfste->name);
 				}
 				q->d = d;
@@ -998,9 +998,9 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				q->op = PUSHA_op;
 				q->r = NULL;
 				q->s = ExprG(f->ep);
-				if (d->type != b->ep->type) {
+				if (d != NULL && d->type != b->ep->type) {
 					fprintf(errlist, 
-						"warning:%d: type miss match at %dth position -> %s\n",
+						"warning:%d: type miss match at %dth position while using -> %s\n",
 						pfste->lineno, parapos, pfste->name);
 				}
 				q->d = d;
@@ -1008,15 +1008,15 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				break;
 			default:
 				fprintf(tiplist, "CODE BUG:880\n");
-				exit(1);
+				assert(0);
 			}
 			break;
 		default:
 			fprintf(tiplist, "CODE BUG:833\n");
-			exit(1);
+			assert(0);
 		}
 	}
-	if (b != NULL || t != NULL) {
+	if ((runlevel > 0) && (b != NULL || t != NULL)) {
 		--runlevel;
 		semanticError(ARGERROR, pfste->lineno, FALSE, pfste->name);
 	}
