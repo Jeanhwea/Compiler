@@ -402,6 +402,7 @@ static void _dag2quad(DNodeESP d)
 	switch (d->attr.op) {
 	case ADD_op: case SUB_op:
 	case MUL_op: case DIV_op:
+	case LOAD_op:
 		NEWQUAD(q);
 		q->op = d->attr.op;
 		q->r = d->left->iter->nte->ste;

@@ -15,7 +15,7 @@
 // point to basic block head
 // BBListSP bblst = NULL; see bblock.c
 
-BOOL dagable(BBSP b)
+BOOL dagable_bblock(BBSP b)
 {
 	QuadSP p;
 	for (p = b->first; p != NULL; p = p->next) {
@@ -33,7 +33,7 @@ void make_fgraph(void)
 		b = newBblock();
 		addBblock(b);
 		printBblock(b);
-		if (dagable(b)) {
+		if (dagable_bblock(b)) {
 			make_dag_for_bblock(b);
 		} else {
 			copy_quad_for_bblock(b);

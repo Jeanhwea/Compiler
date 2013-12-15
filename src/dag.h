@@ -65,7 +65,7 @@ do { \
 
 #define DAGABLE(v) (\
 (v->op==ADD_op)||(v->op==SUB_op)||(v->op==MUL_op)||(v->op==DIV_op)\
-||(v->op==NEG_op)||(v->op==ASS_op)\
+||(v->op==LOAD_op)||(v->op==NEG_op)||(v->op==ASS_op)\
 ||(v->op==EQU_op)||(v->op==NEQ_op)||(v->op==GTT_op)\
 ||(v->op==GEQ_op)||(v->op==LST_op)||(v->op==LEQ_op)\
 ||(v->op==WRI_op)||(v->op==WRC_op)||(v->op==WRS_op)\
