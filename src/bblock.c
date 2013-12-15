@@ -166,12 +166,13 @@ void get_quad(BBSP b)
 	}
 	destory_DNL();
 	destory_NTL();
-	initDag();	
+	initDag();
 }
 
 void make_dag_for_bblock(BBSP b)
 {
 	QuadSP q, tmp_q;
+	initDag();
 	for (q = b->first; q != NULL; q = q->next) {
 		switch (q->op) {
 		case ADD_op: case SUB_op:
@@ -179,19 +180,9 @@ void make_dag_for_bblock(BBSP b)
 		case NEG_op: case ASS_op:
 			addQuad(q);
 			break;
-		case INC_op: case DEC_op:
-		case LOAD_op:
-		case AARR_op:
 		case EQU_op: case NEQ_op: case GTT_op:
 		case GEQ_op: case LST_op: case LEQ_op:
 		case JMP_op:
-		case PUSH_op:
-		case PUSHA_op:
-		case POP_op:
-		case CALL_op:
-		case SRET_op:
-		case ENTER_op:
-		case FIN_op:
 		case READ_op:
 		case READC_op:
 		case WRS_op: case WRI_op: case WRC_op:
@@ -218,8 +209,6 @@ void make_dag_for_bblock(BBSP b)
 	// printAllQuads(b->qhead);
 	}
 	get_quad(b);
-	printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-	printAllQuads(b->qhead);
 }
 
 void copy_quad_for_bblock(BBSP b)
@@ -239,9 +228,5 @@ void copy_quad_for_bblock(BBSP b)
 			b->qtail = tmp_q;
 		}
 		if (q == b->last) break;
-	// printAllQuads(b->qhead);
 	}
-	get_quad(b);
-	printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-	printAllQuads(b->qhead);
 }

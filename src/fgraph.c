@@ -20,7 +20,7 @@ BOOL dagable(BBSP b)
 	QuadSP p;
 	for (p = b->first; p != NULL; p = p->next) {
 		if (!DAGABLE(p)) return FALSE;
-		if (p == b->first) break;
+		if (p == b->last) break;
 	}
 	return TRUE;
 }
@@ -38,6 +38,8 @@ void make_fgraph(void)
 		} else {
 			copy_quad_for_bblock(b);
 		}
+		printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+		printAllQuads(b->qhead);
 	} while (!quad_end());
 	// printAllBblock();
 }
