@@ -135,7 +135,7 @@ void ioasm(void)
 	fprintf(asmlist, "\tfmt_int_w:  DB \"%%d\", 10, 0\n");
 	fprintf(asmlist, "\tfmt_char_r: DB 10, \"%%c\", 0\n");
 	fprintf(asmlist, "\tfmt_char_w: DB \"%%c\", 10, 0\n");
-	fprintf(asmlist, "\tfmt_string: DB \"%%s\", 0\n\n");
+	fprintf(asmlist, "\tfmt_string: DB \"%%s\", 10, 0\n\n");
 
 	fprintf(asmlist, "SECTION .TEXT\n");
 	fprintf(asmlist, "\tEXTERN\tscanf, printf\n");

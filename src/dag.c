@@ -358,6 +358,7 @@ void addQuad(QuadSP q)
 	switch (q->op) {
 	case ADD_op: case SUB_op:
 	case MUL_op: case DIV_op:
+	case LOAD_op:
 		NEED3(r,s,d);
 		make_dag_for_binary(q);
 		break;
@@ -380,8 +381,9 @@ static DNodeESP find(void)
 {
 	DNListSP p;
 	for (p = dnhead; p != NULL; p = p->next) {
-		if (!p->dne->visit && p->dne->iter &&
-			(p->dne->left||p->dne->right))
+		if (!p->dne->visit)
+			// && p->dne->iter &&
+			// (p->dne->left||p->dne->right))
 			return p->dne;
 	}
 	return NULL;
@@ -393,20 +395,27 @@ static void _dag2quad(DNodeESP d)
 	NTListSP it;
 	if (d == NULL) return ;
 	if (d->visit) return ;
-	if (!(d->left||d->right)) return;
+	if (!(d->left||d->right)) {
+		d->visit = TRUE;
+		return;
+	}
 	_dag2quad(d->left);
 	_dag2quad(d->right);
 	d->visit = TRUE;
-	assert(d->left->iter);
-	assert(d->right->iter);
+	// assert(d->left->iter);
+	// assert(d->right->iter);
 	switch (d->attr.op) {
 	case ADD_op: case SUB_op:
 	case MUL_op: case DIV_op:
 	case LOAD_op:
 		NEWQUAD(q);
 		q->op = d->attr.op;
-		q->r = d->left->iter->nte->ste;
-		q->s = d->right->iter->nte->ste;
+		q->r = (d->left->iter == NULL) ? 
+			d->left->attr.ste:
+			d->left->iter->nte->ste;
+		q->s = (d->right->iter == NULL) ? 
+			d->right->attr.ste:
+			d->right->iter->nte->ste;
 		q->d = d->iter->nte->ste;
 		pushQuad(q);
 		break;
@@ -468,12 +477,13 @@ void printAllNT()
 
 void printDNE(DNodeESP dne)
 {
-	fprintf(daglist, "Node(%2d), Left(%2d), Right(%2d), Attr(%5s)\n", 
+	fprintf(daglist, "Node(%2d), Left(%2d), Right(%2d), Attr(%5s), VISIT(%d)\n", 
 		dne->id, (dne->left)?dne->left->id:0,
 		(dne->right)?dne->right->id:0,
 		(dne->left||dne->right)?
 			quadMap[dne->attr.op]:
-			dne->attr.ste->name
+			dne->attr.ste->name,
+		dne->visit
 		);
 }
 

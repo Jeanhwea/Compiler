@@ -193,7 +193,7 @@ void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
 	/**
-	 * div (r/imm32)
+	 * idiv (r/imm32)
 	 * edx:eax / (r/imm32)
 	 *
 	 * result:

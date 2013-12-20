@@ -1,5 +1,5 @@
-var a: array [20] of char;
-index,num:integer; temp:char;
+var a: array [20] of integer;
+index,num:integer; temp:integer;
 procedure qsort(l,h:integer);
 var i,j,t,m:integer;
 	procedure swap(var i, j:integer);

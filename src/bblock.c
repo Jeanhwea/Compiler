@@ -149,6 +149,9 @@ void get_quad(BBSP b)
 	printAllNT();
 	make_iter();
 	dag2quad();
+	// printf("((((((000after dag2quad000))))))\n");
+	// printAllDN();
+	// printAllNT();
 	h = get_qdhead();
 	t = get_qdtail();
 	if (h != NULL) {
@@ -177,16 +180,39 @@ void make_dag_for_bblock(BBSP b)
 		switch (q->op) {
 		case ADD_op: case SUB_op:
 		case MUL_op: case DIV_op:
-		case NEG_op: case ASS_op:
+		case NEG_op:
+		case LOAD_op:
 			addQuad(q);
+			break;
+		case ASS_op:
+			if (q->r->obj == Tmp_Obj_t) {
+				addQuad(q);
+			} else {
+				get_quad(b);
+				tmp_q = dupQuad(q);
+				assert(tmp_q);
+				if (b->qhead == NULL) {
+					tmp_q->next = NULL;
+					tmp_q->prev = b->qtail;
+					b->qhead = b->qtail = tmp_q;
+				} else {
+					tmp_q->next = NULL;
+					tmp_q->prev = b->qtail;
+					b->qtail->next = tmp_q;
+					b->qtail = tmp_q;
+				}
+			}
 			break;
 		case EQU_op: case NEQ_op: case GTT_op:
 		case GEQ_op: case LST_op: case LEQ_op:
+		case INC_op: case DEC_op:
 		case JMP_op:
 		case READ_op:
 		case READC_op:
 		case WRS_op: case WRI_op: case WRC_op:
 		case LABEL_op:
+		case CALL_op: case PUSHA_op: 
+		case PUSH_op:
 			get_quad(b);
 			tmp_q = dupQuad(q);
 			assert(tmp_q);
@@ -206,7 +232,6 @@ void make_dag_for_bblock(BBSP b)
 			assert(0);
 		}
 		if (q == b->last) break;
-	// printAllQuads(b->qhead);
 	}
 	get_quad(b);
 }

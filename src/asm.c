@@ -309,7 +309,7 @@ void mulRR_asm(char *reg, char *reg2)
 
 void divR_asm(char *reg)
 {
-	fprintf(asmlist, "\tdiv\t%s\n", reg);
+	fprintf(asmlist, "\tidiv\t%s\n", reg);
 }
 
 void neg_asm(char *reg)

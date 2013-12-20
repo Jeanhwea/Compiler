@@ -68,9 +68,12 @@ set autoindent
 set background=dark
 set backspace=indent,eol,start
 set complete=.,w,b,k
+set completeopt=menuone
 set fileencodings=ucs-bom,utf-8,default,latin1
 set helplang=en
 set history=50
+set ignorecase
+set lazyredraw
 set nomodeline
 set omnifunc=syntaxcomplete#Complete
 set printoptions=paper:letter
@@ -85,11 +88,15 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +1 error.c
-badd +1 error.h
-badd +1 parse.c
+badd +176 dag.c
+badd +6 dag.h
+badd +25 bblock.h
+badd +37 quad.h
+badd +17 symtab.h
+badd +1 bblock.c
+badd +0 fgraph.c
 silent! argdel *
-edit error.h
+edit bblock.c
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -99,127 +106,23 @@ split
 1wincmd k
 wincmd w
 wincmd w
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 27 + 28) / 56)
-exe 'vert 1resize ' . ((&columns * 80 + 80) / 161)
-exe '2resize ' . ((&lines * 26 + 28) / 56)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 161)
-exe 'vert 3resize ' . ((&columns * 80 + 80) / 161)
+exe '1resize ' . ((&lines * 1 + 28) / 56)
+exe 'vert 1resize ' . ((&columns * 92 + 80) / 161)
+exe '2resize ' . ((&lines * 52 + 28) / 56)
+exe 'vert 2resize ' . ((&columns * 92 + 80) / 161)
+exe '3resize ' . ((&lines * 37 + 28) / 56)
+exe 'vert 3resize ' . ((&columns * 68 + 80) / 161)
+exe '4resize ' . ((&lines * 16 + 28) / 56)
+exe 'vert 4resize ' . ((&columns * 68 + 80) / 161)
 argglobal
-setlocal keymap=
-setlocal noarabic
-setlocal autoindent
-setlocal balloonexpr=
-setlocal nobinary
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal cindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinwords=if,else,while,do,for,switch
-setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,k
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-setlocal nocursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal noexpandtab
-if &filetype != 'cpp'
-setlocal filetype=cpp
-endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=indent
-setlocal foldmethod=indent
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal grepprg=
-setlocal iminsert=2
-setlocal imsearch=2
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal nolist
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal nomodeline
-setlocal modifiable
-setlocal nrformats=octal,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=ccomplete#Complete
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norelativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal shiftwidth=8
-setlocal noshortname
-setlocal nosmartindent
-setlocal softtabstop=0
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != 'cpp'
-setlocal syntax=cpp
-endif
-setlocal tabstop=8
-setlocal tags=~/Workspace/csdn/compiler/.git/cpp.tags,~/Workspace/csdn/compiler/.git/tags,./tags,./TAGS,tags,TAGS
-setlocal textwidth=0
-setlocal thesaurus=
-setlocal noundofile
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-let s:l = 42 - ((26 * winheight(0) + 13) / 27)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-42
-normal! 017l
-wincmd w
-argglobal
-edit error.c
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -314,7 +217,7 @@ if &syntax != 'c'
 setlocal syntax=c
 endif
 setlocal tabstop=8
-setlocal tags=~/Workspace/csdn/compiler/.git/tags,./tags,./TAGS,tags,TAGS
+setlocal tags=~/Workspace/csdn/compiler/.git/c.tags,~/Workspace/csdn/compiler/.git/tags,./tags,./TAGS,tags,TAGS
 setlocal textwidth=0
 setlocal thesaurus=
 setlocal noundofile
@@ -322,27 +225,21 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-11
+72
 normal zo
-35
+83
 normal zo
-41
+72
 normal zo
-48
-normal zo
-51
-normal zo
-48
-normal zo
-let s:l = 36 - ((25 * winheight(0) + 13) / 26)
+let s:l = 5 - ((0 * winheight(0) + 0) / 1)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-36
-normal! 030l
+5
+normal! 01l
 wincmd w
 argglobal
-edit parse.c
+edit fgraph.c
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -380,7 +277,7 @@ setlocal foldcolumn=0
 setlocal foldenable
 setlocal foldexpr=0
 setlocal foldignore=#
-setlocal foldlevel=4
+setlocal foldlevel=2
 setlocal foldmarker={{{,}}}
 set foldmethod=indent
 setlocal foldmethod=indent
@@ -445,455 +342,270 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-67
+20
 normal zo
-68
+22
 normal zo
-67
+20
 normal zo
-103
+30
 normal zo
-118
+33
 normal zo
-120
+37
 normal zo
-103
+39
 normal zo
-132
+33
 normal zo
-145
+30
 normal zo
-147
-normal zo
-132
-normal zo
-159
-normal zo
-162
-normal zo
-163
-normal zo
-163
-normal zo
-170
-normal zo
-170
-normal zo
-187
-normal zo
-162
-normal zo
-165
-normal zo
-167
-normal zo
-171
-normal zo
-173
-normal zo
-176
-normal zo
-179
-normal zo
-173
-normal zo
-184
-normal zo
-187
-normal zo
-190
-normal zo
-184
-normal zo
-195
-normal zo
-200
-normal zo
-205
-normal zo
-171
-normal zo
-159
-normal zo
-217
-normal zo
-223
-normal zo
-225
-normal zo
-229
-normal zo
-234
-normal zo
-236
-normal zo
-229
-normal zo
-217
-normal zo
-249
-normal zo
-262
-normal zo
-264
-normal zo
-280
-normal zo
-282
-normal zo
-284
-normal zo
-288
-normal zo
-291
-normal zo
-295
-normal zo
-297
-normal zo
-301
-normal zo
-303
-normal zo
-307
-normal zo
-309
-normal zo
-307
-normal zo
-313
-normal zo
-315
-normal zo
-313
-normal zo
-319
-normal zo
-280
-normal zo
-324
-normal zo
-249
-normal zo
-337
-normal zo
-347
-normal zo
-351
-normal zo
-351
-normal zo
-357
-normal zo
-363
-normal zo
-367
-normal zo
-371
-normal zo
-357
-normal zo
-337
-normal zo
-385
-normal zo
-390
-normal zo
-392
-normal zo
-396
-normal zo
-401
-normal zo
-403
-normal zo
-396
-normal zo
-385
-normal zo
-429
-normal zo
-436
-normal zo
-438
-normal zo
-445
-normal zo
-447
-normal zo
-451
-normal zo
-453
-normal zo
-429
-normal zo
-465
-normal zo
-470
-normal zo
-472
-normal zo
-476
-normal zo
-481
-normal zo
-483
-normal zo
-476
-normal zo
-465
-normal zo
-509
-normal zo
-514
-normal zo
-516
-normal zo
-520
-normal zo
-523
-normal zo
-525
-normal zo
-529
-normal zo
-531
-normal zo
-540
-normal zo
-544
-normal zo
-549
-normal zo
-551
-normal zo
-509
-normal zo
-564
-normal zo
-596
-normal zo
-603
-normal zo
-596
-normal zo
-600
-normal zo
-602
-normal zo
-605
-normal zo
-608
-normal zo
-600
-normal zo
-613
-normal zo
-564
-normal zo
-629
-normal zo
-641
-normal zo
-646
-normal zo
-648
-normal zo
-652
-normal zo
-654
-normal zo
-641
-normal zo
-660
-normal zo
-629
-normal zo
-674
-normal zo
-679
-normal zo
-681
-normal zo
-674
-normal zo
-698
-normal zo
-703
-normal zo
-705
-normal zo
-698
-normal zo
-718
-normal zo
-723
-normal zo
-725
-normal zo
-730
-normal zo
-733
-normal zo
-736
-normal zo
-741
-normal zo
-743
-normal zo
-718
-normal zo
-759
-normal zo
-763
-normal zo
-765
-normal zo
-772
-normal zo
-774
-normal zo
-759
-normal zo
-816
-normal zo
-829
-normal zo
-831
-normal zo
-816
-normal zo
-843
-normal zo
-847
-normal zo
-849
-normal zo
-862
-normal zo
-864
-normal zo
-843
-normal zo
-877
-normal zo
-881
-normal zo
-883
-normal zo
-896
-normal zo
-900
-normal zo
-905
-normal zo
-907
-normal zo
-877
-normal zo
-919
-normal zo
-935
-normal zo
-939
-normal zo
-939
-normal zo
-947
-normal zo
-951
-normal zo
-955
-normal zo
-959
-normal zo
-947
-normal zo
-919
-normal zo
-975
-normal zo
-981
-normal zo
-993
-normal zo
-981
-normal zo
-975
-normal zo
-1010
-normal zo
-1023
-normal zo
-1023
-normal zo
-1029
-normal zo
-1031
-normal zo
-1037
-normal zo
-1040
-normal zo
-1029
-normal zo
-1045
-normal zo
-1010
-normal zo
-1058
-normal zo
-1083
-normal zo
-1087
-normal zo
-1058
-normal zo
-1100
-normal zo
-1104
-normal zo
-1110
-normal zo
-1112
-normal zo
-1104
-normal zo
-1124
-normal zo
-1100
-normal zo
-1158
-normal zo
-1175
-normal zo
-1177
-normal zo
-1203
-normal zo
-1158
-normal zo
-1219
-normal zo
-1224
-normal zo
-1219
-normal zo
-1236
-normal zo
-let s:l = 1216 - ((30 * winheight(0) + 27) / 54)
+let s:l = 39 - ((38 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1216
-normal! 01l
+39
+normal! 02l
+wincmd w
+argglobal
+edit dag.h
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,k
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal noexpandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=2
+setlocal foldmarker={{{,}}}
+set foldmethod=indent
+setlocal foldmethod=indent
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal nomodeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=8
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=8
+setlocal tags=~/Workspace/csdn/compiler/.git/cpp.tags,~/Workspace/csdn/compiler/.git/tags,./tags,./TAGS,tags,TAGS
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+20
+normal zo
+20
+normal zo
+32
+normal zo
+let s:l = 28 - ((0 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+28
+normal! 014l
+wincmd w
+argglobal
+edit quad.h
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal noexpandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=1
+setlocal foldmarker={{{,}}}
+set foldmethod=indent
+setlocal foldmethod=indent
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal nomodeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=8
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=8
+setlocal tags=~/Workspace/csdn/compiler/.git/cpp.tags,~/Workspace/csdn/compiler/.git/tags,./tags,./TAGS,tags,TAGS
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+13
+normal zo
+let s:l = 32 - ((0 * winheight(0) + 8) / 16)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+32
+normal! 08l
 wincmd w
 2wincmd w
-exe '1resize ' . ((&lines * 27 + 28) / 56)
-exe 'vert 1resize ' . ((&columns * 80 + 80) / 161)
-exe '2resize ' . ((&lines * 26 + 28) / 56)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 161)
-exe 'vert 3resize ' . ((&columns * 80 + 80) / 161)
+exe '1resize ' . ((&lines * 1 + 28) / 56)
+exe 'vert 1resize ' . ((&columns * 92 + 80) / 161)
+exe '2resize ' . ((&lines * 52 + 28) / 56)
+exe 'vert 2resize ' . ((&columns * 92 + 80) / 161)
+exe '3resize ' . ((&lines * 37 + 28) / 56)
+exe 'vert 3resize ' . ((&columns * 68 + 80) / 161)
+exe '4resize ' . ((&lines * 16 + 28) / 56)
+exe 'vert 4resize ' . ((&columns * 68 + 80) / 161)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
