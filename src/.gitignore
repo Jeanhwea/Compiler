@@ -1,3 +1,6 @@
 *.o
 *.pas
 *.stb
+*.lst
+*.asm
+test.*
