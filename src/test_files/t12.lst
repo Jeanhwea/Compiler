@@ -1,0 +1,75 @@
+   1: var i:integer;
+lineno:1: VAR var
+lineno:1: ID i
+lineno:1: COLON :
+lineno:1: INTEGER integer
+lineno:1: SEMI ;
+   2: procedure h1(var i:integer);
+lineno:2: PROCEDURE procedure
+lineno:2: ID h1
+lineno:2: LPAR (
+lineno:2: VAR var
+lineno:2: ID i
+lineno:2: COLON :
+lineno:2: INTEGER integer
+lineno:2: RPAR )
+lineno:2: SEMI ;
+   3: 	procedure h2(var i:integer);
+lineno:3: PROCEDURE procedure
+lineno:3: ID h2
+lineno:3: LPAR (
+lineno:3: VAR var
+lineno:3: ID i
+lineno:3: COLON :
+lineno:3: INTEGER integer
+lineno:3: RPAR )
+lineno:3: SEMI ;
+   4: 		procedure h3(var i:integer);
+lineno:4: PROCEDURE procedure
+lineno:4: ID h3
+lineno:4: LPAR (
+lineno:4: VAR var
+lineno:4: ID i
+lineno:4: COLON :
+lineno:4: INTEGER integer
+lineno:4: RPAR )
+lineno:4: SEMI ;
+   5: 		begin i:=9 end;
+lineno:5: BEGIN begin
+lineno:5: ID i
+lineno:5: ASSIGN :=
+lineno:5: UNS 9
+lineno:5: END end
+lineno:5: SEMI ;
+   6: 	begin h3(i) end;
+lineno:6: BEGIN begin
+lineno:6: ID h3
+lineno:6: LPAR (
+lineno:6: ID i
+lineno:6: RPAR )
+lineno:6: END end
+lineno:6: SEMI ;
+   7: begin h2(i) end;
+lineno:7: BEGIN begin
+lineno:7: ID h2
+lineno:7: LPAR (
+lineno:7: ID i
+lineno:7: RPAR )
+lineno:7: END end
+lineno:7: SEMI ;
+   8: begin h1(i); write(i) end.
+lineno:8: BEGIN begin
+lineno:8: ID h1
+lineno:8: LPAR (
+lineno:8: ID i
+lineno:8: RPAR )
+lineno:8: SEMI ;
+lineno:8: WRITE write
+lineno:8: LPAR (
+lineno:8: ID i
+lineno:8: RPAR )
+lineno:8: END end
+lineno:8: DOT .
+   9: 
+  10: {result: 9}
+lineno:11: ENDFILE 

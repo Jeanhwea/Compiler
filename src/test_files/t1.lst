@@ -1,0 +1,79 @@
+   1: { test for multi-level and display region disign}
+   2: var vn, out: integer;
+lineno:2: VAR var
+lineno:2: ID vn
+lineno:2: COMMA ,
+lineno:2: ID out
+lineno:2: COLON :
+lineno:2: INTEGER integer
+lineno:2: SEMI ;
+   3: function fac(n:integer): integer;
+lineno:3: FUNCTION function
+lineno:3: ID fac
+lineno:3: LPAR (
+lineno:3: ID n
+lineno:3: COLON :
+lineno:3: INTEGER integer
+lineno:3: RPAR )
+lineno:3: COLON :
+lineno:3: INTEGER integer
+lineno:3: SEMI ;
+   4: begin
+lineno:4: BEGIN begin
+   5: 	if n=0 then
+lineno:5: IF if
+lineno:5: ID n
+lineno:5: EQU =
+lineno:5: UNS 0
+lineno:5: THEN then
+   6: 	begin
+lineno:6: BEGIN begin
+   7: 		fac := 1
+lineno:7: ID fac
+lineno:7: ASSIGN :=
+lineno:7: UNS 1
+   8: 	end
+lineno:8: END end
+   9: 	else
+lineno:9: ELSE else
+  10: 	begin
+lineno:10: BEGIN begin
+  11: 		fac := fac(n-1) * n
+lineno:11: ID fac
+lineno:11: ASSIGN :=
+lineno:11: ID fac
+lineno:11: LPAR (
+lineno:11: ID n
+lineno:11: MINUS -
+lineno:11: UNS 1
+lineno:11: RPAR )
+lineno:11: STAR *
+lineno:11: ID n
+  12: 	end;
+lineno:12: END end
+lineno:12: SEMI ;
+  13: end;
+lineno:13: END end
+lineno:13: SEMI ;
+  14: begin
+lineno:14: BEGIN begin
+  15: 	for vn := 0 to 4 do
+lineno:15: FOR for
+lineno:15: ID vn
+lineno:15: ASSIGN :=
+lineno:15: UNS 0
+lineno:15: TO to
+lineno:15: UNS 4
+lineno:15: DO do
+  16: 	write(fac(vn))
+lineno:16: WRITE write
+lineno:16: LPAR (
+lineno:16: ID fac
+lineno:16: LPAR (
+lineno:16: ID vn
+lineno:16: RPAR )
+lineno:16: RPAR )
+  17: end.
+lineno:17: END end
+lineno:17: DOT .
+lineno:18: ENDFILE 

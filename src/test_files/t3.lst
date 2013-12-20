@@ -1,0 +1,84 @@
+   1: procedure hh();
+lineno:1: PROCEDURE procedure
+lineno:1: ID hh
+lineno:1: LPAR (
+lineno:1: RPAR )
+lineno:1: SEMI ;
+   2: var ar:array [10] of integer;
+lineno:2: VAR var
+lineno:2: ID ar
+lineno:2: COLON :
+lineno:2: ARRAY array
+lineno:2: LBRA [
+lineno:2: UNS 10
+lineno:2: RBRA ]
+lineno:2: OF of
+lineno:2: INTEGER integer
+lineno:2: SEMI ;
+   3:  i:integer;
+lineno:3: ID i
+lineno:3: COLON :
+lineno:3: INTEGER integer
+lineno:3: SEMI ;
+   4: procedure pri();
+lineno:4: PROCEDURE procedure
+lineno:4: ID pri
+lineno:4: LPAR (
+lineno:4: RPAR )
+lineno:4: SEMI ;
+   5: 	procedure he();
+lineno:5: PROCEDURE procedure
+lineno:5: ID he
+lineno:5: LPAR (
+lineno:5: RPAR )
+lineno:5: SEMI ;
+   6: 		begin  ar[i]:=2 end;
+lineno:6: BEGIN begin
+lineno:6: ID ar
+lineno:6: LBRA [
+lineno:6: ID i
+lineno:6: RBRA ]
+lineno:6: ASSIGN :=
+lineno:6: UNS 2
+lineno:6: END end
+lineno:6: SEMI ;
+   7: 	begin i:=1;he() end;
+lineno:7: BEGIN begin
+lineno:7: ID i
+lineno:7: ASSIGN :=
+lineno:7: UNS 1
+lineno:7: SEMI ;
+lineno:7: ID he
+lineno:7: LPAR (
+lineno:7: RPAR )
+lineno:7: END end
+lineno:7: SEMI ;
+   8: 	begin 
+lineno:8: BEGIN begin
+   9: 		pri(); 
+lineno:9: ID pri
+lineno:9: LPAR (
+lineno:9: RPAR )
+lineno:9: SEMI ;
+  10: 		write(ar[i]) 
+lineno:10: WRITE write
+lineno:10: LPAR (
+lineno:10: ID ar
+lineno:10: LBRA [
+lineno:10: ID i
+lineno:10: RBRA ]
+lineno:10: RPAR )
+  11: 	end;
+lineno:11: END end
+lineno:11: SEMI ;
+  12: begin hh(); end.
+lineno:12: BEGIN begin
+lineno:12: ID hh
+lineno:12: LPAR (
+lineno:12: RPAR )
+lineno:12: SEMI ;
+lineno:12: END end
+lineno:12: DOT .
+  13: 
+  14: {result: 2}
+lineno:15: ENDFILE 
