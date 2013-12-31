@@ -468,6 +468,12 @@ void ForStmtG(ForStmtSP t)
 	q->d = startlabel;
 	emit(q);
 	emit(out);
+	NEWQUAD(q);
+	q->op = ASS_op;
+	q->r = re;
+	q->s = NULL;
+	q->d = res;
+	emit(q);
 }
 
 void PcallStmtG(PcallStmtSP t)
