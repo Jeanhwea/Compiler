@@ -8,6 +8,7 @@
 #include "parse.h"
 #include "symtab.h"
 #include "quad.h"
+#include "elf.h"
 #include "dag.h"
 #include "bblock.h"
 #include "fgraph.h"
@@ -29,6 +30,7 @@ void make_fgraph(void)
 {
 	BBSP b;
 	initLeader();
+	elf_header();
 	do {
 		b = newBblock();
 		addBblock(b);
@@ -40,6 +42,7 @@ void make_fgraph(void)
 		}
 		printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 		printAllQuads(b->qhead);
+		elf_for_block(b);
 	} while (!quad_end());
 	// printAllBblock();
 }

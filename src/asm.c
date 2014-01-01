@@ -28,14 +28,12 @@ void enter(SymTabESP e)
 {
 	SymTabSP st;
 	if (e == NULL) {
-		fprintf(errlist, "ASM BUG:25\n");
 		assert(0);
 	}
 	if (e->obj == Fun_Obj_t || e->obj == Proc_Obj_t) {
 		st = e->stp;
 		if (st == NULL) {
-			fprintf(asmlist, "ASM BUG:32\n");
-			abort();
+			assert(0);
 		}
 		lvl = st->level;
 		varc = st->posi_var;
@@ -43,7 +41,7 @@ void enter(SymTabESP e)
 		parac = st->posi_para;
 		fprintf(asmlist, "\tsub\tesp, %d\n", RESERVED);
 	} else {
-		fprintf(asmlist, "ASM BUG:34\n");
+		assert(0);
 	}
 }
 
@@ -61,6 +59,7 @@ void movRM_asm(char *reg, SymTabESP e)
 				reg, VAROFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:68\n");
+			assert(0);
 		}
 		break;
 	case Tmp_Obj_t:
@@ -69,6 +68,7 @@ void movRM_asm(char *reg, SymTabESP e)
 				reg, TMPOFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:76");
+			assert(0);
 		}
 		break;
 	case Para_Val_Obj_t:
@@ -77,6 +77,7 @@ void movRM_asm(char *reg, SymTabESP e)
 				reg, PARAOFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:107\n");
+			assert(0);
 		}
 		break;
 	case Para_Ref_Obj_t:
@@ -94,6 +95,7 @@ void movRM_asm(char *reg, SymTabESP e)
 				reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:85\n");
+			assert(0);
 		}
 		break;
 	case Num_Obj_t:
@@ -105,6 +107,7 @@ void movRM_asm(char *reg, SymTabESP e)
 		break;
 	default:
 		fprintf(errlist, "ASM BUG:88\n");
+		assert(0);
 	}
 }
 
@@ -122,6 +125,7 @@ void leaRM_asm(char *reg, SymTabESP e)
 				reg, VAROFFSET);
 		} else {
 			fprintf(errlist, "ASM BUG:109\n");
+			assert(0);
 		}
 		break;
 	case Para_Val_Obj_t:
@@ -130,6 +134,7 @@ void leaRM_asm(char *reg, SymTabESP e)
 				reg, PARAOFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:132\n");
+			assert(0);
 		}
 		break;
 	case Para_Ref_Obj_t:
@@ -138,10 +143,12 @@ void leaRM_asm(char *reg, SymTabESP e)
 				reg, PARAOFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:134\n");
+			assert(0);
 		}
 		break;
 	default:
 		fprintf(errlist, "ASM BUG:128\n");
+		assert(0);
 	}
 }
 
@@ -165,10 +172,12 @@ void leaRA_asm(char *reg, char *offsetreg, SymTabESP e)
 				reg, offsetreg);
 		} else {
 			fprintf(errlist, "ASM BUG:142\n");
+			assert(0);
 		}
 		break;
 	default:
 		fprintf(errlist, "ASM BUG:146\n");
+		assert(0);
 	}
 }
 
@@ -187,6 +196,7 @@ void movMR_asm(SymTabESP e, char *reg)
 				VAROFFSET, reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:106\n");
+			assert(0);
 		}
 		break;
 	case Tmp_Obj_t:
@@ -195,6 +205,7 @@ void movMR_asm(SymTabESP e, char *reg)
 				TMPOFFSET, reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:113");
+			assert(0);
 		}
 		break;
 	case Para_Val_Obj_t:
@@ -203,6 +214,7 @@ void movMR_asm(SymTabESP e, char *reg)
 				PARAOFFSET, reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:117\n");
+			assert(0);
 		}
 		break;
 	case Para_Ref_Obj_t:
@@ -220,10 +232,12 @@ void movMR_asm(SymTabESP e, char *reg)
 				reg, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:143\n");
+			assert(0);
 		}
 		break;
 	default:
 		fprintf(errlist, "ASM BUG:126\n");
+		assert(0);
 	}
 }
 
@@ -370,6 +384,7 @@ void call_asm(SymTabESP e)
 		fprintf(asmlist, "\tadd\tesp, %d\n", offset);
 	} else {
 		fprintf(errlist, "ASM BUG:186\n");
+		assert(0);
 	}
 }
 
@@ -395,6 +410,7 @@ void jmp_asm(SymTabESP e)
 		fprintf(asmlist, "\tjmp\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:264\n");
+		assert(0);
 	}
 }
 
@@ -409,6 +425,7 @@ void jz_asm(SymTabESP e)
 		fprintf(asmlist, "\tjz\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:283\n");
+		assert(0);
 	}
 }
 
@@ -418,6 +435,7 @@ void jnz_asm(SymTabESP e)
 		fprintf(asmlist, "\tjnz\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:292\n");
+		assert(0);
 	}
 }
 
@@ -427,6 +445,7 @@ void jg_asm(SymTabESP e)
 		fprintf(asmlist, "\tjg\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:300\n");
+		assert(0);
 	}
 }
 
@@ -436,6 +455,7 @@ void jng_asm(SymTabESP e)
 		fprintf(asmlist, "\tjng\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:310\n");
+		assert(0);
 	}
 }
 
@@ -445,6 +465,7 @@ void jl_asm(SymTabESP e)
 		fprintf(asmlist, "\tjl\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:319\n");
+		assert(0);
 	}
 }
 
@@ -454,6 +475,7 @@ void jnl_asm(SymTabESP e)
 		fprintf(asmlist, "\tjnl\t%s\n", e->label);
 	} else {
 		fprintf(errlist, "ASM BUG:328\n");
+		assert(0);
 	}
 }
 
@@ -477,13 +499,13 @@ char *allocs_asm(SymTabESP str)
 	loc = (char *) malloc((len + 1)* sizeof(char));
 	if (loc == NULL) {
 		fprintf(errlist, "OUTOFMEM: at asm.c\n");
-		abort();
+		assert(0);
 	}
 	strcpy(loc, strBuf);
 	strs = (StringS *) malloc(sizeof(StringS));
 	if (strs == NULL) {
 		fprintf(errlist, "OUTOFMEM: at asm.c:466\n");
-		abort();
+		assert(0);
 	}
 	strs->loc = loc;
 	strs->content = str->label;

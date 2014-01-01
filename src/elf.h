@@ -8,6 +8,8 @@
 
 #define ELF_H
 
+void cgen(QuadSP);
 void elf(void);
+void elf_header(void);
 
 #endif /* end of include guard: ELF_H */

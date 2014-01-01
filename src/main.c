@@ -10,10 +10,9 @@
 #include "parse.h"
 #include "analyse.h"
 #include "code.h"
-#include "elf.h"
-
 #include "symtab.h"
 #include "quad.h"
+#include "elf.h"
 #include "dag.h"
 #include "bblock.h"
 #include "fgraph.h"
@@ -27,6 +26,7 @@ FILE *errlist;
 FILE *tiplist;
 FILE *astlist;
 FILE *daglist;
+FILE *asmoptim;
 int lineno = 0;
 int runlevel = 3;
 
@@ -36,17 +36,60 @@ BOOL ShowAST = TRUE;
 BOOL ShowTip = TRUE;
 BOOL ShowQuad = TRUE;
 
+char pgm[120] = "input.pas";
+int fnlen;
+char *codef;
+char *listingf;
+char *stablistf;
+char *asmlistf;
+char *astlistf;
+char *asmoptimf;
+
+void do_compile(void)
+{
+	int state;
+	pid_t pid;
+	if ((pid = fork()) < 0) {
+		fprintf(stderr, "can not fork");
+		exit(1);
+	}
+	if (pid == 0) {
+		execl("/usr/bin/nasm", "nasm", "-g", "-f", "elf", asmlistf, (char *)0);
+	} else {
+		wait(&state);
+	}
+}
+
+void do_link(void)
+{
+	int state;
+	pid_t pid;
+	char *objfile;
+	char *outputfile;
+	outputfile = (char *)calloc(fnlen + 1, sizeof(char));
+	objfile = (char *)calloc(fnlen + 3, sizeof(char));
+	strncpy(outputfile, pgm, fnlen);
+	strncpy(objfile, pgm, fnlen);
+	strcat(objfile, ".o");
+	if ((pid = fork()) < 0) {
+		fprintf(stderr, "can not fork");
+		exit(1);
+	}
+	if (pid == 0) {
+		execl("/usr/bin/gcc", "gcc","-g", "-o", outputfile, objfile, (char *)0);
+	} else {
+		wait(&state);
+	}
+}
+
 int main(int argc, const char *argv[])
 {
 	PgmSP ast; /* abstract syntax tree */
 	BOOL debug = FALSE;
-	char pgm[120] = "input.pas";
-	char *codef;
-	char *listingf;
-	char *stablistf;
-	char *asmlistf;
-	char *astlistf;
-	int fnlen;
+	BOOL optim = FALSE;
+	BOOL compile_and_link = FALSE;
+
+	fprintf(stdout, "compiler version 0.9.7 starting ...\n");
 	if (argc < 2) {
 		fprintf(stdout, "usage: ./compiler <filename>\n");
 		exit(1);
@@ -54,7 +97,7 @@ int main(int argc, const char *argv[])
 	strcpy(pgm,argv[argc-1]);
 	source = fopen(pgm, "r");
 	if (source == NULL) {
-		fprintf(stderr, "File %s not found\n", pgm);
+		fprintf(stderr, "File `%s` not found\n", pgm);
 		exit(1);
 	}
 	if (strchr(pgm, '.') == NULL) {
@@ -67,7 +110,24 @@ int main(int argc, const char *argv[])
 		listing = stdout;
 		code = stdout;
 		stablist = stdout;
-	}
+	} else if (argv[argc-2][0] == 'o') {
+		debug = TRUE;
+		optim = TRUE;
+		listing = stdout;
+		code = stdout;
+		stablist = stdout;
+	} else if (argv[argc-2][0] == 's') {
+		// optimation without debug flag
+		optim = TRUE;
+		listing = stdout;
+		code = stdout;
+		stablist = stdout;
+	} else if (argv[argc-2][0] == 'c') {
+		compile_and_link = TRUE;
+		listing = stdout;
+		code = stdout;
+		stablist = stdout;
+	} 
 	daglist = stdout;
 	errlist = stderr;
 	tiplist = stderr;
@@ -81,6 +141,17 @@ int main(int argc, const char *argv[])
 		exit(1);
 	}
 
+	if (optim) {
+		asmoptimf = (char *)calloc(fnlen + 16, sizeof(char));
+		strncpy(asmoptimf, pgm, fnlen);
+		strcat(asmoptimf, ".optim.asm");
+		asmoptim = fopen(asmoptimf, "w");
+		if (asmoptim == NULL) {
+			fprintf(stderr, "Unable to open %s\n", asmoptimf);
+			exit(1);
+		}
+
+	}
 
 	astlistf = (char *)calloc(fnlen + 5, sizeof(char));
 	strncpy(astlistf, pgm, fnlen);
@@ -132,18 +203,33 @@ int main(int argc, const char *argv[])
 	}
 	if (runlevel > 0) {
 		elf();
-		make_fgraph();
 	} else {
 		exit(1);
 	}
 	// add optimization
+	if (optim) {
+		fclose(asmlist);
+		// redirection normal asm file
+		// into optimational asm file
+		asmlist = asmoptim;
+		make_fgraph();
+		// elf_optim();
+	}
 	fclose(source);
-	fclose(asmlist);
+	if(!optim) fclose(asmlist);
 	fclose(astlist);
 	if (!debug) {
 		fclose(code);
 		fclose(listing);
 		fclose(stablist);
 	}
+	if (optim) {
+		fclose(asmoptim);
+	}
+	if (compile_and_link) {
+		do_compile();
+		do_link();
+	}
+	fprintf(stdout, "__ done __\n");
 	return 0;
 }

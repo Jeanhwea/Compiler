@@ -42,7 +42,9 @@ char *ERRVEC[MAXERROR] =
 	"Should be a procedure type symbol -> ",
 	"Should be a function type symbol -> ",
 	"Different size of parameters and arguments while using -> ",
-	"Error use pass value by reference -> "
+	"Error use pass value by reference -> ",
+
+	"Missing a ',' after -> "
 };
 
 void lexError(ERRNO errno)

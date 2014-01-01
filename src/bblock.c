@@ -8,6 +8,7 @@
 #include "parse.h"
 #include "symtab.h"
 #include "quad.h"
+#include "elf.h"
 #include "dag.h"
 #include "bblock.h"
 
@@ -58,8 +59,13 @@ static QuadSP nextleader(void)
 			leader = p;
 			return p;
 		} else if (BRANCE(p)) {
-			leader = p->next;
-			return p->next;
+			if (p->prev !=NULL && BRANCE(p->prev)) {
+				leader = p;
+				return p;
+			} else {
+				leader = p->next;
+				return p->next;
+			}
 		}
 	}
 	leader = NULL;
@@ -124,13 +130,14 @@ void printBblock(BBSP b)
 	// 	fprintf(code, "%d ", q->bbp->id);
 	// }
 	// fprintf(code, "\n");
-	fprintf(code, "---------------------------------------");
+	
+	// fprintf(code, "---------------------------------------");
 	fprintf(code, "-------------------------------------\n");
 	for (p = b->first; p != NULL; p = p->next) {
 		printQuad(p);
 		if (p == b->last) break;
 	}
-	fprintf(code, "---------------------------------------");
+	// fprintf(code, "---------------------------------------");
 	fprintf(code, "-------------------------------------\n");
 }
 
@@ -170,6 +177,16 @@ void get_quad(BBSP b)
 	destory_DNL();
 	destory_NTL();
 	initDag();
+}
+
+void elf_for_block(BBSP b)
+{
+	QuadSP q;
+	for (q = b->qhead; q != NULL; q = q->next) {
+		cgen(q);
+		if (q == b->qtail)
+			break;
+	}
 }
 
 void make_dag_for_bblock(BBSP b)

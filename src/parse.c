@@ -119,8 +119,11 @@ BlockSP BlockB(void)
 		t->csp = CompStmtB();
 	} else {
 		--runlevel;
-		syntaxError(MISSBODY, lineno, FALSE, NULL);
+		syntaxError(UNEXPECT, lineno, TRUE, tokenString);
 		getsym();
+		// --runlevel;
+		// syntaxError(MISSBODY, lineno, FALSE, NULL);
+		// getsym();
 	}
 	return t;
 }
@@ -148,7 +151,9 @@ ConstDecSP ConstDecB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-		getsym();
+		if (TEST4(VAR, PROCEDURE, FUNCTION, BEGIN)) {
+			/* do not skip if in FIRST set */
+		} else getsym();
 	}
 	return t;
 }
@@ -169,7 +174,9 @@ ConstDefSP ConstDefB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSEQU, lineno, FALSE, prevTokenString);
-		getsym();
+		if (TEST4(PLUS, MINUS, UNS, CH)) {
+			/* do not skip if in FIRST set */
+		} else getsym();
 	}
 	if (TEST4(PLUS, MINUS, UNS, CH)) {
 		switch (token) {
@@ -182,7 +189,9 @@ ConstDefSP ConstDefB(void)
 			} else {
 				--runlevel;
 				syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
-				getsym();
+				if (TEST4(PLUS, MINUS, UNS, CH)) {
+					/* do not skip if in FIRST set */
+				} else getsym();
 			}
 			break;
 		case MINUS:
@@ -194,7 +203,9 @@ ConstDefSP ConstDefB(void)
 			} else {
 				--runlevel;
 				syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
-				getsym();
+				if (TEST4(PLUS, MINUS, UNS, CH)) {
+					/* do not skip if in FIRST set */
+				} else getsym();
 			}
 			break;
 		case UNS:
@@ -232,7 +243,9 @@ VarDecSP VarDecB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-		getsym();
+		if (TEST(ID)) {
+			/* do not skip if in FIRST set */
+		} else getsym();
 	}
 	for (p = t; TEST(ID); p = q) {
 		NEWNODE(VarDecS, q);
@@ -244,7 +257,9 @@ VarDecSP VarDecB(void)
 		} else {
 			--runlevel;
 			syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST3(PROCEDURE,FUNCTION,BEGIN)) {
+				/* do nothing */
+			} else getsym();
 		}
 	}
 	return t;
@@ -273,7 +288,9 @@ VarDefSP VarDefB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSCOLON, lineno, FALSE, prevTokenString);
-		getsym();
+		if (TEST3(INTEGER,CHAR,ARRAY)) {
+			/* do not skip if in FIRST set */
+		} else getsym();
 	}
 	/* type write back */
 	switch (token) {
@@ -294,7 +311,9 @@ VarDefSP VarDefB(void)
 		} else {
 			--runlevel;
 			syntaxError(MISSLBRA, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST(UNS)) {
+				/* do not skip if in FIRST set */
+			} else getsym();
 		}
 		if (TEST(UNS)) {
 			arraylength = atoi(tokenString);
@@ -302,21 +321,27 @@ VarDefSP VarDefB(void)
 		} else {
 			--runlevel;
 			syntaxError(MISSUNS, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST(RBRA)) {
+				/* do not skip if in FIRST set */
+			} else getsym();
 		}
 		if (TEST(RBRA)) {
 			match(RBRA);
 		} else {
 			--runlevel;
 			syntaxError(MISSRBRA, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST(OF)) {
+				/* do not skip if in FIRST set */
+			} else getsym();
 		}
 		if (TEST(OF)) {
 			match(OF);
 		} else {
 			--runlevel;
 			syntaxError(MISSOF, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST2(INTEGER,CHAR)) {
+				/* do not skip if in FIRST set */
+			} else getsym();
 		}
 		if (TEST(INTEGER)) {
 			match(INTEGER);
@@ -410,7 +435,9 @@ ProcDecSP ProcDecB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-		getsym();
+		if (TEST3(PROCEDURE, FUNCTION, BEGIN)) {
+				/* do not skip if in FIRST set */
+		} else getsym();
 	}
 	for (p = t; TEST(PROCEDURE); p = q) {
 		NEWNODE(ProcDecS, q);
@@ -422,7 +449,9 @@ ProcDecSP ProcDecB(void)
 		} else {
 			--runlevel;
 			syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST3(PROCEDURE, FUNCTION, BEGIN)) {
+				/* do not skip if in FIRST set */
+			} else getsym();
 		}
 	}
 	return t;
@@ -495,7 +524,9 @@ FunDecSP FunDecB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-		getsym();
+		if (TEST3(PROCEDURE, FUNCTION, BEGIN)) {
+				/* do not skip if in FIRST set */
+		} else getsym();
 	}
 	for (p = t; TEST(FUNCTION); p = q) {
 		NEWNODE(FunDecS, q);
@@ -507,7 +538,9 @@ FunDecSP FunDecB(void)
 		} else {
 			--runlevel;
 			syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-			getsym();
+			if (TEST3(PROCEDURE, FUNCTION, BEGIN)) {
+				/* do not skip if in FIRST set */
+			} else getsym();
 		}
 	}
 	return t;

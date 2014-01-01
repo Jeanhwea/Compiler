@@ -271,6 +271,7 @@ void ASSA(SymTabESP r, SymTabESP s, SymTabESP d)
 	}
 	switch (d->obj) {
 	case Var_Obj_t:
+	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
 		movMR_asm(d, "ecx");
@@ -556,11 +557,11 @@ void ENTERA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
 	if (d == NULL) {
 		fprintf(errlist, "ELF BUG:97\n");
-		abort();
+		assert(0);
 	}
 	if (d->stp == NULL) {
 		fprintf(errlist, "ELF BUG:104\n");
-		abort();
+		assert(0);
 	}
 	label_asm(d);
 	pushR_asm("ebp");
@@ -735,4 +736,12 @@ void elf(void)
 	for (q = qhead; q != NULL; q = q->next) {
 		cgen(q);
 	}
+}
+
+void elf_header(void)
+{
+	fprintf(asmlist, "; ELF32 on Ubuntu 12.04 \n");
+	fprintf(asmlist, "; NASM version 2.09.10 \n");
+	fprintf(asmlist, "; GCC version 4.6.3 \n");
+	ioasm();
 }

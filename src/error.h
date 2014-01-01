@@ -48,6 +48,8 @@ typedef int ERRNO;
 #define ARGERROR 28
 #define ERRREF 29
 
+#define MISSCOMMA 30
+
 extern char *ERRVEC[MAXERROR];
 
 void lexError(ERRNO errno);

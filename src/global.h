@@ -15,7 +15,8 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <assert.h>
-
+#include <sys/wait.h>
+ 
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -39,6 +40,7 @@ extern FILE *errlist; /* errors text file */
 extern FILE *tiplist; /* tip list, using for debug */
 extern FILE *astlist; /* abstract syntax tree listing */
 extern FILE *daglist;
+extern FILE *asmoptim;
 
 extern int lineno; /* source line number for listing */
 extern int runlevel; /* compiler run level */

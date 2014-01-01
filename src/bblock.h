@@ -21,8 +21,8 @@ typedef struct _BBS {
 	QuadSP qhead;
 	QuadSP qtail;
 	QuadSP scope; 
-	QuadSP first;
-	QuadSP last;
+	QuadSP first; // first position of basic block
+	QuadSP last;  // last position of basic block
 } BBS;
 
 #define NEWBBLIST(v) \
@@ -60,9 +60,14 @@ void initLeader(void);
 BBSP newBblock(void);
 void addBblock(BBSP);
 BOOL quad_end(void);
+
 void printBblock(BBSP);
 void printAllBblock();
+
+void elf_for_block(BBSP);
+
 void make_dag_for_bblock(BBSP b);
 void copy_quad_for_bblock(BBSP b);
+
 
 #endif /* end of include guard: BBLOCK_H */
