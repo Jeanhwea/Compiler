@@ -1,4 +1,11 @@
-\section{拓展的PL/0文法}
+\section{需求说明}
+\subsection{文法说明}
 鉴于中文的文法在编程时的对应关系容易混乱，我就先将所给的文法翻译成了英文。
 具体文法如下：
 \input{./GRAM/all.tex}
+\subsection{目标代码说明}
+最终生成的目标代码是x86汇编遵寻Intel的x86传统。
+具体细节可参考Intel的手册。这里就不多说了。
+\input{./SEC/subsec2.tex}
+\subsection{优化方案}
+DAG图消除公共子表达式。

@@ -1,235 +1,363 @@
-\section{文法解读}
-接下来对文法进行具体解释：
-\subsection{程序的解读}
-\input{./GRAM/1.tex}
-这句定义了程序是由分程序加``$.$"组成，其中``$.$"可以判定程序的结束。
-这句的语法图见 Figure~\ref{program}。
-\begin{figure}[h]
-\begin{center}
-    \includegraphics[scale=1]{Figures/program.eps}
-\end{center}
-\caption{program 语法图}
-\label{program}
-\end{figure}
-具体实例：
+\section{详细设计}
+\subsection{程序结构}
+程序的文件列表如下：
 \begin{verbatim}
-count a = 2; .
+analyse.c analyse.h code.c code.h error.c error.h
+global.h main.c nspace.c nspace.h parse.c parse.h
+quad.c quad.h scan.c scan.h symtab.c symtab.h
+util.c util.h elf.h elf.c
 \end{verbatim}
-这就是一个完整的程序，``."表示程序的结束。
-\subsection{分程序的解读}
-\input{./GRAM/2.tex}
-\input{./GRAM/3.tex}
-\input{./GRAM/4.tex}
-\input{./GRAM/10.tex}
-\input{./GRAM/11.tex}
-\input{./GRAM/14.tex}
-\input{./GRAM/15.tex}
-\input{./GRAM/16.tex}
-\input{./GRAM/17.tex}
-\input{./GRAM/36.tex}
-这几句定义了 \sym{block} 文法的完整视图，语法图见 Figure~\ref{block}。
-\begin{figure}[!h]
-\begin{center}
-    \includegraphics[scale=.8]{Figures/block.eps}
-\end{center}
-\caption{block 语法图}
-\label{block}
-\end{figure}
-在分程序\sym{block}中先进行常量定义\sym{constdec}，然后是变量定义
-\sym{vardef} ，接着是过程的声明\sym{procdec}和函数声明\sym{fundec}
-最终的\sym{block}通过一个复合语句\sym{compstmt}退出。\emph{这样的
-顺序是不能改变的}。具体实例:
+\verb|main| 是主函数入口； \verb|scan| 做词法分析； \verb|parse| 做语法分析生成
+语法树； \verb|analyse| 对语法树打印，并进行一些分析；\verb|code| 语义分析，
+解析语法树，
+生成四元式；\verb|symtab| 管理符号表；\verb|nspace| 管理命名空间；\verb|quad|
+发射四元式；\verb|elf| 将四元式生成x86汇编；\verb|util| 是一些工具函数。
+\subsection{函数功能}
+捡几个比较重要的说。\\
+getToken():词法分析，获取单词\\
+parse():语法分析，生成语法树\\
+analyse():分析语法树\\
+code():生成四元式\\
+elf():生成elf文本格式的x86汇编
+\subsection{调用关系}
+main $->$ parse $->$ analyse $->$ code \\
+parse 使用递归下降分析法建立语法树。
+里面有很多建立节点的函数，这些节点定义根据文法而来，具体如下：
 \begin{verbatim}
-const numbera=0, numberb=1; // 常量定义
-var i, j, sum: integer;     // 变量定义
-procedure  test();          // 过程声明部分
-  test 的程序（略）
-function add():integer;     // 函数声明部分
-begin
-  sum := numbera + numberb; // add 的分程序部分
-  add := sum
-end;
-                            // 复合语句部分
-begin
-  i := sum
-end
+static PgmSP PgmB(void);
+static BlockSP BlockB(void);
+static ConstDecSP ConstDecB(void);
+static ConstDefSP ConstDefB(void);
+static VarDecSP VarDecB(void);
+static VarDefSP VarDefB(void);
+static PFDecListSP PFDecListB(void);
+static ProcDecSP ProcDecB(void);
+...
+static TermSP TermB(void);
+static FactorSP FactorB(void);
+static CondSP CondB(void);
+static IdentSP IdentB(IDREADMODE mode);
+static ParaListSP ParaListB(void);
+static ParaDefSP ParaDefB(void);
+static ArgListSP ArgListB(void);
 \end{verbatim}
-说明：
-\begin{enumerate}
-	\item 常量定义必须在变量前面，这种顺序不能改变。
-		如： \verb|var i:integer;const a=1;|就是错误的。
-	\item 相连的过程和函数的声明是可以打乱顺序的，过程和函数
-		都可以右参数列表，用于传入参数。
-	\item 常量是可以连续定义的，之间使用逗号隔开，最后以分号
-		结束常量的定义.
-	\item 变量的定义也可以连续定义，之间使用逗号隔开，另外使用冒号后跟
-		变量类型来说明定义的变量的类型。变量的定义的结束是使用分号。
-	\item 常量定义，变量定义，过程声明，函数声明对一个分程序来说是可有可无
-		的，只有复合语句是必须部分。
-\end{enumerate}
-\section{语句的解读}
-\input{./GRAM/19.tex}
-\input{./GRAM/20.tex}
-\input{./GRAM/32.tex}
-\input{./GRAM/33.tex}
-\input{./GRAM/34.tex}
-\input{./GRAM/35.tex}
-\input{./GRAM/36.tex}
-\input{./GRAM/37.tex}
-\input{./GRAM/38.tex}
-这几句定义了语句的文法的完整视图,语句的文法图见Figure~\ref{statement}。
-\begin{figure}[!h]
-\begin{center}
-    \includegraphics[scale=.6]{Figures/statement.eps}
-\end{center}
-\caption{statement 语法图}
-\label{statement}
-\end{figure}
-具体实例：
+每个节点的数据结构，如下：
 \begin{verbatim}
-const a=1, b=2, test=11, i=1;
-var sum, k: integer; A:array[3] of of integer;
-procedure testproc();
-  testproc具体实现略;
-begin
-  // 赋值语句
-  sum := a + b;
-  A[i] := b;
-  // 条件语句
-  if a > b then
-    sum := a;
-  eles
-    sum := b;
-  // 重复语句
-  repeat
-    sum := sum + 1;
-  until sum > 4
-  // for语句 (步长为一)
-  for i := 1 to 10 do
-    sum := sum + i
-  //过程调用语句
-  testproc();
-  //读语句
-  read (k, sum);
-  //写语句
-  write("hello world!");
-  write(sum)
-end
+typedef struct _PgmS *PgmSP;
+typedef struct _BlockS *BlockSP;
+typedef struct _ConstDecS *ConstDecSP;
+typedef struct _ConstDefS *ConstDefSP;
+typedef struct _VarDecS *VarDecSP;
+typedef struct _VarDefS *VarDefSP;
+typedef struct _PFDecListS *PFDecListSP;
+typedef struct _ProcDecS *ProcDecSP;
+...
+typedef struct _FactorS *FactorSP;
+typedef struct _CondS *CondSP;
+typedef struct _IdentS *IdentSP;
+typedef struct _ParaListS *ParaListSP;
+typedef struct _ParaDefS *ParaDefSP;
+typedef struct _ArgListS *ArgListSP;
+/* declaretion of a bundle of node type */
+typedef enum { 
+  Fun_PFDec_t , Proc_PFDec_t 
+} PFDec_t;
+...
+typedef enum { 
+  /* normal identifier type */
+  Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t, 
+  Char_Fun_Ident_t,
+  /* const identifier type */
+  Int_Const_Ident_t, Char_Const_Ident_t,
+  /* variable identifier type */
+  Int_Var_Ident_t, Char_Var_Ident_t,
+  IntArr_Var_Ident_t, CharArr_Var_Ident_t,
+  /* parameter identifier type */
+  /* call by value */
+  Int_Para_Val_Ident_t, Char_Para_Val_Ident_t,
+  /* call by address */
+  Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
+} Ident_t;
+...
+typedef enum { 
+  StrId_Write_t, Str_Write_t, Id_Write_t 
+} Write_t;
+/* declaretion of a bundle of struct */
+/* Program */
+typedef struct _PgmS {
+  BlockSP bp;
+} PgmS;
+/* block */
+typedef struct _BlockS {
+  ConstDecSP cdp;
+  VarDecSP vdp;
+  PFDecListSP pfdlp;
+  CompStmtSP csp;
+} BlockS;
+typedef struct _ConstDecS {
+  ConstDefSP cdp;
+  ConstDecSP next;
+} ConstDecS;
+typedef struct _ConstDefS {
+  IdentSP idp;
+} ConstDefS;
+...
+typedef struct _ArgListS {
+  ExprSP ep;
+  ArgListSP next;
+} ArgListS;
 \end{verbatim}
-说明：
-\begin{enumerate}
-	\item 赋值语句可以是表达式给变量的赋值，可以是表达式给数组赋值，
-		还可以给表达式给函数给返回值。
-	\item 条件语句的\keyword{else}悬挂的解决方法是总将\keyword{else}
-		和最近的\keyword{if}进行匹配。
-	\item for语句的步长设为一，\keyword{to}表示变量值加一，\keyword{downto}
-		表示变量值减一。
-	\item 读语句，写语句和过程调用语句比较简单。
-	\item 复合语句被\keyword{begin}和\keyword{end}围起来，之间是以
-		分号隔开。
-	\item 语句可以为空，即什么都没有。
-\end{enumerate}
-\section{类型的解读}
-\input{./GRAM/12.tex}
-\input{./GRAM/13.tex}
-\input{./GRAM/5.tex}
-\input{./GRAM/6.tex}
-\input{./GRAM/7.tex}
-\input{./GRAM/8.tex}
-\input{./GRAM/39.tex}
-\input{./GRAM/40.tex}
-类型的定义比较简单，就不画语法图了。直接说明。
-\begin{enumerate}
-	\item 具体的类型分为两类：基本类型和数组。
-	\item 基本类型包括\keyword{integer}和\keyword{char}。整型
-		包含正负的整数；char型包含数字位和大小写字母，定义时以单引号
-		隔开。
-	\item 字符串包含十进制ASCII码值从32到126的所有的值但是得剔除值为34的
-		双引号。这样有利于词法分析的状态机的设计。另外字符串不是一种
-		类型，只用于写语句的打印。
-	\item 常量的定义可以是正负整数，也可以是字符。若是字符，则会使用ASCII
-		码值进行运算。
-\end{enumerate}
-\section{表达式，项，因子的解读}
-\subsection{表达式}
-\input{./GRAM/22.tex}
-表达式的语法图见Figure~\ref{expression}。
-下面是一些表达式的样例:
+analyse 做语法分析， code 遍历语法树各个节点，生成四元式。数据结构有点
+多，就不粘贴了。
+\subsection{符号表管理}
+符号表采用栈式符号表，每个函数或过程进入是申请符号表，退出时弹出。
+每个符号表项使用符号名hash查找，从栈顶往栈底查。
+数据结构如下：
 \begin{verbatim}
-- 3 + a
-a + b
-1 - 10
-a + 1 - 5
-\end{verbatim}
-\begin{figure}[h!]
-\begin{center}
-    \includegraphics[scale=.8]{Figures/expression.eps}
-\end{center}
-\caption{expression 语法图}
-\label{expression}
-\end{figure}
-\subsection{项}
-\input{./GRAM/23.tex}
-项的语法图见Figure~\ref{term}。
-下面是一些项的样例:
-\begin{verbatim}
-a * b
-1 / 10
-a / 1 * 5
-\end{verbatim}
-\begin{figure}[h!]
-\begin{center}
-    \includegraphics[scale=.8]{Figures/term.eps}
-\end{center}
-\caption{term 语法图}
-\label{term}
-\end{figure}
-\subsection{因子}
-\input{./GRAM/24.tex}
-\input{./GRAM/25.tex}
-因子的语法图见Figure~\ref{factor}。
-下面是一些因子的样例:
-\begin{verbatim}
-const a = 1;
-var A:array[3] of integer;
-function somefun(): integer;
-  somefun程序略;
-// 下面的是因子
-a 
-A[2]
-(a + b)
-somefun()
-\end{verbatim}
-\begin{figure}[h!]
-\begin{center}
-    \includegraphics[scale=.8]{Figures/factor.eps}
-\end{center}
-\caption{factor 语法图}
-\label{factor}
-\end{figure}
-\section{其他一些杂项}
-\input{./GRAM/9.tex}
-\input{./GRAM/18.tex}
-\input{./GRAM/21.tex}
-\input{./GRAM/26.tex}
-\input{./GRAM/27.tex}
-\input{./GRAM/28.tex}
-\input{./GRAM/29.tex}
-\input{./GRAM/30.tex}
-\input{./GRAM/31.tex}
-杂项的说明：
-\begin{enumerate}
-	\item 关于标识符的解析可以总结成一个状态机，见 Figure~\ref{getToken}
-	\item 形参列表需要给出参数类型。
-	\item 参数列表是由实参组成，之间使用逗号隔开。
-	\item 实参被定义成一个表达式。
-	\item 条件是基于一些比较，零表示假，非零表示真。
-\end{enumerate}
-\begin{figure}[!h]
-\begin{center}
-    \includegraphics[scale=.8]{Figures/getToken.eps}
-\end{center}
-\caption{getToken 状态机}
-\label{getToken}
-\end{figure}
+/* hash size */
+extern int HASHSIZE;
+/* hash shift */
+extern int SHIFT;
 
+typedef struct _SymTabS *SymTabSP;
+typedef struct _SymLineS *SymLineSP;
+typedef struct _SymBucketS *SymBucketSP;
+typedef struct _SymTabES *SymTabESP;
+
+typedef enum { 表项类型
+  Nop_Obj_t, Const_Obj_t, Var_Obj_t,
+  Proc_Obj_t, Fun_Obj_t, Array_Obj_t,
+  Para_Obj_t, Tmp_Obj_t
+} Obj_t;
+
+typedef enum { 符号类型
+  Int_Type_t, Char_Type_t, Nop_Type_t
+} Type_t;
+
+/**
+ * symbol table stack 
+ * is a stack that
+ * manage symbol table in
+ * each function
+ */
+typedef struct _SymTabS { 符号表链，使用栈式符号表
+  SymBucketSP *sbp;       hash 符号索引表头
+  char *ns;               // namespace for a block
+  SymTabSP prev;
+  SymTabSP next;
+} SymTabS;
+
+/**
+ * store which line a varible
+ * be referenced
+ */
+typedef struct _SymLineS { 符号的行号记录
+  int lineno;
+  SymLineSP next;
+} SymLineS;
+
+/**
+ * symbol table entry 
+ * bucket list
+ */
+typedef struct _SymBucketS {
+  SymTabESP ep;           // element infomation
+  SymBucketSP next;
+} SymBucketS;
+
+typedef struct _SymTabES { 符号表项
+  char *name;             // identifier name
+  char *label;            // namespace label
+  int val;                // array length
+        // or const value
+  SymLineSP lines;        // referenced lines
+  Obj_t obj;              // object type
+  Type_t type;            // type 
+  SymTabSP stp;           // point to symbol table
+} SymTabES;
+对应的符号表操作
+SymTabSP pop(void);
+SymTabSP newstab(void);
+void push(SymTabSP);
+char *mkUsi(int);
+SymTabESP sym_insert_const(IdentSP);
+SymTabESP sym_insert_var(IdentSP);
+SymTabESP sym_insert_para(IdentSP);
+SymTabESP sym_insert_fun(IdentSP, ParaListSP);
+SymTabESP sym_insert_proc(IdentSP, ParaListSP);
+SymTabESP sym_insert_tmp();
+char *genLabel(void);
+SymTabESP sym_lookup(char *);
+void printTab(SymTabSP);
+\end{verbatim}
+\subsection{存储分配}
+常量编译时候直接嵌入汇编里，无需分配空间；变量动态分配存储空间
+见下面：运行栈示意图的 variables 部分，数组也能分配在这个区域，
+不同的是数组是分配一段连续的内存空间。临时变量动态分配在变量空间
+下面。参数压每个函数栈。那些 saved ebp 是 display 区。
+\begin{verbatim}
+/**
+ *             RUNTIME STACK OVERVIEW
+ *
+ *                   high addr
+ *               |    ... ...   |
+ *               |    ... ...   |
+ *               | parameter(1) |
+ *               | parameter(2) |       ||
+ *               | parameter(3) |       ||
+ *               | saved ebp(3) |       ||
+ *               | saved ebp(2) |       ||
+ *      ebp+8 -> | saved ebp(1) |       ||
+ *      ebp+4 -> | return addr  |       || stack
+ *        ebp -> | prev ebp     |       || pointer
+ *               | return value |       || increase
+ *               | variables(1) |       ||
+ *               | variables(2) |      \||/
+ *               | variables(3) |       \/
+ *               | temporary(1) |
+ *               | temporary(2) |
+ *               | temporary(3) |
+ *               | saved ebx    |
+ *               | saved esi    |
+ *               | saved edi    |
+ *               |    ... ...   |
+ *        esp -> |    ... ...   |
+ *
+ **                   low addr
+ */
+\end{verbatim}
+\subsection{四元式设计}
+四元式设计如下：\\
+\vbox{}\\
+算术指令：\\
+\begin{tabular}{r|c}
+  \hline
+  ADD  r, s, d & d = r + s \\ \hline
+  SUB  r, s, d & d = r - s \\ \hline
+  MUL  r, s, d & d = r * s \\ \hline
+  DIV  r, s, d & d = r / s \\ \hline
+  INC  -, -, d & d++       \\ \hline
+  DEC  -, -, d & d--       \\ \hline
+  NEG  r, -, d & d = -r    \\ \hline
+\end{tabular} \\
+\vbox{}\\
+存取赋值指令：\\
+\begin{tabular}{r|c}
+  \hline
+  LOAD  r, -, d & load the value of r into d \\ \hline
+  ASS   r, -, d & assign r into d; d:=r \\ \hline
+  ASSA  r, s, d & d := r[s] \\ \hline
+\end{tabular} \\
+\vbox{}\\
+条件指令：\\
+\begin{tabular}{r|c}
+  \hline
+  EQU  r, s, d & brance to label d if (r == s) \\ \hline
+  NEQ  r, s, d & brance to label d if (r != s) \\ \hline
+  GTT  r, s, d & brance to label d if (r $>$ s)\\ \hline
+  GEQ  r, s, d & brance to label d if (r $>=$ s)\\ \hline
+  LST  r, s, d & brance to label d if (r $<$ s) \\ \hline
+  LEQ  r, s, d & brance to label d if (r $<=$ s)\\ \hline
+\end{tabular} \\
+\vbox{}\\
+无条件跳转指令：\\
+\begin{tabular}{r|c}
+  \hline
+  JMP  -, -, d(label) & jump to label\\ \hline
+\end{tabular}\\
+\vbox{}\\
+栈操作指令：\\
+\begin{tabular}{r|c}
+  \hline
+  PUSH  -, -, d & push d into stack\\ \hline
+  PUSHA -, -, d & push the address of d into stack \\ \hline
+  POP   -, -, d & pop d out of stack\\ \hline
+\end{tabular}\\
+\vbox{}\\
+函数调用：\\
+\begin{tabular}{r|c}
+  \hline
+  LABEL -, -, d(label) & label for brance \\ \hline
+  CALL  r(funlabel), , d & d = r()\\ \hline
+  SRET  -, -, d & set function return value\\ \hline
+  ENTER -, -, d(funlabel) & enterance of a function \\ \hline
+  FIN   -, -, -& finish a function\\ \hline
+\end{tabular}\\
+\vbox{}\\
+IO指令：\\
+\begin{tabular}{r|c}
+  \hline
+  READ  -, -, d & read a integer\\ \hline
+  READC -, -, d & read a char\\ \hline
+  WRI   -, -, d & write a integer \\ \hline
+  WRC   -, -, d & write a char \\ \hline
+  WRS   -, -, d & write a string\\ \hline
+\end{tabular}
+\subsection{优化方案}
+\subsubsection{DAG图}
+基本块结构如下：
+\begin{verbatim}
+typedef struct _BBS *BBSP;
+typedef struct _BBListS *BBListSP;
+
+typedef struct _BBListS {
+  BBSP bbp;
+  BBListSP next;
+} BBListS;
+
+typedef struct _BBS {
+  int id;
+  // point to a function or procedure quadruples
+  QuadSP qhead;
+  QuadSP qtail;
+  QuadSP scope; 
+  QuadSP first; // first position of basic block
+  QuadSP last;  // last position of basic block
+} BBS;
+\end{verbatim}
+DAG图的优化见 \verb|dag.c| 文件。主要是先建立dag图
+在使用递归式重DAG图推到代码序列。
+\subsection{错误处理}
+\begin{enumerate}
+  \item 该标识符未定义
+  \item 识符重复定义
+  \item 应是标识符
+  \item 应是‘ ( ’
+  \item 应是‘ : ’，在说明类型时必须有此冒号
+  \item 非法符号，编译将跳读该符号和后面的某些符号
+  \item 形式参数表中，形参说明应该以标识符或var开头
+  \item 应是of
+  \item 应是‘ ( ’
+  \item 类型定义必须以array或基本类型开头
+  \item 应是‘ [ ’
+  \item 应是‘ ] ’
+  \item 应是‘ ; ’
+  \item 函数结果必须是integer或char类型
+  \item 应是‘ = ’，‘ := ’只能在赋值语句里使用，而不能在说明中使用
+  \item 在if后面必须是条件
+  \item 在for后面的循环变量只能是integer或char型
+  \item for语句中初值或终值表达式必须与循环变量类型相同
+  \item 数太大
+  \item 程序结尾是‘ . ’，请检查相应的begin和end
+  \item 非法字符
+  \item 在常量定义中，等号后面必须是常数
+  \item 下标表达式类型必须是integer型
+  \item 数组说明中，下界小于0，类型不是integer型。
+  \item 没有这样的数组
+  \item 该算术表达式的类型不合法。注意，数组整体不能作为算术运算的操作数
+  \item 实参和对应形参类型应相同
+  \item 应是变量
+  \item 实参个数与形参个数不等
+  \item 表达式中不能出现类型或过程标识符
+  \item 应是变量或过程/函数标识符
+  \item 在赋值语句中被赋值变量应与表达式类型相同
+  \item 数组越界
+  \item 应是常量
+  \item 应是‘ := ’
+  \item 应是then
+  \item 应是do
+  \item 应是to
+  \item 应是begin
+  \item 应是end
+  \item 因子必须以标识符、常量或‘ ( ’开始
+\end{enumerate}
