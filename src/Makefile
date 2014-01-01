@@ -18,14 +18,14 @@ compiler: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o compiler
 
 main.o: main.c global.h util.h parse.h analyse.h code.h elf.h \
-	symtab.h quad.h dag.h bblock.h fgraph.h
+	symtab.h quad.h elf.h dag.h bblock.h fgraph.h
 	$(CC) $(CFLAGS) -c main.c
 
-fgraph.o: fgraph.c global.h parse.h symtab.h quad.h dag.h bblock.h \
+fgraph.o: fgraph.c global.h parse.h symtab.h quad.h elf.h dag.h bblock.h \
 	fgraph.h
 	$(CC) $(CFLAGS) -c fgraph.c
 
-dag.o: dag.c global.h parse.h symtab.h quad.h dag.h bblock.h
+dag.o: dag.c global.h parse.h symtab.h quad.h elf.h dag.h bblock.h
 	$(CC) $(CFLAGS) -c dag.c
 
 bblock.o: bblock.c global.h parse.h symtab.h quad.h dag.h bblock.h

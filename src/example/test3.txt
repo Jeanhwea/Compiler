@@ -36,6 +36,6 @@ for i:=1 to num do begin
 write("please input number> ");read(temp); a[i-1]:=temp end;
 
 qsort(0, num-1);
+write("number after sort");
 for i:=0 to num-1 do write(a[i]);
 end.
-

@@ -1,0 +1,15 @@
+{greatest common divisor , recursive}
+var i,m,n:integer;
+function gcd(i,j:integer):integer;
+begin
+if i=j then gcd:=i;
+if i>j then gcd:=gcd(i-j,j);
+if i<j then gcd:=gcd(i,j-i);
+end;
+begin 
+  for i := 1 to 3 do
+  begin
+  	read(m, n);
+	  write(gcd(m,n), m)
+  end
+end.

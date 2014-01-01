@@ -1,0 +1,31 @@
+{ test for multi-level and display region disign}
+var vn, out: integer;
+function fac(n:integer): integer; {find factorial of n}
+begin
+  if n=0 then
+  begin
+    fac := 1
+  end
+  else
+  begin
+    fac := fac(n-1) * n
+  end;
+end;
+
+function level1(n:integer):integer; {test for mutilevel}
+  function level2(n:integer):integer;
+    function level3(n:integer):integer;
+      begin
+        level3 := fac(n)
+      end;
+    begin
+      level2 := level3(n)
+    end;
+  begin
+    level1 := level2(n)
+  end;
+
+begin
+  for vn := 0 to 4 do
+    write(level1(vn))
+end.
