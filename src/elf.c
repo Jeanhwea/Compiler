@@ -609,7 +609,10 @@ void WRSA(SymTabESP r, SymTabESP s, SymTabESP d)
 void WRIA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
 	movRM_asm("eax", d);
-	fprintf(asmlist, "\tcall\tprint_int\n");
+	if (d->type == Char_Type_t) 
+		fprintf(asmlist, "\tcall\tprint_char\n");
+	else 
+		fprintf(asmlist, "\tcall\tprint_int\n");
 }
 
 void WRCA(SymTabESP r, SymTabESP s, SymTabESP d)

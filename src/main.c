@@ -89,7 +89,7 @@ int main(int argc, const char *argv[])
 	BOOL optim = FALSE;
 	BOOL compile_and_link = FALSE;
 
-	fprintf(stdout, "compiler version 0.9.7 starting ...\n");
+	fprintf(stdout, "compiler version 0.9.8 starting ...\n");
 	if (argc < 2) {
 		fprintf(stdout, "usage: ./compiler <filename>\n");
 		exit(1);
@@ -208,12 +208,14 @@ int main(int argc, const char *argv[])
 	}
 	// add optimization
 	if (optim) {
+		print_all_variables();
 		fclose(asmlist);
 		// redirection normal asm file
 		// into optimational asm file
 		asmlist = asmoptim;
 		make_fgraph();
 		// elf_optim();
+		dataflow();
 	}
 	fclose(source);
 	if(!optim) fclose(asmlist);

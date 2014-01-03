@@ -128,6 +128,15 @@ void tailPr(char *cont)
 		fprintf(astlist, "</%s>\n", cont);
 }
 
+void printBitsmap(int bm[])
+{
+	int i;
+	for (i = 0; i < 8; i++) {
+		fprintf(code, "%04x ", bm[i] & 0xffff);
+	}
+	fprintf(code, "\n");
+}
+
 void ioasm(void)
 {
 	fprintf(asmlist, "SECTION .DATA\n");

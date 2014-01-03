@@ -28,6 +28,31 @@ static int labelcount = 0;
 /* a string buffer for store tmp and label */
 static char stringBuf[100];
 
+
+// for variable analyse 
+SymTabESP all_variables[VARIABLE_LIMIT] = {NULL};
+int var_num = 0;
+
+int find_var_pos(SymTabESP ste)
+{
+	int i;
+	for (i =0; i < VARIABLE_LIMIT; i++)
+		if (all_variables[i] == ste)
+			return i;
+	assert(0);
+	return -1;
+}
+
+void print_all_variables(void)
+{
+	int i;
+	for (i =0; i < VARIABLE_LIMIT; i++)
+		if (all_variables[i] != NULL)
+			fprintf(stablist, "(%d)%s\n", 
+				i, all_variables[i]->name);
+}
+
+
 SymTabSP newstab(void)
 {
 	SymTabSP st;
@@ -164,6 +189,10 @@ static void sym_insert(SymBucketSP bp, SymTabSP st)
 	if (p == NULL) {
 		bp->next = *head;
 		*head = bp;
+		// for ......
+		if (var_num > VARIABLE_LIMIT - 1)
+			assert(0);
+		all_variables[var_num++] = bp->ep;
 	} else {
 		bp->next = *head;
 		*head = bp;
@@ -180,7 +209,7 @@ SymTabESP sym_insert_const(IdentSP idp)
 	if (TOP == NULL) 
 		fprintf(tiplist, "SYMTAB BUG:57\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name))) 
 				break;
 	}
 	if (p == NULL) {
@@ -223,7 +252,7 @@ SymTabESP sym_insert_var(IdentSP idp)
 	if (TOP == NULL) 
 		fprintf(tiplist, "SYMTAB BUG:121\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name))) 
 				break;
 	}
 	if (p == NULL) {
@@ -286,7 +315,7 @@ SymTabESP sym_insert_proc(IdentSP idp, ParaListSP plp)
 	if (TOP == NULL) 
 		fprintf(tiplist, "SYMTAB BUG:121\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) )
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)))
 				break;
 	}
 	if (p == NULL) {
@@ -324,7 +353,7 @@ SymTabESP sym_insert_fun(IdentSP idp, ParaListSP plp)
 	if (TOP == NULL) 
 		fprintf(tiplist, "SYMTAB BUG:121\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name))) 
 				break;
 	}
 	if (p == NULL) {
@@ -368,7 +397,7 @@ SymTabESP sym_insert_para(IdentSP idp)
 	if (TOP == NULL) 
 		fprintf(tiplist, "SYMTAB BUG:263\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name)) ) 
+		if ((p->ep != NULL) && (!strcmp(idp->name, p->ep->name))) 
 				break;
 	}
 	if (p == NULL) {
@@ -422,7 +451,7 @@ SymTabESP sym_insert_tmp(Type_t tmp_type)
 	if (TOP == NULL) 
 		fprintf(tiplist, "SYMTAB BUG:363\n");
 	for (p = *(TOP->sbp + h); p != NULL; p = p->next) {
-		if ((p->ep != NULL) && (!strcmp(name, p->ep->name)) ) 
+		if ((p->ep != NULL) && (!strcmp(name, p->ep->name))) 
 				break;
 	}
 	if (p == NULL) {

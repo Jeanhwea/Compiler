@@ -20,6 +20,7 @@ void innerIdnlnPr(int , ...);
 void innerIntPr(int );
 void innerCharPr(char );
 void tailPr(char *);
+void printBitsmap(int bm[]);
 
 void ioasm(void);
 #endif /* end of include guard: UTIL_H */

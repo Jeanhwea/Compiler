@@ -12,6 +12,7 @@
 #include "dag.h"
 #include "bblock.h"
 #include "fgraph.h"
+#include "live_variable.h"
 
 // point to basic block head
 // BBListSP bblst = NULL; see bblock.c
@@ -34,15 +35,26 @@ void make_fgraph(void)
 	do {
 		b = newBblock();
 		addBblock(b);
-		printBblock(b);
+		// printBblock(b);
 		if (dagable_bblock(b)) {
 			make_dag_for_bblock(b);
 		} else {
 			copy_quad_for_bblock(b);
 		}
-		printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 		printAllQuads(b->qhead);
 		elf_for_block(b);
 	} while (!quad_end());
+	link_bblock();
 	// printAllBblock();
+}
+
+void dataflow(void)
+{
+	// BBListSP bl;
+	cal_use_def();
+	// printf("1111111111111111111111111111111111111111111\n");
+	// printAllBblock();
+	do_dataflow();
+	// printAllBblock();
+	_printAllBblock();
 }

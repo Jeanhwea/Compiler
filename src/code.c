@@ -441,6 +441,19 @@ void ForStmtG(ForStmtSP t)
 		q->s = NULL;
 		q->d = res;
 		emit(q);
+		NEWQUAD(q);
+		q->op = JMP_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = startlabel;
+		emit(q);
+		emit(out);
+		NEWQUAD(q);
+		q->op = DEC_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = res;
+		emit(q);
 		break;
 	case Downto_For_t:
 		NEWQUAD(q);
@@ -456,24 +469,24 @@ void ForStmtG(ForStmtSP t)
 		q->s = NULL;
 		q->d = res;
 		emit(q);
+		NEWQUAD(q);
+		q->op = JMP_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = startlabel;
+		emit(q);
+		emit(out);
+		NEWQUAD(q);
+		q->op = INC_op;
+		q->r = NULL;
+		q->s = NULL;
+		q->d = res;
+		emit(q);
 		break;
 	default:
 		fprintf(tiplist, "CODE BUG:161\n");
 		assert(0);
 	}
-	NEWQUAD(q);
-	q->op = JMP_op;
-	q->r = NULL;
-	q->s = NULL;
-	q->d = startlabel;
-	emit(q);
-	emit(out);
-	NEWQUAD(q);
-	q->op = ASS_op;
-	q->r = re;
-	q->s = NULL;
-	q->d = res;
-	emit(q);
 }
 
 void PcallStmtG(PcallStmtSP t)

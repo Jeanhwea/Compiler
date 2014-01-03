@@ -17,12 +17,24 @@ typedef struct _BBListS {
 
 typedef struct _BBS {
 	int id;
-	// point to a function or procedure quadruples
 	QuadSP qhead;
 	QuadSP qtail;
 	QuadSP scope; 
 	QuadSP first; // first position of basic block
 	QuadSP last;  // last position of basic block
+
+	BBListSP pres;
+	BBListSP posts;
+
+	// 16-bits for a int type
+	// 8 * 16 = 128 symbol table entrys
+	int use[8];
+	int def[8];
+
+	int in_old[8];
+	int out_old[8];
+	int in[8];
+	int out[8];
 } BBS;
 
 #define NEWBBLIST(v) \
@@ -63,11 +75,13 @@ BOOL quad_end(void);
 
 void printBblock(BBSP);
 void printAllBblock();
+void _printAllBblock();
 
 void elf_for_block(BBSP);
 
 void make_dag_for_bblock(BBSP b);
 void copy_quad_for_bblock(BBSP b);
 
+void link_bblock(void);
 
 #endif /* end of include guard: BBLOCK_H */

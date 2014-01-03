@@ -8,5 +8,6 @@
 #define FGRAPH_H
 
 void make_fgraph(void);
+void dataflow(void);
 
 #endif /* end of include guard: FGRAPH_H */

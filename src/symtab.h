@@ -1,4 +1,4 @@
-/**
+;/**
  * File: symtab.h
  * Date: Nov 12, 2013
  * Author: Jeanhwea
@@ -120,4 +120,10 @@ SymTabESP sym_make_string(char *);
 SymTabESP sym_lookup(char *);
 void printTab(SymTabSP);
 
+// use for live variables 
+void print_all_variables(void);
+#define VARIABLE_LIMIT (16*8)
+extern SymTabESP all_variables[VARIABLE_LIMIT];
+extern int var_num;
+int find_var_pos(SymTabESP ste);
 #endif /* end of include guard: SYMTAB_H */

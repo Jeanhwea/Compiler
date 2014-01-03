@@ -10,6 +10,7 @@
 #include "quad.h"
 #include "elf.h"
 #include "dag.h"
+#include "util.h"
 #include "bblock.h"
 
 // qhead => quadruples list after semantic analysis
@@ -82,6 +83,8 @@ BBSP newBblock(void)
 	p->qtail = NULL;
 	p->scope = header;
 	p->first = leader;
+	p->pres = NULL;
+	p->posts = NULL;
 	nextleader();
 	if (leader != NULL) {
 		p->last = leader->prev;
@@ -95,12 +98,36 @@ void addBblock(BBSP b)
 {
 	BBListSP bl;
 	// BBListSP in, out;
+	BBListSP pre, post;
 	if (bbtail == NULL) {
+		// deal normal precursors and postcursors
+		NEWBBLIST(pre);
+		NEWBBLIST(post);
+		pre->bbp = NULL;
+		pre->next = NULL;
+		post->bbp = NULL;
+		post->next = NULL;
+		b->pres = pre;
+		b->posts = post;
+
 		NEWBBLIST(bl);
 		bl->bbp = b;
 		bl->next = NULL;
 		bblst = bbtail = bl;
 	} else {
+		// deal normal precursors and postcursors
+		NEWBBLIST(pre);
+		NEWBBLIST(post);
+		if (bbtail->bbp->scope == b->scope) 
+			pre->bbp = bbtail->bbp;
+		pre->next = NULL;
+		post->bbp = NULL;
+		post->next = NULL;
+		if (bbtail->bbp->scope == b->scope) 
+			bbtail->bbp->posts->bbp = b;
+		b->pres = pre;
+		b->posts = post;
+
 		NEWBBLIST(bl);
 		bl->bbp = b;
 		bl->next = NULL;
@@ -117,25 +144,71 @@ BOOL quad_end(void)
 void printBblock(BBSP b)
 {
 	QuadSP p;
-	// BBListSP q;
+	BBListSP q;
 	fprintf(code, "\nBBLOCK_ID = %d; SCOPE = %s\n", 
 		b->id, b->scope->d->name);
-	// fprintf(code, "INS = ");
-	// for (q = b->ins; q != NULL; q = q->next) {
-	// 	fprintf(code, "%d ", q->bbp->id);
-	// }
-	// fprintf(code, "\n");
-	// fprintf(code, "OUTS = ");
-	// for (q = b->outs; q != NULL; q = q->next) {
-	// 	fprintf(code, "%d ", q->bbp->id);
-	// }
-	// fprintf(code, "\n");
+	fprintf(code, "PRE BBLOCK = ");
+	for (q = b->pres; q != NULL; q = q->next) {
+		if (q->bbp)
+			fprintf(code, "%d ", q->bbp->id);
+	}
+	fprintf(code, "\n");
+	fprintf(code, "POST BBLOCK = ");
+	for (q = b->posts; q != NULL; q = q->next) {
+		if (q->bbp)
+			fprintf(code, "%d ", q->bbp->id);
+	}
+	fprintf(code, "\n");
 	
+	fprintf(code, "use -> ");
+	printBitsmap(b->use);
+	fprintf(code, "def -> ");
+	printBitsmap(b->def);
+	fprintf(code, "in  -> ");
+	printBitsmap(b->in);
+	fprintf(code, "out -> ");
+	printBitsmap(b->out);
 	// fprintf(code, "---------------------------------------");
 	fprintf(code, "-------------------------------------\n");
 	for (p = b->first; p != NULL; p = p->next) {
 		printQuad(p);
 		if (p == b->last) break;
+	}
+	// fprintf(code, "---------------------------------------");
+	fprintf(code, "-------------------------------------\n");
+}
+
+void _printBblock(BBSP b)
+{
+	QuadSP p;
+	BBListSP q;
+	fprintf(code, "\nBBLOCK_ID = %d; SCOPE = %s\n", 
+		b->id, b->scope->d->name);
+	fprintf(code, "PRE BBLOCK = ");
+	for (q = b->pres; q != NULL; q = q->next) {
+		if (q->bbp)
+			fprintf(code, "%d ", q->bbp->id);
+	}
+	fprintf(code, "\n");
+	fprintf(code, "POST BBLOCK = ");
+	for (q = b->posts; q != NULL; q = q->next) {
+		if (q->bbp)
+			fprintf(code, "%d ", q->bbp->id);
+	}
+	fprintf(code, "\n");
+	
+	fprintf(code, "use -> ");
+	printBitsmap(b->use);
+	fprintf(code, "def -> ");
+	printBitsmap(b->def);
+	fprintf(code, "in  -> ");
+	printBitsmap(b->in);
+	fprintf(code, "out -> ");
+	printBitsmap(b->out);
+	// fprintf(code, "---------------------------------------");
+	fprintf(code, "-------------------------------------\n");
+	for (p = b->qhead; p != NULL; p = p->next) {
+		printQuad(p);
 	}
 	// fprintf(code, "---------------------------------------");
 	fprintf(code, "-------------------------------------\n");
@@ -149,11 +222,19 @@ void printAllBblock()
 	}
 }
 
+void _printAllBblock()
+{
+	BBListSP p;
+	for (p = bblst; p != NULL; p = p->next) {
+		_printBblock(p->bbp);
+	}
+}
+
 void get_quad(BBSP b)
 {
 	QuadSP h, t;
-	printAllDN();
-	printAllNT();
+	// printAllDN();
+	// printAllNT();
 	make_iter();
 	dag2quad();
 	// printf("((((((000after dag2quad000))))))\n");
@@ -270,5 +351,59 @@ void copy_quad_for_bblock(BBSP b)
 			b->qtail = tmp_q;
 		}
 		if (q == b->last) break;
+	}
+}
+
+
+// link fgraph here to ........
+BBListSP search_block_for_brance(SymTabESP label_search)
+{
+	BBListSP r;
+	QuadSP q;
+	for (r = bblst; r != NULL; r = r->next) {
+		for (q = r->bbp->qhead; q != NULL; q = q->next) {
+			if (LABEL(q) && q->d == label_search) 
+				return r;
+		}
+	}
+	return NULL;
+}
+
+void add_bblist(BBListSP des, BBListSP src)
+{
+	BBListSP b;
+	for (b = des; b != NULL && b->next != NULL; b = b->next)
+		;
+	if (b == NULL) {
+		src->next = NULL;
+		b = src;
+	} else {
+		src->next = NULL;
+		b->next = src;
+	}
+
+}
+
+void link_bblock(void)
+{
+	BBListSP bl, brance_des, pre, post;
+	QuadSP q;
+	for (bl = bblst; bl != NULL; bl = bl->next) {
+		for (q = bl->bbp->qhead; q != NULL && q->next != NULL; q = q->next) 
+			;
+		if (q != NULL && BRANCE(q)) {
+		// find some postcursor for brance in this bblock
+			brance_des = search_block_for_brance(q->d);
+			assert(brance_des != NULL);
+
+			NEWBBLIST(pre);
+			NEWBBLIST(post);
+			pre->next = NULL;
+			pre->bbp = bl->bbp;
+			post->next = NULL;
+			post->bbp = brance_des->bbp;
+			add_bblist(brance_des->bbp->pres, pre);
+			add_bblist(bl->bbp->posts, post);
+		}
 	}
 }
