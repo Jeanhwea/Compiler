@@ -12,7 +12,7 @@ endif
 
 OBJS = main.o util.o scan.o error.o parse.o analyse.o \
        nspace.o symtab.o quad.o code.o asm.o elf.o \
-       dag.o fgraph.o bblock.o live_variable.o
+       dag.o fgraph.o bblock.o live_variable.o reg.o
 
 compiler: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o compiler
@@ -20,6 +20,9 @@ compiler: $(OBJS)
 main.o: main.c global.h util.h parse.h analyse.h code.h elf.h \
 	symtab.h quad.h elf.h dag.h bblock.h fgraph.h
 	$(CC) $(CFLAGS) -c main.c
+
+reg.o: reg.c global.h reg.h parse.h symtab.h quad.h util.h dag.h bblock.h
+	$(CC) $(CFLAGS) -c reg.c
 
 live_variable.o: live_variable.c global.h live_variable.h parse.h \
 	symtab.h quad.h util.h dag.h bblock.h

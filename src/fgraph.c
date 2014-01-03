@@ -13,12 +13,13 @@
 #include "bblock.h"
 #include "fgraph.h"
 #include "live_variable.h"
+#include "reg.h"
 
 // point to basic block head
 // BBListSP bblst = NULL; see bblock.c
 
 BOOL dagable_bblock(BBSP b)
-{
+{// helper
 	QuadSP p;
 	for (p = b->first; p != NULL; p = p->next) {
 		if (!DAGABLE(p)) return FALSE;
@@ -42,7 +43,7 @@ void make_fgraph(void)
 			copy_quad_for_bblock(b);
 		}
 		printAllQuads(b->qhead);
-		elf_for_block(b);
+		// elf_for_block(b);
 	} while (!quad_end());
 	link_bblock();
 	// printAllBblock();
@@ -50,11 +51,19 @@ void make_fgraph(void)
 
 void dataflow(void)
 {
-	// BBListSP bl;
+	BBListSP bl;
 	cal_use_def();
 	// printf("1111111111111111111111111111111111111111111\n");
 	// printAllBblock();
 	do_dataflow();
-	// printAllBblock();
 	_printAllBblock();
+	rm_useless_assign();
+	_printAllBblock();
+	for (bl = bblst; bl; bl = bl->next) 
+		elf_for_block(bl->bbp);
+}
+
+void global_reg_alocate(void)
+{
+	do_use_count();
 }

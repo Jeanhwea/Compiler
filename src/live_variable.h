@@ -31,5 +31,5 @@
 
 void cal_use_def(void);
 void do_dataflow(void);
-
+void rm_useless_assign(void);
 #endif /* end of include guard: LIVE_VARIABLE_H */

@@ -1,4 +1,4 @@
-const a1 = 1, u1 = '4', b1 = 3;
+const a1 = 1, u1 = '4'; b1 = 3;
 var x, y,g:integer; m:integer;
     i:integer;
     a,b:integer;

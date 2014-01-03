@@ -105,7 +105,13 @@ BlockSP BlockB(void)
 	NEWNODE(BlockS, t);
 	if (TEST(CONST)) {
 		t->cdp = ConstDecB();
-	} else t->cdp = NULL;
+	} else {
+		t->cdp = NULL;
+		if (!TEST4(VAR, FUNCTION, PROCEDURE, BEGIN)) {
+			--runlevel;
+			syntaxError(S_B_VFPB, lineno, FALSE, tokenString);
+		}
+	}
 
 	if (TEST(VAR)) {
 		t->vdp = VarDecB();

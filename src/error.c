@@ -44,7 +44,8 @@ char *ERRVEC[MAXERROR] =
 	"Different size of parameters and arguments while using -> ",
 	"Error use pass value by reference -> ",
 
-	"Missing a ',' after -> "
+	"Missing a ',' after -> ",
+	"Should be 'var', 'function', 'procedure' or 'begin' here -> "
 };
 
 void lexError(ERRNO errno)

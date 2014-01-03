@@ -632,6 +632,7 @@ void cgen(QuadSP t)
 		fprintf(errlist, "ELF BUG:314\n");
 		return ;
 	}
+	if (t->rm_flag) return ;
 	switch (t->op) {
 	case ADD_op:
 		ADDA(t->r, t->s, t->d);

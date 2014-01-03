@@ -49,6 +49,7 @@ typedef int ERRNO;
 #define ERRREF 29
 
 #define MISSCOMMA 30
+#define S_B_VFPB 31
 
 extern char *ERRVEC[MAXERROR];
 

@@ -91,6 +91,7 @@ void printAllQuad()
 
 void printQuad(QuadSP q)
 {
+	if (q->rm_flag) return;
 	switch (q->op) {
 	case ADD_op:
 		NEED3(r,s,d);

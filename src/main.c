@@ -89,7 +89,7 @@ int main(int argc, const char *argv[])
 	BOOL optim = FALSE;
 	BOOL compile_and_link = FALSE;
 
-	fprintf(stdout, "compiler version 0.9.8 starting ...\n");
+	fprintf(stdout, "compiler version 0.9.9 starting ...\n");
 	if (argc < 2) {
 		fprintf(stdout, "usage: ./compiler <filename>\n");
 		exit(1);
@@ -216,6 +216,7 @@ int main(int argc, const char *argv[])
 		make_fgraph();
 		// elf_optim();
 		dataflow();
+		global_reg_alocate();
 	}
 	fclose(source);
 	if(!optim) fclose(asmlist);

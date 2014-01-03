@@ -205,8 +205,25 @@ void do_dataflow(void)
 		fun_block_head = bl;
 		// fun_block_tail = bl;
 		_do_dataflow();
-		printf("********** void do_dataflow(void) ***********\n");
+		// printf("********** void do_dataflow(void) ***********\n");
 		for (bl = bl->next; bl && bl->bbp->pres->bbp ; bl = bl->next) 
 			;
+	}
+}
+
+void rm_useless_assign(void)
+{
+	BBListSP bl;
+	BBSP b;
+	QuadSP q;
+	for (bl = bblst; bl; bl = bl->next) {
+		b = bl->bbp;
+		for (q = b->qhead; q; q = q->next) {
+			if ( (q->op == ASS_op) && !bm_test(b->out, q->d)
+			   && q->d->obj == Tmp_Obj_t) 
+			{
+				q->rm_flag = TRUE;
+			}
+		}
 	}
 }

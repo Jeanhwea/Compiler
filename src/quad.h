@@ -42,6 +42,9 @@ typedef struct _QuadS {
 	SymTabESP d;
 	QuadSP prev;
 	QuadSP next;
+
+	// for optimation 
+	BOOL rm_flag; // been removed, if rm_flag is TRUE
 } QuadS;
 
 #define NEED(a) \
@@ -75,6 +78,7 @@ do { \
 	}							\
 	v->prev = NULL;						\
 	v->next = NULL;						\
+	v->rm_flag = 0;						\
 } while(0)
 
 extern QuadSP qhead;
