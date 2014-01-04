@@ -10,6 +10,7 @@
 #include "symtab.h"
 #include "quad.h"
 #include "elf.h"
+#include "reg.h"
 #include "asm.h"
 
 static void ADDA(SymTabESP r, SymTabESP s, SymTabESP d);
@@ -45,6 +46,9 @@ static void LABELA(SymTabESP r, SymTabESP s, SymTabESP d);
 
 void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -52,7 +56,8 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 	case Const_Obj_t:
-		movRM_asm("ecx", r);
+		// movRM_asm("ecx", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:57\n");
@@ -64,7 +69,8 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 	case Const_Obj_t:
-		movRM_asm("edx", s);
+		// movRM_asm("edx", s);
+		movRM_asm(tmp_regs[reg2], s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:67\n");
@@ -74,16 +80,23 @@ void ADDA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		addRR_asm("ecx", "edx");
-		movMR_asm(d, "ecx");
+		// addRR_asm("ecx", "edx");
+		addRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
+		// movMR_asm(d, "ecx");
+		movMR_asm(d, tmp_regs[reg1]);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:75\n");
 	}
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -91,7 +104,8 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 	case Const_Obj_t:
-		movRM_asm("ecx", r);
+		// movRM_asm("ecx", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:89\n");
@@ -103,7 +117,8 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 	case Const_Obj_t:
-		movRM_asm("edx", s);
+		// movRM_asm("edx", s);
+		movRM_asm(tmp_regs[reg2], s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:67\n");
@@ -113,16 +128,23 @@ void SUBA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		subRR_asm("ecx", "edx");
-		movMR_asm(d, "ecx");
+		// subRR_asm("ecx", "edx");
+		subRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
+		// movMR_asm(d, "ecx");
+		movMR_asm(d, tmp_regs[reg1]);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:109\n");
 	}
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -130,7 +152,8 @@ void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 	case Const_Obj_t:
-		movRM_asm("ecx", r);
+		// movRM_asm("ecx", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:128\n");
@@ -142,7 +165,8 @@ void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Para_Ref_Obj_t:
 	case Num_Obj_t:
 	case Const_Obj_t:
-		movRM_asm("edx", s);
+		// movRM_asm("edx", s);
+		movRM_asm(tmp_regs[reg2], s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:140\n");
@@ -152,16 +176,23 @@ void MULA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		mulRR_asm("ecx", "edx");
-		movMR_asm(d, "ecx");
+		// mulRR_asm("ecx", "edx");
+		mulRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
+		// movMR_asm(d, "ecx");
+		movMR_asm(d, tmp_regs[reg1]);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:150\n");
 	}
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -207,31 +238,51 @@ void DIVA(SymTabESP r, SymTabESP s, SymTabESP d)
 	default:
 		fprintf(errlist, "ELF BUG:177\n");
 	}
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void INCA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
-	movRM_asm("ecx", d);
-	inc_asm("ecx");
-	movMR_asm(d, "ecx");
+	int reg1 = getReg();
+	// movRM_asm("ecx", d);
+	// inc_asm("ecx");
+	// movMR_asm(d, "ecx");
+	movRM_asm(tmp_regs[reg1], d);
+	inc_asm(tmp_regs[reg1]);
+	movMR_asm(d, tmp_regs[reg1]);
+	relReg(reg1);
 }
 
 void DECA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
-	movRM_asm("ecx", d);
-	dec_asm("ecx");
-	movMR_asm(d, "ecx");
+	int reg1 = getReg();
+	// movRM_asm("ecx", d);
+	// dec_asm("ecx");
+	// movMR_asm(d, "ecx");
+	movRM_asm(tmp_regs[reg1], d);
+	dec_asm(tmp_regs[reg1]);
+	movMR_asm(d, tmp_regs[reg1]);
+	relReg(reg1);
 }
 
 void NEGA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
-	movRM_asm("ecx", r);
-	neg_asm("ecx");
-	movMR_asm(d, "ecx");
+	int reg1 = getReg();
+	// movRM_asm("ecx", r);
+	// neg_asm("ecx");
+	// movMR_asm(d, "ecx");
+	movRM_asm(tmp_regs[reg1], d);
+	neg_asm(tmp_regs[reg1]);
+	movMR_asm(d, tmp_regs[reg1]);
+	relReg(reg1);
 }
 
 void LOADA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (s->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -239,24 +290,30 @@ void LOADA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", s);
+		// movRM_asm("eax", s);
+		movRM_asm(tmp_regs[reg1], s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:199\n");
 	}
-	movRA_asm(r, "eax", "ecx");
+	// movRA_asm(r, "eax", "ecx");
+	movRA_asm(r, tmp_regs[reg1], tmp_regs[reg2]);
 	switch (d->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
-		movMR_asm(d, "ecx");
+		// movMR_asm(d, "ecx");
+		movMR_asm(d, tmp_regs[reg2]);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:139\n");
 	}
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void ASSA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -264,7 +321,8 @@ void ASSA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", r);
+		// movRM_asm("ecx", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:87\n");
@@ -274,15 +332,20 @@ void ASSA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Tmp_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movMR_asm(d, "ecx");
+		// movMR_asm(d, "ecx");
+		movMR_asm(d, tmp_regs[reg1]);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:92\n");
 	}
+	relReg(reg1);
 }
 
 void AARRA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -290,7 +353,8 @@ void AARRA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", r);
+		// movRM_asm("ecx", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:139\n");
@@ -302,16 +366,23 @@ void AARRA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", s);
+		// movRM_asm("eax", s);
+		movRM_asm(tmp_regs[reg2], s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:149\n");
 	}
-	movAR_asm(d, "eax", "ecx");
+	// movAR_asm(d, "eax", "ecx");
+	movAR_asm(d, tmp_regs[reg2], tmp_regs[reg1]);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void EQUA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -319,7 +390,8 @@ void EQUA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", r);
+		// movRM_asm("eax", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:228\n");
@@ -331,17 +403,24 @@ void EQUA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", s);
+		// movRM_asm("ecx", s);
+		movRM_asm(tmp_regs[reg2],s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:238\n");
 	}
-	cmpRR_asm("eax", "ecx");
+	// cmpRR_asm("eax", "ecx");
+	cmpRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
 	jz_asm(d);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void NEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -349,7 +428,8 @@ void NEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", r);
+		// movRM_asm("eax", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:228\n");
@@ -361,17 +441,24 @@ void NEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", s);
+		// movRM_asm("ecx", s);
+		movRM_asm(tmp_regs[reg2],s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:238\n");
 	}
-	cmpRR_asm("eax", "ecx");
+	// cmpRR_asm("eax", "ecx");
+	cmpRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
 	jnz_asm(d);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void GTTA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -379,7 +466,8 @@ void GTTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", r);
+		// movRM_asm("eax", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:228\n");
@@ -391,17 +479,24 @@ void GTTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", s);
+		// movRM_asm("ecx", s);
+		movRM_asm(tmp_regs[reg2],s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:238\n");
 	}
-	cmpRR_asm("eax", "ecx");
+	// cmpRR_asm("eax", "ecx");
+	cmpRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
 	jg_asm(d);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void GEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -409,7 +504,8 @@ void GEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", r);
+		// movRM_asm("eax", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:228\n");
@@ -421,17 +517,24 @@ void GEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", s);
+		// movRM_asm("ecx", s);
+		movRM_asm(tmp_regs[reg2],s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:238\n");
 	}
-	cmpRR_asm("eax", "ecx");
+	// cmpRR_asm("eax", "ecx");
+	cmpRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
 	jnl_asm(d);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void LSTA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -439,7 +542,8 @@ void LSTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", r);
+		// movRM_asm("eax", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:228\n");
@@ -451,17 +555,24 @@ void LSTA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", s);
+		// movRM_asm("ecx", s);
+		movRM_asm(tmp_regs[reg2],s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:238\n");
 	}
-	cmpRR_asm("eax", "ecx");
+	// cmpRR_asm("eax", "ecx");
+	cmpRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
 	jl_asm(d);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void LEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
+	int reg1, reg2;
+	reg1 = getReg();
+	reg2 = getReg();
 	switch (r->obj) {
 	case Var_Obj_t:
 	case Tmp_Obj_t:
@@ -469,7 +580,8 @@ void LEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("eax", r);
+		// movRM_asm("eax", r);
+		movRM_asm(tmp_regs[reg1], r);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:228\n");
@@ -481,13 +593,17 @@ void LEQA(SymTabESP r, SymTabESP s, SymTabESP d)
 	case Const_Obj_t:
 	case Para_Val_Obj_t:
 	case Para_Ref_Obj_t:
-		movRM_asm("ecx", s);
+		// movRM_asm("ecx", s);
+		movRM_asm(tmp_regs[reg2],s);
 		break;
 	default:
 		fprintf(errlist, "ELF BUG:238\n");
 	}
-	cmpRR_asm("eax", "ecx");
+	// cmpRR_asm("eax", "ecx");
+	cmpRR_asm(tmp_regs[reg1], tmp_regs[reg2]);
 	jng_asm(d);
+	relReg(reg1);
+	relReg(reg2);
 }
 
 void JMPA(SymTabESP r, SymTabESP s, SymTabESP d)
@@ -549,8 +665,12 @@ void CALLA(SymTabESP r, SymTabESP s, SymTabESP d)
 
 void SRETA(SymTabESP r, SymTabESP s, SymTabESP d)
 {
-	movRM_asm("ecx", r);
-	retval_asm("ecx");
+	int reg = getReg();
+	// movRM_asm("ecx", r);
+	// retval_asm("ecx");
+	movRM_asm(tmp_regs[reg], r);
+	retval_asm(tmp_regs[reg]);
+	relReg(reg);
 }
 
 void ENTERA(SymTabESP r, SymTabESP s, SymTabESP d)

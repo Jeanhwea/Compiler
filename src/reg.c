@@ -19,12 +19,44 @@
 // see bblock.c 
 // BBListSP bblst = NULL;
 
+int isUse[3] = 
+{
+	FALSE,
+	FALSE,
+	FALSE
+};
+
+char *tmp_regs[3] =
+{
+	"eax",
+	"ecx",
+	"edx"
+};
+
 BBListSP fun_head = NULL;
 
 int use_count[VARIABLE_LIMIT] = {0};
 
 SymTabESP global_reg[VARIABLE_LIMIT] = {NULL};
 
+
+int getReg(void)
+{
+	int i;
+	for (i = 0; i < 3; ++i) {
+		if (!isUse[i]) {
+			isUse[i] = TRUE;
+			return i;
+		}
+	}
+	assert(0);
+	return -1;
+}
+
+void relReg(int reg_num)
+{
+	isUse[reg_num] = FALSE;
+}
 
 void increaseCount(SymTabESP ste)
 {
@@ -70,7 +102,8 @@ void _do_use_count(void)
 		}
 	}
 	mi = find_max_count();
-	global_reg[find_var_pos(b->scope->d)] = all_variables[mi];	
+	if (strcmp(b->scope->d->label, "main")) 
+		global_reg[find_var_pos(b->scope->d)] = all_variables[mi];
 }
 
 void do_use_count(void)

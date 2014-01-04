@@ -41,7 +41,7 @@ bblock.o: bblock.c global.h parse.h symtab.h quad.h util.h dag.h bblock.h
 asm.o: asm.c global.h parse.h symtab.h quad.h asm.h
 	$(CC) $(CFLAGS) -c asm.c
 
-elf.o: elf.c global.h parse.h symtab.h quad.h elf.h
+elf.o: elf.c global.h parse.h symtab.h quad.h elf.h asm.h reg.h
 	$(CC) $(CFLAGS) -c elf.c
 
 code.o: code.c global.h util.h parse.h analyse.h \

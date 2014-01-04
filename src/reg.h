@@ -12,5 +12,9 @@
 (ste->obj==Para_Val_Obj_t)||(ste->obj==Para_Ref_Obj_t)\
 )
 
+extern char *tmp_regs[3];
+int getReg(void);
+void relReg(int reg_num);
+
 void do_use_count(void);
 #endif /* end of include guard: REG_H */

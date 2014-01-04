@@ -107,10 +107,10 @@ BlockSP BlockB(void)
 		t->cdp = ConstDecB();
 	} else {
 		t->cdp = NULL;
-		if (!TEST4(VAR, FUNCTION, PROCEDURE, BEGIN)) {
-			--runlevel;
-			syntaxError(S_B_VFPB, lineno, FALSE, tokenString);
-		}
+		// if (!TEST4(VAR, FUNCTION, PROCEDURE, BEGIN)) {
+		// 	--runlevel;
+		// 	syntaxError(S_B_VFPB, lineno, FALSE, tokenString);
+		// }
 	}
 
 	if (TEST(VAR)) {
@@ -157,9 +157,10 @@ ConstDecSP ConstDecB(void)
 	} else {
 		--runlevel;
 		syntaxError(MISSSEMI, lineno, FALSE, prevTokenString);
-		if (TEST4(VAR, PROCEDURE, FUNCTION, BEGIN)) {
-			/* do not skip if in FIRST set */
-		} else getsym();
+		while (!TEST4(VAR, PROCEDURE, FUNCTION, BEGIN)){
+			getsym();
+			if (TEST(ENDFILE)) break;
+		}
 	}
 	return t;
 }

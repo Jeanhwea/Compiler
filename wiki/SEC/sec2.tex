@@ -7,6 +7,11 @@ global.h main.c nspace.c nspace.h parse.c parse.h
 quad.c quad.h scan.c scan.h symtab.c symtab.h
 util.c util.h elf.h elf.c
 \end{verbatim}
+代码优化文件列表如下:
+\begin{verbatim}
+fgraph.h fgraph.c bblock.h bblock.c dag.h dag.c
+live_variable.h live_variable.c reg.h reg.c
+\end{verbatim}
 \verb|main| 是主函数入口； \verb|scan| 做词法分析； \verb|parse| 做语法分析生成
 语法树； \verb|analyse| 对语法树打印，并进行一些分析；\verb|code| 语义分析，
 解析语法树，
@@ -60,51 +65,51 @@ typedef struct _ParaDefS *ParaDefSP;
 typedef struct _ArgListS *ArgListSP;
 /* declaretion of a bundle of node type */
 typedef enum { 
-  Fun_PFDec_t , Proc_PFDec_t 
+        Fun_PFDec_t , Proc_PFDec_t 
 } PFDec_t;
 ...
 typedef enum { 
-  /* normal identifier type */
-  Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t, 
-  Char_Fun_Ident_t,
-  /* const identifier type */
-  Int_Const_Ident_t, Char_Const_Ident_t,
-  /* variable identifier type */
-  Int_Var_Ident_t, Char_Var_Ident_t,
-  IntArr_Var_Ident_t, CharArr_Var_Ident_t,
-  /* parameter identifier type */
-  /* call by value */
-  Int_Para_Val_Ident_t, Char_Para_Val_Ident_t,
-  /* call by address */
-  Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
+        /* normal identifier type */
+        Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t, 
+        Char_Fun_Ident_t,
+        /* const identifier type */
+        Int_Const_Ident_t, Char_Const_Ident_t,
+        /* variable identifier type */
+        Int_Var_Ident_t, Char_Var_Ident_t,
+        IntArr_Var_Ident_t, CharArr_Var_Ident_t,
+        /* parameter identifier type */
+        /* call by value */
+        Int_Para_Val_Ident_t, Char_Para_Val_Ident_t,
+        /* call by address */
+        Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
 } Ident_t;
 ...
 typedef enum { 
-  StrId_Write_t, Str_Write_t, Id_Write_t 
+        StrId_Write_t, Str_Write_t, Id_Write_t 
 } Write_t;
 /* declaretion of a bundle of struct */
 /* Program */
 typedef struct _PgmS {
-  BlockSP bp;
+        BlockSP bp;
 } PgmS;
 /* block */
 typedef struct _BlockS {
-  ConstDecSP cdp;
-  VarDecSP vdp;
-  PFDecListSP pfdlp;
-  CompStmtSP csp;
+        ConstDecSP cdp;
+        VarDecSP vdp;
+        PFDecListSP pfdlp;
+        CompStmtSP csp;
 } BlockS;
 typedef struct _ConstDecS {
-  ConstDefSP cdp;
-  ConstDecSP next;
+        ConstDefSP cdp;
+        ConstDecSP next;
 } ConstDecS;
 typedef struct _ConstDefS {
-  IdentSP idp;
+        IdentSP idp;
 } ConstDefS;
 ...
 typedef struct _ArgListS {
-  ExprSP ep;
-  ArgListSP next;
+        ExprSP ep;
+        ArgListSP next;
 } ArgListS;
 \end{verbatim}
 analyse 做语法分析， code 遍历语法树各个节点，生成四元式。数据结构有点
@@ -125,13 +130,13 @@ typedef struct _SymBucketS *SymBucketSP;
 typedef struct _SymTabES *SymTabESP;
 
 typedef enum { 表项类型
-  Nop_Obj_t, Const_Obj_t, Var_Obj_t,
-  Proc_Obj_t, Fun_Obj_t, Array_Obj_t,
-  Para_Obj_t, Tmp_Obj_t
+        Nop_Obj_t, Const_Obj_t, Var_Obj_t,
+        Proc_Obj_t, Fun_Obj_t, Array_Obj_t,
+        Para_Obj_t, Tmp_Obj_t
 } Obj_t;
 
 typedef enum { 符号类型
-  Int_Type_t, Char_Type_t, Nop_Type_t
+        Int_Type_t, Char_Type_t, Nop_Type_t
 } Type_t;
 
 /**
@@ -141,10 +146,10 @@ typedef enum { 符号类型
  * each function
  */
 typedef struct _SymTabS { 符号表链，使用栈式符号表
-  SymBucketSP *sbp;       hash 符号索引表头
-  char *ns;               // namespace for a block
-  SymTabSP prev;
-  SymTabSP next;
+        SymBucketSP *sbp;       hash 符号索引表头
+        char *ns;               // namespace for a block
+        SymTabSP prev;
+        SymTabSP next;
 } SymTabS;
 
 /**
@@ -152,8 +157,8 @@ typedef struct _SymTabS { 符号表链，使用栈式符号表
  * be referenced
  */
 typedef struct _SymLineS { 符号的行号记录
-  int lineno;
-  SymLineSP next;
+        int lineno;
+        SymLineSP next;
 } SymLineS;
 
 /**
@@ -161,19 +166,19 @@ typedef struct _SymLineS { 符号的行号记录
  * bucket list
  */
 typedef struct _SymBucketS {
-  SymTabESP ep;           // element infomation
-  SymBucketSP next;
+        SymTabESP ep;           // element infomation
+        SymBucketSP next;
 } SymBucketS;
 
 typedef struct _SymTabES { 符号表项
-  char *name;             // identifier name
-  char *label;            // namespace label
-  int val;                // array length
-        // or const value
-  SymLineSP lines;        // referenced lines
-  Obj_t obj;              // object type
-  Type_t type;            // type 
-  SymTabSP stp;           // point to symbol table
+        char *name;             // identifier name
+        char *label;            // namespace label
+        int val;                // array length
+                                // or const value
+        SymLineSP lines;        // referenced lines
+        Obj_t obj;              // object type
+        Type_t type;            // type 
+        SymTabSP stp;           // point to symbol table
 } SymTabES;
 对应的符号表操作
 SymTabSP pop(void);
@@ -231,67 +236,67 @@ void printTab(SymTabSP);
 \vbox{}\\
 算术指令：\\
 \begin{tabular}{r|c}
-  \hline
-  ADD  r, s, d & d = r + s \\ \hline
-  SUB  r, s, d & d = r - s \\ \hline
-  MUL  r, s, d & d = r * s \\ \hline
-  DIV  r, s, d & d = r / s \\ \hline
-  INC  -, -, d & d++       \\ \hline
-  DEC  -, -, d & d--       \\ \hline
-  NEG  r, -, d & d = -r    \\ \hline
+        \hline
+        ADD  r, s, d & d = r + s \\ \hline
+        SUB  r, s, d & d = r - s \\ \hline
+        MUL  r, s, d & d = r * s \\ \hline
+        DIV  r, s, d & d = r / s \\ \hline
+        INC  -, -, d & d++       \\ \hline
+        DEC  -, -, d & d--       \\ \hline
+        NEG  r, -, d & d = -r    \\ \hline
 \end{tabular} \\
 \vbox{}\\
 存取赋值指令：\\
 \begin{tabular}{r|c}
-  \hline
-  LOAD  r, -, d & load the value of r into d \\ \hline
-  ASS   r, -, d & assign r into d; d:=r \\ \hline
-  ASSA  r, s, d & d := r[s] \\ \hline
+        \hline
+        LOAD  r, -, d & load the value of r into d \\ \hline
+        ASS   r, -, d & assign r into d; d:=r \\ \hline
+        ASSA  r, s, d & d := r[s] \\ \hline
 \end{tabular} \\
 \vbox{}\\
 条件指令：\\
 \begin{tabular}{r|c}
-  \hline
-  EQU  r, s, d & brance to label d if (r == s) \\ \hline
-  NEQ  r, s, d & brance to label d if (r != s) \\ \hline
-  GTT  r, s, d & brance to label d if (r $>$ s)\\ \hline
-  GEQ  r, s, d & brance to label d if (r $>=$ s)\\ \hline
-  LST  r, s, d & brance to label d if (r $<$ s) \\ \hline
-  LEQ  r, s, d & brance to label d if (r $<=$ s)\\ \hline
+        \hline
+        EQU  r, s, d & brance to label d if (r == s) \\ \hline
+        NEQ  r, s, d & brance to label d if (r != s) \\ \hline
+        GTT  r, s, d & brance to label d if (r $>$ s)\\ \hline
+        GEQ  r, s, d & brance to label d if (r $>=$ s)\\ \hline
+        LST  r, s, d & brance to label d if (r $<$ s) \\ \hline
+        LEQ  r, s, d & brance to label d if (r $<=$ s)\\ \hline
 \end{tabular} \\
 \vbox{}\\
 无条件跳转指令：\\
 \begin{tabular}{r|c}
-  \hline
-  JMP  -, -, d(label) & jump to label\\ \hline
+        \hline
+        JMP  -, -, d(label) & jump to label\\ \hline
 \end{tabular}\\
 \vbox{}\\
 栈操作指令：\\
 \begin{tabular}{r|c}
-  \hline
-  PUSH  -, -, d & push d into stack\\ \hline
-  PUSHA -, -, d & push the address of d into stack \\ \hline
-  POP   -, -, d & pop d out of stack\\ \hline
+        \hline
+        PUSH  -, -, d & push d into stack\\ \hline
+        PUSHA -, -, d & push the address of d into stack \\ \hline
+        POP   -, -, d & pop d out of stack\\ \hline
 \end{tabular}\\
 \vbox{}\\
 函数调用：\\
 \begin{tabular}{r|c}
-  \hline
-  LABEL -, -, d(label) & label for brance \\ \hline
-  CALL  r(funlabel), , d & d = r()\\ \hline
-  SRET  -, -, d & set function return value\\ \hline
-  ENTER -, -, d(funlabel) & enterance of a function \\ \hline
-  FIN   -, -, -& finish a function\\ \hline
+        \hline
+        LABEL -, -, d(label) & label for brance \\ \hline
+        CALL  r(funlabel), , d & d = r()\\ \hline
+        SRET  -, -, d & set function return value\\ \hline
+        ENTER -, -, d(funlabel) & enterance of a function \\ \hline
+        FIN   -, -, -& finish a function\\ \hline
 \end{tabular}\\
 \vbox{}\\
 IO指令：\\
 \begin{tabular}{r|c}
-  \hline
-  READ  -, -, d & read a integer\\ \hline
-  READC -, -, d & read a char\\ \hline
-  WRI   -, -, d & write a integer \\ \hline
-  WRC   -, -, d & write a char \\ \hline
-  WRS   -, -, d & write a string\\ \hline
+        \hline
+        READ  -, -, d & read a integer\\ \hline
+        READC -, -, d & read a char\\ \hline
+        WRI   -, -, d & write a integer \\ \hline
+        WRC   -, -, d & write a char \\ \hline
+        WRS   -, -, d & write a string\\ \hline
 \end{tabular}
 \subsection{优化方案}
 \subsubsection{DAG图}
@@ -301,63 +306,155 @@ typedef struct _BBS *BBSP;
 typedef struct _BBListS *BBListSP;
 
 typedef struct _BBListS {
-  BBSP bbp;
-  BBListSP next;
+        BBSP bbp;
+        BBListSP next;
 } BBListS;
 
 typedef struct _BBS {
-  int id;
-  // point to a function or procedure quadruples
-  QuadSP qhead;
-  QuadSP qtail;
-  QuadSP scope; 
-  QuadSP first; // first position of basic block
-  QuadSP last;  // last position of basic block
+        int id;
+        // point to a function or procedure quadruples
+        QuadSP qhead;
+        QuadSP qtail;
+        QuadSP scope; 
+        QuadSP first; // first position of basic block
+        QuadSP last;  // last position of basic block
 } BBS;
 \end{verbatim}
 DAG图的优化见 \verb|dag.c| 文件。主要是先建立dag图
-在使用递归式重DAG图推到代码序列。
+在使用递归式从DAG图重新推导出四元式序列。
+\begin{verbatim}
+// dag node entry pointer
+typedef struct _DNodeES *DNodeESP;
+// dag node list pointer
+typedef struct _DNListS *DNListSP;
+// node table entry pointer
+typedef struct _NTabES *NTabESP;
+// node table list pointer
+typedef struct _NTListS *NTListSP;
+
+typedef struct _DNodeES {
+        int id;
+        union {
+                Quad_t op;
+                SymTabESP ste;
+        } attr;
+        DNodeESP left;
+        DNodeESP right;
+        BOOL visit;
+        NTListSP iter;
+} DNodeES;
+
+typedef struct _DNListS {
+        DNodeESP dne;
+        DNListSP next;
+} DNListS;
+
+typedef struct _NTabES {
+        SymTabESP ste;
+        DNodeESP dne;
+} NTabES;
+
+typedef struct _NTListS {
+        NTabESP nte;
+        NTListSP next;
+} NTListS;
+
+\end{verbatim}
+dag图需要维护一张节点表 \verb|NTListS|，和一个dag图节点列表
+\verb|DNListS|
+\subsubsection{数据流分析}
+\begin{verbatim}
+void dataflow(void)
+{
+        cal_use_def();
+        do_dataflow();
+        rm_useless_assign();
+}
+\end{verbatim}
+上面的代码是 \verb|fgraph.c| 中的数据流函数。
+按照书中的算法，先计算~use~和~def~集合，见 \verb|cal_use_def()| 。
+\verb|do_dataflow()| 是迭代法求~in~和~out~集合。
+\verb|rm_useless_assign()| 删除一些冗余的赋值语句。
+\subsubsection{全局寄存器分配}
+\begin{verbatim}
+void _do_use_count(void)
+{
+        BBListSP bl;
+        BBSP b;
+        QuadSP q;
+        int mi;
+        clear_all_count();
+        for (bl = fun_head; bl->bbp->posts->bbp; bl = bl->next) {
+                b = bl->bbp;
+                for (q = b->qhead; q; q = q->next) {
+                        if (q->r && COUNT_VARS(q->r)) 
+                                increaseCount(q->r);
+                        if (q->s && COUNT_VARS(q->s)) 
+                                increaseCount(q->s);
+                        if (q->d && COUNT_VARS(q->d)) 
+                                increaseCount(q->d);
+                }
+        }
+        mi = find_max_count();
+        global_reg[find_var_pos(b->scope->d)] = all_variables[mi];  
+}
+
+void do_use_count(void)
+{
+        BBListSP bl;
+        for (bl = bblst; bl && !bl->bbp->pres->bbp; ) {
+                fun_head = bl;
+                // fun_block_tail = bl;
+                _do_use_count();
+                for (bl = bl->next; bl && bl->bbp->pres->bbp ; bl = bl->next) 
+                        ;
+        }
+}
+\end{verbatim}
+计算每个函数里面的变量，选取其中引用最多的几个，进行分配寄存器。
+
 \subsection{错误处理}
-\begin{enumerate}
-  \item 该标识符未定义
-  \item 识符重复定义
-  \item 应是标识符
-  \item 应是‘ ( ’
-  \item 应是‘ : ’，在说明类型时必须有此冒号
-  \item 非法符号，编译将跳读该符号和后面的某些符号
-  \item 形式参数表中，形参说明应该以标识符或var开头
-  \item 应是of
-  \item 应是‘ ( ’
-  \item 类型定义必须以array或基本类型开头
-  \item 应是‘ [ ’
-  \item 应是‘ ] ’
-  \item 应是‘ ; ’
-  \item 函数结果必须是integer或char类型
-  \item 应是‘ = ’，‘ := ’只能在赋值语句里使用，而不能在说明中使用
-  \item 在if后面必须是条件
-  \item 在for后面的循环变量只能是integer或char型
-  \item for语句中初值或终值表达式必须与循环变量类型相同
-  \item 数太大
-  \item 程序结尾是‘ . ’，请检查相应的begin和end
-  \item 非法字符
-  \item 在常量定义中，等号后面必须是常数
-  \item 下标表达式类型必须是integer型
-  \item 数组说明中，下界小于0，类型不是integer型。
-  \item 没有这样的数组
-  \item 该算术表达式的类型不合法。注意，数组整体不能作为算术运算的操作数
-  \item 实参和对应形参类型应相同
-  \item 应是变量
-  \item 实参个数与形参个数不等
-  \item 表达式中不能出现类型或过程标识符
-  \item 应是变量或过程/函数标识符
-  \item 在赋值语句中被赋值变量应与表达式类型相同
-  \item 数组越界
-  \item 应是常量
-  \item 应是‘ := ’
-  \item 应是then
-  \item 应是do
-  \item 应是to
-  \item 应是begin
-  \item 应是end
-  \item 因子必须以标识符、常量或‘ ( ’开始
-\end{enumerate}
+错误处理的数组向量如下：
+\begin{verbatim}
+char *ERRVEC[MAXERROR] = 
+{
+        "Fatal, Unexpect symbol token -> ",
+        "Char defination is too long",
+        "Char can only be defined as digit or letter",
+        "Wrong defination of a string type",
+        "Missing a '.' at the end of a program",
+
+        "Missing a ';' after -> ",
+        "Missing a '=' after -> ",
+        "Missing a unsign number after -> ",
+        "Missing a ':' after -> ",
+        "Missing a '[' after -> ",
+
+        "Missing a ']' after -> ",
+        "Missing a '(' after -> ",
+        "Missing a ')' after -> ",
+        "Missing a keyword 'of' after -> ",
+        "Missing a ':=' after -> ",
+
+        "Missing a keyword 'then' after -> ",
+        "Missing a keyword 'until' after -> ",
+        "Missing a keyword 'to' or 'downto' after -> ",
+        "Missing a keyword 'do' after -> ",
+        "Missing a function or procedure body",
+        
+        "Missing a identifier after -> ",
+        "Missing a keyword 'end' after -> ",
+        "Duplicate defined symbol -> ",
+        "First used an undefined symbol -> ",
+        "Should be a array type symbol -> ",
+
+        "Should be var/fun/para symbol -> ",
+        "Should be a procedure type symbol -> ",
+        "Should be a function type symbol -> ",
+        "Different size of parameters and arguments while using -> ",
+        "Error use pass value by reference -> ",
+
+        "Missing a ',' after -> "
+};
+\end{verbatim}
+这里标记了一些可以处理的错误类型列表。
