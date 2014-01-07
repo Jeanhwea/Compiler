@@ -1026,7 +1026,8 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				emit(q);
 				break;
 			default:
-				fprintf(tiplist, "CODE BUG:880\n");
+fprintf(errlist, "semanticError:%d: Uncompact pass by reference type %s\n",
+	pfste->lineno, pfste->name);
 				assert(0);
 			}
 			break;

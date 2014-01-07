@@ -83,10 +83,10 @@ void setString_asm();
 
 
 
-#define RESERVED (4 * (1 + varc + tmpc))
+#define RESERVED (4 * (1 + e->stp->posi_var + tmpc))
 #define DISPLAY (4 * (2 + e->level-1))
 #define VAROFFSET (4 * (1 + e->posi+1))
-#define TMPOFFSET (4 * (1 + varc + e->posi+1))
-#define PARAOFFSET (4 * (2 + e->level-1 + parac - e->posi-1))
+#define TMPOFFSET (4 * (1 + e->stp->posi_var + e->posi+1))
+#define PARAOFFSET (4 * (2 + e->level-1 + e->stp->posi_para - e->posi-1))
 
 #endif /* end of include guard: ASM_H */

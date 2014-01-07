@@ -6,7 +6,7 @@ SECTION .DATA
 	fmt_int_w:  DB "%d", 10, 0
 	fmt_char_r: DB 10, "%c", 0
 	fmt_char_w: DB "%c", 10, 0
-	fmt_string: DB "%s", 0
+	fmt_string: DB "%s", 10, 0
 
 SECTION .TEXT
 	EXTERN	scanf, printf
@@ -92,10 +92,10 @@ J_pri_f$IV:
 	mov	ecx, 3
 	cmp	eax, ecx
 	jl	..@l1
-	mov	ecx, [ebp + 16]	; J_pri_f$IV_n
-	mov	edx, 1
-	sub	ecx, edx
-	mov	[ebp - 8], ecx	; J_pri_f$IV_&1
+	mov	eax, [ebp + 16]	; J_pri_f$IV_n
+	mov	ecx, 1
+	sub	eax, ecx
+	mov	[ebp - 8], eax	; J_pri_f$IV_&1
 	mov	ecx, [ebp - 8]	; J_pri_f$IV_&1
 	push	ecx
 	mov	edi, [ebp + 12]
@@ -105,16 +105,16 @@ J_pri_f$IV:
 	call	J_pri_f$IV
 	add	esp, 12
 	mov	[ebp - 12], eax	; J_pri_f$IV_&2
-	mov	ecx, [ebp + 16]	; J_pri_f$IV_n
-	mov	edx, [ebp - 12]	; J_pri_f$IV_&2
-	imul	ecx, edx
-	mov	[ebp - 16], ecx	; J_pri_f$IV_&3
-	mov	ecx, [ebp - 16]	; J_pri_f$IV_&3
-	mov	[ebp - 4], ecx	; set return value
+	mov	eax, [ebp + 16]	; J_pri_f$IV_n
+	mov	ecx, [ebp - 12]	; J_pri_f$IV_&2
+	imul	eax, ecx
+	mov	[ebp - 16], eax	; J_pri_f$IV_&3
+	mov	eax, [ebp - 16]	; J_pri_f$IV_&3
+	mov	[ebp - 4], eax	; set return value
 	jmp	..@l2
 ..@l1:
-	mov	ecx, [ebp + 16]	; J_pri_f$IV_n
-	mov	[ebp - 4], ecx	; set return value
+	mov	eax, [ebp + 16]	; J_pri_f$IV_n
+	mov	[ebp - 4], eax	; set return value
 ..@l2:
 	pop	edi
 	pop	esi

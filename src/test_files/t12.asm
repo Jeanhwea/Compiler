@@ -6,7 +6,7 @@ SECTION .DATA
 	fmt_int_w:  DB "%d", 10, 0
 	fmt_char_r: DB 10, "%c", 0
 	fmt_char_w: DB "%c", 10, 0
-	fmt_string: DB "%s", 0
+	fmt_string: DB "%s", 10, 0
 
 SECTION .TEXT
 	EXTERN	scanf, printf
@@ -88,9 +88,9 @@ J_h1$IR_h2$IR_h3$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 9
+	mov	eax, 9
 	mov	esi, [ebp + 20]
-	mov	[esi], ecx	; *J_h1$IR_h2$IR_h3$IR_i
+	mov	[esi], eax	; *J_h1$IR_h2$IR_h3$IR_i
 	pop	edi
 	pop	esi
 	pop	ebx

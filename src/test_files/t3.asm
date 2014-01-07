@@ -6,7 +6,7 @@ SECTION .DATA
 	fmt_int_w:  DB "%d", 10, 0
 	fmt_char_r: DB 10, "%c", 0
 	fmt_char_w: DB "%c", 10, 0
-	fmt_string: DB "%s", 0
+	fmt_string: DB "%s", 10, 0
 
 SECTION .TEXT
 	EXTERN	scanf, printf
@@ -88,14 +88,14 @@ J_hh_pri_he:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 2
+	mov	eax, 2
 	mov	esi, [ebp + 12]
-	mov	eax, [esi - 48]	; J_hh_i
+	mov	ecx, [esi - 48]	; J_hh_i
 	mov	esi, [ebp + 12]
 	lea	edi, [esi - 8]	; J_hh_ar
-	imul	eax, 4
-	sub	edi, eax
-	mov	[edi], ecx
+	imul	ecx, 4
+	sub	edi, ecx
+	mov	[edi], eax
 	pop	edi
 	pop	esi
 	pop	ebx
@@ -113,9 +113,9 @@ J_hh_pri:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 1
+	mov	eax, 1
 	mov	esi, [ebp + 12]	; display var
-	mov	[esi - 48], ecx	; J_hh_i
+	mov	[esi - 48], eax	; J_hh_i
 	push	ebp		; push current ebp
 	mov	edi, [ebp + 12]
 	push	edi		; push old ebp

@@ -6,7 +6,7 @@ SECTION .DATA
 	fmt_int_w:  DB "%d", 10, 0
 	fmt_char_r: DB 10, "%c", 0
 	fmt_char_w: DB "%c", 10, 0
-	fmt_string: DB "%s", 0
+	fmt_string: DB "%s", 10, 0
 
 SECTION .TEXT
 	EXTERN	scanf, printf
@@ -92,10 +92,10 @@ J_sa_pri_f$IV:
 	mov	ecx, 3
 	cmp	eax, ecx
 	jl	..@l1
-	mov	ecx, [ebp + 20]	; J_sa_pri_f$IV_n
-	mov	edx, 1
-	sub	ecx, edx
-	mov	[ebp - 8], ecx	; J_sa_pri_f$IV_&1
+	mov	eax, [ebp + 20]	; J_sa_pri_f$IV_n
+	mov	ecx, 1
+	sub	eax, ecx
+	mov	[ebp - 8], eax	; J_sa_pri_f$IV_&1
 	mov	ecx, [ebp - 8]	; J_sa_pri_f$IV_&1
 	push	ecx
 	mov	edi, [ebp + 16]
@@ -107,16 +107,16 @@ J_sa_pri_f$IV:
 	call	J_sa_pri_f$IV
 	add	esp, 16
 	mov	[ebp - 12], eax	; J_sa_pri_f$IV_&2
-	mov	ecx, [ebp + 20]	; J_sa_pri_f$IV_n
-	mov	edx, [ebp - 12]	; J_sa_pri_f$IV_&2
-	imul	ecx, edx
-	mov	[ebp - 16], ecx	; J_sa_pri_f$IV_&3
-	mov	ecx, [ebp - 16]	; J_sa_pri_f$IV_&3
-	mov	[ebp - 4], ecx	; set return value
+	mov	eax, [ebp + 20]	; J_sa_pri_f$IV_n
+	mov	ecx, [ebp - 12]	; J_sa_pri_f$IV_&2
+	imul	eax, ecx
+	mov	[ebp - 16], eax	; J_sa_pri_f$IV_&3
+	mov	eax, [ebp - 16]	; J_sa_pri_f$IV_&3
+	mov	[ebp - 4], eax	; set return value
 	jmp	..@l2
 ..@l1:
-	mov	ecx, [ebp + 20]	; J_sa_pri_f$IV_n
-	mov	[ebp - 4], ecx	; set return value
+	mov	eax, [ebp + 20]	; J_sa_pri_f$IV_n
+	mov	[ebp - 4], eax	; set return value
 ..@l2:
 	pop	edi
 	pop	esi
@@ -135,13 +135,13 @@ J_sa_pri_prr:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 2
-	mov	eax, 1
+	mov	eax, 2
+	mov	ecx, 1
 	mov	esi, [ebp + 16]
 	lea	edi, [esi - 8]	; J_sa_pri_he
-	imul	eax, 4
-	sub	edi, eax
-	mov	[edi], ecx
+	imul	ecx, 4
+	sub	edi, ecx
+	mov	[edi], eax
 	mov	eax, 1
 	mov	esi, [ebp + 16]	; display array
 	lea	edi, [esi - 8]	; J_sa_pri_he
@@ -149,13 +149,13 @@ J_sa_pri_prr:
 	sub	edi, eax
 	mov	ecx, [edi]
 	mov	[ebp - 8], ecx	; J_sa_pri_prr_&4
-	mov	ecx, 2
-	mov	eax, [ebp - 8]	; J_sa_pri_prr_&4
+	mov	eax, 2
+	mov	ecx, [ebp - 8]	; J_sa_pri_prr_&4
 	mov	esi, [ebp + 16]
 	lea	edi, [esi - 8]	; J_sa_pri_he
-	imul	eax, 4
-	sub	edi, eax
-	mov	[edi], ecx
+	imul	ecx, 4
+	sub	edi, ecx
+	mov	[edi], eax
 	mov	eax, 1
 	mov	esi, [ebp + 16]	; display array
 	lea	edi, [esi - 8]	; J_sa_pri_he
@@ -177,13 +177,13 @@ J_sa_pri_prr:
 	sub	edi, eax
 	mov	ecx, [edi]
 	mov	[ebp - 20], ecx	; J_sa_pri_prr_&7
-	mov	ecx, [ebp - 16]	; J_sa_pri_prr_&6
-	mov	eax, [ebp - 20]	; J_sa_pri_prr_&7
+	mov	eax, [ebp - 16]	; J_sa_pri_prr_&6
+	mov	ecx, [ebp - 20]	; J_sa_pri_prr_&7
 	mov	esi, [ebp + 16]
 	lea	edi, [esi - 48]	; J_sa_pri_pe
-	imul	eax, 4
-	sub	edi, eax
-	mov	[edi], ecx
+	imul	ecx, 4
+	sub	edi, ecx
+	mov	[edi], eax
 	mov	eax, 1
 	mov	esi, [ebp + 16]	; display array
 	lea	edi, [esi - 8]	; J_sa_pri_he
@@ -201,14 +201,14 @@ J_sa_pri_prr:
 	mov	eax, [ebp - 28]	; J_sa_pri_prr_&9
 	call	print_int
 	mov	esi, [ebp + 16]
-	mov	ecx, [esi - 88]	; J_sa_pri_i
+	mov	eax, [esi - 88]	; J_sa_pri_i
 	mov	esi, [ebp + 16]
-	mov	edx, [esi - 92]	; J_sa_pri_j
-	add	ecx, edx
-	mov	[ebp - 32], ecx	; J_sa_pri_prr_&10
-	mov	ecx, [ebp - 32]	; J_sa_pri_prr_&10
+	mov	ecx, [esi - 92]	; J_sa_pri_j
+	add	eax, ecx
+	mov	[ebp - 32], eax	; J_sa_pri_prr_&10
+	mov	eax, [ebp - 32]	; J_sa_pri_prr_&10
 	mov	esi, [ebp + 16]	; display var
-	mov	[esi - 88], ecx	; J_sa_pri_i
+	mov	[esi - 88], eax	; J_sa_pri_i
 	pop	edi
 	pop	esi
 	pop	ebx
@@ -258,7 +258,7 @@ J_sa_pri:
 	xor	edx, edx
 	mov	eax, [ebp - 96]	; J_sa_pri_&11
 	mov	ecx, [ebp - 104]	; J_sa_pri_&13
-	div	ecx
+	idiv	ecx
 	mov	[ebp - 108], eax	; J_sa_pri_&14
 	mov	eax, [ebp - 108]	; J_sa_pri_&14
 	call	print_int
@@ -301,9 +301,9 @@ J_prn_fe$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 22
+	mov	eax, 22
 	mov	esi, [ebp + 16]
-	mov	[esi], ecx	; *J_prn_fe$IR_i
+	mov	[esi], eax	; *J_prn_fe$IR_i
 	pop	edi
 	pop	esi
 	pop	ebx

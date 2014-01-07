@@ -6,7 +6,7 @@ SECTION .DATA
 	fmt_int_w:  DB "%d", 10, 0
 	fmt_char_r: DB 10, "%c", 0
 	fmt_char_w: DB "%c", 10, 0
-	fmt_string: DB "%s", 0
+	fmt_string: DB "%s", 10, 0
 
 SECTION .TEXT
 	EXTERN	scanf, printf
@@ -88,23 +88,23 @@ J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_h6$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 6
+	mov	eax, 6
 	mov	esi, [ebp + 12]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_i1
-	mov	ecx, 6
+	mov	[esi - 8], eax	; J_h1$IR_i1
+	mov	eax, 6
 	mov	esi, [ebp + 16]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_i2
-	mov	ecx, 6
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_i2
+	mov	eax, 6
 	mov	esi, [ebp + 20]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_h3$IR_i3
-	mov	ecx, 6
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_h3$IR_i3
+	mov	eax, 6
 	mov	esi, [ebp + 24]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_h3$IR_h4$IR_i4
-	mov	ecx, 6
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_h3$IR_h4$IR_i4
+	mov	eax, 6
 	mov	esi, [ebp + 28]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_i5
-	mov	ecx, 6
-	mov	[ebp - 8], ecx	; J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_h6$IR_i6
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_i5
+	mov	eax, 6
+	mov	[ebp - 8], eax	; J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_h6$IR_i6
 	mov	esi, [ebp + 12]
 	mov	eax, [esi - 8]	; J_h1$IR_i1
 	call	print_int
@@ -139,20 +139,20 @@ J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 5
+	mov	eax, 5
 	mov	esi, [ebp + 12]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_i1
-	mov	ecx, 5
+	mov	[esi - 8], eax	; J_h1$IR_i1
+	mov	eax, 5
 	mov	esi, [ebp + 16]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_i2
-	mov	ecx, 5
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_i2
+	mov	eax, 5
 	mov	esi, [ebp + 20]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_h3$IR_i3
-	mov	ecx, 5
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_h3$IR_i3
+	mov	eax, 5
 	mov	esi, [ebp + 24]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_h3$IR_h4$IR_i4
-	mov	ecx, 5
-	mov	[ebp - 8], ecx	; J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_i5
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_h3$IR_h4$IR_i4
+	mov	eax, 5
+	mov	[ebp - 8], eax	; J_h1$IR_h2$IR_h3$IR_h4$IR_h5$IR_i5
 	mov	esi, [ebp + 12]
 	mov	eax, [esi - 8]	; J_h1$IR_i1
 	call	print_int
@@ -199,17 +199,17 @@ J_h1$IR_h2$IR_h3$IR_h4$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 4
+	mov	eax, 4
 	mov	esi, [ebp + 12]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_i1
-	mov	ecx, 4
+	mov	[esi - 8], eax	; J_h1$IR_i1
+	mov	eax, 4
 	mov	esi, [ebp + 16]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_i2
-	mov	ecx, 4
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_i2
+	mov	eax, 4
 	mov	esi, [ebp + 20]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_h3$IR_i3
-	mov	ecx, 4
-	mov	[ebp - 8], ecx	; J_h1$IR_h2$IR_h3$IR_h4$IR_i4
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_h3$IR_i3
+	mov	eax, 4
+	mov	[ebp - 8], eax	; J_h1$IR_h2$IR_h3$IR_h4$IR_i4
 	mov	esi, [ebp + 12]
 	mov	eax, [esi - 8]	; J_h1$IR_i1
 	call	print_int
@@ -251,14 +251,14 @@ J_h1$IR_h2$IR_h3$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 3
+	mov	eax, 3
 	mov	esi, [ebp + 12]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_i1
-	mov	ecx, 3
+	mov	[esi - 8], eax	; J_h1$IR_i1
+	mov	eax, 3
 	mov	esi, [ebp + 16]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_h2$IR_i2
-	mov	ecx, 3
-	mov	[ebp - 8], ecx	; J_h1$IR_h2$IR_h3$IR_i3
+	mov	[esi - 8], eax	; J_h1$IR_h2$IR_i2
+	mov	eax, 3
+	mov	[ebp - 8], eax	; J_h1$IR_h2$IR_h3$IR_i3
 	mov	esi, [ebp + 12]
 	mov	eax, [esi - 8]	; J_h1$IR_i1
 	call	print_int
@@ -295,11 +295,11 @@ J_h1$IR_h2$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 2
+	mov	eax, 2
 	mov	esi, [ebp + 12]	; display var
-	mov	[esi - 8], ecx	; J_h1$IR_i1
-	mov	ecx, 2
-	mov	[ebp - 8], ecx	; J_h1$IR_h2$IR_i2
+	mov	[esi - 8], eax	; J_h1$IR_i1
+	mov	eax, 2
+	mov	[ebp - 8], eax	; J_h1$IR_h2$IR_i2
 	mov	esi, [ebp + 12]
 	mov	eax, [esi - 8]	; J_h1$IR_i1
 	call	print_int
@@ -331,8 +331,8 @@ J_h1$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 1
-	mov	[ebp - 8], ecx	; J_h1$IR_i1
+	mov	eax, 1
+	mov	[ebp - 8], eax	; J_h1$IR_i1
 	mov	eax, [ebp - 8]	; J_h1$IR_i1
 	call	print_int
 	lea	ecx, [ebp - 8]	; J_h1$IR_i1

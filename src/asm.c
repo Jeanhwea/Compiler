@@ -13,11 +13,11 @@
 /* current level */
 int lvl;
 /* current length of var region */
-int varc;
+// int varc;
 /* current length of tmp region */
 int tmpc;
 /* current length of parameter region */
-int parac;
+// int parac;
 
 StringS *strlst = NULL;
 StringS *strlsttail = NULL;
@@ -36,9 +36,9 @@ void enter(SymTabESP e)
 			assert(0);
 		}
 		lvl = st->level;
-		varc = st->posi_var;
+		// varc = st->posi_var;
 		tmpc = st->posi_tmp;
-		parac = st->posi_para;
+		// parac = st->posi_para;
 		fprintf(asmlist, "\tsub\tesp, %d\n", RESERVED);
 	} else {
 		assert(0);
@@ -74,6 +74,11 @@ void movRM_asm(char *reg, SymTabESP e)
 	case Para_Val_Obj_t:
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tmov\t%s, [ebp + %d]\t; %s\n",
+				reg, PARAOFFSET, e->label);
+		} else if (e->level < lvl) {
+			fprintf(asmlist, "\tmov\tesi, [ebp + %d]\t; display\n", 
+				DISPLAY);
+			fprintf(asmlist, "\tmov\t%s, [esi + %d]\t; %s\n",
 				reg, PARAOFFSET, e->label);
 		} else {
 			fprintf(errlist, "ASM BUG:107\n");
@@ -212,7 +217,12 @@ void movMR_asm(SymTabESP e, char *reg)
 		if (e->level == lvl) {
 			fprintf(asmlist, "\tmov\t[ebp + %d], %s\t; %s\n",
 				PARAOFFSET, reg, e->label);
-		} else {
+		} else if (e->level < lvl) {
+			fprintf(asmlist, "\tmov\tedi, [ebp + %d]\t; display para val\n", 
+				DISPLAY);
+			fprintf(asmlist, "\tmov\t[edi + %d], %s\t; %s\n",
+				PARAOFFSET, reg, e->label);
+		}  else {
 			fprintf(errlist, "ASM BUG:117\n");
 			assert(0);
 		}

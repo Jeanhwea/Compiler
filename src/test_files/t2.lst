@@ -110,13 +110,13 @@ lineno:11: UNS 0
 lineno:11: TO to
 lineno:11: UNS 4
 lineno:11: DO do
-  12: 			if he[i]>he[j] then swap(he[i],he[j]) ;
+  12: 			if he[i]<>he[j] then swap(he[i],he[j]) ;
 lineno:12: IF if
 lineno:12: ID he
 lineno:12: LBRA [
 lineno:12: ID i
 lineno:12: RBRA ]
-lineno:12: GTT >
+lineno:12: NEQ <>
 lineno:12: ID he
 lineno:12: LBRA [
 lineno:12: ID j

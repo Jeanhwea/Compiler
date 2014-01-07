@@ -6,7 +6,7 @@ SECTION .DATA
 	fmt_int_w:  DB "%d", 10, 0
 	fmt_char_r: DB 10, "%c", 0
 	fmt_char_w: DB "%c", 10, 0
-	fmt_string: DB "%s", 0
+	fmt_string: DB "%s", 10, 0
 
 SECTION .TEXT
 	EXTERN	scanf, printf
@@ -88,22 +88,22 @@ J_TestCase09$IR:
 	push	ebx
 	push	esi
 	push	edi
-	mov	ecx, 1
-	mov	[ebp - 8], ecx	; J_TestCase09$IR_a
-	mov	ecx, 2
-	mov	[ebp - 12], ecx	; J_TestCase09$IR_b
-	mov	ecx, 1
-	mov	eax, [ebp - 8]	; J_TestCase09$IR_a
+	mov	eax, 1
+	mov	[ebp - 8], eax	; J_TestCase09$IR_a
+	mov	eax, 2
+	mov	[ebp - 12], eax	; J_TestCase09$IR_b
+	mov	eax, 1
+	mov	ecx, [ebp - 8]	; J_TestCase09$IR_a
 	lea	edi, [ebp - 16]	; J_TestCase09$IR_e
-	imul	eax, 4
-	sub	edi, eax
-	mov	[edi], ecx
-	mov	ecx, 2
-	mov	eax, [ebp - 12]	; J_TestCase09$IR_b
+	imul	ecx, 4
+	sub	edi, ecx
+	mov	[edi], eax
+	mov	eax, 2
+	mov	ecx, [ebp - 12]	; J_TestCase09$IR_b
 	lea	edi, [ebp - 56]	; J_TestCase09$IR_f
-	imul	eax, 4
-	sub	edi, eax
-	mov	[edi], ecx
+	imul	ecx, 4
+	sub	edi, ecx
+	mov	[edi], eax
 	mov	eax, [ebp - 8]	; J_TestCase09$IR_a
 	lea	edi, [ebp - 16]	; J_TestCase09$IR_e
 	imul	eax, 4
