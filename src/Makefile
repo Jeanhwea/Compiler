@@ -4,7 +4,7 @@ ASFLAG = -g -f elf
 CFLAGS = -g
 
 SRCS := $(wildcard *.c)
-OBJS := $(SRCS:%.o=%.c)
+OBJS := $(SRCS:%.c=%.o)
 
 compiler: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o compiler
