@@ -1,4 +1,4 @@
-ARGET_EXEC ?= compiler
+TARGET_EXEC ?= compiler
 
 BUILD_DIR ?= ./build
 SRC_DIRS ?= ./src
