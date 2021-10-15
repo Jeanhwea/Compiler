@@ -1,0 +1,179 @@
+   1: {program bubble sort;}
+   2: var
+lineno:2: VAR var
+   3:   a:array[5] of integer {= (4, 5, 2, 7, 0)};
+lineno:3: ID a
+lineno:3: COLON :
+lineno:3: ARRAY array
+lineno:3: LBRA [
+lineno:3: UNS 5
+lineno:3: RBRA ]
+lineno:3: OF of
+lineno:3: INTEGER integer
+lineno:3: SEMI ;
+   4:   i, j: integer;
+lineno:4: ID i
+lineno:4: COMMA ,
+lineno:4: ID j
+lineno:4: COLON :
+lineno:4: INTEGER integer
+lineno:4: SEMI ;
+   5: procedure swap(var x,y:integer);
+lineno:5: PROCEDURE procedure
+lineno:5: ID swap
+lineno:5: LPAR (
+lineno:5: VAR var
+lineno:5: ID x
+lineno:5: COMMA ,
+lineno:5: ID y
+lineno:5: COLON :
+lineno:5: INTEGER integer
+lineno:5: RPAR )
+lineno:5: SEMI ;
+   6:   var
+lineno:6: VAR var
+   7:     t: integer;
+lineno:7: ID t
+lineno:7: COLON :
+lineno:7: INTEGER integer
+lineno:7: SEMI ;
+   8:   begin
+lineno:8: BEGIN begin
+   9:     t := x;
+lineno:9: ID t
+lineno:9: ASSIGN :=
+lineno:9: ID x
+lineno:9: SEMI ;
+  10:     x := y;
+lineno:10: ID x
+lineno:10: ASSIGN :=
+lineno:10: ID y
+lineno:10: SEMI ;
+  11:     y := t
+lineno:11: ID y
+lineno:11: ASSIGN :=
+lineno:11: ID t
+  12:   end;
+lineno:12: END end
+lineno:12: SEMI ;
+  13: begin { main }
+lineno:13: BEGIN begin
+  14:   a[0] := 4;
+lineno:14: ID a
+lineno:14: LBRA [
+lineno:14: UNS 0
+lineno:14: RBRA ]
+lineno:14: ASSIGN :=
+lineno:14: UNS 4
+lineno:14: SEMI ;
+  15:   a[1] := 5;
+lineno:15: ID a
+lineno:15: LBRA [
+lineno:15: UNS 1
+lineno:15: RBRA ]
+lineno:15: ASSIGN :=
+lineno:15: UNS 5
+lineno:15: SEMI ;
+  16:   a[2] := 2;
+lineno:16: ID a
+lineno:16: LBRA [
+lineno:16: UNS 2
+lineno:16: RBRA ]
+lineno:16: ASSIGN :=
+lineno:16: UNS 2
+lineno:16: SEMI ;
+  17:   a[3] := 7;
+lineno:17: ID a
+lineno:17: LBRA [
+lineno:17: UNS 3
+lineno:17: RBRA ]
+lineno:17: ASSIGN :=
+lineno:17: UNS 7
+lineno:17: SEMI ;
+  18:   a[4] := 0;
+lineno:18: ID a
+lineno:18: LBRA [
+lineno:18: UNS 4
+lineno:18: RBRA ]
+lineno:18: ASSIGN :=
+lineno:18: UNS 0
+lineno:18: SEMI ;
+  19:   for i := 0 to 4 do
+lineno:19: FOR for
+lineno:19: ID i
+lineno:19: ASSIGN :=
+lineno:19: UNS 0
+lineno:19: TO to
+lineno:19: UNS 4
+lineno:19: DO do
+  20:   begin
+lineno:20: BEGIN begin
+  21:     for j := i to 4 do
+lineno:21: FOR for
+lineno:21: ID j
+lineno:21: ASSIGN :=
+lineno:21: ID i
+lineno:21: TO to
+lineno:21: UNS 4
+lineno:21: DO do
+  22:     begin
+lineno:22: BEGIN begin
+  23:       if a[i] > a[j] then
+lineno:23: IF if
+lineno:23: ID a
+lineno:23: LBRA [
+lineno:23: ID i
+lineno:23: RBRA ]
+lineno:23: GTT >
+lineno:23: ID a
+lineno:23: LBRA [
+lineno:23: ID j
+lineno:23: RBRA ]
+lineno:23: THEN then
+  24:       begin
+lineno:24: BEGIN begin
+  25:         swap(a[i], a[j])
+lineno:25: ID swap
+lineno:25: LPAR (
+lineno:25: ID a
+lineno:25: LBRA [
+lineno:25: ID i
+lineno:25: RBRA ]
+lineno:25: COMMA ,
+lineno:25: ID a
+lineno:25: LBRA [
+lineno:25: ID j
+lineno:25: RBRA ]
+lineno:25: RPAR )
+  26:       end;
+lineno:26: END end
+lineno:26: SEMI ;
+  27:     end;
+lineno:27: END end
+lineno:27: SEMI ;
+  28:   end;
+lineno:28: END end
+lineno:28: SEMI ;
+  29:   for i := 0 to 4 do
+lineno:29: FOR for
+lineno:29: ID i
+lineno:29: ASSIGN :=
+lineno:29: UNS 0
+lineno:29: TO to
+lineno:29: UNS 4
+lineno:29: DO do
+  30:   begin
+lineno:30: BEGIN begin
+  31:     write(a[i])
+lineno:31: WRITE write
+lineno:31: LPAR (
+lineno:31: ID a
+lineno:31: LBRA [
+lineno:31: ID i
+lineno:31: RBRA ]
+lineno:31: RPAR )
+  32:   end
+lineno:32: END end
+  33: end.lineno:33: END end
+lineno:33: DOT .
+lineno:34: ENDFILE 
