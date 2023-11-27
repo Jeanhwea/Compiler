@@ -1,8 +1,8 @@
 #include "common.h"
-#include<stdio.h>
+#include <stdio.h>
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	printf("compiler %s starts\n", version);
+	printf("compiler %s starts\n", PL0_VERSION);
 	return 0;
 }
