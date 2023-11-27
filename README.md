@@ -1,7 +1,5 @@
-compiler
+COMPILER
 -------------------------
 
-Documentation
-======
-see $HOME/wiki/
+see pl0.pdf
 
