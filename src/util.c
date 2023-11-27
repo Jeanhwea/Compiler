@@ -1,4 +1,4 @@
-#include "common.h"
+#include "debug.h"
 
 FILE pl0_open_file(char *name)
 {
