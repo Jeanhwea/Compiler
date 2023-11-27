@@ -1,6 +1,1 @@
-/build/*
-*.asm
-*.lst
-*.qaud
-*.stb
-*.xml
+out/*
