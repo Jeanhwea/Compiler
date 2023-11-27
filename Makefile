@@ -1,34 +1,26 @@
-TARGET_EXEC ?= compiler
+TARGET  ?= pl0c
 
-BLD_DIR ?= ./build
-SRC_DIR ?= ./src
+BLD_DIR ?= out
+INC_DIR ?= inc
+SRC_DIR ?= src
 
-SRCS := $(shell find $(SRC_DIR) -name *.cpp -or -name *.c -or -name *.s)
-OBJS := $(SRCS:%=$(BLD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
+SRCS    := $(shell find $(SRC_DIR) -name *.c)
+OBJS    := $(SRCS:%=$(BLD_DIR)/%.o)
+DEPS    := $(OBJS:.o=.d)
 
-INC_DIRS  := $(shell find $(SRC_DIR) -type d)
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS  ?= $(INC_FLAGS) -MMD -MP
+CC      := gcc
+CCFLAGS ?= -I$(INC_DIR) -g -MMD -MP
+LDFLAGS ?= -I$(INC_DIR) -g
 
-$(BLD_DIR)/$(TARGET_EXEC): $(OBJS)
+# target
+$(BLD_DIR)/$(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
-
-# assembly
-$(BLD_DIR)/%.s.o: %.s
-	$(MKDIR_P) $(dir $@)
-	$(AS) $(ASFLAGS) -c $< -o $@
 
 # c source
 $(BLD_DIR)/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
-
-# c++ source
-$(BLD_DIR)/%.cpp.o: %.cpp
-	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CCFLAGS) -c $< -o $@
 
 
 .PHONY: clean
