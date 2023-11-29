@@ -113,7 +113,7 @@ token_t get_token(void)
 				save = FALSE;
 				curr = MC_STR;
 			} else if (isprint(ch)) { // only allow printable character
-				dbg("printable character. ch = %c", ch);
+				dbg("printable character. ch = %c\n", ch);
 			} else {
 				state = DONE;
 				if (ch == EOF) {
