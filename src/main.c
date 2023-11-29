@@ -5,9 +5,9 @@ char pgmname[120] = "input.pas";
 
 int main(int argc, char *argv[])
 {
-	msg("%s %s start\n", PL0_NAME, PL0_VERSION);
+	msg("compiler %s start version %s\n", PL0_NAME, PL0_VERSION);
 	if (argc < 2) {
-		msg("usage: ./pl0c <filename>\n");
+		msg("usage: ./%s <filename>\n", PL0_NAME);
 		exit(1);
 	}
 
