@@ -209,7 +209,7 @@ token_t get_token(void)
 			tokbuf[i] = '\0';
 			toklineno = lineno;
 			if (curr == MC_ID) {
-				curr = kwget(tokbuf);
+				curr = getkw(tokbuf);
 			}
 		}
 	}
@@ -295,9 +295,9 @@ static struct {
 	/* 20 */ { "write", KW_WRITE }
 };
 
-// if s is keyword return token,
-//       otherwise return MC_ID
-static token_t kwget(char *s)
+// get keyword
+// if s is keyword return token, otherwise return MC_ID
+static token_t getkw(char *s)
 {
 	int i;
 	for (i = 0; i < MAXRESERVED; i++) {
