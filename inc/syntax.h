@@ -140,7 +140,7 @@ struct _repe_stmt_struct {
 	stmt_p sp;
 	cond_p cp;
 };
-typedef enum _for_enum { To_For, Downto_For } for_t;
+typedef enum _for_enum { TO_FOR, DOWNTO_FOR } for_t;
 struct _for_stmt_struct {
 	for_t type;
 	ident_p idp;
