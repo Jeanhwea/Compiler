@@ -214,7 +214,7 @@ token_t get_token(void)
 		}
 	}
 
-	dbg("token = %2d, tokbuf = %s\n", curr, tokbuf);
+	dbg("token = %2d, tokbuf = [%s]\n", curr, tokbuf);
 	return curr;
 }
 
