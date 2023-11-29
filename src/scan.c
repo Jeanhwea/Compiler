@@ -15,7 +15,7 @@ token_t get_token(void)
 	// whether save current character
 	int save;
 
-	// the state
+	// the state of our state machine
 	state_t state = START;
 	while (state != DONE) {
 		int ch = readchar(TRUE);
@@ -100,7 +100,7 @@ token_t get_token(void)
 			break;
 		case COMMENT: /* comment */
 			save = FALSE;
-			if (c == EOF) {
+			if (ch == EOF) {
 				state = DONE;
 				curr = ENDFILE;
 			} else if (ch == '}') {
@@ -116,7 +116,7 @@ token_t get_token(void)
 				// check if the string character is printable
 			} else {
 				state = DONE;
-				if (c == EOF) {
+				if (ch == EOF) {
 					save = FALSE;
 					i = 0;
 					curr = ENDFILE;
@@ -130,7 +130,7 @@ token_t get_token(void)
 				curr = MC_CH;
 			} else if (isdigit(ch) || isalpha(ch)) {
 			} else {
-				if (c == EOF) {
+				if (ch == EOF) {
 					save = FALSE;
 					i = 0;
 					curr = ENDFILE;
@@ -194,20 +194,25 @@ token_t get_token(void)
 			break;
 		}
 
+		// post check state works
 		if ((save) && (i <= MAXTOKENSIZE)) {
 			tokbuf[i++] = (char)ch;
 			tokbuf[i] = '\0';
 		} else if (i > MAXTOKENSIZE) {
 			dbg("token size is too long, lineno = %d\n", lineno);
 		}
+
+		// finish get token
 		if (state == DONE) {
 			tokbuf[i] = '\0';
-			token_line = lineno;
+			toklineno = lineno;
 			if (curr == MC_ID) {
-				curr = kwget(token_data);
+				curr = kwget(tokbuf);
 			}
 		}
 	}
+
+	dbg("token = %d, tokbuf = %s\n", curr, tokbuf);
 	return curr;
 }
 
