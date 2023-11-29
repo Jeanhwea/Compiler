@@ -8,7 +8,7 @@
 #define msg(fmt, args...) printf(fmt, ##args)
 
 #define dbg(fmt, args...)                                                      \
-	printf("%s:%d %s(): " #fmt "\n", __FILE__, __LINE__, __func__, ##args)
+	printf("%s:%d %s(): " fmt, __FILE__, __LINE__, __func__, ##args)
 
 #define panic(msg)                                                             \
 	do {                                                                   \

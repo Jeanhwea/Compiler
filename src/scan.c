@@ -1,14 +1,15 @@
-#include <string.h>
 #include "global.h"
 #include "lexical.h"
+#include <stdio.h>
 #include "scan.h"
-#include "debug.h"
 
 // see scan.h
 char token_data[MAXTOKENSIZE + 1];
 extern int token_line;
 
-// source line buffer
+////////////////////////////////////////////////////////////////////////////////
+// Source Code Line Buffer
+////////////////////////////////////////////////////////////////////////////////
 #define BUFLEN 4096
 // hold current line buffer
 static char linebuf[BUFLEN];
@@ -36,11 +37,15 @@ static int getch(bool peek)
 	goto ready;
 
 ready:
-	return (peek) ? linebuf[linepos++] : linebuf[linepos];
+	return (peek) ? linebuf[linepos] : linebuf[linepos++];
 }
 
 token_t get_token(void)
 {
 	token_t curr;
+	int ch;
+	while ((ch = getch(FALSE)) != EOF) {
+		putchar(ch);
+	}
 	return curr;
 }
