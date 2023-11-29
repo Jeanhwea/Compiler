@@ -112,8 +112,10 @@ token_t get_token(void)
 				state = DONE;
 				save = FALSE;
 				curr = MC_STR;
-			} else if (isprint(ch)) { // only allow printable character
-				dbg("printable character. ch = %c\n", ch);
+			} else if (isprint(ch)) {
+				// only allow printable character
+			} else if (!isprint(ch)) {
+				panic("unprintable character");
 			} else {
 				state = DONE;
 				if (ch == EOF) {
