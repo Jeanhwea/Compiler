@@ -112,8 +112,8 @@ token_t get_token(void)
 				state = DONE;
 				save = FALSE;
 				curr = MC_STR;
-			} else if (ch >= 32 && ch <= 126) {
-				// check if the string character is printable
+			} else if (isprint(ch)) { // only allow printable character
+				dbg("printable character. ch = %c", ch);
 			} else {
 				state = DONE;
 				if (ch == EOF) {
