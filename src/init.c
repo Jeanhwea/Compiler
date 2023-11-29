@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "global.h"
 
-char *PL0_VERSION = "v0.10.2";
+char *PL0_VERSION = "v0.10.3";
 
 phase_t phase = INIT;
 
