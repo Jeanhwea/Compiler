@@ -3,7 +3,7 @@
 #include "scan.h"
 
 char token_data[MAXTOKENSIZE + 1];
-extern int token_line;
+int token_line;
 
 token_t get_token(void)
 {
