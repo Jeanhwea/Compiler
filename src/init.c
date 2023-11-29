@@ -10,7 +10,7 @@ FILE *target = NULL;
 
 int lineno = 0;
 
-void open_source_file()
+void open_source_file(char *pgm)
 {
 	source = fopen(pgm, "r");
 	if (source == NULL) {
@@ -21,5 +21,5 @@ void open_source_file()
 
 void init(char *pgm)
 {
-	open_source_file();
+	open_source_file(pgm);
 }
