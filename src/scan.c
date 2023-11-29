@@ -239,7 +239,7 @@ static int readchar(bool peek)
 		fileend = TRUE;
 		return EOF;
 	}
-	dbg("source %4d: %s", lineno, linebuf);
+	dbg("source line(%4d): %s", lineno, linebuf);
 
 	bufsize = strlen(linebuf);
 	linepos = 0;
