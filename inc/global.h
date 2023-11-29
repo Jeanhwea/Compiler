@@ -6,7 +6,8 @@
 #include "common.h"
 #include "debug.h"
 
-// current version
+// PL0 meta data
+extern char *PL0_NAME;
 extern char *PL0_VERSION;
 
 // compile phase
