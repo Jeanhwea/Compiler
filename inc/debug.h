@@ -5,7 +5,7 @@
 
 #define EPANIC 996
 
-#define msg printf
+#define msg(fmt, args...) printf(fmt, ##args)
 
 #define dbg(fmt, args...)                                                      \
 	printf("%s:%d %s(): " #fmt "\n", __FILE__, __LINE__, __func__, ##args)
