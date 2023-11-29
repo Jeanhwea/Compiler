@@ -1,16 +1,17 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
+#include <stdio.h>
+#include <stdlib.h>
+#include "common.h"
 
-// Compiling Phase
-typedef enum _phase_enum {
-	/* 0 */ INIT,
-	/* 1 */ LEXICAL,
-	/* 2 */ SYNTAX,
-	/* 3 */ SEMANTIC,
-	/* 4 */ IR,
-	/* 5 */ CODE_GEN
-} phase_t;
+// current version
+extern char *PL0_VERSION;
 
+// compile phase
 extern phase_t phase;
+// source code file
+extern FILE *source;
+// target assembly file
+extern FILE *target;
 
 #endif /* End of _GLOBAL_H_ */

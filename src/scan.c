@@ -1,4 +1,5 @@
 #include "lexical.h"
+#include "scan.h"
 
 // see scan.h
 char token_data[MAXTOKENSIZE + 1];
