@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 	strcpy(pgmname, argv[argc - 1]);
 	init(pgmname);
 
-	get_token();
+	while (get_token() != ENDFILE)
+		;
 	return 0;
 }
