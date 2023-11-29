@@ -5,12 +5,14 @@
 
 #define EPANIC 996
 
+#define msg printf
+
 #define dbg(fmt, args...)                                                      \
 	printf("%s:%d %s(): " #fmt "\n", __FILE__, __LINE__, __func__, ##args)
 
 #define panic(msg)                                                             \
 	do {                                                                   \
-		fprintf(stderr, "%s:%d %s(): %s\n", __FILE__, __LINE__,        \
+		fprintf(stderr, "PANIC: %s:%d %s(): %s\n", __FILE__, __LINE__, \
 			__func__, msg);                                        \
 		exit(EPANIC);                                                  \
 	} while (0)

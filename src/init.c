@@ -9,3 +9,11 @@ FILE *source = NULL;
 FILE *target = NULL;
 
 int lineno = 0;
+
+void init(char *pgm)
+{
+	source = fopen(pgm, "r");
+	if (source == NULL) {
+		panic("source file not found!");
+	}
+}
