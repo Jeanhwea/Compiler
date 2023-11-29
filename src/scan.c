@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "global.h"
 #include "lexical.h"
 #include <stdio.h>
@@ -38,6 +39,16 @@ static int readchar(bool peek)
 
 ready:
 	return (peek) ? linebuf[linepos] : linebuf[linepos++];
+}
+
+static void unreadchar(void)
+{
+	if (linepos <= 0) {
+		panic("unread at line postion zero!");
+	}
+	if (!fileend) {
+		linepos--;
+	}
 }
 
 token_t get_token(void)
