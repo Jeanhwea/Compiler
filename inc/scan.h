@@ -8,10 +8,10 @@ extern char tokbuf[MAXTOKENSIZE + 1];
 // token location, line number
 extern int toklineno;
 
-// return next token in source file
-token_t get_token(void);
+// get next token
+token_t gettok(void);
 
-// get_token states
+// gettok states
 typedef enum _state_enum {
 	/* 0 */ START,
 	/* 1 */ INSTR,
