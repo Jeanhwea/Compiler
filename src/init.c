@@ -3,3 +3,4 @@
 char *PL0_VERSION = "v0.10.1";
 
 phase_t phase = INIT;
+int lineno = 0;

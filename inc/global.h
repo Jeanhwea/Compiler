@@ -14,4 +14,7 @@ extern FILE *source;
 // target assembly file
 extern FILE *target;
 
+// source file line number
+extern int lineno;
+
 #endif /* End of _GLOBAL_H_ */
