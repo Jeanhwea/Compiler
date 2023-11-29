@@ -22,14 +22,16 @@ $(BLD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c $< -o $@
 
-setup: clean
+setup: clean index
 	bear -- make
+
+index:
 	find inc src -type f | sort > cscope.files
 	cscope -bqk
-	ctags  -e -L cscope.files
+	ctags -e -L cscope.files
 
 -include $(DEPS)
 
-.PHONY: clean setup
+.PHONY: clean index setup
 clean:
-	$(RM) -r $(BLD_DIR) cscope.*
+	$(RM) -r $(BLD_DIR) cscope.* compile_commands.json
