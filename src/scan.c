@@ -19,7 +19,7 @@ static bool fileend = FALSE;
 // hold current read postion in line_buf
 static int linepos = 0;
 
-static int getch(bool peek)
+static int readchar(bool peek)
 {
 	if (linepos < bufsize) {
 		goto ready;
@@ -44,7 +44,7 @@ token_t get_token(void)
 {
 	token_t curr;
 	int ch;
-	while ((ch = getch(FALSE)) != EOF) {
+	while ((ch = readchar(FALSE)) != EOF) {
 		putchar(ch);
 	}
 	return curr;
