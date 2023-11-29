@@ -15,7 +15,5 @@ int main(int argc, char *argv[])
 	strcpy(pgmname, argv[argc - 1]);
 	init(pgmname);
 
-	panic("ppp");
-	dbg("yyy y = %d", 2);
 	return 0;
 }
