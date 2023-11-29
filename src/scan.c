@@ -18,7 +18,7 @@ token_t get_token(void)
 	// the state of our state machine
 	state_t state = START;
 	while (state != DONE) {
-		int ch = readchar(FALSE);
+		int ch = readc(FALSE);
 		save = TRUE;
 		switch (state) {
 		case START:
@@ -142,7 +142,7 @@ token_t get_token(void)
 			break;
 		case INUNS: /* in unsign number */
 			if (!isdigit(ch)) {
-				unreadchar();
+				unreadc();
 				save = FALSE;
 				state = DONE;
 				curr = MC_UNS;
@@ -150,7 +150,7 @@ token_t get_token(void)
 			break;
 		case INIDE: /* in identifier */
 			if (!(isdigit(ch) || isalpha(ch))) {
-				unreadchar();
+				unreadc();
 				save = FALSE;
 				state = DONE;
 				curr = MC_ID;
@@ -163,7 +163,7 @@ token_t get_token(void)
 			} else if (ch == '>') {
 				curr = SS_NEQ;
 			} else {
-				unreadchar();
+				unreadc();
 				save = FALSE;
 				curr = SS_LST;
 			}
@@ -173,7 +173,7 @@ token_t get_token(void)
 			if (ch == '=') {
 				curr = SS_ASSIGN;
 			} else {
-				unreadchar();
+				unreadc();
 				save = FALSE;
 				curr = SS_COLON;
 			}
@@ -183,7 +183,7 @@ token_t get_token(void)
 			if (ch == '=') {
 				curr = SS_GEQ;
 			} else {
-				unreadchar();
+				unreadc();
 				save = FALSE;
 				curr = SS_GTT;
 			}
@@ -230,7 +230,8 @@ static bool fileend = FALSE;
 // hold current read postion in line_buf
 static int linepos = 0;
 
-static int readchar(bool peek)
+// read a character
+static int readc(bool peek)
 {
 	if (linepos < bufsize) {
 		goto ready;
@@ -251,7 +252,8 @@ ready:
 	return (peek) ? linebuf[linepos] : linebuf[linepos++];
 }
 
-static void unreadchar(void)
+// unread a charachter
+static void unreadc(void)
 {
 	if (linepos <= 0) {
 		panic("unread at line postion zero!");

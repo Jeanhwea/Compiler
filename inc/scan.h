@@ -26,8 +26,8 @@ typedef enum _state_enum {
 } state_t;
 
 // helper
-static int readchar(bool peek);
-static void unreadchar(void);
+static int readc(bool peek);
+static void unreadc(void);
 static token_t kwget(char *s);
 
 #endif /* End of _SCAN_H_ */
