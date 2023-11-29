@@ -12,8 +12,8 @@ token_t get_token(void)
 	int i = 0;
 	// current token
 	token_t curr;
-	// whether save current character
-	int save;
+	// whether save current character to tokbuf[...]
+	bool save;
 
 	// the state of our state machine
 	state_t state = START;
