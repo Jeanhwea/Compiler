@@ -18,7 +18,7 @@ token_t get_token(void)
 	// the state of our state machine
 	state_t state = START;
 	while (state != DONE) {
-		int ch = readchar(TRUE);
+		int ch = readchar(FALSE);
 		save = TRUE;
 		switch (state) {
 		case START:
