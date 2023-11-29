@@ -7,7 +7,7 @@
 static token_t token;
 
 // ID read mode
-typedef idreadmode_t int;
+typedef int idreadmode_t;
 #define READCURR 0
 #define READPREV 1
 
