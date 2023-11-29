@@ -25,7 +25,7 @@ $(BLD_DIR)/%.c.o: %.c
 setup: clean index
 	bear -- make
 
-index:
+index: clean
 	find inc src -type f | sort > cscope.files
 	cscope -bqk
 	ctags -e -L cscope.files
