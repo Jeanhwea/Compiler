@@ -1,15 +1,22 @@
-#include "debug.h"
 #include "global.h"
 #include "lexical.h"
-#include <stdio.h>
 #include "scan.h"
 
-// see scan.h
 char token_data[MAXTOKENSIZE + 1];
 extern int token_line;
 
+token_t get_token(void)
+{
+	token_t curr;
+	int ch;
+	while ((ch = readchar(FALSE)) != EOF) {
+		putchar(ch);
+	}
+	return curr;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
-// Source Code Line Buffer
+// Source Code Buffer
 ////////////////////////////////////////////////////////////////////////////////
 #define BUFLEN 4096
 // hold current line buffer
@@ -49,14 +56,4 @@ static void unreadchar(void)
 	if (!fileend) {
 		linepos--;
 	}
-}
-
-token_t get_token(void)
-{
-	token_t curr;
-	int ch;
-	while ((ch = readchar(FALSE)) != EOF) {
-		putchar(ch);
-	}
-	return curr;
 }

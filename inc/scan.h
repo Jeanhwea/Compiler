@@ -2,6 +2,15 @@
 #define _SCAN_H_
 #include "lexical.h"
 
+#define MAXTOKENSIZE 256
+// token data, store current token string
+extern char token_data[MAXTOKENSIZE + 1];
+// token location, line number
+extern int token_line;
+
+// return next token in source file
+token_t get_token(void);
+
 typedef enum _state_enum {
 	/* 0 */ START,
 	/* 1 */ INSTR,
@@ -15,13 +24,8 @@ typedef enum _state_enum {
 	/* 9 */ DONE
 } state_t;
 
-#define MAXTOKENSIZE 256
-// token data, store current token string
-extern char token_data[MAXTOKENSIZE + 1];
-// token location, line number
-extern int token_line;
-
-// return next token in source file
-token_t get_token(void);
+// helper
+static int readchar(bool peek);
+static void unreadchar(void);
 
 #endif /* End of _SCAN_H_ */

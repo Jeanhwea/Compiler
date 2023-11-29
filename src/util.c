@@ -1,9 +1,3 @@
-#include "debug.h"
-
-FILE pl0_open_file(char *name)
-{
-	FILE *f = fopen(name, "r");
-	if (f == NULL) {
-		panic("fail to open file");
-	}
-}
+#include <stdio.h>
+#include "util.h"
+#include "global.h"
