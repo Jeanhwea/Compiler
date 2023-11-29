@@ -1,11 +1,12 @@
-#ifndef _SCAN_H_
-#define _SCAN_H_
+#ifndef _LEXICAL_H_
+#define _LEXICAL_H_
 
+// Define all token
 typedef enum _token_enum {
-	/* Book-keeping Token */
+	// Book-keeping Token
 	ENDFILE,
 	ERROR,
-	/* Reserved Key Word */
+	// Reserved Key Word
 	KW_ARRAY,
 	KW_BEGIN,
 	KW_CHAR,
@@ -27,12 +28,12 @@ typedef enum _token_enum {
 	KW_UNTIL,
 	KW_VAR,
 	KW_WRITE,
-	/* Multi Character Token */
+	// Multi-Character Token
 	MC_ID,
 	MC_CH,
 	MC_UNS,
 	MC_STR,
-	/* Special Symbol as Token */
+	// Special Symbol as Token
 	SS_PLUS,
 	SS_MINUS,
 	SS_STAR,
@@ -58,4 +59,4 @@ typedef enum _token_enum {
 	SS_DOT
 } token_t;
 
-#endif /* End of _SCAN_H_ */
+#endif /* End of _LEXICAL_H_ */
