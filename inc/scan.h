@@ -11,6 +11,7 @@ extern int token_line;
 // return next token in source file
 token_t get_token(void);
 
+// get_token states
 typedef enum _state_enum {
 	/* 0 */ START,
 	/* 1 */ INSTR,
@@ -27,5 +28,6 @@ typedef enum _state_enum {
 // helper
 static int readchar(bool peek);
 static void unreadchar(void);
+static token_t kwget(char *s);
 
 #endif /* End of _SCAN_H_ */

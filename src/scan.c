@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include "global.h"
 #include "lexical.h"
 #include "scan.h"
@@ -7,10 +8,201 @@ int token_line;
 
 token_t get_token(void)
 {
-	token_t curr;
-	int ch;
-	while ((ch = readchar(FALSE)) != EOF) {
-		putchar(ch);
+	int i = 0; // token index
+	token_t curr; // current token
+	state_t state = START;
+	/* whether the current character be saved */
+	int save;
+	while (state != DONE) {
+		int c = readchar(TRUE);
+		save = TRUE;
+		switch (state) {
+		case START:
+			if (isspace(c)) {
+				// white space
+				save = FALSE;
+			} else if (isdigit(c)) {
+				state = INUNS;
+			} else if (c == '"') {
+				save = FALSE;
+				state = INSTR;
+			} else if (c == '\'') {
+				save = FALSE;
+				state = INCHA;
+			} else if (c == '{') {
+				save = FALSE;
+				state = COMMENT;
+			} else if (isalpha(c)) {
+				state = INIDE;
+			} else if (c == ':') {
+				state = INCOM;
+			} else if (c == '>') {
+				state = INGRE;
+			} else if (c == '<') {
+				state = INLES;
+			} else {
+				state = DONE;
+				switch (c) {
+				case EOF:
+					save = FALSE;
+					curr = ENDFILE;
+					break;
+				case '.':
+					curr = SS_DOT;
+					break;
+				case '+':
+					curr = SS_PLUS;
+					break;
+				case '-':
+					curr = SS_MINUS;
+					break;
+				case '*':
+					curr = SS_STAR;
+					break;
+				case '/':
+					curr = SS_OVER;
+					break;
+				case '=':
+					curr = SS_EQU;
+					break;
+				case ',':
+					curr = SS_COMMA;
+					break;
+				case ';':
+					curr = SS_SEMI;
+					break;
+				case '(':
+					curr = SS_LPAR;
+					break;
+				case ')':
+					curr = SS_RPAR;
+					break;
+				case '[':
+					curr = SS_LBRA;
+					break;
+				case ']':
+					curr = SS_RBRA;
+					break;
+				case '{':
+					curr = SS_LBBR;
+					break;
+				case '}':
+					curr = SS_RBBR;
+					break;
+				default:
+					curr = ERROR;
+					break;
+				}
+			}
+			break;
+		case COMMENT:
+			save = FALSE;
+			if (c == EOF) {
+				state = DONE;
+				curr = ENDFILE;
+			} else if (c == '}') {
+				state = START;
+			}
+			break;
+		case INSTR: /* in string */
+			if (c == '"') {
+				state = DONE;
+				save = FALSE;
+				curr = MC_STR;
+			} else if (c >= 32 && c <= 126) {
+				// check if the string character is printable
+			} else {
+				state = DONE;
+				if (c == EOF) {
+					save = FALSE;
+					i = 0;
+					curr = ENDFILE;
+				}
+			}
+			break;
+		case INCHA: /* in character */
+			if (c == '\'') {
+				state = DONE;
+				save = FALSE;
+				curr = MC_CH;
+			} else if (isdigit(c) || isalpha(c)) {
+			} else {
+				if (c == EOF) {
+					save = FALSE;
+					i = 0;
+					curr = ENDFILE;
+					state = DONE;
+				}
+			}
+			break;
+		case INUNS: /* in unsign number */
+			if (!isdigit(c)) {
+				unreadchar();
+				save = FALSE;
+				state = DONE;
+				curr = MC_UNS;
+			}
+			break;
+		case INIDE: /* in identifier */
+			if (!(isdigit(c) || isalpha(c))) {
+				unreadchar();
+				save = FALSE;
+				state = DONE;
+				curr = MC_ID;
+			}
+			break;
+		case INLES: /* in less than */
+			state = DONE;
+			if (c == '=') {
+				curr = SS_LEQ;
+			} else if (c == '>') {
+				curr = SS_NEQ;
+			} else {
+				unreadchar();
+				save = FALSE;
+				curr = SS_LST;
+			}
+			break;
+		case INCOM: /* in comma */
+			state = DONE;
+			if (c == '=') {
+				curr = SS_ASSIGN;
+			} else {
+				unreadchar();
+				save = FALSE;
+				curr = SS_COLON;
+			}
+			break;
+		case INGRE: /* in great than */
+			state = DONE;
+			if (c == '=') {
+				curr = SS_GEQ;
+			} else {
+				unreadchar();
+				save = FALSE;
+				curr = SS_GTT;
+			}
+			break;
+		case DONE:
+		default:
+			dbg("error state = %d", state);
+			state = DONE;
+			curr = ERROR;
+			break;
+		}
+		if ((save) && (i <= MAXTOKENSIZE)) {
+			token_data[i++] = (char)c;
+			token_data[i] = '\0';
+		} else if (i > MAXTOKENSIZE) {
+			dbg("lineno:%d: token size is too long\n", lineno);
+		}
+		if (state == DONE) {
+			token_data[i] = '\0';
+			token_line = lineno;
+			if (curr == MC_ID) {
+				curr = kwget(token_data);
+			}
+		}
 	}
 	return curr;
 }
