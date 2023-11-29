@@ -3,46 +3,49 @@
 #include "lexical.h"
 #include "scan.h"
 
-char token_data[MAXTOKENSIZE + 1];
-int token_line;
+char tokbuf[MAXTOKENSIZE + 1];
+int toklineno;
 
 token_t get_token(void)
 {
-	int i = 0; // token index
-	token_t curr; // current token
-	state_t state = START;
-	/* whether the current character be saved */
+	// token index
+	int i = 0;
+	// current token
+	token_t curr;
+	// whether save current character
 	int save;
+
+	// the state
+	state_t state = START;
 	while (state != DONE) {
-		int c = readchar(TRUE);
+		int ch = readchar(TRUE);
 		save = TRUE;
 		switch (state) {
 		case START:
-			if (isspace(c)) {
-				// white space
+			if (isspace(ch)) {
 				save = FALSE;
-			} else if (isdigit(c)) {
+			} else if (isdigit(ch)) {
 				state = INUNS;
-			} else if (c == '"') {
+			} else if (ch == '"') {
 				save = FALSE;
 				state = INSTR;
-			} else if (c == '\'') {
+			} else if (ch == '\'') {
 				save = FALSE;
 				state = INCHA;
-			} else if (c == '{') {
+			} else if (ch == '{') {
 				save = FALSE;
 				state = COMMENT;
-			} else if (isalpha(c)) {
+			} else if (isalpha(ch)) {
 				state = INIDE;
-			} else if (c == ':') {
+			} else if (ch == ':') {
 				state = INCOM;
-			} else if (c == '>') {
+			} else if (ch == '>') {
 				state = INGRE;
-			} else if (c == '<') {
+			} else if (ch == '<') {
 				state = INLES;
 			} else {
 				state = DONE;
-				switch (c) {
+				switch (ch) {
 				case EOF:
 					save = FALSE;
 					curr = ENDFILE;
@@ -95,21 +98,21 @@ token_t get_token(void)
 				}
 			}
 			break;
-		case COMMENT:
+		case COMMENT: /* comment */
 			save = FALSE;
 			if (c == EOF) {
 				state = DONE;
 				curr = ENDFILE;
-			} else if (c == '}') {
+			} else if (ch == '}') {
 				state = START;
 			}
 			break;
 		case INSTR: /* in string */
-			if (c == '"') {
+			if (ch == '"') {
 				state = DONE;
 				save = FALSE;
 				curr = MC_STR;
-			} else if (c >= 32 && c <= 126) {
+			} else if (ch >= 32 && ch <= 126) {
 				// check if the string character is printable
 			} else {
 				state = DONE;
@@ -121,11 +124,11 @@ token_t get_token(void)
 			}
 			break;
 		case INCHA: /* in character */
-			if (c == '\'') {
+			if (ch == '\'') {
 				state = DONE;
 				save = FALSE;
 				curr = MC_CH;
-			} else if (isdigit(c) || isalpha(c)) {
+			} else if (isdigit(ch) || isalpha(ch)) {
 			} else {
 				if (c == EOF) {
 					save = FALSE;
@@ -136,7 +139,7 @@ token_t get_token(void)
 			}
 			break;
 		case INUNS: /* in unsign number */
-			if (!isdigit(c)) {
+			if (!isdigit(ch)) {
 				unreadchar();
 				save = FALSE;
 				state = DONE;
@@ -144,7 +147,7 @@ token_t get_token(void)
 			}
 			break;
 		case INIDE: /* in identifier */
-			if (!(isdigit(c) || isalpha(c))) {
+			if (!(isdigit(ch) || isalpha(ch))) {
 				unreadchar();
 				save = FALSE;
 				state = DONE;
@@ -153,9 +156,9 @@ token_t get_token(void)
 			break;
 		case INLES: /* in less than */
 			state = DONE;
-			if (c == '=') {
+			if (ch == '=') {
 				curr = SS_LEQ;
-			} else if (c == '>') {
+			} else if (ch == '>') {
 				curr = SS_NEQ;
 			} else {
 				unreadchar();
@@ -165,7 +168,7 @@ token_t get_token(void)
 			break;
 		case INCOM: /* in comma */
 			state = DONE;
-			if (c == '=') {
+			if (ch == '=') {
 				curr = SS_ASSIGN;
 			} else {
 				unreadchar();
@@ -175,7 +178,7 @@ token_t get_token(void)
 			break;
 		case INGRE: /* in great than */
 			state = DONE;
-			if (c == '=') {
+			if (ch == '=') {
 				curr = SS_GEQ;
 			} else {
 				unreadchar();
@@ -190,14 +193,15 @@ token_t get_token(void)
 			curr = ERROR;
 			break;
 		}
+
 		if ((save) && (i <= MAXTOKENSIZE)) {
-			token_data[i++] = (char)c;
-			token_data[i] = '\0';
+			tokbuf[i++] = (char)ch;
+			tokbuf[i] = '\0';
 		} else if (i > MAXTOKENSIZE) {
-			dbg("lineno:%d: token size is too long\n", lineno);
+			dbg("token size is too long, lineno = %d\n", lineno);
 		}
 		if (state == DONE) {
-			token_data[i] = '\0';
+			tokbuf[i] = '\0';
 			token_line = lineno;
 			if (curr == MC_ID) {
 				curr = kwget(token_data);

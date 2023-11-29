@@ -4,9 +4,9 @@
 
 #define MAXTOKENSIZE 256
 // token data, store current token string
-extern char token_data[MAXTOKENSIZE + 1];
+extern char tokbuf[MAXTOKENSIZE + 1];
 // token location, line number
-extern int token_line;
+extern int toklineno;
 
 // return next token in source file
 token_t get_token(void);
