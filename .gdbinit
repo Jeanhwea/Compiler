@@ -1,1 +1,1 @@
-set args ../example/test01.pas
+set args ./example/test01.pas
