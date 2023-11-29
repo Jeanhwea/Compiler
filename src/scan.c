@@ -8,7 +8,7 @@ int toklineno;
 
 token_t get_token(void)
 {
-	// token index
+	// token buffer index
 	int i = 0;
 	// current token
 	token_t curr;
