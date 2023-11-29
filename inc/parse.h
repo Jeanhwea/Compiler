@@ -1,7 +1,7 @@
 #ifndef _PARSE_H_
 #define _PARSE_H_
 #include "global.h"
-#include "lexical.h"
+#include "syntax.h"
 #include "scan.h"
 
 // hold current token
