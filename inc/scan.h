@@ -31,7 +31,7 @@ typedef enum _token_t {
 	MC_ID,
 	MC_CH,
 	MC_UNS,
-	MC_STRING,
+	MC_STR,
 	/* Special Symbol as Token */
 	SS_PLUS,
 	SS_MINUS,
