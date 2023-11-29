@@ -1,7 +1,7 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
-// compiler phase
+// Compiling Phase
 typedef enum _phase_enum {
 	/* 0 */ INIT,
 	/* 1 */ LEXICAL,
