@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 	}
 
 	strcpy(pgmname, argv[argc - 1]);
-	msg("read source file: %s\n", pgmname);
 	init(pgmname);
 
 	panic("ppp");

@@ -16,4 +16,5 @@ void init(char *pgm)
 	if (source == NULL) {
 		panic("source file not found!");
 	}
+	msg("reading file %s\n", pgm);
 }
