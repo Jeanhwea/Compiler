@@ -10,11 +10,16 @@ FILE *target = NULL;
 
 int lineno = 0;
 
-void init(char *pgm)
+void open_source_file()
 {
 	source = fopen(pgm, "r");
 	if (source == NULL) {
 		panic("source file not found!");
 	}
 	msg("reading file %s\n", pgm);
+}
+
+void init(char *pgm)
+{
+	open_source_file();
 }
