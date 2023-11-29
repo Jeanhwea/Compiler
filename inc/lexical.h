@@ -59,4 +59,6 @@ typedef enum _token_enum {
 	SS_DOT
 } token_t;
 
+#define MAXRESERVED 21
+
 #endif /* End of _LEXICAL_H_ */
