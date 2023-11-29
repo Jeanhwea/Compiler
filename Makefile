@@ -16,6 +16,7 @@ LDFLAGS := -I$(INC_DIR) -g
 # target
 $(BLD_DIR)/$(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
+	cp .gdbinit $(BLD_DIR)
 
 # c source
 $(BLD_DIR)/%.c.o: %.c
