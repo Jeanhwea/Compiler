@@ -196,7 +196,7 @@ token_t get_token(void)
 			break;
 		}
 
-		// post check state works
+		// save ch to tokbuf[...]
 		if ((save) && (i <= MAXTOKENSIZE)) {
 			tokbuf[i++] = (char)ch;
 			tokbuf[i] = '\0';
@@ -204,7 +204,7 @@ token_t get_token(void)
 			dbg("token size is too long, lineno = %d\n", lineno);
 		}
 
-		// finish get token
+		// post-processing works
 		if (state == DONE) {
 			tokbuf[i] = '\0';
 			toklineno = lineno;
