@@ -1,7 +1,7 @@
 #ifndef _SCAN_H_
 #define _SCAN_H_
 
-typedef enum _token_t {
+typedef enum _token_enum {
 	/* Book-keeping Token */
 	ENDFILE,
 	ERROR,

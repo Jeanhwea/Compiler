@@ -9,8 +9,8 @@ typedef enum _phase_enum {
 	/* 3 */ SEMANTIC,
 	/* 4 */ IR,
 	/* 5 */ CODE_GEN
-} phase_e;
+} phase_t;
 
-extern phase_e phase;
+extern phase_t phase;
 
 #endif /* End of _GLOBAL_H_ */
