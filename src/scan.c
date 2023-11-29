@@ -20,6 +20,7 @@ token_t get_token(void)
 	while (state != DONE) {
 		int ch = readc(FALSE);
 		save = TRUE;
+		// state machine
 		switch (state) {
 		case START:
 			if (isspace(ch)) {
