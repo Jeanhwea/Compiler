@@ -212,7 +212,7 @@ token_t get_token(void)
 		}
 	}
 
-	dbg("token = %02d, tokbuf = %s\n", curr, tokbuf);
+	dbg("token = %2d, tokbuf = %s\n", curr, tokbuf);
 	return curr;
 }
 
@@ -239,7 +239,7 @@ static int readchar(bool peek)
 		fileend = TRUE;
 		return EOF;
 	}
-	dbg("source line(%4d): %s", lineno, linebuf);
+	dbg("source L%03d: %s", lineno, linebuf);
 
 	bufsize = strlen(linebuf);
 	linepos = 0;
