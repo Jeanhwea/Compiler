@@ -24,7 +24,7 @@ $(BLD_DIR)/%.c.o: %.c
 
 setup: clean
 	bear -- make
-	find inc src -type | sort > cscope.files
+	find inc src -type f | sort > cscope.files
 	cscope -bqk
 	ctags  -e -L cscope.files
 
