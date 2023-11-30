@@ -9,7 +9,8 @@ phase_t phase = INIT;
 FILE *source = NULL;
 FILE *target = NULL;
 
-void open_source_file(char *pgm)
+// Open Source Code File
+void pl0_open_source(char *pgm)
 {
 	source = fopen(pgm, "r");
 	if (source == NULL) {
@@ -20,5 +21,5 @@ void open_source_file(char *pgm)
 
 void init(char *pgm)
 {
-	open_source_file(pgm);
+	pl0_open_source(pgm);
 }
