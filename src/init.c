@@ -9,8 +9,6 @@ phase_t phase = INIT;
 FILE *source = NULL;
 FILE *target = NULL;
 
-int lineno = 0;
-
 void open_source_file(char *pgm)
 {
 	source = fopen(pgm, "r");

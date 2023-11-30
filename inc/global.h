@@ -17,8 +17,9 @@ extern FILE *source;
 // target assembly file
 extern FILE *target;
 
-// source file line number
+// source file line number, column number
 extern int lineno;
+extern int colmno;
 
 void init(char *pgm);
 #endif /* End of _GLOBAL_H_ */

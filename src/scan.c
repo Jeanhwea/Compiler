@@ -215,7 +215,7 @@ token_t gettok(void)
 		}
 	}
 
-	dbg("token = %2d, tokbuf = [%s]\n", curr, tokbuf);
+	dbg("token=%2d, buf=[%s], pos=%d:%d\n", curr, tokbuf, lineno, colmno);
 	return curr;
 }
 
@@ -228,13 +228,15 @@ static char linebuf[BUFLEN];
 static int bufsize = 0;
 // when meet EOF, then set done to TRUE
 static bool fileend = FALSE;
-// hold current read postion in line_buf
-static int linepos = 0;
+
+// hold file scan postion (line, column)
+int lineno = 0;
+int colmno = 0;
 
 // read a character
 static int readc(bool peek)
 {
-	if (linepos < bufsize) {
+	if (colmno < bufsize) {
 		goto ready;
 	}
 
@@ -246,21 +248,21 @@ static int readc(bool peek)
 	dbg("source L%03d: %s", lineno, linebuf);
 
 	bufsize = strlen(linebuf);
-	linepos = 0;
+	colmno = 0;
 	goto ready;
 
 ready:
-	return (peek) ? linebuf[linepos] : linebuf[linepos++];
+	return (peek) ? linebuf[colmno] : linebuf[colmno++];
 }
 
 // unread a charachter
 static void unreadc(void)
 {
-	if (linepos <= 0) {
+	if (colmno <= 0) {
 		panic("unread at line postion zero!");
 	}
 	if (!fileend) {
-		linepos--;
+		colmno--;
 	}
 }
 
