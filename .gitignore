@@ -3,6 +3,9 @@ pl0c
 out/*
 compile_commands.json
 
+# gdb
+.gdb_*
+
 TAGS
 .TAGS
 !TAGS/
