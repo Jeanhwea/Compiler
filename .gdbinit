@@ -6,5 +6,5 @@ set history filename .gdb_history
 set logging on
 set logging file .gdb_log.txt
 
-echo + set args ./test/test01.pas\n
+# set test source file
 set args ./test/test01.pas
