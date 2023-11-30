@@ -13,10 +13,12 @@ CC      := gcc
 CCFLAGS := -I$(INC_DIR) -g -MMD -MP
 LDFLAGS := -I$(INC_DIR) -g
 
+all: $(BLD_DIR)/$(TARGET)
+	cp $(BLD_DIR)/$(TARGET) .
+
 # target
 $(BLD_DIR)/$(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
-	cp .gdbinit $(BLD_DIR)
 
 # c source
 $(BLD_DIR)/%.c.o: %.c
@@ -33,6 +35,6 @@ index: clean
 
 -include $(DEPS)
 
-.PHONY: clean index setup
+.PHONY: all clean index setup
 clean:
-	$(RM) -r $(BLD_DIR) cscope.* compile_commands.json
+	$(RM) -r $(BLD_DIR) pl0c cscope.* compile_commands.json

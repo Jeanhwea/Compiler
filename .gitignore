@@ -1,4 +1,5 @@
 .cache/*
+pl0c
 out/*
 compile_commands.json
 
