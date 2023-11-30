@@ -17,6 +17,8 @@ token_t gettok(void)
 
 	// the state of our state machine
 	state_t state = START;
+
+	// the state machine main loop
 	while (state != DONE) {
 		int ch = readc(FALSE);
 		save = TRUE;
