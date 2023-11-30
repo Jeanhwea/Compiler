@@ -2,7 +2,7 @@
 #include "global.h"
 
 char *PL0_NAME = "pl0c";
-char *PL0_VERSION = "v0.10.3";
+char *PL0_VERSION = "v0.11.0";
 
 phase_t phase = INIT;
 
