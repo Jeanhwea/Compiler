@@ -37,7 +37,7 @@ token_t gettok(void)
 				state = INCHA;
 			} else if (ch == '{') {
 				save = FALSE;
-				state = COMMENT;
+				state = INCMT;
 			} else if (isalpha(ch)) {
 				state = INIDE;
 			} else if (ch == ':') {
@@ -101,7 +101,7 @@ token_t gettok(void)
 				}
 			}
 			break;
-		case COMMENT: /* comment */
+		case INCMT: /* in comment */
 			save = FALSE;
 			if (ch == EOF) {
 				state = DONE;

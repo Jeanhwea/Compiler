@@ -21,7 +21,7 @@ typedef enum _state_enum {
 	/* 5 */ INCOM,
 	/* 6 */ INGRE,
 	/* 7 */ INCHA,
-	/* 8 */ COMMENT,
+	/* 8 */ INCMT,
 	/* 9 */ DONE
 } state_t;
 
