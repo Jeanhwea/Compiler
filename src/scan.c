@@ -174,7 +174,7 @@ token_t gettok(void)
 		case INCOM: /* in comma */
 			state = DONE;
 			if (ch == '=') {
-				curr = SS_ASSIGN;
+				curr = SS_ASGN;
 			} else {
 				unreadc();
 				save = FALSE;
