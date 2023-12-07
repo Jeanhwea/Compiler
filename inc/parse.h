@@ -66,6 +66,8 @@ static arg_list_p parse_arg_list(void);
 // if current token be any of (a, b, c, ...)
 #define IF_CURRTOK_ANY(a) if ((currtok == (a)))
 #define IF_CURRTOK_ANY2(a, b) if ((currtok == (a) || currtok == (b)))
+#define IF_CURRTOK_ANY3(a, b, c)                                               \
+	if ((currtok == (a) || currtok == (b) || currtok == (c)))
 #define IF_CURRTOK_ANY6(a, b, c, d, e, f)                                      \
 	if ((currtok == (a) || currtok == (b) || currtok == (c) ||             \
 	     currtok == (d) || currtok == (e) || currtok == (f)))
