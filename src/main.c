@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	strcpy(pgmname, argv[argc - 1]);
 	init(pgmname);
 
-	lextest();
+	// lextest();
 	parse();
 
 	return 0;

@@ -239,7 +239,7 @@ static var_def_p parse_var_def(void)
 		} else {
 			unlikely();
 		}
-		match(SS_RBBR);
+		match(SS_RBRA);
 		match(KW_OF);
 		if (CURRTOK_ANY(KW_INTEGER)) {
 			match(KW_INTEGER);
