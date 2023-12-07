@@ -1,5 +1,4 @@
 #include "global.h"
-#include "scan.h"
 #include "parse.h"
 
 char pgmname[120] = "input.pas";
