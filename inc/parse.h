@@ -62,6 +62,9 @@ static arg_list_p parse_arg_list(void);
 	(currtok == (a) || currtok == (b) || currtok == (c))
 #define CURRTOK_ANY4(a, b, c, d)                                               \
 	(currtok == (a) || currtok == (b) || currtok == (c) || currtok == (d))
+#define CURRTOK_ANY5(a, b, c, d, e)                                            \
+	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
+	 currtok == (d) || currtok == (e))
 #define CURRTOK_ANY6(a, b, c, d, e, f)                                         \
 	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
 	 currtok == (d) || currtok == (e) || currtok == (f))
