@@ -1,4 +1,5 @@
 #include "global.h"
+#include "parse.h"
 #include "scan.h"
 
 char pgmname[120] = "input.pas";
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
 	init(pgmname);
 
 	lextest();
-	// syntest();
+	parse();
 
 	return 0;
 }

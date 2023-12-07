@@ -2,8 +2,9 @@
 #define _PARSE_H_
 
 #include "global.h"
-#include "syntax.h"
 #include "scan.h"
+
+typedef struct _pgm_struct *pgm_p;
 
 // parse source file
 pgm_p parse(void);
