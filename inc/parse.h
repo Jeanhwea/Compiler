@@ -5,7 +5,7 @@
 #include "scan.h"
 
 // hold current token
-static token_t token;
+static token_t currtok;
 
 // ID read mode
 typedef int idreadmode_t;
@@ -44,5 +44,14 @@ static ident_p parse_ident(idreadmode_t mode);
 static para_list_p parse_para_list(void);
 static para_def_p parse_para_def(void);
 static arg_list_p parse_arg_list(void);
+
+// Node Alloc, s:struct
+#define INIT_STRUCT_POINTER(s, v)                                              \
+	do {                                                                   \
+		v = (s##_p)malloc(sizeof(s));                                  \
+		if (v == NULL) {                                               \
+			panic("OUTOFMEM");                                     \
+		};                                                             \
+	} while (0)
 
 #endif /* End of _PARSE_H_ */
