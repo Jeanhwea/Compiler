@@ -17,4 +17,6 @@
 		exit(EPANIC);                                                  \
 	} while (0)
 
+#define unlikely() panic("UNLIKELY")
+
 #endif /* End of _DEBUG_H_ */

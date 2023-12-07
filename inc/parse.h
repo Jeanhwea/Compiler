@@ -52,24 +52,18 @@ static arg_list_p parse_arg_list(void);
 		if (v == NULL) {                                               \
 			panic("OUT_OF_MEMORY");                                \
 		};                                                             \
+		memset(v, 0, sizeof(s));                                       \
 	} while (0)
 
-#define MATCHTOK(tok)                                                          \
-	do {                                                                   \
-		if (currtok == (tok)) {                                        \
-			getsym();                                              \
-		} else {                                                       \
-			panic("UMMATCHED_TOKEN");                              \
-		}                                                              \
-	} while (0)
-
-// if current token be any of (a, b, c, ...)
-#define IF_CURRTOK_ANY(a) if ((currtok == (a)))
-#define IF_CURRTOK_ANY2(a, b) if ((currtok == (a) || currtok == (b)))
-#define IF_CURRTOK_ANY3(a, b, c)                                               \
-	if ((currtok == (a) || currtok == (b) || currtok == (c)))
-#define IF_CURRTOK_ANY6(a, b, c, d, e, f)                                      \
-	if ((currtok == (a) || currtok == (b) || currtok == (c) ||             \
-	     currtok == (d) || currtok == (e) || currtok == (f)))
+// if (CURRTOK_ANY(a, b, c, ...))
+#define CURRTOK_ANY(a) (currtok == (a))
+#define CURRTOK_ANY2(a, b) (currtok == (a) || currtok == (b))
+#define CURRTOK_ANY3(a, b, c)                                                  \
+	(currtok == (a) || currtok == (b) || currtok == (c))
+#define CURRTOK_ANY4(a, b, c, d)                                               \
+	(currtok == (a) || currtok == (b) || currtok == (c) || currtok == (d))
+#define CURRTOK_ANY6(a, b, c, d, e, f)                                         \
+	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
+	 currtok == (d) || currtok == (e) || currtok == (f))
 
 #endif /* End of _PARSE_H_ */
