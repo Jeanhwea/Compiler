@@ -17,5 +17,5 @@ static inline void getsym(void)
 static pgm_p parse_pgm(void)
 {
 	pgm_p t;
-	ALLOCMEM(pgm, t);
+	INITMEM(pgm, t);
 }

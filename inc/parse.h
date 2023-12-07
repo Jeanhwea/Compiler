@@ -45,8 +45,8 @@ static para_list_p parse_para_list(void);
 static para_def_p parse_para_def(void);
 static arg_list_p parse_arg_list(void);
 
-// Node Alloc, s:struct
-#define ALLOCMEM(s, v)                                                         \
+// Initialize struct, allocate memory, s:struct, v: variable, sturct pointer
+#define INITMEM(s, v)                                                          \
 	do {                                                                   \
 		v = (s##_p)malloc(sizeof(s));                                  \
 		if (v == NULL) {                                               \
