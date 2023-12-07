@@ -1,5 +1,5 @@
 #include "global.h"
-#include "parse.h"
+#include "scan.h"
 
 char pgmname[120] = "input.pas";
 
@@ -7,11 +7,6 @@ void lextest()
 {
 	while (gettok() != ENDFILE)
 		;
-}
-
-void syntest()
-{
-	parse();
 }
 
 int main(int argc, char *argv[])
@@ -25,8 +20,8 @@ int main(int argc, char *argv[])
 	strcpy(pgmname, argv[argc - 1]);
 	init(pgmname);
 
-	// lextest();
-	syntest();
+	lextest();
+	// syntest();
 
 	return 0;
 }

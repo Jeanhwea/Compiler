@@ -5,9 +5,6 @@
 #include "syntax.h"
 #include "scan.h"
 
-// hold AST
-extern pgm_p ast;
-
 // parse source file
 pgm_p parse(void);
 

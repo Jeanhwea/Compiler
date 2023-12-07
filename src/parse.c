@@ -1,14 +1,10 @@
-#include "parse.h"
 #include "common.h"
 #include "debug.h"
 #include "global.h"
-#include "lexical.h"
-#include "scan.h"
-#include "syntax.h"
 #include "util.h"
-
-// hold AST
-pgm_p ast;
+#include "lexical.h"
+#include "syntax.h"
+#include "parse.h"
 
 // current token
 static token_t currtok;
@@ -1023,6 +1019,5 @@ static arg_list_p parse_arg_list(void)
 pgm_p parse(void)
 {
 	currtok = gettok();
-	ast = parse_pgm();
-	return ast;
+	return parse_pgm();
 }
