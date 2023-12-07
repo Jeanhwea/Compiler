@@ -918,7 +918,6 @@ static ident_p parse_ident(idreadmode_t mode)
 		t->length = 0;
 		t->line = prevlineno;
 		t->name = dupstr(prevtokbuf);
-		match(MC_ID);
 		break;
 	default:
 		unlikely();
