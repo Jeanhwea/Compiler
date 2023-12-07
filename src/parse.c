@@ -1,9 +1,14 @@
 #include "parse.h"
+#include "common.h"
 #include "debug.h"
+#include "global.h"
 #include "lexical.h"
 #include "scan.h"
 #include "syntax.h"
 #include "util.h"
+
+// hold AST
+pgm_p ast;
 
 // current token
 static token_t currtok;
@@ -23,6 +28,39 @@ static void match(token_t expected)
 	prevlineno = toklineno;
 	currtok = gettok();
 }
+
+// Define a bundle of parse function
+static pgm_p parse_pgm(void);
+static block_p parse_block(void);
+static const_dec_p parse_const_dec(void);
+static const_def_p parse_const_def(void);
+static var_dec_p parse_var_dec(void);
+static var_def_p parse_var_def(void);
+static pf_dec_list_p parse_pf_dec_list(void);
+static proc_dec_p parse_proc_dec(void);
+static proc_def_p parse_proc_def(void);
+static proc_head_p parse_proc_head(void);
+static fun_dec_p parse_fun_dec(void);
+static fun_def_p parse_fun_def(void);
+static fun_head_p parse_fun_head(void);
+static stmt_p parse_stmt(void);
+static assign_stmt_p parse_assign_stmt(void);
+static if_stmt_p parse_if_stmt(void);
+static repe_stmt_p parse_repe_stmt(void);
+static for_stmt_p parse_for_stmt(void);
+static pcall_stmt_p parse_pcall_stmt(void);
+static fcall_stmt_p parse_fcall_stmt(void);
+static comp_stmt_p parse_comp_stmt(void);
+static read_stmt_p parse_read_stmt(void);
+static write_stmt_p parse_write_stmt(void);
+static expr_p parse_expr(void);
+static term_p parse_term(void);
+static factor_p parse_factor(void);
+static cond_p parse_cond(void);
+static ident_p parse_ident(idreadmode_t mode);
+static para_list_p parse_para_list(void);
+static para_def_p parse_para_def(void);
+static arg_list_p parse_arg_list(void);
 
 /**
  * program ->
@@ -857,27 +895,134 @@ static cond_p parse_cond(void)
 	return t;
 }
 
+/**
+ * construct a identifier
+ */
 static ident_p parse_ident(idreadmode_t mode)
 {
 	ident_p t;
 	INITMEM(ident, t);
+
+	switch (mode) {
+	case READCURR:
+		t->type = INIT_IDENT;
+		t->val = 0;
+		t->length = 0;
+		t->line = lineno;
+		t->name = dupstr(tokbuf);
+		match(MC_ID);
+		break;
+	case READPREV:
+		t->type = INIT_IDENT;
+		t->val = 0;
+		t->length = 0;
+		t->line = prevlineno;
+		t->name = dupstr(prevtokbuf);
+		match(MC_ID);
+		break;
+	default:
+		unlikely();
+		break;
+	}
 	return t;
 }
+
+/**
+ * paralist ->
+ *	paradef {; paradef }
+ */
 static para_list_p parse_para_list(void)
 {
-	para_list_p t;
+	para_list_p t, p, q;
 	INITMEM(para_list, t);
+
+	t->pdp = parse_para_def();
+	for (p = t; CURRTOK_ANY(SS_SEMI); p = q) {
+		match(SS_SEMI);
+		INITMEM(para_list, q);
+		p->next = q;
+		q->pdp = parse_para_def();
+	}
+
 	return t;
 }
+
+/**
+ * paradef ->
+ *	[VAR] ident {, ident} : basictype
+ */
 static para_def_p parse_para_def(void)
 {
-	para_def_p t;
+	para_def_p t, p, q;
 	INITMEM(para_def, t);
+
+	// VAR mean call by reference
+	bool byref = FALSE;
+	if (CURRTOK_ANY(KW_VAR)) {
+		byref = TRUE;
+		match(KW_VAR);
+	}
+
+	t->idp = parse_ident(READCURR);
+
+	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+		match(SS_COMMA);
+		INITMEM(para_def, q);
+		p->next = q;
+		q->idp = parse_ident(READCURR);
+	}
+	match(SS_COLON);
+
+	switch (currtok) {
+	case KW_INTEGER:
+		match(KW_INTEGER);
+		for (p = t; p; p = p->next) {
+			p->idp->type =
+				byref ? INT_PARA_REF_IDENT : INT_PARA_VAL_IDENT;
+		}
+		break;
+	case KW_CHAR:
+		match(KW_CHAR);
+		for (p = t; p; p = p->next) {
+			p->idp->type = byref ? CHAR_PARA_REF_IDENT :
+					       CHAR_PARA_VAL_IDENT;
+		}
+		break;
+	default:
+		unlikely();
+		break;
+	}
+
 	return t;
 }
+
+/**
+ * arglist ->
+ *	argument {, argument}
+ *
+ * argument ->
+ *	expression
+ */
 static arg_list_p parse_arg_list(void)
 {
-	arg_list_p t;
+	arg_list_p t, p, q;
 	INITMEM(arg_list, t);
+
+	t->ep = parse_expr();
+
+	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+		match(SS_COMMA);
+		INITMEM(arg_list, q);
+		p->next = q;
+		q->ep = parse_expr();
+	}
+
 	return t;
+}
+
+pgm_p parse(void)
+{
+	currtok = gettok();
+	ast = parse_pgm();
+	return ast;
 }
