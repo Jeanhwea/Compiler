@@ -3,6 +3,8 @@
 
 char pgmname[120] = "input.pas";
 
+void lextest();
+
 int main(int argc, char *argv[])
 {
 	msg("compiler %s start, version %s\n", PL0_NAME, PL0_VERSION);
@@ -14,7 +16,13 @@ int main(int argc, char *argv[])
 	strcpy(pgmname, argv[argc - 1]);
 	init(pgmname);
 
+	lextest();
+
+	return 0;
+}
+
+void lextest()
+{
 	while (gettok() != ENDFILE)
 		;
-	return 0;
 }
