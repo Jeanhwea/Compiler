@@ -84,14 +84,18 @@ static block_p parse_block(void)
 
 	if (CURRTOK_ANY(KW_CONST)) {
 		t->cdp = parse_const_dec();
-	} else if (CURRTOK_ANY(KW_VAR)) {
+	}
+
+	if (CURRTOK_ANY(KW_VAR)) {
 		t->vdp = parse_var_dec();
-	} else if (CURRTOK_ANY2(KW_FUNCTION, KW_PROCEDURE)) {
+	}
+
+	if (CURRTOK_ANY2(KW_FUNCTION, KW_PROCEDURE)) {
 		t->pfdlp = parse_pf_dec_list();
-	} else if (CURRTOK_ANY(KW_BEGIN)) {
+	}
+
+	if (CURRTOK_ANY(KW_BEGIN)) {
 		t->csp = parse_comp_stmt();
-	} else {
-		unlikely();
 	}
 
 	return t;
