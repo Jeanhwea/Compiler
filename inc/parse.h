@@ -46,7 +46,7 @@ static para_def_p parse_para_def(void);
 static arg_list_p parse_arg_list(void);
 
 // Node Alloc, s:struct
-#define INIT_STRUCT_POINTER(s, v)                                              \
+#define ALLOCMEM(s, v)                                                         \
 	do {                                                                   \
 		v = (s##_p)malloc(sizeof(s));                                  \
 		if (v == NULL) {                                               \
