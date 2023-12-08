@@ -1,0 +1,20 @@
+#ifndef _SYMTAB_H_
+#define _SYMTAB_H_
+
+typedef sym_table *sym_table_p;
+typedef sym_bucket *sym_bucket_p;
+typedef sym_entry *sym_entry_p;
+
+struct _sym_bucket_struct {
+	sym_entry_p element;
+	sym_bucket_p next;
+} sym_bucket;
+
+struct _sym_entry_struct {
+	char *name;
+	char *label;
+	// array length, const value, unsigned value
+	int value;
+} sym_entry;
+
+#endif /* End of _SYMTAB_H_ */
