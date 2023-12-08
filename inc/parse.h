@@ -63,9 +63,7 @@ typedef struct _arg_list_struct arg_list_s;
 	 currtok == (d) || currtok == (e) || currtok == (f))
 
 // ID read mode, for parse_ident()
-typedef int idreadmode_t;
-#define READCURR 0
-#define READPREV 1
+typedef enum _idreadmode_enum { READCURR, READPREV } idreadmode_t;
 
 // Define a bundle of parse function
 static pgm_s *parse_pgm(void);
