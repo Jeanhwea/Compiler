@@ -1,3 +1,8 @@
+#include "debug.h"
+
+// symbol table
+// struct sym_table stable;
+
 // hash size
 int HASHSIZE = 211;
 // hash shift
