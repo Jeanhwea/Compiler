@@ -16,12 +16,17 @@ static int prevlineno;
 // match an expected token, and skip to next token
 static void match(token_t expected)
 {
+	// check token
 	if (currtok != expected) {
 		panic("UNEXPECTED_TOKEN");
 	}
+
+	// store previous token
 	strncpy(prevtokbuf, tokbuf, MAXTOKENSIZE);
 	prevtok = currtok;
 	prevlineno = toklineno;
+
+	// read next token
 	currtok = gettok();
 }
 
