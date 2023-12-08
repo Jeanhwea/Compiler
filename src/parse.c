@@ -482,6 +482,7 @@ static assign_stmt_p parse_assign_stmt(void)
 		match(SS_RBRA);
 		match(SS_ASGN);
 		t->rep = parse_expr();
+		break;
 	default:
 		unlikely();
 		break;
