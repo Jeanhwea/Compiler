@@ -6,6 +6,7 @@
 char tokbuf[MAXTOKENSIZE + 1];
 int toklineno;
 
+// get next token
 token_t gettok(void)
 {
 	// token buffer index
