@@ -3,6 +3,7 @@
 #include "global.h"
 #include "scan.h"
 
+////////////////////////////////////////////////////////////////////////////////
 // Declaretion of a bundle of AST struct
 typedef struct _pgm_struct pgm_s;
 typedef struct _block_struct block_s;
@@ -36,6 +37,7 @@ typedef struct _para_list_struct para_list_s;
 typedef struct _para_def_struct para_def_s;
 typedef struct _arg_list_struct arg_list_s;
 
+////////////////////////////////////////////////////////////////////////////////
 // Initialize node struct, allocate memory
 //     INITMEM(s: struct, v: variable, sturct pointer)
 #define INITMEM(s, v)                                                          \
@@ -62,6 +64,7 @@ typedef struct _arg_list_struct arg_list_s;
 	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
 	 currtok == (d) || currtok == (e) || currtok == (f))
 
+////////////////////////////////////////////////////////////////////////////////
 // ID read mode, for parse_ident()
 typedef enum _idreadmode_enum { READCURR, READPREV } idreadmode_t;
 
@@ -98,6 +101,7 @@ static para_list_s *parse_para_list(void);
 static para_def_s *parse_para_def(void);
 static arg_list_s *parse_arg_list(void);
 
+////////////////////////////////////////////////////////////////////////////////
 // Parse source file to AST
 pgm_s *parse(void);
 #endif /* End of _PARSE_H_ */

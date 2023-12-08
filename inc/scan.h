@@ -2,6 +2,7 @@
 #define _SCAN_H_
 #include "lexical.h"
 
+////////////////////////////////////////////////////////////////////////////////
 #define MAXTOKENSIZE 256
 // token data, store current token string
 extern char tokbuf[MAXTOKENSIZE + 1];
@@ -27,6 +28,7 @@ static int readc(bool peek);
 static void unreadc(void);
 static token_t getkw(char *s);
 
+////////////////////////////////////////////////////////////////////////////////
 // get next token
 token_t gettok(void);
 #endif /* End of _SCAN_H_ */
