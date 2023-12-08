@@ -1,7 +1,8 @@
 #include "common.h"
 #include "debug.h"
 
-void unlikely()
+void quit(const char *file, const int line, const char *func, const char *msg)
 {
-	panic("UNLIKELY");
+	fprintf(stderr, "ABORT: %s:%d %s(): %s\n", file, line, func, msg);
+	exit(EABORT);
 }
