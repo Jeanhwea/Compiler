@@ -391,7 +391,6 @@ static fun_head_p parse_fun_head(void)
 		break;
 	default:
 		unlikely();
-		break;
 	}
 	match(SS_SEMI);
 
@@ -485,7 +484,6 @@ static assign_stmt_p parse_assign_stmt(void)
 		break;
 	default:
 		unlikely();
-		break;
 	}
 
 	return t;
@@ -555,6 +553,8 @@ static for_stmt_p parse_for_stmt(void)
 		match(KW_DOWNTO);
 		t->type = DOWNTO_FOR;
 		break;
+	default:
+		unlikely();
 	}
 
 	t->rep = parse_expr();
@@ -813,7 +813,6 @@ static factor_p parse_factor(void)
 		break;
 	default:
 		unlikely();
-		break;
 	}
 
 	return t;
@@ -856,7 +855,6 @@ static cond_p parse_cond(void)
 		break;
 	default:
 		unlikely();
-		break;
 	}
 	t->rep = parse_expr();
 
@@ -889,7 +887,6 @@ static ident_p parse_ident(idreadmode_t mode)
 		break;
 	default:
 		unlikely();
-		break;
 	}
 	return t;
 }
@@ -957,7 +954,6 @@ static para_def_p parse_para_def(void)
 		break;
 	default:
 		unlikely();
-		break;
 	}
 
 	return t;
