@@ -24,5 +24,6 @@ int main(int argc, char *argv[])
 	// lextest();
 	parse();
 
+	msg("done");
 	return 0;
 }
