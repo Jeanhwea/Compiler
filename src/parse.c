@@ -16,7 +16,7 @@ static int prevlineno;
 // match an expected token, and skip to next token
 static void match(token_t expected)
 {
-	// check token
+	// check if token matched
 	if (currtok != expected) {
 		panic("UNEXPECTED_TOKEN");
 	}
