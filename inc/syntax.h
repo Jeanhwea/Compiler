@@ -1,44 +1,7 @@
 #ifndef _SYNTAX_H_
 #define _SYNTAX_H_
+#include "parse.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// declaretion of a bundle of struct pointer
-////////////////////////////////////////////////////////////////////////////////
-typedef struct _pgm_struct *pgm_p;
-typedef struct _block_struct *block_p;
-typedef struct _const_dec_struct *const_dec_p;
-typedef struct _const_def_struct *const_def_p;
-typedef struct _var_dec_struct *var_dec_p;
-typedef struct _var_def_struct *var_def_p;
-typedef struct _pf_dec_list_struct *pf_dec_list_p;
-typedef struct _proc_dec_struct *proc_dec_p;
-typedef struct _proc_def_struct *proc_def_p;
-typedef struct _proc_head_struct *proc_head_p;
-typedef struct _fun_dec_struct *fun_dec_p;
-typedef struct _fun_def_struct *fun_def_p;
-typedef struct _fun_head_struct *fun_head_p;
-typedef struct _stmt_struct *stmt_p;
-typedef struct _assign_stmt_struct *assign_stmt_p;
-typedef struct _if_stmt_struct *if_stmt_p;
-typedef struct _repe_stmt_struct *repe_stmt_p;
-typedef struct _for_stmt_struct *for_stmt_p;
-typedef struct _pcall_stmt_struct *pcall_stmt_p;
-typedef struct _fcall_stmt_struct *fcall_stmt_p;
-typedef struct _comp_stmt_struct *comp_stmt_p;
-typedef struct _read_stmt_struct *read_stmt_p;
-typedef struct _write_stmt_struct *write_stmt_p;
-typedef struct _expr_struct *expr_p;
-typedef struct _term_struct *term_p;
-typedef struct _factor_struct *factor_p;
-typedef struct _cond_struct *cond_p;
-typedef struct _ident_struct *ident_p;
-typedef struct _para_list_struct *para_list_p;
-typedef struct _para_def_struct *para_def_p;
-typedef struct _arg_list_struct *arg_list_p;
-
-////////////////////////////////////////////////////////////////////////////////
-// declaretion of a bundle of node type
-////////////////////////////////////////////////////////////////////////////////
 /* program */
 struct _pgm_struct {
 	block_p bp;

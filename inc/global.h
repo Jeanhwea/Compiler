@@ -21,5 +21,9 @@ extern FILE *target;
 extern int lineno;
 extern int colmno;
 
+// Initialization
 void init(char *pgm);
+
+// Lexical
+
 #endif /* End of _GLOBAL_H_ */
