@@ -17,6 +17,6 @@
 		exit(EPANIC);                                                  \
 	} while (0)
 
-#define unlikely() panic("UNLIKELY")
-
+// debug function
+void unlikely();
 #endif /* End of _DEBUG_H_ */

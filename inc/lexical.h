@@ -1,7 +1,7 @@
 #ifndef _LEXICAL_H_
 #define _LEXICAL_H_
 
-// Define all token
+// Define all token enumeration
 typedef enum _token_enum {
 	// Book-keeping Token
 	/*  0 */ ENDFILE = 0,

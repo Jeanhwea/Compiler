@@ -8,9 +8,6 @@ extern char tokbuf[MAXTOKENSIZE + 1];
 // token location, line number
 extern int toklineno;
 
-// get next token
-token_t gettok(void);
-
 // gettok states
 typedef enum _state_enum {
 	/* 0 */ START,
@@ -30,4 +27,6 @@ static int readc(bool peek);
 static void unreadc(void);
 static token_t getkw(char *s);
 
+// get next token
+token_t gettok(void);
 #endif /* End of _SCAN_H_ */

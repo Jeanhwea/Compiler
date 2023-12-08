@@ -1,10 +1,9 @@
 #ifndef _PARSE_H_
 #define _PARSE_H_
-
 #include "global.h"
 #include "scan.h"
 
-// declaretion of a bundle of struct pointer
+// Declaretion of a bundle of struct pointer
 typedef struct _pgm_struct *pgm_p;
 typedef struct _block_struct *block_p;
 typedef struct _const_dec_struct *const_dec_p;
@@ -37,10 +36,8 @@ typedef struct _para_list_struct *para_list_p;
 typedef struct _para_def_struct *para_def_p;
 typedef struct _arg_list_struct *arg_list_p;
 
-// parse source file
-pgm_p parse(void);
-
-// Initialize struct, allocate memory, s:struct, v: variable, sturct pointer
+// initialize node struct, allocate memory
+//     INITMEM(s:struct, v: variable, sturct pointer)
 #define INITMEM(s, v)                                                          \
 	do {                                                                   \
 		v = (s##_p)malloc(sizeof(s));                                  \
@@ -50,15 +47,13 @@ pgm_p parse(void);
 		memset(v, 0, sizeof(s));                                       \
 	} while (0)
 
-// hold current token
-static token_t currtok;
-
 // ID read mode
 typedef int idreadmode_t;
 #define READCURR 0
 #define READPREV 1
 
-// if (CURRTOK_ANY(a, b, c, ...))
+// use like:
+//   if (CURRTOK_ANY(a, b, c, ...)) { ... }
 #define CURRTOK_ANY(a) (currtok == (a))
 #define CURRTOK_ANY2(a, b) (currtok == (a) || currtok == (b))
 #define CURRTOK_ANY3(a, b, c)                                                  \
@@ -105,4 +100,6 @@ static para_list_p parse_para_list(void);
 static para_def_p parse_para_def(void);
 static arg_list_p parse_arg_list(void);
 
+// Parse source file to AST
+pgm_p parse(void);
 #endif /* End of _PARSE_H_ */
