@@ -3,6 +3,7 @@
 #include "parse.h"
 
 char pgmname[120] = "input.pas";
+pgm_s *prog;
 
 void lextest()
 {
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
 	init(pgmname);
 
 	// lextest();
-	parse();
+	prog = parse();
 
 	msg("done\n");
 	return 0;

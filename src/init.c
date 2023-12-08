@@ -4,6 +4,8 @@
 char *PL0_NAME = "pl0c";
 char *PL0_VERSION = "v0.11.3";
 
+bool echo = TRUE;
+
 phase_t phase = INIT;
 
 FILE *source = NULL;

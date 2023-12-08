@@ -6,6 +6,9 @@
 #include "common.h"
 #include "debug.h"
 
+// print control
+extern bool echo;
+
 // PL0 meta data
 extern char *PL0_NAME;
 extern char *PL0_VERSION;
@@ -25,5 +28,11 @@ extern int colmno;
 void init(char *pgm);
 
 // Lexical
+
+// Syntax
+typedef struct _pgm_struct pgm_s;
+// program AST
+extern pgm_s *prog;
+pgm_s *parse(void);
 
 #endif /* End of _GLOBAL_H_ */
