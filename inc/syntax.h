@@ -3,64 +3,64 @@
 #include "parse.h"
 
 /* program */
-struct _pgm_struct {
-	block_p bp;
-} pgm;
+typedef struct _pgm_struct {
+	block_s *bp;
+} pgm_s;
 
 /* block */
-struct _block_struct {
-	const_dec_p cdp;
-	var_dec_p vdp;
-	pf_dec_list_p pfdlp;
-	comp_stmt_p csp;
-} block;
-struct _const_dec_struct {
-	const_def_p cdp;
-	const_dec_p next;
-} const_dec;
-struct _const_def_struct {
-	ident_p idp;
-} const_def;
-struct _var_dec_struct {
-	var_def_p vdp;
-	var_dec_p next;
-} var_dec;
-struct _var_def_struct {
-	ident_p idp;
-	var_def_p next;
-} var_def;
+typedef struct _block_struct {
+	const_dec_s *cdp;
+	var_dec_s *vdp;
+	pf_dec_list_s *pfdlp;
+	comp_stmt_s *csp;
+} block_s;
+typedef struct _const_dec_struct {
+	const_def_s *cdp;
+	const_dec_s *next;
+} const_dec_s;
+typedef struct _const_def_struct {
+	ident_s *idp;
+} const_def_s;
+typedef struct _var_dec_struct {
+	var_def_s *vdp;
+	var_dec_s *next;
+} var_dec_s;
+typedef struct _var_def_struct {
+	ident_s *idp;
+	var_def_s *next;
+} var_def_s;
 
 typedef enum _pf_dec_enum { FUN_PFDEC, PROC_PFDEC } pf_dec_t;
-struct _pf_dec_list_struct {
+typedef struct _pf_dec_list_struct {
 	pf_dec_t type;
-	proc_dec_p pdp;
-	fun_dec_p fdp;
-	pf_dec_list_p next;
-} pf_dec_list;
-struct _proc_dec_struct {
-	proc_def_p pdp;
-	proc_dec_p next;
-} proc_dec;
-struct _proc_def_struct {
-	proc_head_p php;
-	block_p bp;
-} proc_def;
-struct _proc_head_struct {
-	ident_p idp;
-	para_list_p plp;
-} proc_head;
-struct _fun_dec_struct {
-	fun_def_p fdp;
-	fun_dec_p next;
-} fun_dec;
-struct _fun_def_struct {
-	fun_head_p fhp;
-	block_p bp;
-} fun_def;
-struct _fun_head_struct {
-	ident_p idp;
-	para_list_p plp;
-} fun_head;
+	proc_dec_s *pdp;
+	fun_dec_s *fdp;
+	pf_dec_list_s *next;
+} pf_dec_list_s;
+typedef struct _proc_dec_struct {
+	proc_def_s *pdp;
+	proc_dec_s *next;
+} proc_dec_s;
+typedef struct _proc_def_struct {
+	proc_head_s *php;
+	block_s *bp;
+} proc_def_s;
+typedef struct _proc_head_struct {
+	ident_s *idp;
+	para_list_s *plp;
+} proc_head_s;
+typedef struct _fun_dec_struct {
+	fun_def_s *fdp;
+	fun_dec_s *next;
+} fun_dec_s;
+typedef struct _fun_def_struct {
+	fun_head_s *fhp;
+	block_s *bp;
+} fun_def_s;
+typedef struct _fun_head_struct {
+	ident_s *idp;
+	para_list_s *plp;
+} fun_head_s;
 
 /* statement */
 typedef enum _stmt_enum {
@@ -74,66 +74,66 @@ typedef enum _stmt_enum {
 	FOR_STMT,
 	NULL_STMT
 } stmt_t;
-struct _stmt_struct {
+typedef struct _stmt_struct {
 	stmt_t type;
-	assign_stmt_p asp;
-	if_stmt_p ifp;
-	repe_stmt_p rpp;
-	for_stmt_p frp;
-	pcall_stmt_p pcp;
-	comp_stmt_p cpp;
-	read_stmt_p rdp;
-	write_stmt_p wtp;
-} stmt;
+	assign_stmt_s *asp;
+	if_stmt_s *ifp;
+	repe_stmt_s *rpp;
+	for_stmt_s *frp;
+	pcall_stmt_s *pcp;
+	comp_stmt_s *cpp;
+	read_stmt_s *rdp;
+	write_stmt_s *wtp;
+} stmt_s;
 typedef enum _assgin_enum { NORM_ASSGIN, FUN_ASSGIN, ARRAY_ASSGIN } assgin_t;
-struct _assign_stmt_struct {
+typedef struct _assign_stmt_struct {
 	assgin_t type;
-	ident_p idp;
-	expr_p lep;
-	expr_p rep;
-} assign_stmt;
-struct _if_stmt_struct {
-	cond_p cp;
+	ident_s *idp;
+	expr_s *lep;
+	expr_s *rep;
+} assign_stmt_s;
+typedef struct _if_stmt_struct {
+	cond_s *cp;
 	/* then */
-	stmt_p tp;
+	stmt_s *tp;
 	/* else */
-	stmt_p ep;
-} if_stmt;
-struct _repe_stmt_struct {
-	stmt_p sp;
-	cond_p cp;
-} repe_stmt;
+	stmt_s *ep;
+} if_stmt_s;
+typedef struct _repe_stmt_struct {
+	stmt_s *sp;
+	cond_s *cp;
+} repe_stmt_s;
 typedef enum _for_enum { TO_FOR, DOWNTO_FOR } for_t;
-struct _for_stmt_struct {
+typedef struct _for_stmt_struct {
 	for_t type;
-	ident_p idp;
-	expr_p lep;
-	expr_p rep;
-	stmt_p sp;
-} for_stmt;
-struct _pcall_stmt_struct {
-	ident_p idp;
-	arg_list_p alp;
-} pcall_stmt;
-struct _fcall_stmt_struct {
-	ident_p idp;
-	arg_list_p alp;
-} fcall_stmt;
-struct _comp_stmt_struct {
-	stmt_p sp;
-	comp_stmt_p next;
-} comp_stmt;
-struct _read_stmt_struct {
-	ident_p idp;
-	read_stmt_p next;
-} read_stmt;
+	ident_s *idp;
+	expr_s *lep;
+	expr_s *rep;
+	stmt_s *sp;
+} for_stmt_s;
+typedef struct _pcall_stmt_struct {
+	ident_s *idp;
+	arg_list_s *alp;
+} pcall_stmt_s;
+typedef struct _fcall_stmt_struct {
+	ident_s *idp;
+	arg_list_s *alp;
+} fcall_stmt_s;
+typedef struct _comp_stmt_struct {
+	stmt_s *sp;
+	comp_stmt_s *next;
+} comp_stmt_s;
+typedef struct _read_stmt_struct {
+	ident_s *idp;
+	read_stmt_s *next;
+} read_stmt_s;
 typedef enum _write_enum { STRID_WRITE, STR_WRITE, ID_WRITE } write_t;
-struct _write_stmt_struct {
+typedef struct _write_stmt_struct {
 	write_t type;
 	/* string pointer */
 	char *sp;
-	expr_p ep;
-} write_stmt;
+	expr_s *ep;
+} write_stmt_s;
 
 /* expression term factor condition */
 typedef enum _addop_enum {
@@ -142,17 +142,17 @@ typedef enum _addop_enum {
 	NEG_ADDOP,
 	MINUS_ADDOP
 } addop_t;
-struct _expr_struct {
+typedef struct _expr_struct {
 	addop_t op;
-	term_p tp;
-	expr_p next;
-} expr;
+	term_s *tp;
+	expr_s *next;
+} expr_s;
 typedef enum _multop_enum { NOP_MULTOP, MULT_MULTOP, DIV_MULTOP } multop_t;
-struct _term_struct {
+typedef struct _term_struct {
 	multop_t op;
-	factor_p fp;
-	term_p next;
-} term;
+	factor_s *fp;
+	term_s *next;
+} term_s;
 typedef enum _factor_enum {
 	ID_FACTOR,
 	ARRAY_FACTOR,
@@ -160,14 +160,14 @@ typedef enum _factor_enum {
 	EXPR_FACTOR,
 	FUNCALL_FACTOR
 } factor_t;
-struct _factor_struct {
+typedef struct _factor_struct {
 	factor_t type;
-	ident_p idp;
-	expr_p ep;
+	ident_s *idp;
+	expr_s *ep;
 	/* unsign int */
 	int usi;
-	fcall_stmt_p fcsp;
-} factor;
+	fcall_stmt_s *fcsp;
+} factor_s;
 typedef enum _rela_enum {
 	EQU_RELA,
 	NEQ_RELA,
@@ -176,11 +176,11 @@ typedef enum _rela_enum {
 	LST_RELA,
 	LEQ_RELA
 } rela_t;
-struct _cond_struct {
-	expr_p lep;
+typedef struct _cond_struct {
+	expr_s *lep;
 	rela_t op;
-	expr_p rep;
-} cond;
+	expr_s *rep;
+} cond_s;
 
 /* ident parameter argument*/
 typedef enum _ident_enum {
@@ -205,24 +205,24 @@ typedef enum _ident_enum {
 	INT_PARA_REF_IDENT,
 	CHAR_PARA_REF_IDENT
 } ident_t;
-struct _ident_struct {
+typedef struct _ident_struct {
 	ident_t type;
 	char *name;
 	int val;
 	int length;
 	int line;
-} ident;
-struct _para_list_struct {
-	para_def_p pdp;
-	para_list_p next;
-} para_list;
-struct _para_def_struct {
-	ident_p idp;
-	para_def_p next;
-} para_def;
-struct _arg_list_struct {
-	expr_p ep;
-	arg_list_p next;
-} arg_list;
+} ident_s;
+typedef struct _para_list_struct {
+	para_def_s *pdp;
+	para_list_s *next;
+} para_list_s;
+typedef struct _para_def_struct {
+	ident_s *idp;
+	para_def_s *next;
+} para_def_s;
+typedef struct _arg_list_struct {
+	expr_s *ep;
+	arg_list_s *next;
+} arg_list_s;
 
 #endif /* End of _SYNTAX_H_ */
