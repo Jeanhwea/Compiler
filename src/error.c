@@ -1,8 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "common.h"
 #include "debug.h"
+#include "error.h"
 
-void quit(const char *file, const int line, const char *func, const char *msg)
+void quit(char *file, int line, const char *func, int errno, char *msg)
 {
-	fprintf(stderr, "ABORT: %s:%d %s(): %s\n", file, line, func, msg);
-	exit(EABORT);
+	char *prefix = "QUIT";
+	if (errno == EABORT) {
+		prefix = "ABORT";
+	} else if (errno == EPANIC) {
+		prefix = "PANIC";
+	}
+
+	fprintf(stderr, "%s: %s:%d %s(): %s\n", prefix, file, line, func, msg);
+
+	exit(errno);
 }
