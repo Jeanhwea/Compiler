@@ -37,7 +37,7 @@ typedef struct _para_def_struct para_def_s;
 typedef struct _arg_list_struct arg_list_s;
 
 // Initialize node struct, allocate memory
-//     INITMEM(s:struct, v: variable, sturct pointer)
+//     INITMEM(s: struct, v: variable, sturct pointer)
 #define INITMEM(s, v)                                                          \
 	do {                                                                   \
 		v = (s *)malloc(sizeof(s));                                    \
@@ -46,11 +46,6 @@ typedef struct _arg_list_struct arg_list_s;
 		};                                                             \
 		memset(v, 0, sizeof(s));                                       \
 	} while (0)
-
-// ID read mode
-typedef int idreadmode_t;
-#define READCURR 0
-#define READPREV 1
 
 // use like:
 //   if (CURRTOK_ANY(a, b, c, ...)) { ... }
@@ -66,6 +61,11 @@ typedef int idreadmode_t;
 #define CURRTOK_ANY6(a, b, c, d, e, f)                                         \
 	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
 	 currtok == (d) || currtok == (e) || currtok == (f))
+
+// ID read mode, for parse_ident()
+typedef int idreadmode_t;
+#define READCURR 0
+#define READPREV 1
 
 // Define a bundle of parse function
 static pgm_s *parse_pgm(void);
