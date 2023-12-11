@@ -6,12 +6,13 @@
 #include "common.h"
 #include "debug.h"
 
+// consts
+extern char *PL0C_NAME;
+extern char *PL0C_VERSION;
+extern char PL0C_PROGNAME[];
+
 // print control
 extern bool echo;
-
-// PL0 meta data
-extern char *PL0_NAME;
-extern char *PL0_VERSION;
 
 // compile phase
 extern phase_t phase;
@@ -25,7 +26,7 @@ extern int lineno;
 extern int colmno;
 
 // Initialization
-void init(char *pgm);
+void init(int argc, char *argv[]);
 
 // Lexical
 
