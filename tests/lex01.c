@@ -3,6 +3,7 @@
 
 int main(int argc, char *argv[])
 {
+	echo = TRUE;
 	init(argc, argv);
 
 	while (gettok() != ENDFILE)
