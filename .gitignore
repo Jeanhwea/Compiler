@@ -1,5 +1,6 @@
 .cache/*
 pl0c
+bin/*
 output/*
 compile_commands.json
 
