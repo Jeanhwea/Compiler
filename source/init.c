@@ -18,7 +18,7 @@ phase_t phase = INIT;
 // inner
 pgm_s *prog;
 
-void pl0c_init_args(int argc, char *argv[])
+void pl0c_read_args(int argc, char *argv[])
 {
 	if (argc < 2) {
 		msg("usage: ./%s <filename>\n", PL0C_NAME);
@@ -40,6 +40,6 @@ void pl0c_init_file(char *name)
 // init
 void init(int argc, char *argv[])
 {
-	pl0c_init_args(argc, argv);
+	pl0c_read_args(argc, argv);
 	pl0c_init_file(PL0C_PROGNAME);
 }
