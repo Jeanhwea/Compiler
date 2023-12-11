@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	// initial
 	init(argc, argv);
 
-	// lextest();
+	// lexical & syntax
 	prog = parse();
 
 	msg("done\n");
