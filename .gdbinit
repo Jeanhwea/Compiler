@@ -8,4 +8,4 @@ set pagination off
 # set non-stop off
 
 # set test source file
-set args ./test/test01.pas
+set args ./example/test01.pas
