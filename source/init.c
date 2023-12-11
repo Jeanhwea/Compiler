@@ -7,7 +7,7 @@ char *PL0C_VERSION = "v0.11.4";
 char PL0C_PROGNAME[4096];
 
 // debug
-bool echo = TRUE;
+bool echo = FALSE;
 
 // files
 FILE *source = NULL;
