@@ -135,6 +135,7 @@ token_t gettok(void)
 				save = FALSE;
 				curr = MC_CH;
 			} else if (isdigit(ch) || isalpha(ch)) {
+				// skip case
 			} else {
 				if (ch == EOF) {
 					save = FALSE;
