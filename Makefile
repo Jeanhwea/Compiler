@@ -7,7 +7,7 @@ TEST_DIR := tests
 SRCS     := $(shell find $(SRC_DIR) -name *.c)
 OBJS     := $(SRCS:%=$(BLD_DIR)/%.o)
 DEPS     := $(OBJS:.o=.d)
-TARGET   := $(BIN_DIR)/pl0c
+TARGET   := pl0c
 
 TSRCS    := $(shell find $(TEST_DIR) -name *.c)
 TOBJS    := $(filter-out $(BLD_DIR)/$(SRC_DIR)/main.c.o,$(OBJS))
