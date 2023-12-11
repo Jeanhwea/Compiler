@@ -1,38 +1,43 @@
-TARGET   := pl0c
-
 BLD_DIR  := output
 INC_DIR  := include
 SRC_DIR  := source
-TEST_DIR := test
+BIN_DIR  := bin
+TEST_DIR := tests
 
 SRCS     := $(shell find $(SRC_DIR) -name *.c)
 OBJS     := $(SRCS:%=$(BLD_DIR)/%.o)
 DEPS     := $(OBJS:.o=.d)
-SRCS2    := $(shell find $(TEST_DIR) -name *.c)
-OBJS2    := $(SRCS:%=$(BLD_DIR)/%.o)
-DEPS2    := $(OBJS:.o=.d)
+TARGET   := pl0c
+
+TSRCS    := $(shell find $(TEST_DIR) -name *.c)
+TOBJS    := $(filter-out $(BLD_DIR)/$(SRC_DIR)/main.c.o,$(OBJS))
+TDEPS    := $(TOBJS:.o=.d)
+TESTS    := $(TSRCS:$(TEST_DIR)/%.c=$(BLD_DIR)/%.test)
 
 
 CC       := gcc
 CCFLAGS  := -I$(INC_DIR) -g -MMD -MP
 LDFLAGS  := -I$(INC_DIR) -g
 
+tests: $(TESTS)
+	echo $(TESTS)
+
 all: $(BLD_DIR)/$(TARGET)
 	cp $(BLD_DIR)/$(TARGET) .
 
 
 # target
-$(BLD_DIR)/$(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+$(BIN_DIR)/$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) $^ -o $@
+
+# tests
+$(BIN_DIR)/%.test: $(TOBJS) $(BLD_DIR)/$(TEST_DIR)/%.c.o
+	$(CC) $(LDFLAGS) $^ -o $@
 
 # c source
 $(BLD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c $< -o $@
-
-# tests
-$(BLD_DIR)/%.test: $(OBJS) $(BLD_DIR)/%.c.o
-	$(CC) $(LDFLAGS) $(OBJS) $(BLD_DIR)/%.c.o -o $@
 
 
 setup: clean index
