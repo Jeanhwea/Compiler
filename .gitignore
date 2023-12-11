@@ -1,6 +1,6 @@
 .cache/*
 pl0c
-out/*
+output/*
 compile_commands.json
 
 # gdb
