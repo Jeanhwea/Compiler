@@ -39,7 +39,7 @@ setup: clean index
 	bear -- make
 
 index: clean
-	find inc src -type f | sort > cscope.files
+	find $(INC_DIR) $(SRC_DIR) -type f | sort > cscope.files
 	cscope -bqk
 	ctags -e -L cscope.files
 
