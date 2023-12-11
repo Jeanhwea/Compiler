@@ -13,6 +13,7 @@ extern char PL0C_PROGNAME[];
 
 // print control
 extern bool echo;
+extern bool silent;
 
 // compile phase
 extern phase_t phase;

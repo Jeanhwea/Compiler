@@ -8,6 +8,7 @@ char PL0C_PROGNAME[4096];
 
 // debug
 bool echo = FALSE;
+bool silent = TRUE;
 
 // files
 FILE *source = NULL;
