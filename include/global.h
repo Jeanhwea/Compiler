@@ -28,11 +28,8 @@ extern int colmno;
 // Initialization
 void init(int argc, char *argv[]);
 
-// Lexical
-
 // Syntax
 typedef struct _pgm_struct pgm_s;
-// program AST
 extern pgm_s *prog;
 pgm_s *parse(void);
 
