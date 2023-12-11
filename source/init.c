@@ -27,14 +27,14 @@ void pl0c_init_args(int argc, char *argv[])
 	strcpy(PL0C_PROGNAME, argv[argc - 1]);
 }
 
-void pl0c_init_file(char *pgm)
+void pl0c_init_file(char *name)
 {
 	// Open Source Code File
-	source = fopen(pgm, "r");
+	source = fopen(name, "r");
 	if (source == NULL) {
 		panic("source file not found!");
 	}
-	msg("reading file %s\n", pgm);
+	msg("reading file %s\n", name);
 }
 
 // init
