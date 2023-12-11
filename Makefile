@@ -19,10 +19,8 @@ CC       := gcc
 CCFLAGS  := -I$(INC_DIR) -g -MMD -MP
 LDFLAGS  := -I$(INC_DIR) -g
 
-all: $(TARGET)
+all: $(TARGET) $(TESTS)
 
-# tests
-tests: $(TESTS)
 
 # target
 $(TARGET): $(OBJS)
