@@ -53,12 +53,12 @@ typedef struct _sym_entry_struct {
 } syment_t;
 
 typedef struct _sym_table_struct {
-	syment_t buckets[MAXBUCKETS];
 	int id;
 	int depth;
-	char *namespace;
+	char *nspace; // namespace
 	symtab_t *inner;
 	symtab_t *outer;
+	syment_t buckets[MAXBUCKETS];
 } symtab_t;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ typedef struct _sym_table_struct {
 	} while (0)
 
 // scope management
-symtab_t *scope_entry(char *namespace);
+symtab_t *scope_entry(char *nspace);
 symtab_t *scope_exit(void);
 // symbol operator
 void addsym(syment_t *entry);

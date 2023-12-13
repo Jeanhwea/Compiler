@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
 	e = findsym("aaa");
 	assert(!strcmp(e->name, "aaa"));
-	assert(!strcmp(e->stab->namespace, "root"));
+	assert(!strcmp(e->stab->nspace, "root"));
 
 	e = findsym("ccc");
 	assert(e == NULL);
@@ -32,13 +32,13 @@ int main(int argc, char *argv[])
 
 	e = findsym("aaa");
 	assert(!strcmp(e->name, "aaa"));
-	assert(!strcmp(e->stab->namespace, "test01"));
+	assert(!strcmp(e->stab->nspace, "test01"));
 	e = findsym("bbb");
 	assert(!strcmp(e->name, "bbb"));
-	assert(!strcmp(e->stab->namespace, "root"));
+	assert(!strcmp(e->stab->nspace, "root"));
 	e = findsym("ccc");
 	assert(!strcmp(e->name, "ccc"));
-	assert(!strcmp(e->stab->namespace, "test01"));
+	assert(!strcmp(e->stab->nspace, "test01"));
 
 	scope_exit();
 
