@@ -47,14 +47,15 @@ const int HASHSHIFT = 4;
 
 static inline int hash(char *key)
 {
-	int h = 0;
-	int i;
 	if (!key) {
 		panic("BAD_HASH_KEY");
 	}
-	for (i = 0; key[i] != '\0'; i++) {
+
+	int h = 0;
+	for (int i = 0; key[i] != '\0'; i++) {
 		h = ((h << HASHSHIFT) + key[i]) % HASHSIZE;
 	}
+
 	return h;
 }
 
