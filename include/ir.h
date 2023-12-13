@@ -4,6 +4,7 @@
 
 typedef struct _inst_struct inst_s;
 
+// Instruction Operator Type
 typedef enum {
 	// Arithmetic
 	/*  0 */ ADD_OP,
