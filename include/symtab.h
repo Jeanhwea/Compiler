@@ -55,6 +55,7 @@ typedef struct _sym_table_struct {
 	syment_t buckets[MAXBUCKETS];
 	int id;
 	int depth;
+	char *namespace;
 	symtab_t *inner;
 	symtab_t *outer;
 } symtab_t;
@@ -83,7 +84,7 @@ typedef struct _sym_table_struct {
 		memset(v, 0, sizeof(symtab_t));                                \
 	} while (0)
 
-// scope
-symtab_t *scope_entry(void);
+// scope management
+symtab_t *scope_entry(char *namespace);
 symtab_t *scope_exit(void);
 #endif /* End of _SYMTAB_H_ */

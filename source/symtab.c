@@ -8,12 +8,13 @@ symtab_t *curr = NULL;
 int depth = 0;
 int counter = 0;
 
-symtab_t *scope_entry(void)
+symtab_t *scope_entry(char *namespace)
 {
 	symtab_t *t;
 	NEWSTAB(t);
 	t->id = ++counter;
 	t->depth = ++depth;
+	t->namespace = namespace;
 
 	// Push
 	t->outer = curr;
