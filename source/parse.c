@@ -34,10 +34,10 @@ static void match(token_t expected)
  * program ->
  *	block .
  */
-static pgm_s *parse_pgm(void)
+static pgm_node_t *parse_pgm(void)
 {
-	pgm_s *t;
-	NEWNODE(pgm_s, t);
+	pgm_node_t *t;
+	NEWNODE(pgm_node_t, t);
 
 	t->bp = parse_block();
 	match(SS_DOT);
@@ -49,10 +49,10 @@ static pgm_s *parse_pgm(void)
  * block ->
  *	[constdec] [vardec] [pfdeclist] compstmt
  */
-static block_s *parse_block(void)
+static block_node_t *parse_block(void)
 {
-	block_s *t;
-	NEWNODE(block_s, t);
+	block_node_t *t;
+	NEWNODE(block_node_t, t);
 
 	if (CURRTOK_ANY(KW_CONST)) {
 		t->cdp = parse_const_dec();
@@ -77,17 +77,17 @@ static block_s *parse_block(void)
  * constdec ->
  *	CONST constdef {, constdef};
  */
-static const_dec_s *parse_const_dec(void)
+static const_dec_node_t *parse_const_dec(void)
 {
-	const_dec_s *t, *p, *q;
-	NEWNODE(const_dec_s, t);
+	const_dec_node_t *t, *p, *q;
+	NEWNODE(const_dec_node_t, t);
 
 	match(KW_CONST);
 	t->cdp = parse_const_def();
 
 	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
-		NEWNODE(const_dec_s, q);
+		NEWNODE(const_dec_node_t, q);
 		p->next = q;
 		q->cdp = parse_const_def();
 	}
@@ -100,10 +100,10 @@ static const_dec_s *parse_const_dec(void)
  * constdef ->
  *	ident = const
  */
-static const_def_s *parse_const_def(void)
+static const_def_node_t *parse_const_def(void)
 {
-	const_def_s *t;
-	NEWNODE(const_def_s, t);
+	const_def_node_t *t;
+	NEWNODE(const_def_node_t, t);
 
 	if (CURRTOK_ANY(MC_ID)) {
 		t->idp = parse_ident(READCURR);
@@ -149,17 +149,17 @@ static const_def_s *parse_const_def(void)
  * vardec ->
  *	VAR vardef; { vardef;}
  */
-static var_dec_s *parse_var_dec(void)
+static var_dec_node_t *parse_var_dec(void)
 {
-	var_dec_s *t, *p, *q;
-	NEWNODE(var_dec_s, t);
+	var_dec_node_t *t, *p, *q;
+	NEWNODE(var_dec_node_t, t);
 
 	match(KW_VAR);
 	t->vdp = parse_var_def();
 	match(SS_SEMI);
 
 	for (p = t; CURRTOK_ANY(MC_ID); p = q) {
-		NEWNODE(var_dec_s, q);
+		NEWNODE(var_dec_node_t, q);
 		p->next = q;
 		q->vdp = parse_var_def();
 		match(SS_SEMI);
@@ -172,17 +172,17 @@ static var_dec_s *parse_var_dec(void)
  * vardef ->
  *	ident {, ident} : type
  */
-static var_def_s *parse_var_def(void)
+static var_def_node_t *parse_var_def(void)
 {
-	var_def_s *t, *p, *q;
-	NEWNODE(var_def_s, t);
+	var_def_node_t *t, *p, *q;
+	NEWNODE(var_def_node_t, t);
 
 	int arrlen = 0;
 	t->idp = parse_ident(READCURR);
 
 	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
-		NEWNODE(var_def_s, q);
+		NEWNODE(var_def_node_t, q);
 		p->next = q;
 		q->idp = parse_ident(READCURR);
 	}
@@ -240,12 +240,12 @@ static var_def_s *parse_var_def(void)
  * pfdeclist ->
  *	{ procdec | fundec }
  */
-static pf_dec_list_s *parse_pf_dec_list(void)
+static pf_dec_list_node_t *parse_pf_dec_list(void)
 {
-	pf_dec_list_s *t, *p, *q;
+	pf_dec_list_node_t *t, *p, *q;
 
 	for (p = t = NULL; CURRTOK_ANY2(KW_FUNCTION, KW_PROCEDURE); p = q) {
-		NEWNODE(pf_dec_list_s, q);
+		NEWNODE(pf_dec_list_node_t, q);
 		if (p == NULL) {
 			t = q;
 		} else {
@@ -272,16 +272,16 @@ static pf_dec_list_s *parse_pf_dec_list(void)
  * procdec ->
  *	procdef {; procdef};
  */
-static proc_dec_s *parse_proc_dec(void)
+static proc_dec_node_t *parse_proc_dec(void)
 {
-	proc_dec_s *t, *p, *q;
-	NEWNODE(proc_dec_s, t);
+	proc_dec_node_t *t, *p, *q;
+	NEWNODE(proc_dec_node_t, t);
 
 	t->pdp = parse_proc_def();
 	match(SS_SEMI);
 
 	for (p = t; CURRTOK_ANY(KW_PROCEDURE); p = q) {
-		NEWNODE(proc_dec_s, q);
+		NEWNODE(proc_dec_node_t, q);
 		p->next = q;
 		q->pdp = parse_proc_def();
 		match(SS_SEMI);
@@ -294,10 +294,10 @@ static proc_dec_s *parse_proc_dec(void)
  * procdef ->
  *	prochead block
  */
-static proc_def_s *parse_proc_def(void)
+static proc_def_node_t *parse_proc_def(void)
 {
-	proc_def_s *t;
-	NEWNODE(proc_def_s, t);
+	proc_def_node_t *t;
+	NEWNODE(proc_def_node_t, t);
 	t->php = parse_proc_head();
 	t->bp = parse_block();
 	return t;
@@ -307,10 +307,10 @@ static proc_def_s *parse_proc_def(void)
  * prochead ->
  *	PROCEDURE ident '(' [paralist] ')' ;
  */
-static proc_head_s *parse_proc_head(void)
+static proc_head_node_t *parse_proc_head(void)
 {
-	proc_head_s *t;
-	NEWNODE(proc_head_s, t);
+	proc_head_node_t *t;
+	NEWNODE(proc_head_node_t, t);
 
 	match(KW_PROCEDURE);
 	t->idp = parse_ident(READCURR);
@@ -332,16 +332,16 @@ static proc_head_s *parse_proc_head(void)
  * fundec ->
  *	fundef {; fundef};
  */
-static fun_dec_s *parse_fun_dec(void)
+static fun_dec_node_t *parse_fun_dec(void)
 {
-	fun_dec_s *t, *p, *q;
-	NEWNODE(fun_dec_s, t);
+	fun_dec_node_t *t, *p, *q;
+	NEWNODE(fun_dec_node_t, t);
 
 	t->fdp = parse_fun_def();
 	match(SS_SEMI);
 
 	for (p = t; CURRTOK_ANY(KW_FUNCTION); p = q) {
-		NEWNODE(fun_dec_s, q);
+		NEWNODE(fun_dec_node_t, q);
 		p->next = q;
 		q->fdp = parse_fun_def();
 		match(SS_SEMI);
@@ -354,10 +354,10 @@ static fun_dec_s *parse_fun_dec(void)
  * fundef ->
  *	funhead block
  */
-static fun_def_s *parse_fun_def(void)
+static fun_def_node_t *parse_fun_def(void)
 {
-	fun_def_s *t;
-	NEWNODE(fun_def_s, t);
+	fun_def_node_t *t;
+	NEWNODE(fun_def_node_t, t);
 
 	t->fhp = parse_fun_head();
 	t->bp = parse_block();
@@ -369,10 +369,10 @@ static fun_def_s *parse_fun_def(void)
  * funhead ->
  *	FUNCTION ident '(' [paralist] ')' : basictype ;
  */
-static fun_head_s *parse_fun_head(void)
+static fun_head_node_t *parse_fun_head(void)
 {
-	fun_head_s *t;
-	NEWNODE(fun_head_s, t);
+	fun_head_node_t *t;
+	NEWNODE(fun_head_node_t, t);
 
 	match(KW_FUNCTION);
 	t->idp = parse_ident(READCURR);
@@ -407,10 +407,10 @@ static fun_head_s *parse_fun_head(void)
  *	assignstmt | ifstmt | repeatstmt | Pcallstmt | compstmt
  *		readstmt | writestmt | forstmt | nullstmt
  */
-static stmt_s *parse_stmt(void)
+static stmt_node_t *parse_stmt(void)
 {
-	stmt_s *t;
-	NEWNODE(stmt_s, t);
+	stmt_node_t *t;
+	NEWNODE(stmt_node_t, t);
 
 	switch (currtok) {
 	case KW_IF:
@@ -465,10 +465,10 @@ static stmt_s *parse_stmt(void)
  *	ident := expression | funident := expression
  *		| ident '[' expression ']' := expression
  */
-static assign_stmt_s *parse_assign_stmt(void)
+static assign_stmt_node_t *parse_assign_stmt(void)
 {
-	assign_stmt_s *t;
-	NEWNODE(assign_stmt_s, t);
+	assign_stmt_node_t *t;
+	NEWNODE(assign_stmt_node_t, t);
 
 	switch (currtok) {
 	case SS_ASGN:
@@ -499,10 +499,10 @@ static assign_stmt_s *parse_assign_stmt(void)
  *	IF condition THEN statement |
  *		IF condition THEN statement ELSE statement
  */
-static if_stmt_s *parse_if_stmt(void)
+static if_stmt_node_t *parse_if_stmt(void)
 {
-	if_stmt_s *t;
-	NEWNODE(if_stmt_s, t);
+	if_stmt_node_t *t;
+	NEWNODE(if_stmt_node_t, t);
 
 	match(KW_IF);
 	t->cp = parse_cond();
@@ -522,10 +522,10 @@ static if_stmt_s *parse_if_stmt(void)
  * repeatstmt ->
  *	REPEAT statement UNTIL condition
  */
-static repe_stmt_s *parse_repe_stmt(void)
+static repe_stmt_node_t *parse_repe_stmt(void)
 {
-	repe_stmt_s *t;
-	NEWNODE(repe_stmt_s, t);
+	repe_stmt_node_t *t;
+	NEWNODE(repe_stmt_node_t, t);
 
 	t->sp = parse_stmt();
 	match(KW_UNTIL);
@@ -538,10 +538,10 @@ static repe_stmt_s *parse_repe_stmt(void)
  * forstmt ->
  *	FOR ident := expression ( TO | DOWNTO ) expression DO statement
  */
-static for_stmt_s *parse_for_stmt(void)
+static for_stmt_node_t *parse_for_stmt(void)
 {
-	for_stmt_s *t;
-	NEWNODE(for_stmt_s, t);
+	for_stmt_node_t *t;
+	NEWNODE(for_stmt_node_t, t);
 
 	match(KW_FOR);
 	t->idp = parse_ident(READCURR);
@@ -576,10 +576,10 @@ static for_stmt_s *parse_for_stmt(void)
  * pcallstmt ->
  *	ident '(' [arglist] ')'
  */
-static pcall_stmt_s *parse_pcall_stmt(void)
+static pcall_stmt_node_t *parse_pcall_stmt(void)
 {
-	pcall_stmt_s *t;
-	NEWNODE(pcall_stmt_s, t);
+	pcall_stmt_node_t *t;
+	NEWNODE(pcall_stmt_node_t, t);
 
 	t->idp = parse_ident(READPREV);
 	match(SS_LPAR);
@@ -599,10 +599,10 @@ static pcall_stmt_s *parse_pcall_stmt(void)
  * fcallstmt ->
  *	ident '(' [arglist] ')'
  */
-static fcall_stmt_s *parse_fcall_stmt(void)
+static fcall_stmt_node_t *parse_fcall_stmt(void)
 {
-	fcall_stmt_s *t;
-	NEWNODE(fcall_stmt_s, t);
+	fcall_stmt_node_t *t;
+	NEWNODE(fcall_stmt_node_t, t);
 	t->idp = parse_ident(READPREV);
 	match(SS_LPAR);
 
@@ -618,16 +618,16 @@ static fcall_stmt_s *parse_fcall_stmt(void)
  * compstmt ->
  *	BEGIN statement {; statement} END
  */
-static comp_stmt_s *parse_comp_stmt(void)
+static comp_stmt_node_t *parse_comp_stmt(void)
 {
-	comp_stmt_s *t, *p, *q;
-	NEWNODE(comp_stmt_s, t);
+	comp_stmt_node_t *t, *p, *q;
+	NEWNODE(comp_stmt_node_t, t);
 	match(KW_BEGIN);
 	t->sp = parse_stmt();
 
 	for (p = t; CURRTOK_ANY(SS_SEMI); p = q) {
 		match(SS_SEMI);
-		NEWNODE(comp_stmt_s, q);
+		NEWNODE(comp_stmt_node_t, q);
 		p->next = q;
 		q->sp = parse_stmt();
 	}
@@ -641,17 +641,17 @@ static comp_stmt_s *parse_comp_stmt(void)
  * readstmt ->
  *	READ '(' ident {, ident} ')'
  */
-static read_stmt_s *parse_read_stmt(void)
+static read_stmt_node_t *parse_read_stmt(void)
 {
-	read_stmt_s *t, *p, *q;
-	NEWNODE(read_stmt_s, t);
+	read_stmt_node_t *t, *p, *q;
+	NEWNODE(read_stmt_node_t, t);
 
 	match(KW_READ);
 	match(SS_LPAR);
 	t->idp = parse_ident(READCURR);
 	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
-		NEWNODE(read_stmt_s, q);
+		NEWNODE(read_stmt_node_t, q);
 		p->next = q;
 		q->idp = parse_ident(READCURR);
 	}
@@ -665,10 +665,10 @@ static read_stmt_s *parse_read_stmt(void)
  *	WRITE '(' string, expression ')' | WRITE '(' string ')' |
  *		WRITE '(' expression ')'
  */
-static write_stmt_s *parse_write_stmt(void)
+static write_stmt_node_t *parse_write_stmt(void)
 {
-	write_stmt_s *t;
-	NEWNODE(write_stmt_s, t);
+	write_stmt_node_t *t;
+	NEWNODE(write_stmt_node_t, t);
 
 	match(KW_WRITE);
 	match(SS_LPAR);
@@ -696,10 +696,10 @@ static write_stmt_s *parse_write_stmt(void)
  * expression ->
  *	[+|-] term { addop term }
  */
-static expr_s *parse_expr(void)
+static expr_node_t *parse_expr(void)
 {
-	expr_s *t, *p, *q;
-	NEWNODE(expr_s, t);
+	expr_node_t *t, *p, *q;
+	NEWNODE(expr_node_t, t);
 
 	switch (currtok) {
 	case SS_PLUS:
@@ -723,7 +723,7 @@ static expr_s *parse_expr(void)
 	}
 
 	for (p = t; CURRTOK_ANY2(SS_PLUS, SS_MINUS); p = q) {
-		NEWNODE(expr_s, q);
+		NEWNODE(expr_node_t, q);
 		p->next = q;
 		switch (currtok) {
 		case SS_PLUS:
@@ -748,16 +748,16 @@ static expr_s *parse_expr(void)
  * term ->
  *	factor { multop factor}
  */
-static term_s *parse_term(void)
+static term_node_t *parse_term(void)
 {
-	term_s *t, *p, *q;
-	NEWNODE(term_s, t);
+	term_node_t *t, *p, *q;
+	NEWNODE(term_node_t, t);
 
 	t->op = NOP_MULTOP;
 	t->fp = parse_factor();
 
 	for (p = t; CURRTOK_ANY2(SS_STAR, SS_OVER); p = q) {
-		NEWNODE(term_s, q);
+		NEWNODE(term_node_t, q);
 		p->next = q;
 		switch (currtok) {
 		case SS_STAR:
@@ -783,10 +783,10 @@ static term_s *parse_term(void)
  *	ident | ident '[' expression ']' | unsign
  *		| '(' expression ')' | fcallstmt
  */
-static factor_s *parse_factor(void)
+static factor_node_t *parse_factor(void)
 {
-	factor_s *t;
-	NEWNODE(factor_s, t);
+	factor_node_t *t;
+	NEWNODE(factor_node_t, t);
 
 	switch (currtok) {
 	case MC_UNS:
@@ -827,10 +827,10 @@ static factor_s *parse_factor(void)
  * condition ->
  *	expression relop expression
  */
-static cond_s *parse_cond(void)
+static cond_node_t *parse_cond(void)
 {
-	cond_s *t;
-	NEWNODE(cond_s, t);
+	cond_node_t *t;
+	NEWNODE(cond_node_t, t);
 
 	t->lep = parse_expr();
 	switch (currtok) {
@@ -869,10 +869,10 @@ static cond_s *parse_cond(void)
 /**
  * construct a identifier
  */
-static ident_s *parse_ident(idreadmode_t mode)
+static ident_node_t *parse_ident(idreadmode_t mode)
 {
-	ident_s *t;
-	NEWNODE(ident_s, t);
+	ident_node_t *t;
+	NEWNODE(ident_node_t, t);
 
 	switch (mode) {
 	case READCURR:
@@ -900,15 +900,15 @@ static ident_s *parse_ident(idreadmode_t mode)
  * paralist ->
  *	paradef {; paradef }
  */
-static para_list_s *parse_para_list(void)
+static para_list_node_t *parse_para_list(void)
 {
-	para_list_s *t, *p, *q;
-	NEWNODE(para_list_s, t);
+	para_list_node_t *t, *p, *q;
+	NEWNODE(para_list_node_t, t);
 
 	t->pdp = parse_para_def();
 	for (p = t; CURRTOK_ANY(SS_SEMI); p = q) {
 		match(SS_SEMI);
-		NEWNODE(para_list_s, q);
+		NEWNODE(para_list_node_t, q);
 		p->next = q;
 		q->pdp = parse_para_def();
 	}
@@ -920,10 +920,10 @@ static para_list_s *parse_para_list(void)
  * paradef ->
  *	[VAR] ident {, ident} : basictype
  */
-static para_def_s *parse_para_def(void)
+static para_def_node_t *parse_para_def(void)
 {
-	para_def_s *t, *p, *q;
-	NEWNODE(para_def_s, t);
+	para_def_node_t *t, *p, *q;
+	NEWNODE(para_def_node_t, t);
 
 	// VAR mean call by reference
 	bool byref = FALSE;
@@ -936,7 +936,7 @@ static para_def_s *parse_para_def(void)
 
 	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
-		NEWNODE(para_def_s, q);
+		NEWNODE(para_def_node_t, q);
 		p->next = q;
 		q->idp = parse_ident(READCURR);
 	}
@@ -971,16 +971,16 @@ static para_def_s *parse_para_def(void)
  * argument ->
  *	expression
  */
-static arg_list_s *parse_arg_list(void)
+static arg_list_node_t *parse_arg_list(void)
 {
-	arg_list_s *t, *p, *q;
-	NEWNODE(arg_list_s, t);
+	arg_list_node_t *t, *p, *q;
+	NEWNODE(arg_list_node_t, t);
 
 	t->ep = parse_expr();
 
 	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
-		NEWNODE(arg_list_s, q);
+		NEWNODE(arg_list_node_t, q);
 		p->next = q;
 		q->ep = parse_expr();
 	}
@@ -988,7 +988,7 @@ static arg_list_s *parse_arg_list(void)
 	return t;
 }
 
-pgm_s *parse(void)
+pgm_node_t *parse(void)
 {
 	currtok = gettok();
 	return parse_pgm();
