@@ -52,7 +52,7 @@ typedef struct _sym_entry_struct {
 } syment_t;
 
 typedef struct _sym_table_struct {
-	sym_bucket_s buckets[MAXBUCKETS];
+	syment_t buckets[MAXBUCKETS];
 	char *nspace; // namespace
 	int level;
 	symtab_t *prev;

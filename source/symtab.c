@@ -1,4 +1,6 @@
+#include "global.h"
 #include "debug.h"
+#include "symtab.h"
 
 // symbol table
 symtab_t *stab_top = NULL;
