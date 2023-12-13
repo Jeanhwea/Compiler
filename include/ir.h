@@ -58,4 +58,7 @@ typedef struct _inst_struct {
 	inst_s *next;
 } inst_s;
 
+// instruction header
+extern inst_s *ihead;
+
 #endif /* End of _IR_H_ */
