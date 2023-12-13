@@ -38,6 +38,9 @@ symtab_t *scope_exit(void)
 	return t;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// entry management
+
 // hash size
 int HASHSIZE = 211;
 // hash shift
@@ -54,4 +57,35 @@ static inline int hash(char *key)
 		h = ((h << HASHSHIFT) + key[i]) % HASHSIZE;
 	}
 	return h;
+}
+
+syment_t *getsym(symtab_t *stab, char *name)
+{
+	if (!stab) {
+		panic("NULL_SYMBOL_TABLE");
+	}
+
+	int h = hash(name);
+	syment_t *hair = stab->buckets[h % MAXBUCKETS];
+
+	for (e = hair.next; e != NULL; e = e->next) {
+		if (strcmp(e->name, name)) {
+			return e;
+		}
+	}
+	return NULL;
+}
+
+syment_t *putsym(symtab_t *stab, syment_t *entry)
+{
+	if (!stab) {
+		panic("NULL_SYMBOL_TABLE");
+	}
+
+	int h = hash(entry->name);
+	syment_t *hair = stab->buckets[h % MAXBUCKETS];
+
+	entry->next = hair.next;
+	hair.next = entry;
+	return NULL;
 }
