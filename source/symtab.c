@@ -42,10 +42,8 @@ symtab_t *scope_exit(void)
 ////////////////////////////////////////////////////////////////////////////////
 // entry management
 
-// hash size
-int HASHSIZE = 211;
-// hash shift
-int HASHSHIFT = 4;
+const int HASHSIZE = 211;
+const int HASHSHIFT = 4;
 
 static inline int hash(char *key)
 {
