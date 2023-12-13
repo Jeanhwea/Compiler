@@ -39,8 +39,8 @@ typedef struct _arg_list_struct arg_list_s;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Initialize node struct, allocate memory
-//     INITMEM(s: struct, v: variable, sturct pointer)
-#define INITMEM(s, v)                                                          \
+//     NEWNODE(s: struct, v: variable, sturct pointer)
+#define NEWNODE(s, v)                                                          \
 	do {                                                                   \
 		v = (s *)malloc(sizeof(s));                                    \
 		if (v == NULL) {                                               \
