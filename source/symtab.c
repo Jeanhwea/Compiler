@@ -62,14 +62,14 @@ static inline int hash(char *key)
 
 syment_t *getsym(symtab_t *stab, char *name)
 {
-	if (!stab) {
+	if (!curr) {
 		panic("NULL_SYMBOL_TABLE");
 	}
 
 	int h = hash(name);
-	syment_t *hair = stab->buckets[h % MAXBUCKETS];
+	syment_t *hair = &curr->buckets[h % MAXBUCKETS];
 
-	for (e = hair.next; e != NULL; e = e->next) {
+	for (syment_t *e = hair->next; e != NULL; e = e->next) {
 		if (strcmp(e->name, name)) {
 			return e;
 		}
@@ -84,9 +84,9 @@ syment_t *putsym(symtab_t *stab, syment_t *entry)
 	}
 
 	int h = hash(entry->name);
-	syment_t *hair = stab->buckets[h % MAXBUCKETS];
+	syment_t *hair = &curr->buckets[h % MAXBUCKETS];
 
-	entry->next = hair.next;
-	hair.next = entry;
+	entry->next = hair->next;
+	hair->next = entry;
 	return NULL;
 }
