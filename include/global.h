@@ -31,7 +31,6 @@ extern int colmno;
 void init(int argc, char *argv[]);
 
 // Syntax
-typedef struct _pgm_struct pgm_s;
 extern pgm_node_t *prog;
 pgm_node_t *parse(void);
 
