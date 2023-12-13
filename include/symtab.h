@@ -53,10 +53,37 @@ typedef struct _sym_entry_struct {
 
 typedef struct _sym_table_struct {
 	syment_t buckets[MAXBUCKETS];
-	char *nspace; // namespace
-	int level;
-	symtab_t *prev;
-	symtab_t *next;
+	int id;
+	int depth;
+	symtab_t *inner;
+	symtab_t *outer;
 } symtab_t;
 
+////////////////////////////////////////////////////////////////////////////////
+// Initialize symbol table entry struct, allocate memory
+//     NEWENTRY(v: variable, sturct pointer)
+#define NEWENTRY(v)                                                            \
+	do {                                                                   \
+		v = (syment_t *)malloc(sizeof(syment_t));                      \
+		if (v == NULL) {                                               \
+			panic("OUT_OF_MEMORY");                                \
+		};                                                             \
+		memset(v, 0, sizeof(syment_t));                                \
+	} while (0)
+
+////////////////////////////////////////////////////////////////////////////////
+// Initialize symbol table struct, allocate memory
+//     NEWSTAB(v: variable, sturct pointer)
+#define NEWSTAB(v)                                                             \
+	do {                                                                   \
+		v = (symtab_t *)malloc(sizeof(symtab_t));                      \
+		if (v == NULL) {                                               \
+			panic("OUT_OF_MEMORY");                                \
+		};                                                             \
+		memset(v, 0, sizeof(symtab_t));                                \
+	} while (0)
+
+// scope
+symtab_t *scope_entry(void);
+symtab_t *scope_exit(void);
 #endif /* End of _SYMTAB_H_ */
