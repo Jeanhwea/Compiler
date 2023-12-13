@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "common.h"
+#include "parse.h"
 #include "debug.h"
 
 // consts
@@ -31,7 +32,7 @@ void init(int argc, char *argv[]);
 
 // Syntax
 typedef struct _pgm_struct pgm_s;
-extern pgm_s *prog;
-pgm_s *parse(void);
+extern pgm_node_t *prog;
+pgm_node_t *parse(void);
 
 #endif /* End of _GLOBAL_H_ */

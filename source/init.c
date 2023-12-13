@@ -17,7 +17,7 @@ FILE *target = NULL;
 phase_t phase = INIT;
 
 // inner
-pgm_s *prog;
+pgm_node_t *prog;
 
 void pl0c_read_args(int argc, char *argv[])
 {
