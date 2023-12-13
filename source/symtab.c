@@ -61,13 +61,7 @@ static inline int hash(char *key)
 
 syment_t *getsym(symtab_t *stab, char *name)
 {
-	if (!curr) {
-		panic("NULL_SYMBOL_TABLE");
-	}
-
-	int h = hash(name);
-	syment_t *hair = &stab->buckets[h % MAXBUCKETS];
-
+	syment_t *hair = &stab->buckets[hash(name) % MAXBUCKETS];
 	for (syment_t *e = hair->next; e != NULL; e = e->next) {
 		if (!strcmp(e->name, name)) {
 			return e;
@@ -76,28 +70,28 @@ syment_t *getsym(symtab_t *stab, char *name)
 	return NULL;
 }
 
-syment_t *putsym(symtab_t *stab, syment_t *entry)
+void putsym(symtab_t *stab, syment_t *entry)
 {
-	if (!stab) {
-		panic("NULL_SYMBOL_TABLE");
-	}
-
-	int h = hash(entry->name);
-	syment_t *hair = &stab->buckets[h % MAXBUCKETS];
-
+	syment_t *hair = &stab->buckets[hash(entry->name) % MAXBUCKETS];
 	entry->next = hair->next;
 	hair->next = entry;
-	return NULL;
 }
 
 void addsym(syment_t *entry)
 {
+	if (!curr) {
+		panic("NULL_SYMBOL_TABLE");
+	}
 	putsym(curr, entry);
 	entry->stab = curr;
 }
 
 syment_t *findsym(char *name)
 {
+	if (!curr) {
+		panic("NULL_SYMBOL_TABLE");
+	}
+
 	syment_t *e = NULL;
 	for (symtab_t *t = curr; t; t = t->outer) {
 		if ((e = getsym(t, name)) != NULL) {
