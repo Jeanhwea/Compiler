@@ -1,7 +1,8 @@
 #include "debug.h"
 
 // symbol table
-// struct sym_table stable;
+symtab_t *stab_top = NULL;
+int stab_level = 0;
 
 // hash size
 int HASHSIZE = 211;

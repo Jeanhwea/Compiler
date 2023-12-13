@@ -16,7 +16,7 @@ extern char PL0C_PROGNAME[];
 extern bool echo;
 extern bool silent;
 
-// compile phase
+// compiler phase
 extern phase_t phase;
 // source code file
 extern FILE *source;

@@ -3,10 +3,10 @@
 
 #define MAXBUCKETS 16
 
-typedef struct _syment_struct syment_s;
-typedef struct _symtab_struct symtab_s;
+typedef struct _sym_entry_struct syment_t;
+typedef struct _sym_table_struct symtab_t;
 
-typedef enum {
+typedef enum _sym_obj_enum {
 	// Primary Object
 	/*  0 */ NOP_OBJ,
 	/*  1 */ CONST_OBJ,
@@ -23,13 +23,13 @@ typedef enum {
 	/* 12 */ STRING_OBJ
 } object_t;
 
-typedef enum {
+typedef enum _sym_type_enum {
 	/* 0 */ INT_TYPE,
 	/* 1 */ CHAR_TYPE,
 	/* 2 */ NOP_TYPE
 } type_t;
 
-typedef struct _syment_struct {
+typedef struct _sym_entry_struct {
 	// identifier name
 	char *name;
 	// assembly label
@@ -47,13 +47,16 @@ typedef struct _syment_struct {
 	// type
 	type_t type;
 	// which symbol table
-	symtab_s *stab;
-	syment_s *next;
-} syment_s;
+	symtab_t *stab;
+	syment_t *next;
+} syment_t;
 
-typedef struct _symtab_struct {
+typedef struct _sym_table_struct {
 	sym_bucket_s buckets[MAXBUCKETS];
 	char *nspace; // namespace
-} symtab_s;
+	int level;
+	symtab_t *prev;
+	symtab_t *next;
+} symtab_t;
 
 #endif /* End of _SYMTAB_H_ */
