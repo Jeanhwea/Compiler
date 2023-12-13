@@ -67,10 +67,10 @@ syment_t *getsym(symtab_t *stab, char *name)
 	}
 
 	int h = hash(name);
-	syment_t *hair = &curr->buckets[h % MAXBUCKETS];
+	syment_t *hair = &stab->buckets[h % MAXBUCKETS];
 
 	for (syment_t *e = hair->next; e != NULL; e = e->next) {
-		if (strcmp(e->name, name)) {
+		if (!strcmp(e->name, name)) {
 			return e;
 		}
 	}
@@ -84,9 +84,26 @@ syment_t *putsym(symtab_t *stab, syment_t *entry)
 	}
 
 	int h = hash(entry->name);
-	syment_t *hair = &curr->buckets[h % MAXBUCKETS];
+	syment_t *hair = &stab->buckets[h % MAXBUCKETS];
 
 	entry->next = hair->next;
 	hair->next = entry;
 	return NULL;
+}
+
+void addsym(syment_t *entry)
+{
+	putsym(curr, entry);
+	entry->stab = curr;
+}
+
+syment_t *findsym(char *name)
+{
+	syment_t *e = NULL;
+	for (symtab_t *t = curr; t; t = t->outer) {
+		if ((e = getsym(t, name)) != NULL) {
+			return e;
+		}
+	}
+	return e;
 }

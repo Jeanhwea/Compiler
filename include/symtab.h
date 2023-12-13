@@ -1,5 +1,6 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
+#include "global.h"
 
 #define MAXBUCKETS 16
 
@@ -87,4 +88,7 @@ typedef struct _sym_table_struct {
 // scope management
 symtab_t *scope_entry(char *namespace);
 symtab_t *scope_exit(void);
+// symbol operator
+void addsym(syment_t *entry);
+syment_t *findsym(char *name);
 #endif /* End of _SYMTAB_H_ */
