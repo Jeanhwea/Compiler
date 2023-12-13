@@ -51,9 +51,9 @@ typedef enum {
 // Instruction struct
 typedef struct _inst_struct {
 	op_t op;
-	sym_entry_s *r;
-	sym_entry_s *s;
-	sym_entry_s *d;
+	syment_s *r;
+	syment_s *s;
+	syment_s *d;
 	inst_s *prev;
 	inst_s *next;
 } inst_s;
