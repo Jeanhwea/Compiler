@@ -1,3 +1,4 @@
+#include "anlys.h"
 #include "global.h"
 #include "scan.h"
 #include "parse.h"
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
 
 	// semantic
 	phase = SEMANTIC;
+	analysis();
 	if (errnum > 0) {
 		return errnum;
 	}

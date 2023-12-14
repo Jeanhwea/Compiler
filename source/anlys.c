@@ -427,7 +427,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			nevernil(t->ep);
 			anlys_expr(t->ep);
 			break;
-		case BYREF_OBJ:
+		case BYREF_OBJ: // var, arr[exp]
 			panic("TODO");
 			break;
 		default:
@@ -440,4 +440,9 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 		       "L%d: %s call arguments and parameters length not equal.",
 		       sign->lineno, sign->name);
 	}
+}
+
+void analysis()
+{
+	anlys_pgm(prog);
 }
