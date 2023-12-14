@@ -77,6 +77,11 @@ void putsym(symtab_t *stab, syment_t *entry)
 	hair->next = entry;
 }
 
+void dumptab(symtab_t *stab)
+{
+	msg("dump stab#%d: nspace=%s\n", stab->id, stab->nspace);
+}
+
 syment_t *findsym(char *name)
 {
 	if (!curr) {
