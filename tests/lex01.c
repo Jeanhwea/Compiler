@@ -8,11 +8,30 @@ int main(int argc, char *argv[])
 
 	token_t tok;
 	while ((tok = gettok()) != ENDFILE) {
+		for (int i = 0; i < 80; ++i) {
+			msg("-");
+		}
+		msg("\n");
 		msg("line%03d: %s", lineno, linebuf);
-		for (int i = 0; i < colmno + 8; ++i) {
+		int toksize = strlen(tokbuf);
+		int start = colmno - toksize;
+		msg("         ");
+		for (int i = 0; i < bufsize; ++i) {
+			if (i < start) {
+				msg(" ");
+			} else if (i < start + toksize) {
+				msg("^");
+			} else {
+				break;
+			}
+		}
+		msg("\n");
+		msg("         ");
+		for (int i = 0; i < start + toksize; ++i) {
 			msg(" ");
 		}
-		msg("^ token=%d, buf=[%s]\n", tok, tokbuf);
+		msg("`-- ");
+		msg("token=%d, tokbuf=[%s]\n", tok, tokbuf);
 	}
 
 	return 0;
