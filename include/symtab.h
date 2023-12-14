@@ -70,6 +70,8 @@ symtab_t *scope_entry(char *nspace);
 symtab_t *scope_exit(void);
 // symbol operator
 void symadd(syment_t *entry);
+// symget only search current scope, while symfind search all.
+syment_t *symget(char *name);
 syment_t *symfind(char *name);
 void symdump();
 syment_t *syminit(ident_node_t *idp);

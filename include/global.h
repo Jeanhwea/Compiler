@@ -18,6 +18,8 @@ extern bool silent;
 
 // compiler phase
 extern phase_t phase;
+extern int errnum;
+
 // source code file
 extern FILE *source;
 extern int lineno;

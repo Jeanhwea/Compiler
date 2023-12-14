@@ -27,9 +27,7 @@ symtab_t *scope_entry(char *nspace)
 
 symtab_t *scope_exit(void)
 {
-	if (!top) {
-		panic("EXIT_WHEN_TOP_NULL");
-	}
+	nevernil(top);
 
 	// Pop
 	symtab_t *t = top;
@@ -103,12 +101,15 @@ static void dumptab(symtab_t *stab)
 	}
 }
 
+syment_t *symget(char *name)
+{
+	nevernil(top);
+	return getsym(top, name);
+}
+
 syment_t *symfind(char *name)
 {
-	if (!top) {
-		panic("NULL_SYMBOL_TABLE");
-	}
-
+	nevernil(top);
 	syment_t *e = NULL;
 	for (symtab_t *t = top; t; t = t->outer) {
 		if ((e = getsym(t, name)) != NULL) {
@@ -120,9 +121,7 @@ syment_t *symfind(char *name)
 
 void symadd(syment_t *entry)
 {
-	if (!top) {
-		panic("NULL_SYMBOL_TABLE");
-	}
+	nevernil(top);
 	putsym(top, entry);
 	entry->stab = top;
 }
@@ -199,7 +198,6 @@ syment_t *syminit(ident_node_t *idp)
 		e->type = VOID_TYPE;
 	}
 
-	idp->symbol = e;
 	symadd(e);
 	return e;
 }

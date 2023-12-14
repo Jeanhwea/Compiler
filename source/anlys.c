@@ -1,3 +1,4 @@
+#include "error.h"
 #include "anlys.h"
 #include "global.h"
 #include "debug.h"
@@ -24,7 +25,16 @@ void anlys_const_decf(const_dec_node_t *node)
 	for (const_dec_node_t *t = node; t; t = t->next) {
 		nevernil(t->cdp);
 		nevernil(t->cdp->idp);
-		syminit(t->cdp->idp);
+		ident_node_t *idp = t->cdp->idp;
+
+		syment_t *e = symget(idp->name);
+		if (e) {
+			recover(DUPSYM, "L%d: const %s already defined.",
+				idp->line, idp->name);
+			idp->symbol = e;
+			continue;
+		}
+		idp->symbol = syminit(idp);
 	}
 }
 
@@ -33,6 +43,15 @@ void anlys_var_decf(var_dec_node_t *node)
 	for (var_dec_node_t *t = node; t; t = t->next) {
 		for (var_def_node_t *p = t->vdp; p; p = p->next) {
 			nevernil(p->idp);
+			ident_node_t *idp = p->idp;
+			syment_t *e = symget(idp->name);
+			if (e) {
+				recover(DUPSYM,
+					"L%d: variable %s already defined.",
+					idp->line, idp->name);
+				idp->symbol = e;
+				continue;
+			}
 			syminit(p->idp);
 		}
 	}
@@ -78,9 +97,18 @@ void anlys_proc_head(proc_head_node_t *node)
 	proc_head_node_t *t = node;
 
 	nevernil(t->idp);
-	syminit(t->idp);
 
-	scope_entry(t->idp->name);
+	ident_node_t *idp = t->idp;
+	syment_t *e = symget(idp->name);
+	if (e) {
+		recover(DUPSYM, "L%d: procedure %s already defined.", idp->line,
+			idp->name);
+		idp->symbol = e;
+	} else {
+		syminit(idp);
+	}
+
+	scope_entry(idp->name);
 
 	nevernil(t->plp);
 	anlys_para_list(t->plp);
@@ -110,9 +138,18 @@ void anlys_fun_head(fun_head_node_t *node)
 	fun_head_node_t *t = node;
 
 	nevernil(t->idp);
-	syminit(t->idp);
 
-	scope_entry(t->idp->name);
+	ident_node_t *idp = t->idp;
+	syment_t *e = symget(idp->name);
+	if (e) {
+		recover(DUPSYM, "L%d: function %s already defined.", idp->line,
+			idp->name);
+		idp->symbol = e;
+	} else {
+		syminit(t->idp);
+	}
+
+	scope_entry(idp->name);
 
 	nevernil(t->plp);
 	anlys_para_list(t->plp);
@@ -131,45 +168,42 @@ void anlys_para_list(para_list_node_t *node)
 void anlys_comp_stmt(comp_stmt_node_t *node)
 {
 	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
+		nevernil(t->sp);
 		// anlys_stmt(t->sp);
 	}
 }
 
 // void anlys_stmt(stmt_node_t *t)
 // {
-//	if (t == NULL) {
-//		return;
-//	}
 //	switch (t->type) {
-//	case Assgin_Stmt_t:
+//	case ASSGIN_STMT:
 //		anlys_assign_stmt(t->asp);
 //		break;
-//	case IF_Stmt_t:
+//	case IF_STMT:
 //		anlys_if_stmt(t->ifp);
 //		break;
-//	case Repeat_Stmt_t:
+//	case REPEAT_STMT:
 //		anlys_repe_stmt(t->rpp);
 //		break;
-//	case For_Stmt_t:
+//	case FOR_STMT:
 //		anlys_for_stmt(t->frp);
 //		break;
-//	case Pcall_Stmt_t:
+//	case PCALL_STMT:
 //		anlys_pcall_stmt(t->pcp);
 //		break;
-//	case Comp_Stmt_t:
+//	case COMP_STMT:
 //		anlys_comp_stmt(t->cpp);
 //		break;
-//	case Read_Stmt_t:
+//	case READ_STMT:
 //		anlys_read_stmt(t->rdp);
 //		break;
-//	case Write_Stmt_t:
+//	case WRITE_STMT:
 //		anlys_write_stmt(t->wtp);
 //		break;
-//	case Null_Stmt_t:
+//	case NULL_STMT:
 //		break;
 //	default:
-//		fprintf(tiplist, "CODE BUG:43\n");
-//		assert(0);
+//		unlikely();
 //	}
 // }
 

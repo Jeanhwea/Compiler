@@ -27,7 +27,13 @@ void func01()
 	e = symfind("aaa");
 	assert(e && !strcmp(e->stab->nspace, "root"));
 
+	e = symget("aaa");
+	assert(!e);
+
 	add_test_symbol("aaa");
+
+	e = symget("aaa");
+	assert(e);
 
 	func02();
 

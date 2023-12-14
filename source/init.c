@@ -15,6 +15,7 @@ FILE *source = NULL;
 FILE *target = NULL;
 
 phase_t phase = INIT;
+int errnum = 0;
 
 void pl0c_read_args(int argc, char *argv[])
 {
