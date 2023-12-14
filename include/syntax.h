@@ -139,8 +139,8 @@ typedef struct _write_stmt_node {
 /* expression term factor condition */
 typedef enum _addop_enum {
 	NOP_ADDOP,
-	ADD_ADDOP,
 	NEG_ADDOP,
+	ADD_ADDOP,
 	MINUS_ADDOP
 } addop_t;
 typedef struct _expr_node {

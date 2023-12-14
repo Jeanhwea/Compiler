@@ -3,6 +3,7 @@
 
 #define DUPSYM 100
 #define BADSYM 101
+#define ERTYPE 102
 #define EPANIC 996
 #define EABORT 997
 
