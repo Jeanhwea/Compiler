@@ -74,7 +74,6 @@ static syment_t *getsym(symtab_t *stab, char *name)
 }
 
 static void putsym(symtab_t *stab, syment_t *entry)
-
 {
 	syment_t *hair = &stab->buckets[hash(entry->name) % MAXBUCKETS];
 	entry->next = hair->next;
