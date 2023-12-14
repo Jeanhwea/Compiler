@@ -62,7 +62,7 @@ static inline int hash(char *key)
 	return h;
 }
 
-syment_t *getsym(symtab_t *stab, char *name)
+static syment_t *getsym(symtab_t *stab, char *name)
 {
 	syment_t *hair = &stab->buckets[hash(name) % MAXBUCKETS];
 	for (syment_t *e = hair->next; e; e = e->next) {
@@ -73,7 +73,8 @@ syment_t *getsym(symtab_t *stab, char *name)
 	return NULL;
 }
 
-void putsym(symtab_t *stab, syment_t *entry)
+static void putsym(symtab_t *stab, syment_t *entry)
+
 {
 	syment_t *hair = &stab->buckets[hash(entry->name) % MAXBUCKETS];
 	entry->next = hair->next;
@@ -81,7 +82,7 @@ void putsym(symtab_t *stab, syment_t *entry)
 	sprintf(entry->label, "L%03d", ++nlabel);
 }
 
-void dumptab(symtab_t *stab)
+static void dumptab(symtab_t *stab)
 {
 	char indent[128] = "\0";
 	for (int i = 0; i < stab->depth; ++i) {
