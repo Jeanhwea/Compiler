@@ -12,7 +12,7 @@ extern int toklineno;
 // hold current line buffer
 #define BUFLEN 4096
 extern char linebuf[BUFLEN];
-extern int bufsize = 0;
+extern int bufsize;
 
 // gettok states
 typedef enum _state_enum {
