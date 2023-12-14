@@ -6,7 +6,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // symbol table management
-symtab_t *curr = NULL;
+symtab_t *top = NULL;
 int depth = 0;
 int ntab = 0;
 int nlabel = 0;
@@ -20,22 +20,22 @@ symtab_t *scope_entry(char *nspace)
 	t->nspace = dupstr(nspace);
 
 	// Push
-	t->outer = curr;
-	curr = t;
+	t->outer = top;
+	top = t;
 	return t;
 }
 
 symtab_t *scope_exit(void)
 {
-	if (curr == NULL) {
-		panic("EXIT_WHEN_CURR_NULL");
+	if (!top) {
+		panic("EXIT_WHEN_TOP_NULL");
 	}
 
 	// Pop
-	symtab_t *t = curr;
-	curr = t->outer;
-	if (curr != NULL) {
-		curr->inner = NULL;
+	symtab_t *t = top;
+	top = t->outer;
+	if (top) {
+		top->inner = NULL;
 	}
 	depth--;
 
@@ -65,7 +65,7 @@ static inline int hash(char *key)
 syment_t *getsym(symtab_t *stab, char *name)
 {
 	syment_t *hair = &stab->buckets[hash(name) % MAXBUCKETS];
-	for (syment_t *e = hair->next; e != NULL; e = e->next) {
+	for (syment_t *e = hair->next; e; e = e->next) {
 		if (!strcmp(e->name, name)) {
 			return e;
 		}
@@ -95,7 +95,7 @@ void dumptab(symtab_t *stab)
 	strcat(indent, "  ");
 	for (int i = 0; i < MAXBUCKETS; ++i) {
 		syment_t *hair = &stab->buckets[i];
-		for (syment_t *e = hair->next; e != NULL; e = e->next) {
+		for (syment_t *e = hair->next; e; e = e->next) {
 			msg("%sname=%s, value=%d, label=%s, obj=%d, type=%d\n",
 			    indent, e->name, e->initval, e->label, e->cate,
 			    e->type);
@@ -105,12 +105,12 @@ void dumptab(symtab_t *stab)
 
 syment_t *symfind(char *name)
 {
-	if (!curr) {
+	if (!top) {
 		panic("NULL_SYMBOL_TABLE");
 	}
 
 	syment_t *e = NULL;
-	for (symtab_t *t = curr; t; t = t->outer) {
+	for (symtab_t *t = top; t; t = t->outer) {
 		if ((e = getsym(t, name)) != NULL) {
 			return e;
 		}
@@ -120,17 +120,17 @@ syment_t *symfind(char *name)
 
 void symadd(syment_t *entry)
 {
-	if (!curr) {
+	if (!top) {
 		panic("NULL_SYMBOL_TABLE");
 	}
-	putsym(curr, entry);
-	entry->stab = curr;
+	putsym(top, entry);
+	entry->stab = top;
 }
 
 void symdump()
 {
 	msg("DUMP SYMBOL TABLE:\n");
-	for (symtab_t *t = curr; t; t = t->outer) {
+	for (symtab_t *t = top; t; t = t->outer) {
 		dumptab(t);
 	}
 	msg("\n");
