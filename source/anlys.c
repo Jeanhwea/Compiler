@@ -12,8 +12,8 @@ static void anlys_pgm(pgm_node_t *node)
 	block_node_t *b = node->bp;
 	anlys_const_decf(b->cdp);
 	anlys_var_decf(b->vdp);
-	// anlys_pf_dec_list(b->pfdlp);
-	// anlys_comp_stmt(b->csp);
+	anlys_pf_dec_list(b->pfdlp);
+	anlys_comp_stmt(b->csp);
 
 	scope_exit();
 }
@@ -21,11 +21,11 @@ static void anlys_pgm(pgm_node_t *node)
 void anlys_const_decf(const_dec_node_t *node)
 {
 	for (const_dec_node_t *t = node; t; t = t->next) {
-		if (!t->cdp || !t->cdp->idp) {
-			unlikely();
-		}
+		nevernil(t->cdp);
+		nevernil(t->cdp->idp);
 		ident_node_t *idp = t->cdp->idp;
 		syment_t *e;
+		NEWENTRY(e);
 		e->name = dupstr(idp->name);
 		e->initval = idp->value;
 		e->lineno = idp->line;
@@ -47,13 +47,12 @@ void anlys_const_decf(const_dec_node_t *node)
 
 void anlys_var_decf(var_dec_node_t *node)
 {
-	for (var_dec_node_t *t = node; t != NULL; t = t->next) {
-		for (var_def_node_t *p = t->vdp; p != NULL; p = p->next) {
-			if (!p || !p->idp) {
-				unlikely();
-			}
+	for (var_dec_node_t *t = node; t; t = t->next) {
+		for (var_def_node_t *p = t->vdp; p; p = p->next) {
+			nevernil(p->idp);
 			ident_node_t *idp = p->idp;
 			syment_t *e;
+			NEWENTRY(e);
 			e->name = dupstr(idp->name);
 			e->lineno = idp->line;
 			switch (idp->type) {
@@ -84,137 +83,161 @@ void anlys_var_decf(var_dec_node_t *node)
 	}
 }
 
-// void anlys_pf_dec_list(pf_dec_list_node_t *t)
-// {
-//	for (; t != NULL; t = t->next) {
-//		switch (t->type) {
-//		case Proc_PFDec_t:
-//			anlys_proc_decf(t->pdp);
-//			break;
-//		case Fun_PFDec_t:
-//			anlys_fun_decf(t->fdp);
-//			break;
-//		default:
-//			fprintf(tiplist, "CODE BUG:104\n");
-//			assert(0);
-//		}
-//	}
-// }
+void anlys_pf_dec_list(pf_dec_list_node_t *node)
+{
+	for (pf_dec_list_node_t *t = node; t; t = t->next) {
+		switch (t->type) {
+		case PROC_PFDEC:
+			anlys_proc_decf(t->pdp);
+			break;
+		case FUN_PFDEC:
+			anlys_fun_decf(t->fdp);
+			break;
+		default:
+			unlikely();
+		}
+	}
+}
 
-// void anlys_proc_decf(proc_dec_node_t *t)
-// {
-//	inst_t *q;
-//	symtab_t *st;
-//	syment_t *e;
-//	block_node_t *b;
-//	for (; t != NULL; t = t->next) {
-//		if (t->pdp == NULL) {
-//			fprintf(tiplist, "CODE BUG:112\n");
-//			continue;
-//		}
-//		anlys_e = proc_head(t->pdp->php);
-//		b = t->pdp->bp;
-//		if (b == NULL) {
-//			fprintf(tiplist, "CODE BUG:120\n");
-//			continue;
-//		}
-//		anlys_const_decf(b->cdp);
-//		anlys_var_decf(b->vdp);
-//		anlys_pf_dec_list(b->pfdlp);
-//		NEWQUAD(q);
-//		q->op = ENTER_op;
-//		q->r = NULL;
-//		q->s = NULL;
-//		q->d = e;
-//		emit(q);
-//		anlys_comp_stmt(b->csp);
-//		NEWQUAD(q);
-//		q->op = FIN_op;
-//		q->r = NULL;
-//		q->s = NULL;
-//		q->d = NULL;
-//		emit(q);
-//		st = pop();
-//		printTab(st);
-//		Npop();
-//	}
-// }
+void anlys_proc_decf(proc_dec_node_t *node)
+{
+	for (proc_dec_node_t *t = node; t; t = t->next) {
+		nevernil(t->pdp);
+		nevernil(t->pdp->php);
+		anlys_proc_head(t->pdp->php);
 
-// symentanlys__t *proc_head(proc_head_node_t *t)
-// {
-//	symtab_t *st;
-//	syment_t *e;
-//	if (t == NULL)
-//		return NULL;
-//	e = sym_insert_proc(t->idp, t->plp);
-//	if (e == NULL) {
-//		return NULL;
-//	}
-//	st = newstab();
-//	if (runlevel > 0)
-//		e->stp = st;
-//	push(st);
-//	anlys_para_list(t->plp);
-//	return e;
-// }
+		nevernil(t->pdp->bp);
+		block_node_t *b = t->pdp->bp;
 
-// void anlys_fun_decf(fun_dec_node_t *t)
-// {
-//	inst_t *q;
-//	symtab_t *st;
-//	syment_t *e;
-//	block_node_t *b;
-//	for (; t != NULL; t = t->next) {
-//		if (t->fdp == NULL) {
-//			fprintf(tiplist, "CODE BUG:168\n");
-//			continue;
-//		}
-//		anlys_e = fun_head(t->fdp->fhp);
-//		b = t->fdp->bp;
-//		if (b == NULL) {
-//			fprintf(tiplist, "CODE BUG:174\n");
-//			continue;
-//		}
-//		anlys_const_decf(b->cdp);
-//		anlys_var_decf(b->vdp);
-//		anlys_pf_dec_list(b->pfdlp);
-//		NEWQUAD(q);
-//		q->op = ENTER_op;
-//		q->r = NULL;
-//		q->s = NULL;
-//		q->d = e;
-//		emit(q);
-//		anlys_comp_stmt(b->csp);
-//		NEWQUAD(q);
-//		q->op = FIN_op;
-//		q->r = NULL;
-//		q->s = NULL;
-//		q->d = NULL;
-//		emit(q);
-//		st = pop();
-//		printTab(st);
-//		Npop();
-//	}
-// }
+		anlys_const_decf(b->cdp);
+		anlys_var_decf(b->vdp);
+		anlys_pf_dec_list(b->pfdlp);
+		anlys_comp_stmt(b->csp);
 
-// symentanlys__t *fun_head(fun_head_node_t *t)
-// {
-//	symtab_t *st;
-//	syment_t *e;
-//	if (t == NULL) {
-//		return NULL;
-//	}
-//	e = sym_insert_fun(t->idp, t->plp);
-//	if (e == NULL) {
-//		return NULL;
-//	}
-//	st = newstab();
-//	if (runlevel > 0)
-//		e->stp = st;
-//	push(st);
-//	anlys_para_list(t->plp);
-//	return e;
-// }
+		scope_exit();
+	}
+}
+
+void anlys_proc_head(proc_head_node_t *node)
+{
+	proc_head_node_t *t = node;
+
+	nevernil(t->idp);
+	ident_node_t *idp = t->idp;
+
+	syment_t *e;
+	NEWENTRY(e);
+	e->name = dupstr(idp->name);
+	e->lineno = idp->line;
+	e->type = NOP_TYPE;
+	e->obj = PROC_OBJ;
+	symadd(e);
+	idp->symbol = e;
+
+	scope_entry(idp->name);
+
+	nevernil(t->plp);
+	anlys_para_list(t->plp);
+}
+
+void anlys_fun_decf(fun_dec_node_t *node)
+{
+	for (fun_dec_node_t *t = node; t; t = t->next) {
+		nevernil(t->fdp);
+		nevernil(t->fdp->fhp);
+		anlys_fun_head(t->fdp->fhp);
+
+		nevernil(t->fdp->bp);
+		block_node_t *b = t->fdp->bp;
+
+		anlys_const_decf(b->cdp);
+		anlys_var_decf(b->vdp);
+		anlys_pf_dec_list(b->pfdlp);
+		anlys_comp_stmt(b->csp);
+
+		scope_exit();
+	}
+}
+
+void anlys_fun_head(fun_head_node_t *node)
+{
+	fun_head_node_t *t = node;
+
+	nevernil(t->idp);
+	ident_node_t *idp = t->idp;
+
+	syment_t *e;
+	NEWENTRY(e);
+	e->name = dupstr(idp->name);
+	e->lineno = idp->line;
+	e->type = NOP_TYPE;
+	e->obj = PROC_OBJ;
+	switch (idp->type) {
+	case INT_CONST_IDENT:
+		e->type = INT_TYPE;
+		break;
+	case CHAR_CONST_IDENT:
+		e->type = CHAR_TYPE;
+		break;
+	default:
+		unlikely();
+	}
+	symadd(e);
+	idp->symbol = e;
+
+	scope_entry(idp->name);
+
+	nevernil(t->plp);
+	anlys_para_list(t->plp);
+}
+
+void anlys_para_list(para_list_node_t *node)
+{
+	for (para_list_node_t *t = node; t; t = t->next) {
+		for (para_def_node_t *p = t->pdp; p; p = p->next) {
+			nevernil(p->idp);
+			ident_node_t *idp = p->idp;
+
+			syment_t *e;
+			NEWENTRY(e);
+			e->name = dupstr(idp->name);
+			e->lineno = idp->line;
+			e->type = NOP_TYPE;
+			e->obj = PROC_OBJ;
+			switch (idp->type) {
+			case INT_VAR_IDENT:
+				e->type = INT_TYPE;
+				e->obj = VAR_OBJ;
+				break;
+			case CHAR_VAR_IDENT:
+				e->type = CHAR_TYPE;
+				e->obj = VAR_OBJ;
+				break;
+			case INTARR_VAR_IDENT:
+				e->type = INT_TYPE;
+				e->obj = ARRAY_OBJ;
+				e->arrlen = idp->length;
+				break;
+			case CHARARR_VAR_IDENT:
+				e->type = CHAR_TYPE;
+				e->obj = ARRAY_OBJ;
+				e->arrlen = idp->length;
+				break;
+			default:
+				unlikely();
+			}
+			symadd(e);
+			idp->symbol = e;
+		}
+	}
+}
+
+void anlys_comp_stmt(comp_stmt_node_t *node)
+{
+	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
+		// anlys_stmt(t->sp);
+	}
+}
 
 // void anlys_stmt(stmt_node_t *t)
 // {
@@ -626,13 +649,6 @@ void anlys_var_decf(var_dec_node_t *node)
 //	}
 // }
 
-// void anlys_comp_stmt(comp_stmt_node_t *t)
-// {
-//	for (; t != NULL; t = t->next) {
-//		anlys_stmt(t->sp);
-//	}
-// }
-
 // syment_t *anlys_expr(expr_node_t *t)
 // {
 //	syment_t *r, d;
@@ -907,21 +923,6 @@ void anlys_var_decf(var_dec_node_t *node)
 //	default:
 //		fprintf(tiplist, "CODE BUG:194\n");
 //		assert(0);
-//	}
-// }
-
-// void anlys_para_list(para_list_node_t *t)
-// {
-//	para_def_node_t *p;
-//	for (; t != NULL; t = t->next) {
-//		for (p = t->pdp; p != NULL; p = p->next) {
-//			if (p != NULL) {
-//				sym_insert_para(p->idp);
-//			} else {
-//				fprintf(tiplist, "CODE BUG:682\n");
-//				assert(0);
-//			}
-//		}
 //	}
 // }
 

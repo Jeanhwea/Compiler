@@ -1,5 +1,6 @@
 #include "global.h"
 #include "debug.h"
+#include "util.h"
 #include "symtab.h"
 #include <stdio.h>
 
@@ -16,7 +17,7 @@ symtab_t *scope_entry(char *nspace)
 	NEWSTAB(t);
 	t->id = ++ntab;
 	t->depth = ++depth;
-	t->nspace = nspace;
+	t->nspace = dupstr(nspace);
 
 	// Push
 	t->outer = curr;

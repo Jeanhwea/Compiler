@@ -26,5 +26,11 @@ void quit(char *file, int line, const char *func, int errno, char *msg);
 
 // debug unlikely case function
 #define unlikely() quit(__FILE__, __LINE__, __func__, EABORT, "unlikely case");
+#define nevernil(p)                                                            \
+	do {                                                                   \
+		if (!p) {                                                      \
+			unlikely();                                            \
+		}                                                              \
+	} while (0)
 
 #endif /* End of _DEBUG_H_ */
