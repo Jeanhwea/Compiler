@@ -6,8 +6,10 @@ int main(int argc, char *argv[])
 	echo = TRUE;
 	init(argc, argv);
 
-	while (gettok() != ENDFILE)
-		;
+	token_t tok;
+	while ((tok = gettok()) != ENDFILE) {
+		msg("line: %s\n", linebuf);
+	}
 
 	return 0;
 }

@@ -226,10 +226,8 @@ token_t gettok(void)
 ////////////////////////////////////////////////////////////////////////////////
 // Source Code Buffer
 ////////////////////////////////////////////////////////////////////////////////
-#define BUFLEN 4096
-// hold current line buffer
-static char linebuf[BUFLEN];
-static int bufsize = 0;
+char linebuf[BUFLEN];
+int bufsize = 0;
 // when meet EOF, then set done to TRUE
 static bool fileend = FALSE;
 
