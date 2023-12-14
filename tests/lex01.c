@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
 	token_t tok;
 	while ((tok = gettok()) != ENDFILE) {
-		msg("line: %s\n", linebuf);
+		msg("line %02d: %s\n", lineno, linebuf);
 	}
 
 	return 0;

@@ -23,7 +23,10 @@ extern FILE *source;
 // target assembly file
 extern FILE *target;
 
-// source file line number, column number
+// hold source file line buffer
+#define BUFLEN 4096
+extern char linebuf[BUFLEN];
+extern int bufsize;
 extern int lineno;
 extern int colmno;
 
