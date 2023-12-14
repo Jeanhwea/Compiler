@@ -226,7 +226,7 @@ token_t gettok(void)
 ////////////////////////////////////////////////////////////////////////////////
 // Source Code Buffer
 ////////////////////////////////////////////////////////////////////////////////
-char linebuf[BUFLEN];
+char linebuf[MAXLINEBUF];
 int bufsize = 0;
 // when meet EOF, then set done to TRUE
 static bool fileend = FALSE;
@@ -243,7 +243,7 @@ static int readc(bool peek)
 	}
 
 	lineno++;
-	if (fgets(linebuf, BUFLEN - 1, source) == NULL) {
+	if (fgets(linebuf, MAXLINEBUF - 1, source) == NULL) {
 		fileend = TRUE;
 		return EOF;
 	}

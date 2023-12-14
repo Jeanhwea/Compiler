@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "common.h"
-#include "parse.h"
 #include "debug.h"
+#include "parse.h"
 
 // consts
 extern char *PL0C_NAME;
@@ -20,6 +20,8 @@ extern bool silent;
 extern phase_t phase;
 // source code file
 extern FILE *source;
+extern int lineno;
+extern int colmno;
 // target assembly file
 extern FILE *target;
 
@@ -28,11 +30,10 @@ void init(int argc, char *argv[]);
 
 // Lexical
 // hold source file line buffer in scan.c
-#define BUFLEN 4096
-extern char linebuf[BUFLEN];
+#define MAXLINEBUF 4096
+extern char linebuf[MAXLINEBUF];
 extern int bufsize;
-extern int lineno;
-extern int colmno;
+token_t gettok(void);
 
 // Syntax
 // prog as AST, in parse.c
