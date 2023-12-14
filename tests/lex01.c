@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
 			msg("-");
 		}
 		msg("\n");
-		msg("line%03d: %s", lineno, linebuf);
+		msg("LINE%03d: %s", lineno, linebuf);
+
 		int toksize = strlen(tokbuf);
 		int start = colmno - toksize;
 		msg("         ");
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		msg("\n");
+
 		msg("         ");
 		for (int i = 0; i < start + toksize; ++i) {
 			msg(" ");
