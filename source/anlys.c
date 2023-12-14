@@ -7,10 +7,11 @@
 #include "parse.h"
 #include "symtab.h"
 
-void anlys_pgm(pgm_node_t *node)
+static void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
 
+	nevernil(node->bp);
 	block_node_t *b = node->bp;
 	anlys_const_decf(b->cdp);
 	anlys_var_decf(b->vdp);
@@ -20,7 +21,7 @@ void anlys_pgm(pgm_node_t *node)
 	scope_exit();
 }
 
-void anlys_const_decf(const_dec_node_t *node)
+static void anlys_const_decf(const_dec_node_t *node)
 {
 	for (const_dec_node_t *t = node; t; t = t->next) {
 		nevernil(t->cdp);
@@ -28,16 +29,16 @@ void anlys_const_decf(const_dec_node_t *node)
 		ident_node_t *idp = t->cdp->idp;
 		syment_t *e = symget(idp->name);
 		if (e) {
-			rescue(DUPSYM, "L%d: const %s already defined.",
+			rescue(DUPSYM, "L%d: const %s already declared.",
 			       idp->line, idp->name);
-			idp->symbol = e;
-			continue;
+		} else {
+			e = syminit(idp);
 		}
-		idp->symbol = syminit(idp);
+		idp->symbol = e;
 	}
 }
 
-void anlys_var_decf(var_dec_node_t *node)
+static void anlys_var_decf(var_dec_node_t *node)
 {
 	for (var_dec_node_t *t = node; t; t = t->next) {
 		for (var_def_node_t *p = t->vdp; p; p = p->next) {
@@ -46,17 +47,17 @@ void anlys_var_decf(var_dec_node_t *node)
 			syment_t *e = symget(idp->name);
 			if (e) {
 				rescue(DUPSYM,
-				       "L%d: variable %s already defined.",
+				       "L%d: variable %s already declared.",
 				       idp->line, idp->name);
-				idp->symbol = e;
-				continue;
+			} else {
+				e = syminit(idp);
 			}
-			idp->symbol = syminit(idp);
+			idp->symbol = e;
 		}
 	}
 }
 
-void anlys_pf_dec_list(pf_dec_list_node_t *node)
+static void anlys_pf_dec_list(pf_dec_list_node_t *node)
 {
 	for (pf_dec_list_node_t *t = node; t; t = t->next) {
 		switch (t->type) {
@@ -72,7 +73,7 @@ void anlys_pf_dec_list(pf_dec_list_node_t *node)
 	}
 }
 
-void anlys_proc_decf(proc_dec_node_t *node)
+static void anlys_proc_decf(proc_dec_node_t *node)
 {
 	for (proc_dec_node_t *t = node; t; t = t->next) {
 		nevernil(t->pdp);
@@ -91,7 +92,7 @@ void anlys_proc_decf(proc_dec_node_t *node)
 	}
 }
 
-void anlys_proc_head(proc_head_node_t *node)
+static void anlys_proc_head(proc_head_node_t *node)
 {
 	proc_head_node_t *t = node;
 
@@ -99,20 +100,20 @@ void anlys_proc_head(proc_head_node_t *node)
 	ident_node_t *idp = t->idp;
 	syment_t *e = symget(idp->name);
 	if (e) {
-		rescue(DUPSYM, "L%d: procedure %s already defined.", idp->line,
+		rescue(DUPSYM, "L%d: procedure %s already declared.", idp->line,
 		       idp->name);
-		idp->symbol = e;
 	} else {
-		idp->symbol = syminit(idp);
+		e = syminit(idp);
 	}
+	idp->symbol = e;
 
 	scope_entry(idp->name);
 
 	nevernil(t->plp);
-	anlys_para_list(t->plp);
+	anlys_para_list(idp->symbol, t->plp);
 }
 
-void anlys_fun_decf(fun_dec_node_t *node)
+static void anlys_fun_decf(fun_dec_node_t *node)
 {
 	for (fun_dec_node_t *t = node; t; t = t->next) {
 		nevernil(t->fdp);
@@ -131,7 +132,7 @@ void anlys_fun_decf(fun_dec_node_t *node)
 	}
 }
 
-void anlys_fun_head(fun_head_node_t *node)
+static void anlys_fun_head(fun_head_node_t *node)
 {
 	fun_head_node_t *t = node;
 
@@ -139,20 +140,20 @@ void anlys_fun_head(fun_head_node_t *node)
 	ident_node_t *idp = t->idp;
 	syment_t *e = symget(idp->name);
 	if (e) {
-		rescue(DUPSYM, "L%d: function %s already defined.", idp->line,
+		rescue(DUPSYM, "L%d: function %s already declared.", idp->line,
 		       idp->name);
-		idp->symbol = e;
 	} else {
-		idp->symbol = syminit(idp);
+		e = syminit(idp);
 	}
+	idp->symbol = e;
 
 	scope_entry(idp->name);
 
 	nevernil(t->plp);
-	anlys_para_list(t->plp);
+	anlys_para_list(idp->symbol, t->plp);
 }
 
-void anlys_para_list(para_list_node_t *node)
+static void anlys_para_list(syment_t *sign, para_list_node_t *node)
 {
 	for (para_list_node_t *t = node; t; t = t->next) {
 		for (para_def_node_t *p = t->pdp; p; p = p->next) {
@@ -161,17 +162,17 @@ void anlys_para_list(para_list_node_t *node)
 			syment_t *e = symget(idp->name);
 			if (e) {
 				rescue(DUPSYM,
-				       "L%d: parameter %s already defined.",
+				       "L%d: parameter %s already declared.",
 				       idp->line, idp->name);
-				idp->symbol = e;
-				continue;
+			} else {
+				e = syminit(idp);
 			}
-			idp->symbol = syminit(idp);
+			idp->symbol = e;
 		}
 	}
 }
 
-void anlys_comp_stmt(comp_stmt_node_t *node)
+static void anlys_comp_stmt(comp_stmt_node_t *node)
 {
 	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
 		nevernil(t->sp);
@@ -179,7 +180,7 @@ void anlys_comp_stmt(comp_stmt_node_t *node)
 	}
 }
 
-void anlys_stmt(stmt_node_t *node)
+static void anlys_stmt(stmt_node_t *node)
 {
 	switch (node->type) {
 	case ASSGIN_STMT:
@@ -213,7 +214,7 @@ void anlys_stmt(stmt_node_t *node)
 	}
 }
 
-void anlys_assign_stmt(assign_stmt_node_t *node)
+static void anlys_assign_stmt(assign_stmt_node_t *node)
 {
 	syment_t *e;
 	switch (node->type) {
@@ -232,7 +233,7 @@ void anlys_assign_stmt(assign_stmt_node_t *node)
 	}
 }
 
-void anlys_if_stmt(if_stmt_node_t *node)
+static void anlys_if_stmt(if_stmt_node_t *node)
 {
 	anlys_cond(node->cp);
 	if (node->ep) {
@@ -241,18 +242,18 @@ void anlys_if_stmt(if_stmt_node_t *node)
 	anlys_stmt(node->tp);
 }
 
-void anlys_repe_stmt(repe_stmt_node_t *node)
+static void anlys_repe_stmt(repe_stmt_node_t *node)
 {
 	anlys_stmt(node->sp);
 	anlys_cond(node->cp);
 }
 
-void anlys_for_stmt(for_stmt_node_t *t)
+static void anlys_for_stmt(for_stmt_node_t *node)
 {
-	anlys_expr(t->lep);
-	anlys_expr(t->rep);
+	anlys_expr(node->lep);
+	anlys_expr(node->rep);
 
-	ident_node_t *idp = t->idp;
+	ident_node_t *idp = node->idp;
 	syment_t *e = symfind(idp->name);
 	if (!e) {
 		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
@@ -260,19 +261,19 @@ void anlys_for_stmt(for_stmt_node_t *t)
 	}
 	idp->symbol = e;
 
-	switch (t->type) {
+	switch (node->type) {
 	case TO_FOR:
 	case DOWNTO_FOR:
-		anlys_stmt(t->sp);
+		anlys_stmt(node->sp);
 		break;
 	default:
 		unlikely();
 	}
 }
 
-void anlys_pcall_stmt(pcall_stmt_node_t *t)
+static void anlys_pcall_stmt(pcall_stmt_node_t *node)
 {
-	ident_node_t *idp = t->idp;
+	ident_node_t *idp = node->idp;
 	syment_t *e = symfind(idp->name);
 	if (!e) {
 		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
@@ -284,10 +285,10 @@ void anlys_pcall_stmt(pcall_stmt_node_t *t)
 	}
 	idp->symbol = e;
 
-	anlys_arg_list(t->alp);
+	anlys_arg_list(node->alp);
 }
 
-void anlys_read_stmt(read_stmt_node_t *node)
+static void anlys_read_stmt(read_stmt_node_t *node)
 {
 	for (read_stmt_node_t *t = node; t; t = t->next) {
 		nevernil(t->idp);
@@ -301,21 +302,21 @@ void anlys_read_stmt(read_stmt_node_t *node)
 	}
 }
 
-void anlys_write_stmt(write_stmt_node_t *t)
+static void anlys_write_stmt(write_stmt_node_t *node)
 {
-	switch (t->type) {
+	switch (node->type) {
 	case STR_WRITE:
 		break;
 	case ID_WRITE:
 	case STRID_WRITE:
-		anlys_expr(t->ep);
+		anlys_expr(node->ep);
 		break;
 	default:
 		unlikely();
 	}
 }
 
-void anlys_expr(expr_node_t *node)
+static void anlys_expr(expr_node_t *node)
 {
 	for (expr_node_t *t = node; t; t = t->next) {
 		nevernil(t->tp);
@@ -323,7 +324,7 @@ void anlys_expr(expr_node_t *node)
 	}
 }
 
-void anlys_term(term_node_t *node)
+static void anlys_term(term_node_t *node)
 {
 	for (term_node_t *t = node; t; t = t->next) {
 		nevernil(t->fp);
@@ -331,14 +332,14 @@ void anlys_term(term_node_t *node)
 	}
 }
 
-void anlys_factor(factor_node_t *t)
+static void anlys_factor(factor_node_t *node)
 {
 	ident_node_t *idp;
 	syment_t *e;
-	switch (t->type) {
+	switch (node->type) {
 	case ID_FACTOR:
-		nevernil(t->idp);
-		idp = t->idp;
+		nevernil(node->idp);
+		idp = node->idp;
 		e = symfind(idp->name);
 		if (!e) {
 			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
@@ -348,8 +349,8 @@ void anlys_factor(factor_node_t *t)
 		idp->symbol = e;
 		break;
 	case ARRAY_FACTOR:
-		nevernil(t->idp);
-		idp = t->idp;
+		nevernil(node->idp);
+		idp = node->idp;
 		e = symfind(idp->name);
 		if (!e) {
 			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
@@ -364,22 +365,22 @@ void anlys_factor(factor_node_t *t)
 	case UNSIGN_FACTOR:
 		break;
 	case EXPR_FACTOR:
-		nevernil(t->ep);
-		anlys_expr(t->ep);
+		nevernil(node->ep);
+		anlys_expr(node->ep);
 		break;
 	case FUNCALL_FACTOR:
-		nevernil(t->fcsp);
-		anlys_fcall_stmt(t->fcsp);
+		nevernil(node->fcsp);
+		anlys_fcall_stmt(node->fcsp);
 		break;
 	default:
 		unlikely();
 	}
 }
 
-void anlys_fcall_stmt(fcall_stmt_node_t *t)
+static void anlys_fcall_stmt(fcall_stmt_node_t *node)
 {
-	nevernil(t->idp);
-	ident_node_t *idp = t->idp;
+	nevernil(node->idp);
+	ident_node_t *idp = node->idp;
 	syment_t *e = symfind(idp->name);
 	if (!e) {
 		giveup(BADSYM, "L%d: function %s not found.", idp->line,
@@ -391,19 +392,19 @@ void anlys_fcall_stmt(fcall_stmt_node_t *t)
 	}
 	idp->symbol = e;
 
-	nevernil(t->alp);
-	anlys_arg_list(t->alp);
+	nevernil(node->alp);
+	anlys_arg_list(node->alp);
 }
 
-void anlys_cond(cond_node_t *t)
+static void anlys_cond(cond_node_t *node)
 {
-	nevernil(t->lep);
-	anlys_expr(t->lep);
-	nevernil(t->rep);
-	anlys_expr(t->rep);
+	nevernil(node->lep);
+	anlys_expr(node->lep);
+	nevernil(node->rep);
+	anlys_expr(node->rep);
 }
 
-void anlys_arg_list(arg_list_node_t *node)
+static void anlys_arg_list(arg_list_node_t *node)
 {
 	// TODO
 }

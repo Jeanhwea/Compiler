@@ -6,6 +6,7 @@
 #define MAXBUCKETS 16
 #define MAXLABEL 16
 
+typedef struct _sym_param_struct param_t;
 typedef struct _sym_entry_struct syment_t;
 typedef struct _sym_table_struct symtab_t;
 
@@ -35,6 +36,12 @@ typedef enum _sym_type_enum {
 	/* 3 */ STR_TYPE
 } type_t;
 
+// signature for procedure and function
+typedef struct _sym_param_struct {
+	syment_t *symbol;
+	param_t *next;
+} param_t;
+
 typedef struct _sym_entry_struct {
 	// identifier name
 	char *name;
@@ -43,6 +50,8 @@ typedef struct _sym_entry_struct {
 	// const value, initval value
 	int initval;
 	int arrlen;
+	param_t *phead;
+	param_t *ptail;
 	// label for assemble codes
 	char label[MAXLABEL];
 	// referenced line number

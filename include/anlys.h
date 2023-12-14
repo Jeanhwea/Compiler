@@ -12,7 +12,7 @@ static void anlys_proc_decf(proc_dec_node_t *node);
 static void anlys_proc_head(proc_head_node_t *node);
 static void anlys_fun_decf(fun_dec_node_t *node);
 static void anlys_fun_head(fun_head_node_t *node);
-static void anlys_para_list(para_list_node_t *node);
+static void anlys_para_list(syment_t *sign, para_list_node_t *node);
 static void anlys_comp_stmt(comp_stmt_node_t *node);
 static void anlys_stmt(stmt_node_t *node);
 static void anlys_assign_stmt(assign_stmt_node_t *node);
