@@ -1,6 +1,7 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
 #include "global.h"
+#include "parse.h"
 
 #define MAXBUCKETS 16
 #define MAXLABEL 16
@@ -17,8 +18,8 @@ typedef enum _sym_cate_enum {
 	/*  3 */ PROC_OBJ,
 	/*  4 */ FUN_OBJ,
 	/*  5 */ ARRAY_OBJ,
-	/*  6 */ PARA_VAL_OBJ,
-	/*  7 */ PARA_REF_OBJ,
+	/*  6 */ BYVAL_OBJ,
+	/*  7 */ BYREF_OBJ,
 	// Additional
 	/*  9 */ TMP_OBJ,
 	/* 10 */ LABEL_OBJ,
@@ -71,4 +72,5 @@ symtab_t *scope_exit(void);
 void symadd(syment_t *entry);
 syment_t *symfind(char *name);
 void symdump();
+syment_t *syminit(ident_node_t *idp);
 #endif /* End of _SYMTAB_H_ */

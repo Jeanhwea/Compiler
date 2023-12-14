@@ -219,13 +219,13 @@ static var_def_node_t *parse_var_def(void)
 		if (CURRTOK_ANY(KW_INTEGER)) {
 			match(KW_INTEGER);
 			for (p = t; p; p = p->next) {
-				p->idp->type = INTARR_VAR_IDENT;
+				p->idp->type = INT_ARRVAR_IDENT;
 				p->idp->length = arrlen;
 			}
 		} else if (CURRTOK_ANY(KW_CHAR)) {
 			match(KW_CHAR);
 			for (p = t; p; p = p->next) {
-				p->idp->type = CHARARR_VAR_IDENT;
+				p->idp->type = CHAR_ARRVAR_IDENT;
 				p->idp->length = arrlen;
 			}
 		} else {

@@ -6,50 +6,6 @@
 #include "parse.h"
 #include "symtab.h"
 
-static syment_t *make_symbol(ident_node_t *idp)
-{
-	syment_t *e;
-	NEWENTRY(e);
-
-	e->name = dupstr(idp->name);
-	e->initval = idp->value;
-	e->lineno = idp->line;
-	e->cate = CONST_OBJ;
-
-	switch (idp->type) {
-	case INT_CONST_IDENT:
-		e->type = INT_TYPE;
-		break;
-	case CHAR_CONST_IDENT:
-		e->type = CHAR_TYPE;
-		break;
-	case INT_VAR_IDENT:
-		e->type = INT_TYPE;
-		e->cate = VAR_OBJ;
-		break;
-	case CHAR_VAR_IDENT:
-		e->type = CHAR_TYPE;
-		e->cate = VAR_OBJ;
-		break;
-	case INTARR_VAR_IDENT:
-		e->type = INT_TYPE;
-		e->cate = ARRAY_OBJ;
-		e->arrlen = idp->length;
-		break;
-	case CHARARR_VAR_IDENT:
-		e->type = CHAR_TYPE;
-		e->cate = ARRAY_OBJ;
-		e->arrlen = idp->length;
-		break;
-	default:
-		unlikely();
-	}
-
-	idp->symbol = e;
-	symadd(e);
-	return e;
-}
-
 void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
@@ -68,26 +24,7 @@ void anlys_const_decf(const_dec_node_t *node)
 	for (const_dec_node_t *t = node; t; t = t->next) {
 		nevernil(t->cdp);
 		nevernil(t->cdp->idp);
-		ident_node_t *idp = t->cdp->idp;
-
-		syment_t *e;
-		NEWENTRY(e);
-		e->name = dupstr(idp->name);
-		e->initval = idp->value;
-		e->lineno = idp->line;
-		e->cate = CONST_OBJ;
-		switch (idp->type) {
-		case INT_CONST_IDENT:
-			e->type = INT_TYPE;
-			break;
-		case CHAR_CONST_IDENT:
-			e->type = CHAR_TYPE;
-			break;
-		default:
-			unlikely();
-		}
-		idp->symbol = e;
-		symadd(e);
+		syminit(t->cdp->idp);
 	}
 }
 
@@ -96,36 +33,7 @@ void anlys_var_decf(var_dec_node_t *node)
 	for (var_dec_node_t *t = node; t; t = t->next) {
 		for (var_def_node_t *p = t->vdp; p; p = p->next) {
 			nevernil(p->idp);
-			ident_node_t *idp = p->idp;
-
-			syment_t *e;
-			NEWENTRY(e);
-			e->name = dupstr(idp->name);
-			e->lineno = idp->line;
-			switch (idp->type) {
-			case INT_VAR_IDENT:
-				e->type = INT_TYPE;
-				e->cate = VAR_OBJ;
-				break;
-			case CHAR_VAR_IDENT:
-				e->type = CHAR_TYPE;
-				e->cate = VAR_OBJ;
-				break;
-			case INTARR_VAR_IDENT:
-				e->type = INT_TYPE;
-				e->cate = ARRAY_OBJ;
-				e->arrlen = idp->length;
-				break;
-			case CHARARR_VAR_IDENT:
-				e->type = CHAR_TYPE;
-				e->cate = ARRAY_OBJ;
-				e->arrlen = idp->length;
-				break;
-			default:
-				unlikely();
-			}
-			idp->symbol = e;
-			symadd(e);
+			syminit(p->idp);
 		}
 	}
 }
@@ -170,18 +78,9 @@ void anlys_proc_head(proc_head_node_t *node)
 	proc_head_node_t *t = node;
 
 	nevernil(t->idp);
-	ident_node_t *idp = t->idp;
+	syminit(t->idp);
 
-	syment_t *e;
-	NEWENTRY(e);
-	e->name = dupstr(idp->name);
-	e->lineno = idp->line;
-	e->type = NOP_TYPE;
-	e->cate = PROC_OBJ;
-	idp->symbol = e;
-	symadd(e);
-
-	scope_entry(idp->name);
+	scope_entry(t->idp->name);
 
 	nevernil(t->plp);
 	anlys_para_list(t->plp);
@@ -211,28 +110,9 @@ void anlys_fun_head(fun_head_node_t *node)
 	fun_head_node_t *t = node;
 
 	nevernil(t->idp);
-	ident_node_t *idp = t->idp;
+	syminit(t->idp);
 
-	syment_t *e;
-	NEWENTRY(e);
-	e->name = dupstr(idp->name);
-	e->lineno = idp->line;
-	e->type = NOP_TYPE;
-	e->cate = PROC_OBJ;
-	switch (idp->type) {
-	case INT_CONST_IDENT:
-		e->type = INT_TYPE;
-		break;
-	case CHAR_CONST_IDENT:
-		e->type = CHAR_TYPE;
-		break;
-	default:
-		unlikely();
-	}
-	idp->symbol = e;
-	symadd(e);
-
-	scope_entry(idp->name);
+	scope_entry(t->idp->name);
 
 	nevernil(t->plp);
 	anlys_para_list(t->plp);
@@ -243,38 +123,7 @@ void anlys_para_list(para_list_node_t *node)
 	for (para_list_node_t *t = node; t; t = t->next) {
 		for (para_def_node_t *p = t->pdp; p; p = p->next) {
 			nevernil(p->idp);
-			ident_node_t *idp = p->idp;
-
-			syment_t *e;
-			NEWENTRY(e);
-			e->name = dupstr(idp->name);
-			e->lineno = idp->line;
-			e->type = NOP_TYPE;
-			e->cate = PROC_OBJ;
-			switch (idp->type) {
-			case INT_VAR_IDENT:
-				e->type = INT_TYPE;
-				e->cate = VAR_OBJ;
-				break;
-			case CHAR_VAR_IDENT:
-				e->type = CHAR_TYPE;
-				e->cate = VAR_OBJ;
-				break;
-			case INTARR_VAR_IDENT:
-				e->type = INT_TYPE;
-				e->cate = ARRAY_OBJ;
-				e->arrlen = idp->length;
-				break;
-			case CHARARR_VAR_IDENT:
-				e->type = CHAR_TYPE;
-				e->cate = ARRAY_OBJ;
-				e->arrlen = idp->length;
-				break;
-			default:
-				unlikely();
-			}
-			idp->symbol = e;
-			symadd(e);
+			syminit(p->idp);
 		}
 	}
 }

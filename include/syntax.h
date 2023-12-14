@@ -196,8 +196,8 @@ typedef enum _ident_enum {
 	/* variable identifier type */
 	INT_VAR_IDENT,
 	CHAR_VAR_IDENT,
-	INTARR_VAR_IDENT,
-	CHARARR_VAR_IDENT,
+	INT_ARRVAR_IDENT,
+	CHAR_ARRVAR_IDENT,
 	/* parameter identifier type */
 	/* call by value */
 	INT_PARA_VAL_IDENT,

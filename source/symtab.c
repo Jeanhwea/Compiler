@@ -1,8 +1,8 @@
 #include "global.h"
 #include "debug.h"
 #include "util.h"
+#include "syntax.h"
 #include "symtab.h"
-#include <stdio.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // symbol table management
@@ -134,4 +134,72 @@ void symdump()
 		dumptab(t);
 	}
 	msg("\n");
+}
+
+syment_t *syminit(ident_node_t *idp)
+{
+	syment_t *e;
+	NEWENTRY(e);
+
+	e->name = dupstr(idp->name);
+	e->initval = idp->value;
+	e->arrlen = idp->length;
+	e->lineno = idp->line;
+
+	switch (idp->type) {
+	case PROC_IDENT:
+		e->cate = PROC_OBJ;
+		break;
+	case INT_FUN_IDENT:
+	case CHAR_FUN_IDENT:
+		e->cate = FUN_OBJ;
+		break;
+	case INT_CONST_IDENT:
+	case CHAR_CONST_IDENT:
+		e->cate = CONST_OBJ;
+		break;
+	case INT_VAR_IDENT:
+	case CHAR_VAR_IDENT:
+		e->cate = VAR_OBJ;
+		break;
+	case INT_ARRVAR_IDENT:
+	case CHAR_ARRVAR_IDENT:
+		e->cate = ARRAY_OBJ;
+		break;
+	case INT_PARA_VAL_IDENT:
+	case CHAR_PARA_VAL_IDENT:
+		e->cate = BYVAL_OBJ;
+		break;
+	case INT_PARA_REF_IDENT:
+	case CHAR_PARA_REF_IDENT:
+		e->cate = BYREF_OBJ;
+		break;
+	default:
+		e->cate = NOP_OBJ;
+	}
+
+	switch (idp->type) {
+	case INT_FUN_IDENT:
+	case INT_CONST_IDENT:
+	case INT_VAR_IDENT:
+	case INT_ARRVAR_IDENT:
+	case INT_PARA_VAL_IDENT:
+	case INT_PARA_REF_IDENT:
+		e->type = INT_TYPE;
+		break;
+	case CHAR_FUN_IDENT:
+	case CHAR_CONST_IDENT:
+	case CHAR_VAR_IDENT:
+	case CHAR_ARRVAR_IDENT:
+	case CHAR_PARA_VAL_IDENT:
+	case CHAR_PARA_REF_IDENT:
+		e->type = CHAR_TYPE;
+		break;
+	default:
+		e->type = VOID_TYPE;
+	}
+
+	idp->symbol = e;
+	symadd(e);
+	return e;
 }
