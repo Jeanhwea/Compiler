@@ -5,31 +5,29 @@
 #include "syntax.h"
 #include "anlys.h"
 
-static void anlys_pgm(pgm_node_t *t)
+static void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
 
-	block_node_t *b = t->bp;
+	block_node_t *b = node->bp;
 	anlys_const_decf(b->cdp);
-	// anlys_var_decf(b->vdp);
+	anlys_var_decf(b->vdp);
 	// anlys_pf_dec_list(b->pfdlp);
 	// anlys_comp_stmt(b->csp);
 
 	scope_exit();
 }
 
-void anlys_const_decf(const_dec_node_t *t)
+void anlys_const_decf(const_dec_node_t *node)
 {
-	for (; t; t = t->next) {
+	for (const_dec_node_t *t = node; t; t = t->next) {
 		if (!t->cdp || !t->cdp->idp) {
 			unlikely();
 		}
-
 		ident_node_t *idp = t->cdp->idp;
-
 		syment_t *e;
 		e->name = dupstr(idp->name);
-		e->value = idp->value;
+		e->initval = idp->value;
 		e->lineno = idp->line;
 		e->obj = CONST_OBJ;
 		switch (idp->type) {
@@ -47,20 +45,44 @@ void anlys_const_decf(const_dec_node_t *t)
 	}
 }
 
-// void anlys_var_decf(var_dec_node_t *t)
-// {
-//	var_def_node_t *p;
-//	for (; t != NULL; t = t->next) {
-//		for (p = t->vdp; p != NULL; p = p->next) {
-//			if (p != NULL && p->idp != NULL) {
-//				sym_insert_var(p->idp);
-//			} else {
-//				fprintf(tiplist, "CODE BUG:81\n");
-//				assert(0);
-//			}
-//		}
-//	}
-// }
+void anlys_var_decf(var_dec_node_t *node)
+{
+	for (var_dec_node_t *t = node; t != NULL; t = t->next) {
+		for (var_def_node_t *p = t->vdp; p != NULL; p = p->next) {
+			if (!p || !p->idp) {
+				unlikely();
+			}
+			ident_node_t *idp = p->idp;
+			syment_t *e;
+			e->name = dupstr(idp->name);
+			e->lineno = idp->line;
+			switch (idp->type) {
+			case INT_VAR_IDENT:
+				e->type = INT_TYPE;
+				e->obj = VAR_OBJ;
+				break;
+			case CHAR_VAR_IDENT:
+				e->type = CHAR_TYPE;
+				e->obj = VAR_OBJ;
+				break;
+			case INTARR_VAR_IDENT:
+				e->type = INT_TYPE;
+				e->obj = ARRAY_OBJ;
+				e->arrlen = idp->length;
+				break;
+			case CHARARR_VAR_IDENT:
+				e->type = CHAR_TYPE;
+				e->obj = ARRAY_OBJ;
+				e->arrlen = idp->length;
+				break;
+			default:
+				unlikely();
+			}
+			symadd(e);
+			idp->symbol = e;
+		}
+	}
+}
 
 // void anlys_pf_dec_list(pf_dec_list_node_t *t)
 // {

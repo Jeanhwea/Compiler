@@ -36,8 +36,9 @@ typedef struct _sym_entry_struct {
 	char *name;
 	// assembly label
 	char label[MAXLABEL];
-	// array length, const value, unsigned value
-	int value;
+	// const value, initval value
+	int initval;
+	int arrlen;
 	// referenced line number
 	int lineno;
 	// on which level
