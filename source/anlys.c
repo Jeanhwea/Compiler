@@ -14,7 +14,7 @@ static syment_t *make_symbol(ident_node_t *idp)
 	e->name = dupstr(idp->name);
 	e->initval = idp->value;
 	e->lineno = idp->line;
-	e->obj = CONST_OBJ;
+	e->cate = CONST_OBJ;
 
 	switch (idp->type) {
 	case INT_CONST_IDENT:
@@ -25,20 +25,20 @@ static syment_t *make_symbol(ident_node_t *idp)
 		break;
 	case INT_VAR_IDENT:
 		e->type = INT_TYPE;
-		e->obj = VAR_OBJ;
+		e->cate = VAR_OBJ;
 		break;
 	case CHAR_VAR_IDENT:
 		e->type = CHAR_TYPE;
-		e->obj = VAR_OBJ;
+		e->cate = VAR_OBJ;
 		break;
 	case INTARR_VAR_IDENT:
 		e->type = INT_TYPE;
-		e->obj = ARRAY_OBJ;
+		e->cate = ARRAY_OBJ;
 		e->arrlen = idp->length;
 		break;
 	case CHARARR_VAR_IDENT:
 		e->type = CHAR_TYPE;
-		e->obj = ARRAY_OBJ;
+		e->cate = ARRAY_OBJ;
 		e->arrlen = idp->length;
 		break;
 	default:
@@ -75,7 +75,7 @@ void anlys_const_decf(const_dec_node_t *node)
 		e->name = dupstr(idp->name);
 		e->initval = idp->value;
 		e->lineno = idp->line;
-		e->obj = CONST_OBJ;
+		e->cate = CONST_OBJ;
 		switch (idp->type) {
 		case INT_CONST_IDENT:
 			e->type = INT_TYPE;
@@ -105,20 +105,20 @@ void anlys_var_decf(var_dec_node_t *node)
 			switch (idp->type) {
 			case INT_VAR_IDENT:
 				e->type = INT_TYPE;
-				e->obj = VAR_OBJ;
+				e->cate = VAR_OBJ;
 				break;
 			case CHAR_VAR_IDENT:
 				e->type = CHAR_TYPE;
-				e->obj = VAR_OBJ;
+				e->cate = VAR_OBJ;
 				break;
 			case INTARR_VAR_IDENT:
 				e->type = INT_TYPE;
-				e->obj = ARRAY_OBJ;
+				e->cate = ARRAY_OBJ;
 				e->arrlen = idp->length;
 				break;
 			case CHARARR_VAR_IDENT:
 				e->type = CHAR_TYPE;
-				e->obj = ARRAY_OBJ;
+				e->cate = ARRAY_OBJ;
 				e->arrlen = idp->length;
 				break;
 			default:
@@ -177,7 +177,7 @@ void anlys_proc_head(proc_head_node_t *node)
 	e->name = dupstr(idp->name);
 	e->lineno = idp->line;
 	e->type = NOP_TYPE;
-	e->obj = PROC_OBJ;
+	e->cate = PROC_OBJ;
 	idp->symbol = e;
 	symadd(e);
 
@@ -218,7 +218,7 @@ void anlys_fun_head(fun_head_node_t *node)
 	e->name = dupstr(idp->name);
 	e->lineno = idp->line;
 	e->type = NOP_TYPE;
-	e->obj = PROC_OBJ;
+	e->cate = PROC_OBJ;
 	switch (idp->type) {
 	case INT_CONST_IDENT:
 		e->type = INT_TYPE;
@@ -250,24 +250,24 @@ void anlys_para_list(para_list_node_t *node)
 			e->name = dupstr(idp->name);
 			e->lineno = idp->line;
 			e->type = NOP_TYPE;
-			e->obj = PROC_OBJ;
+			e->cate = PROC_OBJ;
 			switch (idp->type) {
 			case INT_VAR_IDENT:
 				e->type = INT_TYPE;
-				e->obj = VAR_OBJ;
+				e->cate = VAR_OBJ;
 				break;
 			case CHAR_VAR_IDENT:
 				e->type = CHAR_TYPE;
-				e->obj = VAR_OBJ;
+				e->cate = VAR_OBJ;
 				break;
 			case INTARR_VAR_IDENT:
 				e->type = INT_TYPE;
-				e->obj = ARRAY_OBJ;
+				e->cate = ARRAY_OBJ;
 				e->arrlen = idp->length;
 				break;
 			case CHARARR_VAR_IDENT:
 				e->type = CHAR_TYPE;
-				e->obj = ARRAY_OBJ;
+				e->cate = ARRAY_OBJ;
 				e->arrlen = idp->length;
 				break;
 			default:

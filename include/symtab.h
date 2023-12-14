@@ -8,7 +8,8 @@
 typedef struct _sym_entry_struct syment_t;
 typedef struct _sym_table_struct symtab_t;
 
-typedef enum _sym_obj_enum {
+// symbol category
+typedef enum _sym_cate_enum {
 	// Primary Object
 	/*  0 */ NOP_OBJ,
 	/*  1 */ CONST_OBJ,
@@ -23,12 +24,14 @@ typedef enum _sym_obj_enum {
 	/* 10 */ LABEL_OBJ,
 	/* 11 */ NUM_OBJ,
 	/* 12 */ STRING_OBJ
-} object_t;
+} cate_t;
 
+// symbol type
 typedef enum _sym_type_enum {
-	/* 0 */ INT_TYPE,
-	/* 1 */ CHAR_TYPE,
-	/* 2 */ NOP_TYPE
+	/* 0 */ NOP_TYPE,
+	/* 1 */ INT_TYPE,
+	/* 2 */ CHAR_TYPE,
+	/* 3 */ STR_TYPE
 } type_t;
 
 typedef struct _sym_entry_struct {
@@ -46,7 +49,7 @@ typedef struct _sym_entry_struct {
 	//on which positon
 	int pos;
 	// object type
-	object_t obj;
+	cate_t cate;
 	// type
 	type_t type;
 	// which symbol table

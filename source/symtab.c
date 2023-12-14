@@ -97,7 +97,7 @@ void dumptab(symtab_t *stab)
 		syment_t *hair = &stab->buckets[i];
 		for (syment_t *e = hair->next; e != NULL; e = e->next) {
 			msg("%sname=%s, value=%d, label=%s, obj=%d, type=%d\n",
-			    indent, e->name, e->initval, e->label, e->obj,
+			    indent, e->name, e->initval, e->label, e->cate,
 			    e->type);
 		}
 	}
