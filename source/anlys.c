@@ -24,6 +24,7 @@ void anlys_const_decf(const_dec_node_t *node)
 		nevernil(t->cdp);
 		nevernil(t->cdp->idp);
 		ident_node_t *idp = t->cdp->idp;
+
 		syment_t *e;
 		NEWENTRY(e);
 		e->name = dupstr(idp->name);
@@ -40,8 +41,8 @@ void anlys_const_decf(const_dec_node_t *node)
 		default:
 			unlikely();
 		}
-		symadd(e);
 		idp->symbol = e;
+		symadd(e);
 	}
 }
 
@@ -51,6 +52,7 @@ void anlys_var_decf(var_dec_node_t *node)
 		for (var_def_node_t *p = t->vdp; p; p = p->next) {
 			nevernil(p->idp);
 			ident_node_t *idp = p->idp;
+
 			syment_t *e;
 			NEWENTRY(e);
 			e->name = dupstr(idp->name);
@@ -77,8 +79,8 @@ void anlys_var_decf(var_dec_node_t *node)
 			default:
 				unlikely();
 			}
-			symadd(e);
 			idp->symbol = e;
+			symadd(e);
 		}
 	}
 }
@@ -131,8 +133,8 @@ void anlys_proc_head(proc_head_node_t *node)
 	e->lineno = idp->line;
 	e->type = NOP_TYPE;
 	e->obj = PROC_OBJ;
-	symadd(e);
 	idp->symbol = e;
+	symadd(e);
 
 	scope_entry(idp->name);
 
@@ -182,8 +184,8 @@ void anlys_fun_head(fun_head_node_t *node)
 	default:
 		unlikely();
 	}
-	symadd(e);
 	idp->symbol = e;
+	symadd(e);
 
 	scope_entry(idp->name);
 
@@ -226,8 +228,8 @@ void anlys_para_list(para_list_node_t *node)
 			default:
 				unlikely();
 			}
-			symadd(e);
 			idp->symbol = e;
+			symadd(e);
 		}
 	}
 }
