@@ -11,6 +11,18 @@
 
 typedef int bool;
 
+////////////////////////////////////////////////////////////////////////////////
+// Initialize struct, allocate memory
+//     INITMEM(s: struct, v: variable, sturct pointer)
+#define INITMEM(s, v)                                                          \
+	do {                                                                   \
+		v = (s *)malloc(sizeof(s));                                    \
+		if (v == NULL) {                                               \
+			panic("OUT_OF_MEMORY");                                \
+		};                                                             \
+		memset(v, 0, sizeof(s));                                       \
+	} while (0)
+
 // Compiling Phase
 typedef enum _phase_enum {
 	/* 0 */ INIT,

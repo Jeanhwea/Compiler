@@ -37,17 +37,8 @@ typedef struct _para_list_node para_list_node_t;
 typedef struct _para_def_node para_def_node_t;
 typedef struct _arg_list_node arg_list_node_t;
 
-////////////////////////////////////////////////////////////////////////////////
-// Initialize node struct, allocate memory
-//     NEWNODE(s: struct, v: variable, sturct pointer)
-#define NEWNODE(s, v)                                                          \
-	do {                                                                   \
-		v = (s *)malloc(sizeof(s));                                    \
-		if (v == NULL) {                                               \
-			panic("OUT_OF_MEMORY");                                \
-		};                                                             \
-		memset(v, 0, sizeof(s));                                       \
-	} while (0)
+// Create New Node
+#define NEWNODE(s, v) INITMEM(s, v)
 
 // use like:
 //   if (CURRTOK_ANY(a, b, c, ...)) { ... }
