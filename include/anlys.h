@@ -1,5 +1,5 @@
-#ifndef _SEM_H_
-#define _SEM_H_
+#ifndef _ANLYS_H_
+#define _ANLYS_H_
 #include "global.h"
 #include "parse.h"
 #include "symtab.h"
@@ -29,4 +29,4 @@ static void anlys_cond(cond_node_t t, syment_t *label);
 static void anlys_para_list(para_list_node_t t);
 static void anlys_arg_list(arg_list_node_t t, syment_t *pfste);
 
-#endif /* End of _SEM_H_ */
+#endif /* End of _ANLYS_H_ */
