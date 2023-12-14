@@ -28,7 +28,7 @@ typedef enum _sym_cate_enum {
 
 // symbol type
 typedef enum _sym_type_enum {
-	/* 0 */ NOP_TYPE,
+	/* 0 */ VOID_TYPE,
 	/* 1 */ INT_TYPE,
 	/* 2 */ CHAR_TYPE,
 	/* 3 */ STR_TYPE
