@@ -77,15 +77,6 @@ void putsym(symtab_t *stab, syment_t *entry)
 	hair->next = entry;
 }
 
-void addsym(syment_t *entry)
-{
-	if (!curr) {
-		panic("NULL_SYMBOL_TABLE");
-	}
-	putsym(curr, entry);
-	entry->stab = curr;
-}
-
 syment_t *findsym(char *name)
 {
 	if (!curr) {
@@ -99,4 +90,13 @@ syment_t *findsym(char *name)
 		}
 	}
 	return e;
+}
+
+void addsym(syment_t *entry)
+{
+	if (!curr) {
+		panic("NULL_SYMBOL_TABLE");
+	}
+	putsym(curr, entry);
+	entry->stab = curr;
 }
