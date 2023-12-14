@@ -5,6 +5,7 @@ int main(int argc, char *argv[])
 {
 	echo = FALSE;
 	init(argc, argv);
+	int counter = 0;
 
 	token_t tok;
 	while ((tok = gettok()) != ENDFILE) {
@@ -32,8 +33,8 @@ int main(int argc, char *argv[])
 		for (int i = 0; i < start + toksize; ++i) {
 			msg(" ");
 		}
-		msg("`-- ");
-		msg("token=%d, tokbuf=[%s]\n", tok, tokbuf);
+		msg("`--(%d)-- ", ++counter);
+		msg("token=%d, buf=[%s]\n", tok, tokbuf);
 	}
 
 	return 0;
