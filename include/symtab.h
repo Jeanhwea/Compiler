@@ -37,21 +37,15 @@ typedef enum _sym_type_enum {
 typedef struct _sym_entry_struct {
 	// identifier name
 	char *name;
-	// assembly label
-	char label[MAXLABEL];
+	cate_t cate;
+	type_t type;
 	// const value, initval value
 	int initval;
 	int arrlen;
+	// label for assemble codes
+	char label[MAXLABEL];
 	// referenced line number
 	int lineno;
-	// on which level
-	int level;
-	//on which positon
-	int pos;
-	// object type
-	cate_t cate;
-	// type
-	type_t type;
 	// which symbol table
 	symtab_t *stab;
 	syment_t *next;
