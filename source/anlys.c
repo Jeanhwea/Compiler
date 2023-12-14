@@ -240,6 +240,7 @@ static void anlys_assign_stmt(assign_stmt_node_t *node)
 			       idp->name);
 		}
 		idp->symbol = e;
+		break;
 	default:
 		unlikely();
 	}
@@ -420,7 +421,9 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 {
 	arg_list_node_t *t = node;
 	param_t *p = sign->phead;
+	int pos = 0;
 	for (; t && p; t = t->next, p = p->next) {
+		pos++;
 		syment_t *e = p->symbol;
 		switch (e->cate) {
 		case BYVAL_OBJ:
@@ -428,7 +431,46 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			anlys_expr(t->ep);
 			break;
 		case BYREF_OBJ: // var, arr[exp]
-			panic("TODO");
+			if (!t->ep || t->ep->op != NOP_ADDOP) {
+				goto referr;
+			}
+			expr_node_t *ep = t->ep;
+			if (!ep->tp || !ep->tp->op != NOP_MULTOP) {
+				goto referr;
+			}
+			term_node_t *tp = ep->tp;
+			if (!tp->fp) {
+				goto referr;
+			}
+
+			factor_node_t *fp = tp->fp;
+			ident_node_t *idp;
+			if (fp->type != ID_FACTOR || fp->type != ARRAY_FACTOR) {
+				idp = fp->idp;
+				goto refok;
+			}
+		referr:
+			giveup(BADREF,
+			       "L%d: %s call arguments has bad reference, pos = %d.",
+			       sign->lineno, sign->name, pos);
+			continue;
+		refok:
+			syment_t *e = symfind(idp->name);
+			if (!e) {
+				giveup(BADSYM, "L%d: symbol %s not found.",
+				       idp->line, idp->name);
+			}
+			if (fp->type == ID_FACTOR && e->cate != VAR_OBJ) {
+				giveup(OBJREF,
+				       "L%d: argument %s call by reference is not variable object, pos = %d.",
+				       idp->line, idp->name, pos);
+			}
+			if (fp->type == ARRAY_FACTOR && e->cate != ARRAY_OBJ) {
+				giveup(OBJREF,
+				       "L%d: argument %s call by reference is not array object, pos = %d.",
+				       idp->line, idp->name, pos);
+			}
+			idp->symbol = e;
 			break;
 		default:
 			unlikely();
