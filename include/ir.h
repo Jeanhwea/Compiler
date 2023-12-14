@@ -58,7 +58,13 @@ typedef struct _inst_struct {
 	inst_t *next;
 } inst_t;
 
-// instruction header
-extern inst_t *ihead;
+// Constructor
+#define NEWINST(v) INITMEM(inst_t, v)
 
+// hold instructions
+extern inst_t *ihead;
+extern inst_t *itail;
+
+// emit an instruction
+inst_t *emit();
 #endif /* End of _IR_H_ */
