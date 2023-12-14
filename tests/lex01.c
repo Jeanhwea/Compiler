@@ -3,12 +3,16 @@
 
 int main(int argc, char *argv[])
 {
-	echo = TRUE;
+	echo = FALSE;
 	init(argc, argv);
 
 	token_t tok;
 	while ((tok = gettok()) != ENDFILE) {
-		msg("line %02d: %s\n", lineno, linebuf);
+		msg("line%03d: %s", lineno, linebuf);
+		for (int i = 0; i < colmno + 7; ++i) {
+			msg(" ");
+		}
+		msg("^ token=%d, buf=%s\n", tok, tokbuf);
 	}
 
 	return 0;
