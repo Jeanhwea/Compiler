@@ -85,13 +85,16 @@ void dumptab(symtab_t *stab)
 	}
 
 	symtab_t *t = stab;
-	msg("%sstab#%d: depth=%d, nspace=%s\n", indent, t->id, t->depth,
+	msg("%sstab(#%d): depth=%d, nspace=%s\n", indent, t->id, t->depth,
 	    t->nspace);
+
+	strcat(indent, "  ");
 	for (int i = 0; i < MAXBUCKETS; ++i) {
 		syment_t *hair = &stab->buckets[i];
 		for (syment_t *e = hair->next; e != NULL; e = e->next) {
-			msg("%s  name=%s, value=%d, label=%s\n", indent,
-			    e->name, e->value, e->label);
+			msg("%sname=%s, value=%d, label=%s, obj=%d, type=%d\n",
+			    indent, e->name, e->value, e->label, e->obj,
+			    e->type);
 		}
 	}
 }
