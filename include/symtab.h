@@ -71,6 +71,7 @@ typedef struct _sym_table_struct {
 } symtab_t;
 
 // Constructor
+#define NEWPARAM(v) INITMEM(param_t, v)
 #define NEWENTRY(v) INITMEM(syment_t, v)
 #define NEWSTAB(v) INITMEM(symtab_t, v)
 

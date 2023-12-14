@@ -27,6 +27,6 @@ static void anlys_term(term_node_t *node);
 static void anlys_factor(factor_node_t *node);
 static void anlys_fcall_stmt(fcall_stmt_node_t *node);
 static void anlys_cond(cond_node_t *node);
-static void anlys_arg_list(arg_list_node_t *node);
+static void anlys_arg_list(syment_t *sign, arg_list_node_t *node);
 
 #endif /* End of _ANLYS_H_ */

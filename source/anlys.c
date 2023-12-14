@@ -168,6 +168,18 @@ static void anlys_para_list(syment_t *sign, para_list_node_t *node)
 				e = syminit(idp);
 			}
 			idp->symbol = e;
+
+			param_t *param;
+			NEWPARAM(param);
+			param->symbol = e;
+
+			if (!sign->ptail) {
+				sign->ptail = param;
+				sign->phead = param;
+			} else {
+				sign->ptail->next = param;
+				sign->ptail = param;
+			}
 		}
 	}
 }
@@ -285,7 +297,7 @@ static void anlys_pcall_stmt(pcall_stmt_node_t *node)
 	}
 	idp->symbol = e;
 
-	anlys_arg_list(node->alp);
+	anlys_arg_list(e, node->alp);
 }
 
 static void anlys_read_stmt(read_stmt_node_t *node)
@@ -393,7 +405,7 @@ static void anlys_fcall_stmt(fcall_stmt_node_t *node)
 	idp->symbol = e;
 
 	nevernil(node->alp);
-	anlys_arg_list(node->alp);
+	anlys_arg_list(e, node->alp);
 }
 
 static void anlys_cond(cond_node_t *node)
@@ -404,7 +416,28 @@ static void anlys_cond(cond_node_t *node)
 	anlys_expr(node->rep);
 }
 
-static void anlys_arg_list(arg_list_node_t *node)
+static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 {
-	// TODO
+	arg_list_node_t *t = node;
+	param_t *p = sign->phead;
+	for (; t && p; t = t->next, p = p->next) {
+		syment_t *e = p->symbol;
+		switch (e->cate) {
+		case BYVAL_OBJ:
+			nevernil(t->ep);
+			anlys_expr(t->ep);
+			break;
+		case BYREF_OBJ:
+			panic("TODO");
+			break;
+		default:
+			unlikely();
+		}
+	}
+
+	if (!t || !p) {
+		giveup(BADLEN,
+		       "L%d: %s call arguments and parameters length not equal.",
+		       sign->lineno, sign->name);
+	}
 }
