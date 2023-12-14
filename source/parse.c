@@ -119,23 +119,23 @@ static const_def_node_t *parse_const_def(void)
 		case SS_PLUS:
 			match(SS_PLUS);
 			t->idp->type = INT_CONST_IDENT;
-			t->idp->val = atoi(tokbuf);
+			t->idp->value = atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case SS_MINUS:
 			match(SS_MINUS);
 			t->idp->type = INT_CONST_IDENT;
-			t->idp->val = -atoi(tokbuf);
+			t->idp->value = -atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case MC_UNS:
 			t->idp->type = INT_CONST_IDENT;
-			t->idp->val = -atoi(tokbuf);
+			t->idp->value = -atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case MC_CH:
 			t->idp->type = CHAR_CONST_IDENT;
-			t->idp->val = (int)tokbuf[0];
+			t->idp->value = (int)tokbuf[0];
 			match(MC_CH);
 			break;
 		default:
@@ -880,7 +880,7 @@ static ident_node_t *parse_ident(idreadmode_t mode)
 	switch (mode) {
 	case READCURR:
 		t->type = INIT_IDENT;
-		t->val = 0;
+		t->value = 0;
 		t->length = 0;
 		t->line = lineno;
 		t->name = dupstr(tokbuf);
@@ -888,7 +888,7 @@ static ident_node_t *parse_ident(idreadmode_t mode)
 		break;
 	case READPREV:
 		t->type = INIT_IDENT;
-		t->val = 0;
+		t->value = 0;
 		t->length = 0;
 		t->line = prevlineno;
 		t->name = dupstr(prevtokbuf);

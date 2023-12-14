@@ -208,7 +208,7 @@ typedef enum _ident_enum {
 typedef struct _ident_node {
 	ident_t type;
 	char *name;
-	int val;
+	int value;
 	int length;
 	int line;
 } ident_node_t;

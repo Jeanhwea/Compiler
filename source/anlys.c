@@ -21,27 +21,28 @@ static void anlys_pgm(pgm_node_t *t)
 void anlys_const_decf(const_dec_node_t *t)
 {
 	for (; t; t = t->next) {
-		if (t->cdp && t->cdp->idp) {
-			syment_t *e;
-			ident_node_t *idp = t->cdp->idp;
-			e->name = dupstr(idp->name);
-			e->value = idp->val;
-			e->lineno = idp->line;
-			e->obj = CONST_OBJ;
-			switch (idp->type) {
-			case INT_CONST_IDENT:
-				e->type = INT_TYPE;
-				break;
-			case CHAR_CONST_IDENT:
-				e->type = CHAR_TYPE;
-				break;
-			default:
-				unlikely();
-			}
-			symadd(e);
-		} else {
+		if (!t->cdp || !t->cdp->idp) {
 			unlikely();
 		}
+
+		ident_node_t *idp = t->cdp->idp;
+
+		syment_t *e;
+		e->name = dupstr(idp->name);
+		e->value = idp->value;
+		e->lineno = idp->line;
+		e->obj = CONST_OBJ;
+		switch (idp->type) {
+		case INT_CONST_IDENT:
+			e->type = INT_TYPE;
+			break;
+		case CHAR_CONST_IDENT:
+			e->type = CHAR_TYPE;
+			break;
+		default:
+			unlikely();
+		}
+		symadd(e);
 	}
 }
 
