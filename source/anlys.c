@@ -435,7 +435,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 				goto referr;
 			}
 			expr_node_t *ep = t->ep;
-			if (!ep->tp || !ep->tp->op != NOP_MULTOP) {
+			if (!ep->tp || ep->tp->op != NOP_MULTOP) {
 				goto referr;
 			}
 			term_node_t *tp = ep->tp;
@@ -477,7 +477,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 		}
 	}
 
-	if (!t || !p) {
+	if (t || p) {
 		giveup(BADLEN,
 		       "L%d: %s call arguments and parameters length not equal.",
 		       sign->lineno, sign->name);
