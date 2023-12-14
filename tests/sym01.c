@@ -3,7 +3,7 @@
 
 #define symdump()                                                              \
 	do {                                                                   \
-		msg("%s():%d ", __func__, __LINE__);                           \
+		msg("%s:%d in %s() ", __FILE__, __LINE__, __func__);           \
 		symdump();                                                     \
 	} while (0)
 
