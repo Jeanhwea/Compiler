@@ -2,6 +2,7 @@
 #define _ERROR_H_
 
 #define DUPSYM 100
+#define BADSYM 101
 #define EPANIC 996
 #define EABORT 997
 

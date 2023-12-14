@@ -160,6 +160,15 @@ void anlys_para_list(para_list_node_t *node)
 	for (para_list_node_t *t = node; t; t = t->next) {
 		for (para_def_node_t *p = t->pdp; p; p = p->next) {
 			nevernil(p->idp);
+			ident_node_t *idp = p->idp;
+			syment_t *e = symget(idp->name);
+			if (e) {
+				recover(DUPSYM,
+					"L%d: parameter %s already defined.",
+					idp->line, idp->name);
+				idp->symbol = e;
+				continue;
+			}
 			syminit(p->idp);
 		}
 	}
@@ -169,106 +178,60 @@ void anlys_comp_stmt(comp_stmt_node_t *node)
 {
 	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
 		nevernil(t->sp);
-		// anlys_stmt(t->sp);
+		anlys_stmt(t->sp);
 	}
 }
 
-// void anlys_stmt(stmt_node_t *t)
-// {
-//	switch (t->type) {
-//	case ASSGIN_STMT:
-//		anlys_assign_stmt(t->asp);
-//		break;
-//	case IF_STMT:
-//		anlys_if_stmt(t->ifp);
-//		break;
-//	case REPEAT_STMT:
-//		anlys_repe_stmt(t->rpp);
-//		break;
-//	case FOR_STMT:
-//		anlys_for_stmt(t->frp);
-//		break;
-//	case PCALL_STMT:
-//		anlys_pcall_stmt(t->pcp);
-//		break;
-//	case COMP_STMT:
-//		anlys_comp_stmt(t->cpp);
-//		break;
-//	case READ_STMT:
-//		anlys_read_stmt(t->rdp);
-//		break;
-//	case WRITE_STMT:
-//		anlys_write_stmt(t->wtp);
-//		break;
-//	case NULL_STMT:
-//		break;
-//	default:
-//		unlikely();
-//	}
-// }
+void anlys_stmt(stmt_node_t *node)
+{
+	switch (node->type) {
+	case ASSGIN_STMT:
+		anlys_assign_stmt(node->asp);
+		break;
+	case IF_STMT:
+		anlys_if_stmt(node->ifp);
+		break;
+	case REPEAT_STMT:
+		anlys_repe_stmt(node->rpp);
+		break;
+	case FOR_STMT:
+		anlys_for_stmt(node->frp);
+		break;
+	case PCALL_STMT:
+		anlys_pcall_stmt(node->pcp);
+		break;
+	case COMP_STMT:
+		anlys_comp_stmt(node->cpp);
+		break;
+	case READ_STMT:
+		anlys_read_stmt(node->rdp);
+		break;
+	case WRITE_STMT:
+		anlys_write_stmt(node->wtp);
+		break;
+	case NULL_STMT:
+		break;
+	default:
+		unlikely();
+	}
+}
 
-// void anlys_assign_stmt(assign_stmt_node_t *t)
-// {
-//	syment_t *res;
-//	inst_t *q;
-//	if (t == NULL)
-//		return;
-//	switch (t->type) {
-//	case Norm_Assgin_t:
-//	case Fun_Assgin_t:
-//		res = sym_lookup(t->idp->name);
-//		if (res == NULL) {
-//			--runlevel;
-//			semanticError(NULLSYM, t->idp->line, FALSE,
-//				      t->idp->name);
-//			break;
-//		}
-//		if (OBJ(Fun_Obj_t)) {
-//			NEWQUAD(q);
-//			q->op = SRET_op;
-//			q->r = anlys_expr(t->rep);
-//			q->s = NULL;
-//			q->d = res;
-//			emit(q);
-//		} else if (OBJ3(Var_Obj_t, Para_Val_Obj_t, Para_Ref_Obj_t)) {
-//			NEWQUAD(q);
-//			q->op = ASS_op;
-//			q->r = anlys_expr(t->rep);
-//			q->s = NULL;
-//			q->d = res;
-//			emit(q);
-//		} else {
-//			--runlevel;
-//			semanticError(NOPVAR, t->idp->line, FALSE,
-//				      t->idp->name);
-//		}
-//		break;
-//	case Array_Assgin_t:
-//		res = sym_lookup(t->idp->name);
-//		if (res == NULL) {
-//			--runlevel;
-//			semanticError(NULLSYM, t->idp->line, FALSE,
-//				      t->idp->name);
-//			break;
-//		}
-//		if (OBJ(Array_Obj_t)) {
-//			NEWQUAD(q);
-//			q->op = AARR_op;
-//			q->r = anlys_expr(t->rep);
-//			q->s = anlys_expr(t->lep);
-//			q->d = res;
-//			emit(q);
-//		} else {
-//			--runlevel;
-//			semanticError(NOPARRAY, t->idp->line, FALSE,
-//				      t->idp->name);
-//		}
-//		break;
-//	default:
-//		fprintf(tiplist, "CODE BUG:84\n");
-//		assert(0);
-//	}
-// }
+void anlys_assign_stmt(assign_stmt_node_t *t)
+{
+	syment_t *e;
+	switch (t->type) {
+	case NORM_ASSGIN:
+	case FUN_ASSGIN:
+	case ARRAY_ASSGIN:
+		e = symfind(t->idp->name);
+		if (!e) {
+			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
+			       idp->name);
+		}
+	default:
+		unlikely();
+	}
+}
 
 // void anlys_if_stmt(if_stmt_node_t *t)
 // {
