@@ -3,6 +3,7 @@
 #include "global.h"
 
 #define MAXBUCKETS 16
+#define MAXLABEL 16
 
 typedef struct _sym_entry_struct syment_t;
 typedef struct _sym_table_struct symtab_t;
@@ -34,7 +35,7 @@ typedef struct _sym_entry_struct {
 	// identifier name
 	char *name;
 	// assembly label
-	char *label;
+	char label[MAXLABEL];
 	// array length, const value, unsigned value
 	int value;
 	// referenced line number

@@ -1,18 +1,20 @@
 #include "global.h"
 #include "debug.h"
 #include "symtab.h"
+#include <stdio.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // symbol table management
 symtab_t *curr = NULL;
 int depth = 0;
-int counter = 0;
+int ntab = 0;
+int nlabel = 0;
 
 symtab_t *scope_entry(char *nspace)
 {
 	symtab_t *t;
 	NEWSTAB(t);
-	t->id = ++counter;
+	t->id = ++ntab;
 	t->depth = ++depth;
 	t->nspace = nspace;
 
@@ -75,6 +77,7 @@ void putsym(symtab_t *stab, syment_t *entry)
 	syment_t *hair = &stab->buckets[hash(entry->name) % MAXBUCKETS];
 	entry->next = hair->next;
 	hair->next = entry;
+	sprintf(entry->label, "L%03d", ++nlabel);
 }
 
 void dumptab(symtab_t *stab)
