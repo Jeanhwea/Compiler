@@ -23,18 +23,23 @@ extern FILE *source;
 // target assembly file
 extern FILE *target;
 
-// hold source file line buffer
+// Initialization init.c
+void init(int argc, char *argv[]);
+
+// Lexical
+// hold source file line buffer in scan.c
 #define BUFLEN 4096
 extern char linebuf[BUFLEN];
 extern int bufsize;
 extern int lineno;
 extern int colmno;
 
-// Initialization
-void init(int argc, char *argv[]);
-
 // Syntax
+// prog as AST, in parse.c
 extern pgm_node_t *prog;
 pgm_node_t *parse(void);
+
+// Semantic
+// in analysis.c
 
 #endif /* End of _GLOBAL_H_ */

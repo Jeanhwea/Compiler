@@ -6,6 +6,9 @@
 #include "lexical.h"
 #include "syntax.h"
 
+// AST
+pgm_node_t *prog;
+
 // current token
 static token_t currtok;
 // hold previous token
@@ -991,5 +994,6 @@ static arg_list_node_t *parse_arg_list(void)
 pgm_node_t *parse(void)
 {
 	currtok = gettok();
-	return parse_pgm();
+	prog = parse_pgm();
+	return prog;
 }
