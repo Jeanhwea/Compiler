@@ -43,6 +43,7 @@ void anlys_const_decf(const_dec_node_t *t)
 			unlikely();
 		}
 		symadd(e);
+		idp->symbol = e;
 	}
 }
 

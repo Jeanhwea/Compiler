@@ -1,6 +1,7 @@
 #ifndef _SYNTAX_H_
 #define _SYNTAX_H_
 #include "parse.h"
+#include "symtab.h"
 
 /* program */
 typedef struct _pgm_node {
@@ -211,6 +212,7 @@ typedef struct _ident_node {
 	int value;
 	int length;
 	int line;
+	syment_t *symbol;
 } ident_node_t;
 typedef struct _para_list_node {
 	para_def_node_t *pdp;
