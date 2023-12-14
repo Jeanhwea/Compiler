@@ -1,11 +1,56 @@
+#include "anlys.h"
+#include "global.h"
 #include "debug.h"
 #include "util.h"
-#include "ir.h"
-#include "symtab.h"
 #include "syntax.h"
-#include "anlys.h"
+#include "parse.h"
+#include "symtab.h"
 
-static void anlys_pgm(pgm_node_t *node)
+static syment_t *make_symbol(ident_node_t *idp)
+{
+	syment_t *e;
+	NEWENTRY(e);
+
+	e->name = dupstr(idp->name);
+	e->initval = idp->value;
+	e->lineno = idp->line;
+	e->obj = CONST_OBJ;
+
+	switch (idp->type) {
+	case INT_CONST_IDENT:
+		e->type = INT_TYPE;
+		break;
+	case CHAR_CONST_IDENT:
+		e->type = CHAR_TYPE;
+		break;
+	case INT_VAR_IDENT:
+		e->type = INT_TYPE;
+		e->obj = VAR_OBJ;
+		break;
+	case CHAR_VAR_IDENT:
+		e->type = CHAR_TYPE;
+		e->obj = VAR_OBJ;
+		break;
+	case INTARR_VAR_IDENT:
+		e->type = INT_TYPE;
+		e->obj = ARRAY_OBJ;
+		e->arrlen = idp->length;
+		break;
+	case CHARARR_VAR_IDENT:
+		e->type = CHAR_TYPE;
+		e->obj = ARRAY_OBJ;
+		e->arrlen = idp->length;
+		break;
+	default:
+		unlikely();
+	}
+
+	idp->symbol = e;
+	symadd(e);
+	return e;
+}
+
+void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
 
