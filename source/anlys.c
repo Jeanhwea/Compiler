@@ -28,8 +28,8 @@ void anlys_const_decf(const_dec_node_t *node)
 		ident_node_t *idp = t->cdp->idp;
 		syment_t *e = symget(idp->name);
 		if (e) {
-			recover(DUPSYM, "L%d: const %s already defined.",
-				idp->line, idp->name);
+			rescue(DUPSYM, "L%d: const %s already defined.",
+			       idp->line, idp->name);
 			idp->symbol = e;
 			continue;
 		}
@@ -45,9 +45,9 @@ void anlys_var_decf(var_dec_node_t *node)
 			ident_node_t *idp = p->idp;
 			syment_t *e = symget(idp->name);
 			if (e) {
-				recover(DUPSYM,
-					"L%d: variable %s already defined.",
-					idp->line, idp->name);
+				rescue(DUPSYM,
+				       "L%d: variable %s already defined.",
+				       idp->line, idp->name);
 				idp->symbol = e;
 				continue;
 			}
@@ -99,8 +99,8 @@ void anlys_proc_head(proc_head_node_t *node)
 	ident_node_t *idp = t->idp;
 	syment_t *e = symget(idp->name);
 	if (e) {
-		recover(DUPSYM, "L%d: procedure %s already defined.", idp->line,
-			idp->name);
+		rescue(DUPSYM, "L%d: procedure %s already defined.", idp->line,
+		       idp->name);
 		idp->symbol = e;
 	} else {
 		idp->symbol = syminit(idp);
@@ -139,8 +139,8 @@ void anlys_fun_head(fun_head_node_t *node)
 	ident_node_t *idp = t->idp;
 	syment_t *e = symget(idp->name);
 	if (e) {
-		recover(DUPSYM, "L%d: function %s already defined.", idp->line,
-			idp->name);
+		rescue(DUPSYM, "L%d: function %s already defined.", idp->line,
+		       idp->name);
 		idp->symbol = e;
 	} else {
 		idp->symbol = syminit(idp);
@@ -160,9 +160,9 @@ void anlys_para_list(para_list_node_t *node)
 			ident_node_t *idp = p->idp;
 			syment_t *e = symget(idp->name);
 			if (e) {
-				recover(DUPSYM,
-					"L%d: parameter %s already defined.",
-					idp->line, idp->name);
+				rescue(DUPSYM,
+				       "L%d: parameter %s already defined.",
+				       idp->line, idp->name);
 				idp->symbol = e;
 				continue;
 			}

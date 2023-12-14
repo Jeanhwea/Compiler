@@ -7,7 +7,7 @@
 #define EPANIC 996
 #define EABORT 997
 
-#define recover(err, fmt, args...)                                             \
+#define rescue(err, fmt, args...)                                              \
 	do {                                                                   \
 		errnum = err;                                                  \
 		printf(fmt, ##args);                                           \
