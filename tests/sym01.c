@@ -1,6 +1,9 @@
 #include <assert.h>
 #include "symtab.h"
 
+void func01();
+void func02();
+
 void add_test_symbol(char *name)
 {
 	syment_t *e;
@@ -15,19 +18,40 @@ void func01()
 	scope_entry("func01");
 	symdump();
 
+	e = symfind("aaa");
+	assert(e && !strcmp(e->stab->nspace, "root"));
+
 	add_test_symbol("aaa");
+
+	func02();
+
 	add_test_symbol("ccc");
 	symdump();
 
 	e = symfind("aaa");
-	assert(!strcmp(e->name, "aaa"));
-	assert(!strcmp(e->stab->nspace, "func01"));
+	assert(e && !strcmp(e->stab->nspace, "func01"));
 	e = symfind("bbb");
-	assert(!strcmp(e->name, "bbb"));
-	assert(!strcmp(e->stab->nspace, "root"));
+	assert(e && !strcmp(e->stab->nspace, "root"));
 	e = symfind("ccc");
-	assert(!strcmp(e->name, "ccc"));
-	assert(!strcmp(e->stab->nspace, "func01"));
+	assert(e && !strcmp(e->stab->nspace, "func01"));
+	e = symfind("ddd");
+	assert(!e);
+
+	scope_exit();
+}
+
+void func02()
+{
+	syment_t *e;
+	scope_entry("func02");
+	symdump();
+
+	add_test_symbol("aaa");
+	add_test_symbol("ddd");
+	symdump();
+
+	e = symfind("ccc");
+	assert(!e);
 
 	scope_exit();
 }
