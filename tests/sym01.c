@@ -1,48 +1,55 @@
 #include <assert.h>
 #include "symtab.h"
 
+void add_test_symbol(char *name)
+{
+	syment_t *e;
+	NEWENTRY(e);
+	e->name = name;
+	symadd(e);
+}
+
 int main(int argc, char *argv[])
 {
 	syment_t *e;
+
 	scope_entry("root");
-	NEWENTRY(e);
-	e->name = "aaa";
-	addsym(e);
 
-	NEWENTRY(e);
-	e->name = "bbb";
-	addsym(e);
+	add_test_symbol("aaa");
 
-	e = findsym("aaa");
+	symdump();
+
+	add_test_symbol("bbb");
+
+	symdump();
+
+	e = symfind("aaa");
 	assert(!strcmp(e->name, "aaa"));
 	assert(!strcmp(e->stab->nspace, "root"));
 
-	e = findsym("ccc");
+	e = symfind("ccc");
 	assert(e == NULL);
 
 	scope_entry("test01");
 
-	NEWENTRY(e);
-	e->name = "aaa";
-	addsym(e);
+	add_test_symbol("aaa");
+	add_test_symbol("ccc");
 
-	NEWENTRY(e);
-	e->name = "ccc";
-	addsym(e);
+	symdump();
 
-	e = findsym("aaa");
+	e = symfind("aaa");
 	assert(!strcmp(e->name, "aaa"));
 	assert(!strcmp(e->stab->nspace, "test01"));
-	e = findsym("bbb");
+	e = symfind("bbb");
 	assert(!strcmp(e->name, "bbb"));
 	assert(!strcmp(e->stab->nspace, "root"));
-	e = findsym("ccc");
+	e = symfind("ccc");
 	assert(!strcmp(e->name, "ccc"));
 	assert(!strcmp(e->stab->nspace, "test01"));
 
 	scope_exit();
 
-	e = findsym("ccc");
+	e = symfind("ccc");
 	assert(e == NULL);
 
 	scope_exit();

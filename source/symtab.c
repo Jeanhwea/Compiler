@@ -79,10 +79,24 @@ void putsym(symtab_t *stab, syment_t *entry)
 
 void dumptab(symtab_t *stab)
 {
-	msg("dump stab#%d: nspace=%s\n", stab->id, stab->nspace);
+	char indent[128] = "\0";
+	for (int i = 0; i < stab->depth; ++i) {
+		strcat(indent, "  ");
+	}
+
+	symtab_t *t = stab;
+	msg("%sstab#%d: depth=%d, nspace=%s\n", indent, t->id, t->depth,
+	    t->nspace);
+	for (int i = 0; i < MAXBUCKETS; ++i) {
+		syment_t *hair = &stab->buckets[i];
+		for (syment_t *e = hair->next; e != NULL; e = e->next) {
+			msg("%s  name=%s, value=%d, label=%s\n", indent,
+			    e->name, e->value, e->label);
+		}
+	}
 }
 
-syment_t *findsym(char *name)
+syment_t *symfind(char *name)
 {
 	if (!curr) {
 		panic("NULL_SYMBOL_TABLE");
@@ -97,11 +111,20 @@ syment_t *findsym(char *name)
 	return e;
 }
 
-void addsym(syment_t *entry)
+void symadd(syment_t *entry)
 {
 	if (!curr) {
 		panic("NULL_SYMBOL_TABLE");
 	}
 	putsym(curr, entry);
 	entry->stab = curr;
+}
+
+void symdump()
+{
+	msg("dump symbol table:\n");
+	for (symtab_t *t = curr; t; t = t->outer) {
+		dumptab(t);
+	}
+	msg("\n");
 }

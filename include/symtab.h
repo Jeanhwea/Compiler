@@ -89,6 +89,7 @@ typedef struct _sym_table_struct {
 symtab_t *scope_entry(char *nspace);
 symtab_t *scope_exit(void);
 // symbol operator
-void addsym(syment_t *entry);
-syment_t *findsym(char *name);
+void symadd(syment_t *entry);
+syment_t *symfind(char *name);
+void symdump();
 #endif /* End of _SYMTAB_H_ */
