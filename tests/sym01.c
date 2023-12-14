@@ -1,6 +1,12 @@
 #include <assert.h>
 #include "symtab.h"
 
+#define DUMP()                                                                 \
+	do {                                                                   \
+		msg("%s():%d ", __func__, __LINE__);                           \
+		symdump();                                                     \
+	} while (0)
+
 void func01();
 void func02();
 
@@ -16,7 +22,7 @@ void func01()
 {
 	syment_t *e;
 	scope_entry("func01");
-	symdump();
+	DUMP();
 
 	e = symfind("aaa");
 	assert(e && !strcmp(e->stab->nspace, "root"));
@@ -26,7 +32,7 @@ void func01()
 	func02();
 
 	add_test_symbol("ccc");
-	symdump();
+	DUMP();
 
 	e = symfind("aaa");
 	assert(e && !strcmp(e->stab->nspace, "func01"));
@@ -44,11 +50,11 @@ void func02()
 {
 	syment_t *e;
 	scope_entry("func02");
-	symdump();
+	DUMP();
 
 	add_test_symbol("aaa");
 	add_test_symbol("ddd");
-	symdump();
+	DUMP();
 
 	e = symfind("ccc");
 	assert(!e);
@@ -62,10 +68,10 @@ int main(int argc, char *argv[])
 	scope_entry("root");
 
 	add_test_symbol("aaa");
-	symdump();
+	DUMP();
 
 	add_test_symbol("bbb");
-	symdump();
+	DUMP();
 
 	e = symfind("aaa");
 	assert(!strcmp(e->name, "aaa"));

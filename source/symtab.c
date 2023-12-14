@@ -125,7 +125,7 @@ void symadd(syment_t *entry)
 
 void symdump()
 {
-	msg("dump symbol table:\n");
+	msg("DUMP SYMBOL TABLE:\n");
 	for (symtab_t *t = curr; t; t = t->outer) {
 		dumptab(t);
 	}
