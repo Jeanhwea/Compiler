@@ -54,7 +54,7 @@ void makedot()
 	for (int i = 0; i < MAXNODES; ++i) {
 		if (label[i]) {
 			char *shape = "oval";
-			if (!strncmp(label[i], "IDENT", 5)) {
+			if (!strncmp(nodes[i]->name, "IDENT", 5)) {
 				shape = "box";
 			}
 			fprintf(fd, "  n%03d[label=\"%s\", shape=\"%s\"];\n", i,
