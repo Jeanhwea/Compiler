@@ -48,7 +48,7 @@ void visit(node_t *node)
 	}
 }
 
-void makedot()
+void gendot()
 {
 	char *outname = "viz.dot";
 	FILE *fd = fopen(outname, "w");
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 	parse();
 	node_t *tree = conv_ast();
 	visit(tree);
-	makedot();
+	gendot();
 	system("dot -Tpdf viz.dot -o viz.pdf");
 	// system("rm viz.dot");
 	return 0;
