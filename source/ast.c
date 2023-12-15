@@ -107,18 +107,25 @@ static node_t *conv_proc_head_node(proc_head_node_t *t)
 static node_t *conv_fun_dec_node(fun_dec_node_t *t)
 {
 	node_t *d = initnode("FUN_DEC");
+	for (; t; t = t->next) {
+		d->childs[d->nchild++] = conv_fun_def_node(t->fdp);
+	}
 	return d;
 }
 
 static node_t *conv_fun_def_node(fun_def_node_t *t)
 {
 	node_t *d = initnode("FUN_DEF");
+	d->childs[d->nchild++] = conv_fun_head_node(t->fhp);
+	d->childs[d->nchild++] = conv_block_node(t->bp);
 	return d;
 }
 
 static node_t *conv_fun_head_node(fun_head_node_t *t)
 {
 	node_t *d = initnode("FUN_HEAD");
+	d->idp = t->idp;
+	d->childs[d->nchild++] = conv_para_list_node(t->plp);
 	return d;
 }
 
@@ -127,11 +134,13 @@ static node_t *conv_stmt_node(stmt_node_t *t)
 	node_t *d = initnode("STMT");
 	return d;
 }
+
 static node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 {
 	node_t *d = initnode("ASSIGN_STMT");
 	return d;
 }
+
 static node_t *conv_if_stmt_node(if_stmt_node_t *t)
 {
 	node_t *d = initnode("IF_STMT");

@@ -322,8 +322,6 @@ static proc_head_node_t *parse_proc_head(void)
 	match(SS_LPAR);
 	if (CURRTOK_ANY2(KW_VAR, MC_ID)) {
 		t->plp = parse_para_list();
-	} else {
-		unlikely();
 	}
 	match(SS_RPAR);
 	match(SS_SEMI);
