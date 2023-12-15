@@ -9,6 +9,7 @@
 
 #define MAXNODES 1024
 #define MAXEDGES 1024
+
 static int nedges = 0;
 static char *label[MAXNODES];
 static node_t *nodes[MAXNODES];
