@@ -46,16 +46,19 @@ void makedot()
 {
 	char *outname = "viz.dot";
 	FILE *fd = fopen(outname, "w");
-	fprintf(fd, "digraph %s {}", PL0C_PROGNAME);
+	fprintf(fd, "digraph viz {\n");
+	fprintf(fd, "  rankdir=LR;\n");
 	for (int i = 0; i < MAXNODES; ++i) {
 		if (nodes[i]) {
-			printf(fd, "n%03d %s\n", i, nodes[i]);
+			fprintf(fd, "  n%03d[label=\"%s\"];\n", i, nodes[i]);
 		}
 	}
 	for (int i = 0; i < nedges; ++i) {
-		printf(fd, "%d -> %d\n", beg[i], end[i]);
+		fprintf(fd, "  n%03d -> n%03d;\n", beg[i], end[i]);
 	}
+	fprintf(fd, "}\n");
 	fclose(fd);
+	printf("%s", outname);
 }
 
 int main(int argc, char *argv[])
