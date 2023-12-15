@@ -28,7 +28,8 @@ void visit(node_t *node)
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
 		char append[512];
-		sprintf(append, "\\nname=%s", idp->name);
+		sprintf(append, "\\nname=%d\\nident_t=%d", idp->name,
+			idp->type);
 		strcat(buf, append);
 	}
 
