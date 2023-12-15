@@ -150,6 +150,7 @@ static node_t *conv_stmt_node(stmt_node_t *t)
 		return d;
 	}
 
+	d->cate = t->type;
 	switch (t->type) {
 	case ASSGIN_STMT:
 		addchild(d, conv_assign_stmt_node(t->asp), "asp");
@@ -186,6 +187,7 @@ static node_t *conv_stmt_node(stmt_node_t *t)
 static node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 {
 	node_t *d = initnode("ASSIGN_STMT");
+	d->cate = t->type;
 	switch (t->type) {
 	case NORM_ASSGIN:
 		addchild(d, conv_ident_node(t->idp), "idp");
