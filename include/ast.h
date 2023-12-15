@@ -5,10 +5,13 @@
 
 typedef struct _tree_node node_t;
 typedef struct _tree_node {
+	int id;
 	char *name;
 	int nchild;
 	node_t *childs[32];
 	ident_node_t *idp;
+	int type;
+	char *extra;
 } node_t;
 
 static node_t *conv_pgm_node(pgm_node_t *t);
