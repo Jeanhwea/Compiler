@@ -729,13 +729,13 @@ static expr_node_t *parse_expr(void)
 		switch (currtok) {
 		case SS_PLUS:
 			match(SS_PLUS);
-			t->op = ADD_ADDOP;
-			t->tp = parse_term();
+			q->op = ADD_ADDOP;
+			q->tp = parse_term();
 			break;
 		case SS_MINUS:
 			match(SS_MINUS);
-			t->op = NEG_ADDOP;
-			t->tp = parse_term();
+			q->op = NEG_ADDOP;
+			q->tp = parse_term();
 			break;
 		default:
 			unlikely();
