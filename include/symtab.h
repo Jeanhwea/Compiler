@@ -22,10 +22,10 @@ typedef enum _sym_cate_enum {
 	/*  6 */ BYVAL_OBJ,
 	/*  7 */ BYREF_OBJ,
 	// Additional
-	/*  9 */ TMP_OBJ,
-	/* 10 */ LABEL_OBJ,
-	/* 11 */ NUM_OBJ,
-	/* 12 */ STRING_OBJ
+	/*  8 */ TMP_OBJ,
+	/*  9 */ LABEL_OBJ,
+	/* 10 */ NUM_OBJ,
+	/* 11 */ STR_OBJ
 } cate_t;
 
 // symbol type

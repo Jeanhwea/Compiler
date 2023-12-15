@@ -1,3 +1,4 @@
+#include "anlys.h"
 #include "global.h"
 #include "ast.h"
 #include "util.h"
@@ -20,11 +21,20 @@ void prtnode(node_t *node)
 	}
 
 	char buf[1024];
-	sprintf(buf, "#%03d %s cate=%d", node->id, node->name, node->cate);
+	sprintf(buf, "#%03d %s", node->id, node->name);
+
+	if (node->extra) {
+		appendf(buf, " [%s]", node->extra);
+	}
 
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
-		appendf(buf, ": name=%s", idp->name);
+		appendf(buf, " name=%s kind=%d", idp->name, idp->kind);
+		syment_t *sym = idp->symbol;
+		if (sym) {
+			appendf(buf, " type=%d cate=%d label=%s", sym->type,
+				sym->cate, sym->label);
+		}
 	}
 	msg("%s\n", buf);
 
@@ -40,6 +50,7 @@ int main(int argc, char *argv[])
 {
 	init(argc, argv);
 	parse();
+	analysis();
 	node_t *tree = conv_ast();
 	prtnode(tree);
 	return 0;
