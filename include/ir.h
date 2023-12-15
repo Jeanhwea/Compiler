@@ -17,7 +17,7 @@ typedef enum _inst_op_enum {
 	// Save and Store
 	/*  7 */ LOAD_OP,
 	/*  8 */ ASS_OP,
-	/*  9 */ AARR_OP,
+	/*  9 */ ASA_OP,
 	// Conditional Branch
 	/* 10 */ EQU_OP,
 	/* 11 */ NEQ_OP,
