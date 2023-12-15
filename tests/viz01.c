@@ -10,8 +10,8 @@
 #define MAXNODES 1024
 #define MAXEDGES 1024
 static int nedges = 0;
-static char *names[MAXNODES];
-static int types[MAXNODES];
+static char *label[MAXNODES];
+static node_t *nodes[MAXNODES];
 static int beg[MAXEDGES];
 static int end[MAXEDGES];
 
@@ -30,8 +30,8 @@ void visit(node_t *node)
 		strcat(buf, append);
 	}
 
-	names[node->id] = dupstr(buf);
-	types[node->id] = node->type;
+	label[node->id] = dupstr(buf);
+	nodes[node->id] = node;
 	for (int i = 0; i < node->nchild; ++i) {
 		node_t *child = node->childs[i];
 		if (!child) {
@@ -52,13 +52,13 @@ void makedot()
 	fprintf(fd, "digraph viz {\n");
 	// fprintf(fd, "  rankdir=LR;\n");
 	for (int i = 0; i < MAXNODES; ++i) {
-		if (names[i]) {
+		if (label[i]) {
 			char *shape = "oval";
-			if (!strncmp(names[i], "IDENT", 5)) {
+			if (!strncmp(label[i], "IDENT", 5)) {
 				shape = "box";
 			}
 			fprintf(fd, "  n%03d[label=\"%s\", shape=\"%s\"];\n", i,
-				names[i], shape);
+				label[i], shape);
 		}
 	}
 	for (int i = 0; i < nedges; ++i) {
