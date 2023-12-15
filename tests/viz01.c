@@ -19,7 +19,7 @@ void visit(node_t *node)
 {
 	nevernil(node);
 
-	sprintf(buf, "%s/%d", node->name, node->type);
+	sprintf(buf, "%s", node->name);
 
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
