@@ -342,6 +342,26 @@ static node_t *conv_cond_node(cond_node_t *t)
 {
 	node_t *d = initnode("COND");
 	d->cate = t->op;
+	switch (t->op) {
+	case EQU_RELA:
+		d->extra = "=";
+		break;
+	case NEQ_RELA:
+		d->extra = "<>";
+		break;
+	case GTT_RELA:
+		d->extra = ">";
+		break;
+	case GEQ_RELA:
+		d->extra = ">=";
+		break;
+	case LST_RELA:
+		d->extra = "<";
+		break;
+	case LEQ_RELA:
+		d->extra = "<=";
+		break;
+	}
 	addchild(d, conv_expr_node(t->lep), "lep");
 	addchild(d, conv_expr_node(t->rep), "rep");
 	return d;
