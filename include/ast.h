@@ -3,12 +3,14 @@
 #include "global.h"
 #include "parse.h"
 
+#define MAXCHILD 32
 typedef struct _tree_node node_t;
 typedef struct _tree_node {
 	int id;
 	char *name;
-	int nchild;
-	node_t *childs[32];
+	int total;
+	char *refs[MAXCHILD];
+	node_t *childs[MAXCHILD];
 	ident_node_t *idp;
 	int type;
 	char *extra;

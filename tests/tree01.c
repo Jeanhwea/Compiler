@@ -38,7 +38,7 @@ void dispnode(node_t *node)
 	msg("%s\n", buf);
 
 	nodes[node->id] = dupstr(buf);
-	for (int i = 0; i < node->nchild; ++i) {
+	for (int i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
 		if (!child) {
 			continue;

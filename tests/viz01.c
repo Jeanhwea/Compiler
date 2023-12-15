@@ -32,7 +32,7 @@ void visit(node_t *node)
 
 	label[node->id] = dupstr(buf);
 	nodes[node->id] = node;
-	for (int i = 0; i < node->nchild; ++i) {
+	for (int i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
 		if (!child) {
 			continue;
