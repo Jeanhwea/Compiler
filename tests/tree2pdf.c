@@ -51,6 +51,7 @@ void visit(node_t *node)
 	}
 
 	for (int i = 0; i < node->total; ++i) {
+		node_t *child = node->childs[i];
 		visit(child);
 	}
 }
