@@ -1,6 +1,8 @@
 #include "global.h"
 #include "util.h"
 
+char prtbuf[PRTBUFSIZE];
+
 char *dupstr(char *s)
 {
 	int n;

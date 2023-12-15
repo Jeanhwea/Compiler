@@ -24,9 +24,7 @@ void prtnode(node_t *node)
 
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
-		char buf2[512];
-		sprintf(buf2, ": name=%s", idp->name);
-		strcat(buf, buf2);
+		appendf(buf, ": name=%s", idp->name);
 	}
 	msg("%s\n", buf);
 
