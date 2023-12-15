@@ -18,9 +18,10 @@ void dispnode(node_t *node)
 
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
-		msg("%s name=%s, line=%d\n", node->name, idp->name, idp->line);
+		msg("%s #%d %d [name=%s, line=%d]\n", node->name, node->id,
+		    node->type, idp->name, idp->line);
 	} else {
-		msg("%s #%d\n", node->name, node->id);
+		msg("%s #%d %d\n", node->name, node->id, node->type);
 	}
 	for (int i = 0; i < node->nchild; ++i) {
 		dispnode(node->childs[i]);
