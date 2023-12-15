@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "global.h"
 #include "ast.h"
 #include "util.h"
@@ -7,35 +8,25 @@
 
 #define MAXNODES 1024
 #define MAXEDGES 1024
-int nedges = 0;
-char *nodes[MAXNODES];
-int beg[MAXEDGES];
-int end[MAXEDGES];
+static int nedges = 0;
+static char *nodes[MAXNODES];
+static int beg[MAXEDGES];
+static int end[MAXEDGES];
 
-int level = 0;
+static char buf[1024];
 
-void dispnode(node_t *node)
+void visit(node_t *node)
 {
-	level++;
-	for (int i = 1; i < level; ++i) {
-		msg(" ");
-	}
+	nevernil(node);
 
-	if (!node) {
-		msg("(nil)");
-		goto postwork;
-	}
-
-	char buf[1024];
-	sprintf(buf, "%s %d", node->name, node->type);
+	sprintf(buf, "%s/%d", node->name, node->type);
 
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
 		char append[512];
-		sprintf(append, " [name=%s]", idp->name);
+		sprintf(append, "\\nname=%s", idp->name);
 		strcat(buf, append);
 	}
-	msg("%s\n", buf);
 
 	nodes[node->id] = dupstr(buf);
 	for (int i = 0; i < node->nchild; ++i) {
@@ -43,36 +34,37 @@ void dispnode(node_t *node)
 		if (!child) {
 			continue;
 		}
+
 		beg[nedges] = node->id;
 		end[nedges] = child->id;
 		++nedges;
-		dispnode(child);
+		visit(child);
 	}
-
-postwork:
-	level--;
 }
 
 void makedot()
 {
+	char *outname = "viz.dot";
+	FILE *fd = fopen(outname, "w");
+	fprintf(fd, "digraph %s {}", PL0C_PROGNAME);
 	for (int i = 0; i < MAXNODES; ++i) {
 		if (nodes[i]) {
-			printf("n%03d %s\n", i, nodes[i]);
+			printf(fd, "n%03d %s\n", i, nodes[i]);
 		}
 	}
 	for (int i = 0; i < nedges; ++i) {
-		printf("%d -> %d\n", beg[i], end[i]);
+		printf(fd, "%d -> %d\n", beg[i], end[i]);
 	}
+	fclose(fd);
 }
 
 int main(int argc, char *argv[])
 {
+	silent = 1;
 	init(argc, argv);
 	parse();
 	node_t *tree = conv_ast();
-	msg("tree = %p\n", tree);
-
-	dispnode(tree);
+	visit(tree);
 	makedot(tree);
 	return 0;
 }
