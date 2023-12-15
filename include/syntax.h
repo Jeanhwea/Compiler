@@ -207,7 +207,7 @@ typedef enum _ident_enum {
 	CHAR_PARA_REF_IDENT
 } ident_t;
 typedef struct _ident_node {
-	ident_t type;
+	ident_t kind;
 	char *name;
 	int value;
 	int length;

@@ -118,23 +118,23 @@ static const_def_node_t *parse_const_def(void)
 		switch (currtok) {
 		case SS_PLUS:
 			match(SS_PLUS);
-			t->idp->type = INT_CONST_IDENT;
+			t->idp->kind = INT_CONST_IDENT;
 			t->idp->value = atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case SS_MINUS:
 			match(SS_MINUS);
-			t->idp->type = INT_CONST_IDENT;
+			t->idp->kind = INT_CONST_IDENT;
 			t->idp->value = -atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case MC_UNS:
-			t->idp->type = INT_CONST_IDENT;
+			t->idp->kind = INT_CONST_IDENT;
 			t->idp->value = -atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case MC_CH:
-			t->idp->type = CHAR_CONST_IDENT;
+			t->idp->kind = CHAR_CONST_IDENT;
 			t->idp->value = (int)tokbuf[0];
 			match(MC_CH);
 			break;
@@ -196,13 +196,13 @@ static var_def_node_t *parse_var_def(void)
 	case KW_INTEGER:
 		match(KW_INTEGER);
 		for (p = t; p; p = p->next) {
-			p->idp->type = INT_VAR_IDENT;
+			p->idp->kind = INT_VAR_IDENT;
 		}
 		break;
 	case KW_CHAR:
 		match(KW_CHAR);
 		for (p = t; p; p = p->next) {
-			p->idp->type = INT_VAR_IDENT;
+			p->idp->kind = INT_VAR_IDENT;
 		}
 		break;
 	case KW_ARRAY: // array[10] of integer
@@ -219,13 +219,13 @@ static var_def_node_t *parse_var_def(void)
 		if (CURRTOK_ANY(KW_INTEGER)) {
 			match(KW_INTEGER);
 			for (p = t; p; p = p->next) {
-				p->idp->type = INT_ARRVAR_IDENT;
+				p->idp->kind = INT_ARRVAR_IDENT;
 				p->idp->length = arrlen;
 			}
 		} else if (CURRTOK_ANY(KW_CHAR)) {
 			match(KW_CHAR);
 			for (p = t; p; p = p->next) {
-				p->idp->type = CHAR_ARRVAR_IDENT;
+				p->idp->kind = CHAR_ARRVAR_IDENT;
 				p->idp->length = arrlen;
 			}
 		} else {
@@ -317,7 +317,7 @@ static proc_head_node_t *parse_proc_head(void)
 
 	match(KW_PROCEDURE);
 	t->idp = parse_ident(READCURR);
-	t->idp->type = PROC_IDENT;
+	t->idp->kind = PROC_IDENT;
 
 	match(SS_LPAR);
 	if (CURRTOK_ANY2(KW_VAR, MC_ID)) {
@@ -389,11 +389,11 @@ static fun_head_node_t *parse_fun_head(void)
 	switch (currtok) {
 	case KW_INTEGER:
 		match(KW_INTEGER);
-		t->idp->type = CHAR_FUN_IDENT;
+		t->idp->kind = CHAR_FUN_IDENT;
 		break;
 	case KW_CHAR:
 		match(KW_CHAR);
-		t->idp->type = CHAR_FUN_IDENT;
+		t->idp->kind = CHAR_FUN_IDENT;
 		break;
 	default:
 		unlikely();
@@ -877,7 +877,7 @@ static ident_node_t *parse_ident(idreadmode_t mode)
 
 	switch (mode) {
 	case READCURR:
-		t->type = INIT_IDENT;
+		t->kind = INIT_IDENT;
 		t->value = 0;
 		t->length = 0;
 		t->line = lineno;
@@ -885,7 +885,7 @@ static ident_node_t *parse_ident(idreadmode_t mode)
 		match(MC_ID);
 		break;
 	case READPREV:
-		t->type = INIT_IDENT;
+		t->kind = INIT_IDENT;
 		t->value = 0;
 		t->length = 0;
 		t->line = prevlineno;
@@ -947,14 +947,14 @@ static para_def_node_t *parse_para_def(void)
 	case KW_INTEGER:
 		match(KW_INTEGER);
 		for (p = t; p; p = p->next) {
-			p->idp->type =
+			p->idp->kind =
 				byref ? INT_PARA_REF_IDENT : INT_PARA_VAL_IDENT;
 		}
 		break;
 	case KW_CHAR:
 		match(KW_CHAR);
 		for (p = t; p; p = p->next) {
-			p->idp->type = byref ? CHAR_PARA_REF_IDENT :
+			p->idp->kind = byref ? CHAR_PARA_REF_IDENT :
 					       CHAR_PARA_VAL_IDENT;
 		}
 		break;

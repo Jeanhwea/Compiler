@@ -145,7 +145,7 @@ syment_t *syminit(ident_node_t *idp)
 	e->arrlen = idp->length;
 	e->lineno = idp->line;
 
-	switch (idp->type) {
+	switch (idp->kind) {
 	case PROC_IDENT:
 		e->cate = PROC_OBJ;
 		break;
@@ -177,7 +177,7 @@ syment_t *syminit(ident_node_t *idp)
 		e->cate = NOP_OBJ;
 	}
 
-	switch (idp->type) {
+	switch (idp->kind) {
 	case INT_FUN_IDENT:
 	case INT_CONST_IDENT:
 	case INT_VAR_IDENT:
