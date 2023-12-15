@@ -1,6 +1,8 @@
+#include "anlys.h"
 #include "debug.h"
 #include "global.h"
 #include "ast.h"
+#include "symtab.h"
 #include "util.h"
 #include "syntax.h"
 #include <stdio.h>
@@ -27,9 +29,12 @@ void visit(node_t *node)
 
 	if (node->idp) {
 		ident_node_t *idp = node->idp;
-		char append[512];
-		sprintf(append, "\\nname=%s\\nkind=%d", idp->name, idp->kind);
-		strcat(buf, append);
+		appendf(buf, "\\nname=%s\\nkind=%d", idp->name, idp->kind);
+		syment_t *sym = idp->symbol;
+		if (sym) {
+			appendf(buf, "\\ntype=%d\\ncate=%d\\nlabel=%s",
+				sym->type, sym->cate, sym->label);
+		}
 	}
 
 	label[node->id] = dupstr(buf);
@@ -81,6 +86,7 @@ int main(int argc, char *argv[])
 	silent = 1;
 	init(argc, argv);
 	parse();
+	analysis();
 	node_t *tree = conv_ast();
 	visit(tree);
 	writedot();

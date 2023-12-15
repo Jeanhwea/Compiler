@@ -8,4 +8,4 @@ set pagination off
 # set non-stop off
 
 # set test source file
-set args ./examples/bubble.pas
+# set args ./examples/bubble.pas

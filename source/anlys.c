@@ -229,17 +229,21 @@ static void anlys_stmt(stmt_node_t *node)
 static void anlys_assign_stmt(assign_stmt_node_t *node)
 {
 	syment_t *e;
+	ident_node_t *idp = node->idp;
+	e = symfind(idp->name);
+	if (!e) {
+		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
+		       idp->name);
+	}
+	idp->symbol = e;
 	switch (node->type) {
 	case NORM_ASSGIN:
 	case FUN_ASSGIN:
+		anlys_expr(node->rep);
+		break;
 	case ARRAY_ASSGIN:
-		ident_node_t *idp = node->idp;
-		e = symfind(idp->name);
-		if (!e) {
-			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-			       idp->name);
-		}
-		idp->symbol = e;
+		anlys_expr(node->lep);
+		anlys_expr(node->rep);
 		break;
 	default:
 		unlikely();
