@@ -1,7 +1,6 @@
-const a = 1, b = 2, c = 3;
-var x, y, z: integer;
+const a = 1, b = 2;
+var x, y : integer, ch: char;
 begin
    x := a + b + c;
-   y := a * b * c;
-   z := a + b * c
+   y := a - b * c
 end.
