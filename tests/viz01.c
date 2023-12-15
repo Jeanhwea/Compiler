@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	parse();
 	node_t *tree = conv_ast();
 	visit(tree);
-	makedot(tree);
+	makedot();
 	system("dot -Tpdf viz.dot -o viz.pdf");
 	// system("rm viz.dot");
 	return 0;
