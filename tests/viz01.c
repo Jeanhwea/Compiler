@@ -4,12 +4,14 @@
 #include "util.h"
 #include "syntax.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAXNODES 1024
 #define MAXEDGES 1024
 static int nedges = 0;
-static char *nodes[MAXNODES];
+static char *names[MAXNODES];
+static int types[MAXNODES];
 static int beg[MAXEDGES];
 static int end[MAXEDGES];
 
@@ -28,7 +30,8 @@ void visit(node_t *node)
 		strcat(buf, append);
 	}
 
-	nodes[node->id] = dupstr(buf);
+	names[node->id] = dupstr(buf);
+	types[node->id] = node->type;
 	for (int i = 0; i < node->nchild; ++i) {
 		node_t *child = node->childs[i];
 		if (!child) {
@@ -47,10 +50,15 @@ void makedot()
 	char *outname = "viz.dot";
 	FILE *fd = fopen(outname, "w");
 	fprintf(fd, "digraph viz {\n");
-	fprintf(fd, "  rankdir=LR;\n");
+	// fprintf(fd, "  rankdir=LR;\n");
 	for (int i = 0; i < MAXNODES; ++i) {
-		if (nodes[i]) {
-			fprintf(fd, "  n%03d[label=\"%s\"];\n", i, nodes[i]);
+		if (names[i]) {
+			char *shape = "oval";
+			if (!strncmp(names[i], "IDENT", 5)) {
+				shape = "box";
+			}
+			fprintf(fd, "  n%03d[label=\"%s\", shape=\"%s\"];\n", i,
+				names[i], shape);
 		}
 	}
 	for (int i = 0; i < nedges; ++i) {
@@ -69,5 +77,7 @@ int main(int argc, char *argv[])
 	node_t *tree = conv_ast();
 	visit(tree);
 	makedot(tree);
+	system("dot -Tpdf viz.dot -o viz.pdf");
+	// system("rm viz.dot");
 	return 0;
 }
