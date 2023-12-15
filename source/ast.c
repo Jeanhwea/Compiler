@@ -294,7 +294,7 @@ static node_t *conv_term_node(term_node_t *t)
 static node_t *conv_factor_node(factor_node_t *t)
 {
 	node_t *d = initnode("FACTOR");
-	d->type = t->type;
+	d->cate = t->type;
 	switch (t->type) {
 	case ID_FACTOR:
 	case ARRAY_FACTOR:
@@ -319,7 +319,7 @@ static node_t *conv_factor_node(factor_node_t *t)
 static node_t *conv_cond_node(cond_node_t *t)
 {
 	node_t *d = initnode("COND");
-	d->type = t->op;
+	d->cate = t->op;
 	addchild(d, conv_expr_node(t->lep), "lep");
 	addchild(d, conv_expr_node(t->rep), "rep");
 	return d;

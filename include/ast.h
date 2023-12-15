@@ -12,7 +12,10 @@ typedef struct _tree_node {
 	char *refs[MAXCHILD];
 	node_t *childs[MAXCHILD];
 	ident_node_t *idp;
-	int type;
+	// which category:
+	//   type(addop_t, multop_t, factor_t)
+	//   op(rela_t)
+	int cate;
 	char *extra;
 } node_t;
 
