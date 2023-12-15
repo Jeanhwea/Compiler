@@ -54,7 +54,7 @@ void gendot()
 	FILE *fd = fopen(outname, "w");
 	fprintf(fd, "digraph viz {\n");
 	char *indent = "  ";
-	fprintf(fd, "%srankdir=LR;\n", indent);
+	// fprintf(fd, "%srankdir=LR;\n", indent);
 	for (int i = 0; i < MAXNODES; ++i) {
 		if (label[i]) {
 			char *shape = "oval";
