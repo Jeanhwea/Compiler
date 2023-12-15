@@ -7,7 +7,7 @@ void quit(char *file, int line, const char *func, int errno, char *msg);
 // print message
 #define msg(fmt, args...)                                                      \
 	do {                                                                   \
-		if (silent) {                                                  \
+		if (!silent) {                                                 \
 			printf(fmt, ##args);                                   \
 		}                                                              \
 	} while (0)

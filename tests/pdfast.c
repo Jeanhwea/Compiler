@@ -77,6 +77,7 @@ void gendot()
 
 int main(int argc, char *argv[])
 {
+	echo = 0;
 	silent = 1;
 	init(argc, argv);
 	parse();
