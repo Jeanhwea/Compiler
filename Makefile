@@ -46,6 +46,8 @@ index: clean
 
 -include $(DEPS)
 
-.PHONY: all clean index setup tests
+.PHONY: all clean distclean index setup tests
 clean:
-	$(RM) -r $(BLD_DIR) pl0c cscope.* compile_commands.json bin/*
+	$(RM) -r $(BLD_DIR) pl0c bin/* viz*
+distclean:
+	$(RM) -r compile_commands.json cscope.* TAGS
