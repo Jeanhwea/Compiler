@@ -37,8 +37,8 @@ typedef enum _inst_op_enum {
 	/* 22 */ ENTER_OP,
 	/* 23 */ FIN_OP,
 	// I/O Management
-	/* 24 */ READ_OP,
-	/* 25 */ READC_OP,
+	/* 24 */ RDI_OP,
+	/* 25 */ RDC_OP,
 	/* 26 */ WRS_OP,
 	/* 27 */ WRI_OP,
 	/* 28 */ WRC_OP,
