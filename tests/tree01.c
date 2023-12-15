@@ -1,5 +1,6 @@
 #include "global.h"
 #include "ast.h"
+#include "syntax.h"
 
 int level = 0;
 
@@ -9,7 +10,12 @@ void dispnode(node_t *node)
 	for (int i = 1; i < level; ++i) {
 		msg(" ");
 	}
-	msg("%s\n", node->name);
+	if (node->idp) {
+		ident_node_t *idp;
+		msg("%s [%s]\n", node->name, idp->name);
+	} else {
+		msg("%s\n", node->name);
+	}
 	for (int i = 0; i < node->nchild; ++i) {
 		dispnode(node->childs[i]);
 	}
