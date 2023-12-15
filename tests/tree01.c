@@ -11,8 +11,8 @@ void dispnode(node_t *node)
 		msg(" ");
 	}
 	if (node->idp) {
-		ident_node_t *idp;
-		msg("%s [%s]\n", node->name, idp->name);
+		ident_node_t *idp = node->idp;
+		msg("%s name=%s, line=%d\n", node->name, idp->name, idp->line);
 	} else {
 		msg("%s\n", node->name);
 	}
