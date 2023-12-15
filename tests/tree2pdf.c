@@ -44,14 +44,13 @@ void visit(node_t *node)
 	nodes[node->id] = node;
 	for (int i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
-		if (!child) {
-			continue;
-		}
-
 		beg[nedges] = node->id;
 		end[nedges] = child->id;
 		ref[nedges] = node->refs[i];
 		++nedges;
+	}
+
+	for (int i = 0; i < node->total; ++i) {
 		visit(child);
 	}
 }

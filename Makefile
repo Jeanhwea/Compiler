@@ -35,7 +35,6 @@ $(BLD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c $< -o $@
 
-
 setup: clean index
 	bear -- make
 
