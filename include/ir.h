@@ -11,10 +11,8 @@ typedef enum _inst_op_enum {
 	/*  1 */ SUB_OP,
 	/*  2 */ MUL_OP,
 	/*  3 */ DIV_OP,
-	// Unary
 	/*  4 */ INC_OP,
 	/*  5 */ DEC_OP,
-	// Binary
 	/*  6 */ NEG_OP,
 	// Save and Store
 	/*  7 */ LOAD_OP,
