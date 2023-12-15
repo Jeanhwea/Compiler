@@ -14,6 +14,7 @@ static char *label[MAXNODES];
 static node_t *nodes[MAXNODES];
 static int beg[MAXEDGES];
 static int end[MAXEDGES];
+static char *ref[MAXEDGES];
 
 static char buf[1024];
 
@@ -40,6 +41,7 @@ void visit(node_t *node)
 
 		beg[nedges] = node->id;
 		end[nedges] = child->id;
+		ref[nedges] = node->refs[i];
 		++nedges;
 		visit(child);
 	}
@@ -50,19 +52,22 @@ void makedot()
 	char *outname = "viz.dot";
 	FILE *fd = fopen(outname, "w");
 	fprintf(fd, "digraph viz {\n");
-	// fprintf(fd, "  rankdir=LR;\n");
+	char *indent = "  ";
+	fprintf(fd, "%srankdir=LR;\n", indent);
 	for (int i = 0; i < MAXNODES; ++i) {
 		if (label[i]) {
 			char *shape = "oval";
 			if (!strncmp(nodes[i]->name, "IDENT", 5)) {
 				shape = "box";
 			}
-			fprintf(fd, "  n%03d[label=\"%s\", shape=\"%s\"];\n", i,
-				label[i], shape);
+			fprintf(fd,
+				"%sn%03d[label=\"#%d %s\", shape=\"%s\"];\n",
+				indent, i, i, label[i], shape);
 		}
 	}
 	for (int i = 0; i < nedges; ++i) {
-		fprintf(fd, "  n%03d -> n%03d;\n", beg[i], end[i]);
+		fprintf(fd, "%sn%03d -> n%03d[label=\"%s\"];\n", indent, beg[i],
+			end[i], ref[i]);
 	}
 	fprintf(fd, "}\n");
 	fclose(fd);
