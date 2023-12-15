@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "debug.h"
+#include "ir.h"
 #include "util.h"
 #include "global.h"
 #include "parse.h"
@@ -279,6 +280,15 @@ static node_t *conv_expr_node(expr_node_t *t)
 {
 	node_t *d = initnode("EXPR");
 	for (; t; t = t->next) {
+		switch (t->op) {
+		case ADD_ADDOP:
+			d->extra = "+";
+			break;
+		case MINUS_ADDOP:
+		case NEG_ADDOP:
+			d->extra = "-";
+			break;
+		}
 		addchild(d, conv_term_node(t->tp), "tp");
 	}
 	return d;
@@ -288,6 +298,14 @@ static node_t *conv_term_node(term_node_t *t)
 {
 	node_t *d = initnode("TERM");
 	for (; t; t = t->next) {
+		switch (t->op) {
+		case MULT_MULTOP:
+			d->extra = "*";
+			break;
+		case DIV_MULTOP:
+			d->extra = "/";
+			break;
+		}
 		addchild(d, conv_factor_node(t->fp), "fp");
 	}
 	return d;
@@ -299,6 +317,8 @@ static node_t *conv_factor_node(factor_node_t *t)
 	d->cate = t->type;
 	switch (t->type) {
 	case ID_FACTOR:
+		addchild(d, conv_ident_node(t->idp), "idp");
+		break;
 	case ARRAY_FACTOR:
 		addchild(d, conv_ident_node(t->idp), "idp");
 		addchild(d, conv_expr_node(t->ep), "ep");

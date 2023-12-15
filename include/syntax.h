@@ -165,8 +165,7 @@ typedef struct _factor_node {
 	factor_t type;
 	ident_node_t *idp;
 	expr_node_t *ep;
-	/* unsign int */
-	int usi;
+	int usi; // store unsign int value
 	fcall_stmt_node_t *fcsp;
 } factor_node_t;
 typedef enum _rela_enum {
