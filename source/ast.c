@@ -61,7 +61,9 @@ static node_t *conv_var_dec_node(var_dec_node_t *t)
 static node_t *conv_var_def_node(var_def_node_t *t)
 {
 	node_t *d = initnode("VAR_DEF");
-	d->childs[d->nchild++] = conv_ident_node(t->idp);
+	for (; t; t = t->next) {
+		d->childs[d->nchild++] = conv_ident_node(t->idp);
+	}
 	return d;
 }
 
