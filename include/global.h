@@ -34,7 +34,6 @@ void init(int argc, char *argv[]);
 #define MAXLINEBUF 4096
 extern char linebuf[MAXLINEBUF];
 extern int bufsize;
-
 token_t gettok(void);
 
 // Syntax
@@ -44,5 +43,6 @@ pgm_node_t *parse(void);
 
 // Semantic
 // in analysis.c
+void analysis();
 
 #endif /* End of _GLOBAL_H_ */
