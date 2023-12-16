@@ -272,7 +272,20 @@ static node_t *conv_read_stmt_node(read_stmt_node_t *t)
 static node_t *conv_write_stmt_node(write_stmt_node_t *t)
 {
 	node_t *d = initnode("WRITE_STMT");
-	addchild(d, conv_expr_node(t->ep), "ep");
+	d->cate = t->type;
+	switch (t->type) {
+	case STR_WRITE:
+		d->extra = dupstr(t->sp);
+		break;
+	case ID_WRITE:
+		d->extra = dupstr(t->sp);
+		addchild(d, conv_expr_node(t->ep), "ep");
+		break;
+	case STRID_WRITE:
+		d->extra = dupstr(t->sp);
+		addchild(d, conv_expr_node(t->ep), "ep");
+		break;
+	}
 	return d;
 }
 

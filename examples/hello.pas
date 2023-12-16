@@ -1,0 +1,3 @@
+begin
+  write("Hello")
+end.
