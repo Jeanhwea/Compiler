@@ -1,6 +1,7 @@
 #include "anlys.h"
 #include "global.h"
 #include "ast.h"
+#include "parse.h"
 #include "util.h"
 #include "syntax.h"
 #include <stdio.h>
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
 	init(argc, argv);
 	parse();
 	analysis();
-	node_t *tree = conv_ast();
+	node_t *tree = conv_pgm_node(prog);
 	prtnode(tree);
 	return 0;
 }
