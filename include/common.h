@@ -9,7 +9,10 @@
 #define TRUE 1
 #endif
 
+// global defines
 typedef int bool;
+typedef enum _token_enum token_t;
+typedef struct _pgm_node pgm_node_t;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Initialize struct, allocate memory

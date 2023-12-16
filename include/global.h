@@ -5,7 +5,6 @@
 #include <string.h>
 #include "common.h"
 #include "debug.h"
-#include "parse.h"
 
 // consts
 extern char *PL0C_NAME;
@@ -35,6 +34,7 @@ void init(int argc, char *argv[]);
 #define MAXLINEBUF 4096
 extern char linebuf[MAXLINEBUF];
 extern int bufsize;
+
 token_t gettok(void);
 
 // Syntax

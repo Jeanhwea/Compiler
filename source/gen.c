@@ -1,3 +1,8 @@
+#include "gen.h"
+#include "syntax.h"
+#include "global.h"
+#include "symtab.h"
+
 static void gen_pgm(pgm_node_t *node)
 {
 	scope_entry("main");

@@ -1,5 +1,7 @@
 #ifndef _GEN_H_
 #define _GEN_H_
+#include "parse.h"
+#include "symtab.h"
 
 static void gen_pgm(pgm_node_t *node);
 static void gen_const_decf(const_dec_node_t *node);
