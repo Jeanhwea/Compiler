@@ -201,3 +201,13 @@ syment_t *syminit(ident_node_t *idp)
 	symadd(e);
 	return e;
 }
+
+syment_t *symalloc(char *name, cate_t cate, type_t type)
+{
+	syment_t *e;
+	NEWENTRY(e);
+	e->name = dupstr(name);
+	sprintf(e->label, "L%03d", ++nlabel);
+	e->cate = cate;
+	e->type = type;
+}

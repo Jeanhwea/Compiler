@@ -21,11 +21,11 @@ static void gen_for_stmt(for_stmt_node_t *node);
 static void gen_pcall_stmt(pcall_stmt_node_t *node);
 static void gen_read_stmt(read_stmt_node_t *node);
 static void gen_write_stmt(write_stmt_node_t *node);
-static void gen_expr(expr_node_t *node);
-static void gen_term(term_node_t *node);
-static void gen_factor(factor_node_t *node);
-static void gen_fcall_stmt(fcall_stmt_node_t *node);
-static void gen_cond(cond_node_t *node);
+static syment_t *gen_expr(expr_node_t *node);
+static syment_t *gen_term(term_node_t *node);
+static syment_t *gen_factor(factor_node_t *node);
+static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node);
+static void gen_cond(cond_node_t *node, syment_t *dest);
 static void gen_arg_list(syment_t *sign, arg_list_node_t *node);
 
 #endif /* End of _GEN_H_ */

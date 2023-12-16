@@ -2,55 +2,24 @@
 #include "syntax.h"
 #include "global.h"
 #include "symtab.h"
+#include "ir.h"
 
 static void gen_pgm(pgm_node_t *node)
 {
-	scope_entry("main");
-
-	nevernil(node->bp);
 	block_node_t *b = node->bp;
-	gen_const_decf(b->cdp);
-	gen_var_decf(b->vdp);
 	gen_pf_dec_list(b->pfdlp);
+	// main(...)
+	emit0(ENTER_OP);
 	gen_comp_stmt(b->csp);
-
-	scope_exit();
+	emit0(FIN_OP);
 }
 
 static void gen_const_decf(const_dec_node_t *node)
 {
-	for (const_dec_node_t *t = node; t; t = t->next) {
-		nevernil(t->cdp);
-		nevernil(t->cdp->idp);
-		ident_node_t *idp = t->cdp->idp;
-		syment_t *e = symget(idp->name);
-		if (e) {
-			rescue(DUPSYM, "L%d: const %s already declared.",
-			       idp->line, idp->name);
-		} else {
-			e = syminit(idp);
-		}
-		idp->symbol = e;
-	}
 }
 
 static void gen_var_decf(var_dec_node_t *node)
 {
-	for (var_dec_node_t *t = node; t; t = t->next) {
-		for (var_def_node_t *p = t->vdp; p; p = p->next) {
-			nevernil(p->idp);
-			ident_node_t *idp = p->idp;
-			syment_t *e = symget(idp->name);
-			if (e) {
-				rescue(DUPSYM,
-				       "L%d: variable %s already declared.",
-				       idp->line, idp->name);
-			} else {
-				e = syminit(idp);
-			}
-			idp->symbol = e;
-		}
-	}
 }
 
 static void gen_pf_dec_list(pf_dec_list_node_t *node)
@@ -72,118 +41,49 @@ static void gen_pf_dec_list(pf_dec_list_node_t *node)
 static void gen_proc_decf(proc_dec_node_t *node)
 {
 	for (proc_dec_node_t *t = node; t; t = t->next) {
-		nevernil(t->pdp);
-		nevernil(t->pdp->php);
 		gen_proc_head(t->pdp->php);
 
-		nevernil(t->pdp->bp);
 		block_node_t *b = t->pdp->bp;
-
-		gen_const_decf(b->cdp);
-		gen_var_decf(b->vdp);
 		gen_pf_dec_list(b->pfdlp);
-		gen_comp_stmt(b->csp);
 
-		scope_exit();
+		emit1(ENTER_OP, t->pdp->php->idp->symbol);
+		gen_comp_stmt(b->csp);
+		emit0(FIN_OP);
 	}
 }
 
 static void gen_proc_head(proc_head_node_t *node)
 {
 	proc_head_node_t *t = node;
-
-	nevernil(t->idp);
-	ident_node_t *idp = t->idp;
-	syment_t *e = symget(idp->name);
-	if (e) {
-		rescue(DUPSYM, "L%d: procedure %s already declared.", idp->line,
-		       idp->name);
-	} else {
-		e = syminit(idp);
-	}
-	idp->symbol = e;
-
-	scope_entry(idp->name);
-
-	nevernil(t->plp);
-	gen_para_list(idp->symbol, t->plp);
+	gen_para_list(t->idp->symbol, t->plp);
 }
 
 static void gen_fun_decf(fun_dec_node_t *node)
 {
 	for (fun_dec_node_t *t = node; t; t = t->next) {
-		nevernil(t->fdp);
-		nevernil(t->fdp->fhp);
 		gen_fun_head(t->fdp->fhp);
 
-		nevernil(t->fdp->bp);
 		block_node_t *b = t->fdp->bp;
 
-		gen_const_decf(b->cdp);
-		gen_var_decf(b->vdp);
 		gen_pf_dec_list(b->pfdlp);
+		emit1(ENTER_OP, t->fdp->fhp->idp->symbol);
 		gen_comp_stmt(b->csp);
-
-		scope_exit();
 	}
 }
 
 static void gen_fun_head(fun_head_node_t *node)
 {
 	fun_head_node_t *t = node;
-
-	nevernil(t->idp);
-	ident_node_t *idp = t->idp;
-	syment_t *e = symget(idp->name);
-	if (e) {
-		rescue(DUPSYM, "L%d: function %s already declared.", idp->line,
-		       idp->name);
-	} else {
-		e = syminit(idp);
-	}
-	idp->symbol = e;
-
-	scope_entry(idp->name);
-
-	nevernil(t->plp);
-	gen_para_list(idp->symbol, t->plp);
+	gen_para_list(t->idp->symbol, t->plp);
 }
 
 static void gen_para_list(syment_t *sign, para_list_node_t *node)
 {
-	for (para_list_node_t *t = node; t; t = t->next) {
-		for (para_def_node_t *p = t->pdp; p; p = p->next) {
-			nevernil(p->idp);
-			ident_node_t *idp = p->idp;
-			syment_t *e = symget(idp->name);
-			if (e) {
-				rescue(DUPSYM,
-				       "L%d: parameter %s already declared.",
-				       idp->line, idp->name);
-			} else {
-				e = syminit(idp);
-			}
-			idp->symbol = e;
-
-			param_t *param;
-			NEWPARAM(param);
-			param->symbol = e;
-
-			if (!sign->ptail) {
-				sign->ptail = param;
-				sign->phead = param;
-			} else {
-				sign->ptail->next = param;
-				sign->ptail = param;
-			}
-		}
-	}
 }
 
 static void gen_comp_stmt(comp_stmt_node_t *node)
 {
 	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
-		nevernil(t->sp);
 		gen_stmt(t->sp);
 	}
 }
@@ -224,22 +124,21 @@ static void gen_stmt(stmt_node_t *node)
 
 static void gen_assign_stmt(assign_stmt_node_t *node)
 {
-	syment_t *e;
-	ident_node_t *idp = node->idp;
-	e = symfind(idp->name);
-	if (!e) {
-		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-		       idp->name);
-	}
-	idp->symbol = e;
+	syment_t *r, s, d;
+	d = node->idp->symbol;
 	switch (node->type) {
 	case NORM_ASSGIN:
+		r = gen_expr(node->rep);
+		emit2(ASS_OP, r, d);
+		break;
 	case FUN_ASSGIN:
-		gen_expr(node->rep);
+		r = gen_expr(node->rep);
+		emit2(SRET_OP, r, d);
 		break;
 	case ARRAY_ASSGIN:
-		gen_expr(node->lep);
-		gen_expr(node->rep);
+		s = gen_expr(node->lep);
+		r = gen_expr(node->rep);
+		emit3(ASA_OP, r, s, d);
 		break;
 	default:
 		unlikely();
@@ -248,34 +147,55 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 
 static void gen_if_stmt(if_stmt_node_t *node)
 {
-	gen_cond(node->cp);
+	syment_t *ifthen, *ifdone;
+	ifthen = symalloc("@ifthen", LABEL_OBJ, VOID_TYPE);
+	ifdone = symalloc("@ifdone", LABEL_OBJ, VOID_TYPE);
+
+	gen_cond(node->cp, ifthen);
 	if (node->ep) {
 		gen_stmt(node->ep);
 	}
+	emit1(JMP_OP, ifdone);
+	emit1(LABEL_OP, ifthen);
 	gen_stmt(node->tp);
+	emit1(LABEL_OP, ifdone);
 }
 
 static void gen_repe_stmt(repe_stmt_node_t *node)
 {
+	syment_t *loopstart, *loopdone;
+	loopstart = symalloc("@loopstart", LABEL_OBJ, VOID_TYPE);
+	loopdone = symalloc("@loopdone", LABEL_OBJ, VOID_TYPE);
+
+	emit1(LABEL_OP, loopstart);
 	gen_stmt(node->sp);
-	gen_cond(node->cp);
+	gen_cond(node->cp, loopdone);
+	emit1(JMP_OP, loopstart);
+	emit1(LABEL_OP, loopdone);
 }
 
 static void gen_for_stmt(for_stmt_node_t *node)
 {
-	gen_expr(node->lep);
-	gen_expr(node->rep);
+	syment_t *forstart, *fordone;
+	forstart = symalloc("@forstart", LABEL_OBJ, VOID_TYPE);
+	fordone = symalloc("@fordone", LABEL_OBJ, VOID_TYPE);
 
-	ident_node_t *idp = node->idp;
-	syment_t *e = symfind(idp->name);
-	if (!e) {
-		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-		       idp->name);
-	}
-	idp->symbol = e;
+	syment_t *beg, *end;
+	beg = gen_expr(node->lep);
+	end = gen_expr(node->rep);
 
+	syment_t *r, *d;
+	d = node->idp->symbol;
+	emit2(ASS_OP, beg, d);
+	emit1(LABEL_OBJ, forstart);
 	switch (node->type) {
 	case TO_FOR:
+		emit3(GTT_OP, d, end, fordone);
+		gen_stmt(node->sp);
+		emit1(INC_OP, d);
+		emit1(JMP_OP, forstart);
+		emit1(LABEL_OBJ, fordone);
+		break;
 	case DOWNTO_FOR:
 		gen_stmt(node->sp);
 		break;
@@ -329,7 +249,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 	}
 }
 
-static void gen_expr(expr_node_t *node)
+static syment_t *gen_expr(expr_node_t *node)
 {
 	for (expr_node_t *t = node; t; t = t->next) {
 		nevernil(t->tp);
@@ -337,7 +257,7 @@ static void gen_expr(expr_node_t *node)
 	}
 }
 
-static void gen_term(term_node_t *node)
+static syment_t *gen_term(term_node_t *node)
 {
 	for (term_node_t *t = node; t; t = t->next) {
 		nevernil(t->fp);
@@ -345,7 +265,7 @@ static void gen_term(term_node_t *node)
 	}
 }
 
-static void gen_factor(factor_node_t *node)
+static syment_t *gen_factor(factor_node_t *node)
 {
 	ident_node_t *idp;
 	syment_t *e;
@@ -390,7 +310,7 @@ static void gen_factor(factor_node_t *node)
 	}
 }
 
-static void gen_fcall_stmt(fcall_stmt_node_t *node)
+static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 {
 	nevernil(node->idp);
 	ident_node_t *idp = node->idp;
@@ -409,7 +329,7 @@ static void gen_fcall_stmt(fcall_stmt_node_t *node)
 	gen_arg_list(e, node->alp);
 }
 
-static void gen_cond(cond_node_t *node)
+static void gen_cond(cond_node_t *node, syment_t *dest)
 {
 	nevernil(node->lep);
 	gen_expr(node->lep);

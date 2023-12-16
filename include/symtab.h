@@ -85,4 +85,5 @@ syment_t *symget(char *name);
 syment_t *symfind(char *name);
 void symdump();
 syment_t *syminit(ident_node_t *idp);
+syment_t *symalloc(char *name, cate_t cate, type_t type);
 #endif /* End of _SYMTAB_H_ */

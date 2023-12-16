@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
 		return errnum;
 	}
 
+	// generation IR
+	phase = IR;
+
 	msg("done\n");
 	return 0;
 }

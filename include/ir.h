@@ -64,5 +64,8 @@ extern inst_t *ihead;
 extern inst_t *itail;
 
 // emit an instruction
-inst_t *emit();
+inst_t *emit0();
+inst_t *emit1(op_t op, syment_t *d);
+inst_t *emit2(op_t op, syment_t *r, syment_t *d);
+inst_t *emit3(op_t op, syment_t *r, syment_t *s, syment_t *d);
 #endif /* End of _IR_H_ */
