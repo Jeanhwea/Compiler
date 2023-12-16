@@ -5,6 +5,7 @@
 #include "global.h"
 #include "parse.h"
 #include "syntax.h"
+#include <stdio.h>
 
 static int nnode = 0;
 
@@ -275,16 +276,16 @@ static node_t *conv_write_stmt_node(write_stmt_node_t *t)
 	d->cate = t->type;
 	switch (t->type) {
 	case STR_WRITE:
-		d->extra = dupstr(t->sp);
+	case STRID_WRITE:
+		char buf[1024];
+		sprintf("\"%s\"", t->sp);
+		d->extra = dupstr(buf);
 		break;
 	case ID_WRITE:
-		d->extra = dupstr(t->sp);
 		addchild(d, conv_expr_node(t->ep), "ep");
 		break;
-	case STRID_WRITE:
-		d->extra = dupstr(t->sp);
-		addchild(d, conv_expr_node(t->ep), "ep");
-		break;
+	default:
+		unlikely();
 	}
 	return d;
 }
