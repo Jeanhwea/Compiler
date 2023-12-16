@@ -278,7 +278,7 @@ static node_t *conv_write_stmt_node(write_stmt_node_t *t)
 	case STR_WRITE:
 	case STRID_WRITE:
 		char buf[1024];
-		sprintf("\"%s\"", t->sp);
+		sprintf(buf, "\"%s\"", t->sp);
 		d->extra = dupstr(buf);
 		break;
 	case ID_WRITE:
