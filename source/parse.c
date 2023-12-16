@@ -702,6 +702,7 @@ static expr_node_t *parse_expr(void)
 	expr_node_t *t, *p, *q;
 	NEWNODE(expr_node_t, t);
 
+	// left-most part
 	switch (currtok) {
 	case SS_PLUS:
 		match(SS_PLUS);
@@ -723,6 +724,7 @@ static expr_node_t *parse_expr(void)
 		unlikely();
 	}
 
+	// reminder part
 	for (p = t; CURRTOK_ANY2(SS_PLUS, SS_MINUS); p = q) {
 		NEWNODE(expr_node_t, q);
 		p->next = q;
