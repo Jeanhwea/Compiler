@@ -1,4 +1,7 @@
 #include "gen.h"
+#include "util.h"
+#include "debug.h"
+#include "parse.h"
 #include "syntax.h"
 #include "global.h"
 #include "symtab.h"
@@ -124,7 +127,7 @@ static void gen_stmt(stmt_node_t *node)
 
 static void gen_assign_stmt(assign_stmt_node_t *node)
 {
-	syment_t *r, s, d;
+	syment_t *r, *s, *d;
 	d = node->idp->symbol;
 	switch (node->type) {
 	case NORM_ASSGIN:
@@ -195,9 +198,15 @@ static void gen_for_stmt(for_stmt_node_t *node)
 		emit1(INC_OP, d);
 		emit1(JMP_OP, forstart);
 		emit1(LABEL_OBJ, fordone);
+		emit1(DEC_OP, d);
 		break;
 	case DOWNTO_FOR:
+		emit3(LST_OP, d, end, fordone);
 		gen_stmt(node->sp);
+		emit1(DEC_OP, d);
+		emit1(JMP_OP, forstart);
+		emit1(LABEL_OBJ, fordone);
+		emit1(INC_OP, d);
 		break;
 	default:
 		unlikely();
@@ -206,43 +215,63 @@ static void gen_for_stmt(for_stmt_node_t *node)
 
 static void gen_pcall_stmt(pcall_stmt_node_t *node)
 {
-	ident_node_t *idp = node->idp;
-	syment_t *e = symfind(idp->name);
-	if (!e) {
-		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-		       idp->name);
-	}
-	if (e->cate != PROC_OBJ) {
-		giveup(BADSYM, "L%d: procedure %s not found.", idp->line,
-		       idp->name);
-	}
-	idp->symbol = e;
-
-	gen_arg_list(e, node->alp);
+	gen_arg_list(node->idp->symbol, node->alp);
+	emit2(CALL_OP, node->idp->symbol, NULL);
 }
 
 static void gen_read_stmt(read_stmt_node_t *node)
 {
+	syment_t *d;
 	for (read_stmt_node_t *t = node; t; t = t->next) {
-		nevernil(t->idp);
-		ident_node_t *idp = t->idp;
-		syment_t *e = symfind(idp->name);
-		if (!e) {
-			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-			       idp->name);
+		d = t->idp->symbol;
+		switch (d->type) {
+		case CHAR_TYPE:
+			emit1(RDC_OP, d);
+			break;
+		case INT_TYPE:
+			emit1(RDI_OP, d);
+			break;
 		}
-		idp->symbol = e;
 	}
 }
 
 static void gen_write_stmt(write_stmt_node_t *node)
 {
+	syment_t *d;
 	switch (node->type) {
 	case STR_WRITE:
+		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
+		d->str = dupstr(node->sp);
+		emit1(WRS_OP, d);
 		break;
 	case ID_WRITE:
+		d = gen_expr(node->ep);
+		switch (d->type) {
+		case CHAR_TYPE:
+			emit1(WRC_OP, d);
+			break;
+		case INT_TYPE:
+			emit1(WRI_OP, d);
+			break;
+		default:
+			unlikely();
+		}
+		break;
 	case STRID_WRITE:
-		gen_expr(node->ep);
+		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
+		d->str = dupstr(node->sp);
+		emit1(WRS_OP, d);
+		d = gen_expr(node->ep);
+		switch (d->type) {
+		case CHAR_TYPE:
+			emit1(WRC_OP, d);
+			break;
+		case INT_TYPE:
+			emit1(WRI_OP, d);
+			break;
+		default:
+			unlikely();
+		}
 		break;
 	default:
 		unlikely();
@@ -251,156 +280,163 @@ static void gen_write_stmt(write_stmt_node_t *node)
 
 static syment_t *gen_expr(expr_node_t *node)
 {
+	syment_t *d, *r, *e;
 	for (expr_node_t *t = node; t; t = t->next) {
-		nevernil(t->tp);
-		gen_term(t->tp);
-	}
-}
-
-static syment_t *gen_term(term_node_t *node)
-{
-	for (term_node_t *t = node; t; t = t->next) {
-		nevernil(t->fp);
-		gen_factor(t->fp);
-	}
-}
-
-static syment_t *gen_factor(factor_node_t *node)
-{
-	ident_node_t *idp;
-	syment_t *e;
-	switch (node->type) {
-	case ID_FACTOR:
-		nevernil(node->idp);
-		idp = node->idp;
-		e = symfind(idp->name);
-		if (!e) {
-			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-			       idp->name);
-		}
-		// TODO OBJ5(Const_Obj_t, Var_Obj_t, Para_Val_Obj_t, Para_Ref_Obj_t, Tmp_Obj_t)) {
-		idp->symbol = e;
-		break;
-	case ARRAY_FACTOR:
-		nevernil(node->idp);
-		idp = node->idp;
-		e = symfind(idp->name);
-		if (!e) {
-			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-			       idp->name);
-		}
-		if (e->cate != ARRAY_OBJ) {
-			giveup(ERTYPE, "L%d: symbol %s type is not array.",
-			       idp->line, idp->name);
-		}
-		idp->symbol = e;
-		break;
-	case UNSIGN_FACTOR:
-		break;
-	case EXPR_FACTOR:
-		nevernil(node->ep);
-		gen_expr(node->ep);
-		break;
-	case FUNCALL_FACTOR:
-		nevernil(node->fcsp);
-		gen_fcall_stmt(node->fcsp);
-		break;
-	default:
-		unlikely();
-	}
-}
-
-static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
-{
-	nevernil(node->idp);
-	ident_node_t *idp = node->idp;
-	syment_t *e = symfind(idp->name);
-	if (!e) {
-		giveup(BADSYM, "L%d: function %s not found.", idp->line,
-		       idp->name);
-	}
-	if (e->cate != FUN_OBJ) {
-		giveup(ERTYPE, "L%d: symbol %s type is not function.",
-		       idp->line, idp->name);
-	}
-	idp->symbol = e;
-
-	nevernil(node->alp);
-	gen_arg_list(e, node->alp);
-}
-
-static void gen_cond(cond_node_t *node, syment_t *dest)
-{
-	nevernil(node->lep);
-	gen_expr(node->lep);
-	nevernil(node->rep);
-	gen_expr(node->rep);
-}
-
-static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
-{
-	arg_list_node_t *t = node;
-	param_t *p = sign->phead;
-	int pos = 0;
-	for (; t && p; t = t->next, p = p->next) {
-		pos++;
-		syment_t *e = p->symbol;
-		switch (e->cate) {
-		case BYVAL_OBJ:
-			nevernil(t->ep);
-			gen_expr(t->ep);
-			break;
-		case BYREF_OBJ: // var, arr[exp]
-			if (!t->ep || t->ep->op != NOP_ADDOP) {
-				goto referr;
+		r = gen_term(t->tp);
+		if (!d) {
+			switch (t->op) {
+			case NEG_ADDOP:
+				d = symalloc("@expr/neg", TMP_OBJ, r->type);
+				emit2(NEG_ADDOP, r, d);
+				break;
+			case NOP_ADDOP:
+				d = r;
+				break;
+			default:
+				unlikely();
 			}
-			expr_node_t *ep = t->ep;
-			if (!ep->tp || ep->tp->op != NOP_MULTOP) {
-				goto referr;
-			}
-			term_node_t *tp = ep->tp;
-			if (!tp->fp) {
-				goto referr;
-			}
-
-			factor_node_t *fp = tp->fp;
-			ident_node_t *idp;
-			if (fp->type != ID_FACTOR || fp->type != ARRAY_FACTOR) {
-				idp = fp->idp;
-				goto refok;
-			}
-		referr:
-			giveup(BADREF,
-			       "L%d: %s call arguments has bad reference, pos = %d.",
-			       sign->lineno, sign->name, pos);
 			continue;
-		refok:
-			syment_t *e = symfind(idp->name);
-			if (!e) {
-				giveup(BADSYM, "L%d: symbol %s not found.",
-				       idp->line, idp->name);
-			}
-			if (fp->type == ID_FACTOR && e->cate != VAR_OBJ) {
-				giveup(OBJREF,
-				       "L%d: argument %s call by reference is not variable object, pos = %d.",
-				       idp->line, idp->name, pos);
-			}
-			if (fp->type == ARRAY_FACTOR && e->cate != ARRAY_OBJ) {
-				giveup(OBJREF,
-				       "L%d: argument %s call by reference is not array object, pos = %d.",
-				       idp->line, idp->name, pos);
-			}
-			idp->symbol = e;
+		}
+		switch (t->op) {
+		case ADD_ADDOP:
+			e = d;
+			d = symalloc("@expr/add", TMP_OBJ, e->type);
+			emit3(ADD_ADDOP, e, r, d);
+			break;
+		case MINUS_ADDOP:
+			e = d;
+			d = symalloc("@expr/sub", TMP_OBJ, e->type);
+			emit3(ADD_ADDOP, e, r, d);
 			break;
 		default:
 			unlikely();
 		}
 	}
+	return d;
+}
 
-	if (t || p) {
-		giveup(BADLEN,
-		       "L%d: %s call arguments and parameters length not equal.",
-		       sign->lineno, sign->name);
+static syment_t *gen_term(term_node_t *node)
+{
+	syment_t *d, *r, *e;
+	for (term_node_t *t = node; t; t = t->next) {
+		r = gen_factor(t->fp);
+		if (!d) {
+			if (t->op != NOP_MULTOP) {
+				unlikely();
+			}
+			d = r;
+			continue;
+		}
+		switch (t->op) {
+		case MULT_MULTOP:
+			e = d;
+			d = symalloc("@term/mul", TMP_OBJ, e->type);
+			emit3(MULT_MULTOP, e, r, d);
+			break;
+		case DIV_MULTOP:
+			e = d;
+			d = symalloc("@term/div", TMP_OBJ, e->type);
+			emit3(DIV_MULTOP, e, r, d);
+			break;
+		default:
+			unlikely();
+		}
+	}
+	return d;
+}
+
+static syment_t *gen_factor(factor_node_t *node)
+{
+	syment_t *d, *r, *e;
+	switch (node->type) {
+	case ID_FACTOR:
+		d = node->idp->symbol;
+		break;
+	case ARRAY_FACTOR:
+		r = node->idp->symbol;
+		e = gen_expr(node->ep);
+		d = symalloc("@factor/array", TMP_OBJ, r->type);
+		emit3(LOAD_OP, r, e, d);
+		break;
+	case UNSIGN_FACTOR:
+		d = symalloc("@factor/usi", NUM_OBJ, INT_TYPE);
+		d->initval = node->usi;
+		break;
+	case EXPR_FACTOR:
+		d = gen_expr(node->ep);
+		break;
+	case FUNCALL_FACTOR:
+		d = gen_fcall_stmt(node->fcsp);
+		break;
+	default:
+		unlikely();
+	}
+	return d;
+}
+
+static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
+{
+	syment_t *d, *e;
+	e = node->idp->symbol;
+	d = symalloc("@fcall/ret", TMP_OBJ, e->type);
+	gen_arg_list(e, node->alp);
+	emit2(CALL_OP, e, d);
+	return d;
+}
+
+static void gen_cond(cond_node_t *node, syment_t *dest)
+{
+	syment_t *r, *s;
+	r = gen_expr(node->lep);
+	s = gen_expr(node->rep);
+	switch (node->op) {
+	case EQU_RELA:
+		emit3(EQU_OP, r, s, dest);
+		break;
+	case NEQ_RELA:
+		emit3(NEQ_OP, r, s, dest);
+		break;
+	case GTT_RELA:
+		emit3(GTT_OP, r, s, dest);
+		break;
+	case GEQ_RELA:
+		emit3(GEQ_OP, r, s, dest);
+		break;
+	case LST_RELA:
+		emit3(LST_OP, r, s, dest);
+		break;
+	case LEQ_RELA:
+		emit3(LEQ_OP, r, s, dest);
+		break;
+	}
+}
+
+static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
+{
+	syment_t *d, *r;
+	for (arg_list_node_t *t = node; t; t = t->next) {
+		switch (t->refsym->cate) {
+		case BYVAL_OBJ:
+			d = gen_expr(t->ep);
+			emit1(PUSH_OP, d);
+			break;
+		case BYREF_OBJ:
+			d = t->symbol;
+			switch (t->symbol->cate) {
+			case VAR_OBJ:
+				emit2(PUSHA_OP, NULL, d);
+				break;
+			case ARRAY_OBJ:
+				r = gen_expr(t->ep);
+				emit2(PUSHA_OP, r, d);
+				break;
+			default:
+				unlikely();
+			}
+			break;
+		default:
+			unlikely();
+		}
 	}
 }
 

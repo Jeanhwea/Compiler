@@ -1,6 +1,6 @@
 var i: integer;
 begin
-   for i := 1 to 3 do
+   for i := 2 to 1 do
       write(i);
    write(i)
 end.

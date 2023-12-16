@@ -210,4 +210,5 @@ syment_t *symalloc(char *name, cate_t cate, type_t type)
 	sprintf(e->label, "L%03d", ++nlabel);
 	e->cate = cate;
 	e->type = type;
+	return e;
 }

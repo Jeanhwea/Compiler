@@ -474,7 +474,8 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 				       "L%d: argument %s call by reference is not array object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
-			idp->symbol = e;
+			t->symbol = fp->idp->symbol;
+			t->refsym = e;
 			break;
 		default:
 			unlikely();

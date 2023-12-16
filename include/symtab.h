@@ -50,6 +50,7 @@ typedef struct _sym_entry_struct {
 	// const value, initval value
 	int initval;
 	int arrlen;
+	char *str;
 	param_t *phead;
 	param_t *ptail;
 	// label for assemble codes

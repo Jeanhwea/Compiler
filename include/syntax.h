@@ -224,6 +224,9 @@ typedef struct _para_def_node {
 typedef struct _arg_list_node {
 	expr_node_t *ep;
 	arg_list_node_t *next;
+	// link to referenced variable or array
+	syment_t *symbol;
+	syment_t *refsym;
 } arg_list_node_t;
 
 #endif /* End of _SYNTAX_H_ */
