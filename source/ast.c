@@ -284,7 +284,6 @@ static node_t *conv_write_stmt_node(write_stmt_node_t *t)
 		addchild(d, conv_expr_node(t->ep), "ep");
 		break;
 	case STRID_WRITE:
-		char buf[1024];
 		sprintf(buf, "\\\"%s\\\"", t->sp);
 		d->extra = dupstr(buf);
 		addchild(d, conv_expr_node(t->ep), "ep");
