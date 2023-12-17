@@ -77,7 +77,7 @@ static void putsym(symtab_t *stab, syment_t *e)
 	e->next = hair->next;
 	hair->next = e;
 
-	sprintf(e->label, "T%03d", ++nlabel);
+	sprintf(e->label, "L%03d", ++nlabel);
 }
 
 static void dumptab(symtab_t *stab)
