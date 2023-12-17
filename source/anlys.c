@@ -459,23 +459,26 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			       sign->lineno, sign->name, pos);
 			continue;
 		refok:
-			syment_t *e = symfind(idp->name);
-			if (!e) {
+			syment_t *a = symfind(idp->name);
+			if (!a) {
 				giveup(BADSYM, "L%d: symbol %s not found.",
 				       idp->line, idp->name);
 			}
-			if (fp->type == ID_FACTOR && e->cate != VAR_OBJ) {
+			if (fp->type == ID_FACTOR && a->cate != VAR_OBJ) {
 				giveup(OBJREF,
 				       "L%d: argument %s call by reference is not variable object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
-			if (fp->type == ARRAY_FACTOR && e->cate != ARRAY_OBJ) {
+			if (fp->type == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
 				giveup(OBJREF,
 				       "L%d: argument %s call by reference is not array object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
-			t->symbol = idp->symbol;
+			t->symbol = idp->symbol = a;
 			t->refsym = e;
+			if (t->refsym && !t->symbol) {
+				unlikely();
+			}
 			break;
 		default:
 			unlikely();
