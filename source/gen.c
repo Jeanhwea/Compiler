@@ -430,8 +430,8 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 			emit1(PUSH_OP, d);
 			break;
 		case BYREF_OBJ:
-			d = t->symbol;
-			switch (t->symbol->cate) {
+			d = t->argsym;
+			switch (t->argsym->cate) {
 			case VAR_OBJ:
 				emit2(PADR_OP, NULL, d);
 				break;
