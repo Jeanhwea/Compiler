@@ -37,8 +37,14 @@ typedef struct _para_list_node para_list_node_t;
 typedef struct _para_def_node para_def_node_t;
 typedef struct _arg_list_node arg_list_node_t;
 
+extern int nidcnt;
+
 // Create New Node
-#define NEWNODE(s, v) INITMEM(s, v)
+#define NEWNODE(s, v)                                                          \
+	do {                                                                   \
+		INITMEM(s, v);                                                 \
+		v->nid = ++nidcnt;                                             \
+	} while (0)
 
 // use like:
 //   if (CURRTOK_ANY(a, b, c, ...)) { ... }

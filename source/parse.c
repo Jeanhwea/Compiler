@@ -9,6 +9,7 @@
 
 // AST
 pgm_node_t *prog;
+int nidcnt = 0;
 
 // current token
 static token_t currtok;
