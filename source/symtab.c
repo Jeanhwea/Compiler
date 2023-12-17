@@ -207,7 +207,7 @@ syment_t *symalloc(char *name, cate_t cate, type_t type)
 	syment_t *e;
 	NEWENTRY(e);
 	e->name = dupstr(name);
-	sprintf(e->label, "L%03d", ++nlabel);
+	sprintf(e->label, "T%03d", ++nlabel);
 	e->cate = cate;
 	e->type = type;
 	return e;
