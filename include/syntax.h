@@ -211,26 +211,24 @@ typedef struct _cond_node {
 
 /* ident parameter argument*/
 typedef enum _ident_enum {
-	/* normal identifier type */
-	INIT_IDENT,
-	PROC_IDENT,
-	INT_FUN_IDENT,
-	CHAR_FUN_IDENT,
-	/* const identifier type */
-	INT_CONST_IDENT,
-	CHAR_CONST_IDENT,
-	/* variable identifier type */
-	INT_VAR_IDENT,
-	CHAR_VAR_IDENT,
-	INT_ARRVAR_IDENT,
-	CHAR_ARRVAR_IDENT,
-	/* parameter identifier type */
-	/* call by value */
-	INT_PARA_VAL_IDENT,
-	CHAR_PARA_VAL_IDENT,
-	/* call by address */
-	INT_PARA_REF_IDENT,
-	CHAR_PARA_REF_IDENT
+	// Normal Identifier
+	/*  0 */ INIT_IDENT,
+	/*  1 */ PROC_IDENT,
+	/*  2 */ INT_FUN_IDENT,
+	/*  3 */ CHAR_FUN_IDENT,
+	// Const Identifier
+	/*  4 */ INT_CONST_IDENT,
+	/*  5 */ CHAR_CONST_IDENT,
+	// Variable Identifier
+	/*  6 */ INT_VAR_IDENT,
+	/*  7 */ CHAR_VAR_IDENT,
+	/*  8 */ INT_ARRVAR_IDENT,
+	/*  9 */ CHAR_ARRVAR_IDENT,
+	// Parameter Identifier, (by value, by address)
+	/* 10 */ INT_BYVAL_IDENT,
+	/* 11 */ CHAR_BYVAL_IDENT,
+	/* 12 */ INT_BYADR_IDENT,
+	/* 13 */ CHAR_BYADR_IDENT
 } idekind_t;
 typedef struct _ident_node {
 	int nid;

@@ -952,14 +952,14 @@ static para_def_node_t *parse_para_def(void)
 		match(KW_INTEGER);
 		for (p = t; p; p = p->next) {
 			p->idp->kind =
-				byref ? INT_PARA_REF_IDENT : INT_PARA_VAL_IDENT;
+				byref ? INT_BYADR_IDENT : INT_BYVAL_IDENT;
 		}
 		break;
 	case KW_CHAR:
 		match(KW_CHAR);
 		for (p = t; p; p = p->next) {
-			p->idp->kind = byref ? CHAR_PARA_REF_IDENT :
-					       CHAR_PARA_VAL_IDENT;
+			p->idp->kind =
+				byref ? CHAR_BYADR_IDENT : CHAR_BYVAL_IDENT;
 		}
 		break;
 	default:
