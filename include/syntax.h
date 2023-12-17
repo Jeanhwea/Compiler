@@ -231,10 +231,10 @@ typedef enum _ident_enum {
 	/* call by address */
 	INT_PARA_REF_IDENT,
 	CHAR_PARA_REF_IDENT
-} ident_t;
+} idekind_t;
 typedef struct _ident_node {
 	int nid;
-	ident_t kind;
+	idekind_t kind;
 	char *name;
 	int value;
 	int length;
