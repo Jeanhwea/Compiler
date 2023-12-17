@@ -9,7 +9,7 @@
 symtab_t *top = NULL;
 int depth = 0;
 int ntab = 0;
-int nlabel = 0;
+int symcnt = 0;
 
 symtab_t *scope_entry(char *nspace)
 {
@@ -76,8 +76,6 @@ static void putsym(symtab_t *stab, syment_t *e)
 	syment_t *hair = &stab->buckets[hash(e->name) % MAXBUCKETS];
 	e->next = hair->next;
 	hair->next = e;
-
-	sprintf(e->label, "L%03d", ++nlabel);
 }
 
 static void dumptab(symtab_t *stab)
@@ -140,6 +138,8 @@ syment_t *syminit(ident_node_t *idp)
 {
 	syment_t *e;
 	NEWENTRY(e);
+	e->sid = ++symcnt;
+	sprintf(e->label, "L%03d", e->sid);
 
 	e->name = dupstr(idp->name);
 	e->initval = idp->value;
@@ -208,8 +208,8 @@ syment_t *symalloc(char *name, cate_t cate, type_t type)
 	syment_t *e;
 	NEWENTRY(e);
 	e->name = dupstr(name);
-
-	sprintf(e->label, "T%03d", ++nlabel);
+	e->sid = ++symcnt;
+	sprintf(e->label, "T%03d", e->sid);
 
 	e->cate = cate;
 	e->type = type;

@@ -44,6 +44,7 @@ typedef struct _sym_param_struct {
 
 typedef struct _sym_entry_struct {
 	// identifier name
+	int sid;
 	char *name;
 	cate_t cate;
 	type_t type;
