@@ -21,7 +21,6 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 	if (!child) {
 		return;
 	}
-
 	parent->refs[parent->total] = dupstr(ref);
 	parent->childs[parent->total] = child;
 	parent->total++;
@@ -29,6 +28,9 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 
 node_t *conv_pgm_node(pgm_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PGM");
 	addchild(d, conv_block_node(t->bp), "bp");
 	return d;
@@ -36,6 +38,9 @@ node_t *conv_pgm_node(pgm_node_t *t)
 
 node_t *conv_block_node(block_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "BLOCK");
 	addchild(d, conv_const_dec_node(t->cdp), "cdp");
 	addchild(d, conv_var_dec_node(t->vdp), "vdp");
@@ -46,6 +51,9 @@ node_t *conv_block_node(block_node_t *t)
 
 node_t *conv_const_dec_node(const_dec_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "CONST_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_const_def_node(t->cdp), "cdp");
@@ -55,6 +63,9 @@ node_t *conv_const_dec_node(const_dec_node_t *t)
 
 node_t *conv_const_def_node(const_def_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "CONST_DEF");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	return d;
@@ -62,6 +73,9 @@ node_t *conv_const_def_node(const_def_node_t *t)
 
 node_t *conv_var_dec_node(var_dec_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "VAR_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_var_def_node(t->vdp), "vdp");
@@ -71,6 +85,9 @@ node_t *conv_var_dec_node(var_dec_node_t *t)
 
 node_t *conv_var_def_node(var_def_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "VAR_DEF");
 	for (; t; t = t->next) {
 		addchild(d, conv_ident_node(t->idp), "idp");
@@ -80,6 +97,9 @@ node_t *conv_var_def_node(var_def_node_t *t)
 
 node_t *conv_pf_dec_list_node(pf_dec_list_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PF_DEC_LIST");
 	for (; t; t = t->next) {
 		switch (t->type) {
@@ -98,6 +118,9 @@ node_t *conv_pf_dec_list_node(pf_dec_list_node_t *t)
 
 node_t *conv_proc_dec_node(proc_dec_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PROC_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_proc_def_node(t->pdp), "pdp");
@@ -107,6 +130,9 @@ node_t *conv_proc_dec_node(proc_dec_node_t *t)
 
 node_t *conv_proc_def_node(proc_def_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PROC_DEF");
 	addchild(d, conv_proc_head_node(t->php), "php");
 	addchild(d, conv_block_node(t->bp), "bp");
@@ -115,6 +141,9 @@ node_t *conv_proc_def_node(proc_def_node_t *t)
 
 node_t *conv_proc_head_node(proc_head_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PROC_HEAD");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_para_list_node(t->plp), "plp");
@@ -123,6 +152,9 @@ node_t *conv_proc_head_node(proc_head_node_t *t)
 
 node_t *conv_fun_dec_node(fun_dec_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "FUN_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_fun_def_node(t->fdp), "fdp");
@@ -132,6 +164,9 @@ node_t *conv_fun_dec_node(fun_dec_node_t *t)
 
 node_t *conv_fun_def_node(fun_def_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "FUN_DEF");
 	addchild(d, conv_fun_head_node(t->fhp), "fhp");
 	addchild(d, conv_block_node(t->bp), "bp");
@@ -140,6 +175,9 @@ node_t *conv_fun_def_node(fun_def_node_t *t)
 
 node_t *conv_fun_head_node(fun_head_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "FUN_HEAD");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_para_list_node(t->plp), "plp");
@@ -148,6 +186,9 @@ node_t *conv_fun_head_node(fun_head_node_t *t)
 
 node_t *conv_stmt_node(stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "STMT");
 	if (!t) {
 		d->name = "NULLSTMT";
@@ -190,6 +231,9 @@ node_t *conv_stmt_node(stmt_node_t *t)
 
 node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "ASSIGN_STMT");
 	d->cate = t->type;
 	switch (t->type) {
@@ -214,6 +258,9 @@ node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 
 node_t *conv_if_stmt_node(if_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "IF_STMT");
 	addchild(d, conv_cond_node(t->cp), "cp");
 	addchild(d, conv_stmt_node(t->tp), "tp");
@@ -223,6 +270,9 @@ node_t *conv_if_stmt_node(if_stmt_node_t *t)
 
 node_t *conv_repe_stmt_node(repe_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "REPE_STMT");
 	addchild(d, conv_cond_node(t->cp), "cp");
 	addchild(d, conv_stmt_node(t->sp), "sp");
@@ -231,6 +281,9 @@ node_t *conv_repe_stmt_node(repe_stmt_node_t *t)
 
 node_t *conv_for_stmt_node(for_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "FOR_STMT");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_expr_node(t->lep), "lep");
@@ -241,6 +294,9 @@ node_t *conv_for_stmt_node(for_stmt_node_t *t)
 
 node_t *conv_pcall_stmt_node(pcall_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PCALL_STMT");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_arg_list_node(t->alp), "alp");
@@ -249,6 +305,9 @@ node_t *conv_pcall_stmt_node(pcall_stmt_node_t *t)
 
 node_t *conv_fcall_stmt_node(fcall_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "FCALL_STMT");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_arg_list_node(t->alp), "alp");
@@ -257,6 +316,9 @@ node_t *conv_fcall_stmt_node(fcall_stmt_node_t *t)
 
 node_t *conv_comp_stmt_node(comp_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "COMP_STMT");
 	for (; t; t = t->next) {
 		addchild(d, conv_stmt_node(t->sp), "sp");
@@ -266,6 +328,9 @@ node_t *conv_comp_stmt_node(comp_stmt_node_t *t)
 
 node_t *conv_read_stmt_node(read_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "READ_STMT");
 	for (; t; t = t->next) {
 		addchild(d, conv_ident_node(t->idp), "idp");
@@ -274,6 +339,9 @@ node_t *conv_read_stmt_node(read_stmt_node_t *t)
 
 node_t *conv_write_stmt_node(write_stmt_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "WRITE_STMT");
 	d->cate = t->type;
 	switch (t->type) {
@@ -298,6 +366,9 @@ node_t *conv_write_stmt_node(write_stmt_node_t *t)
 
 node_t *conv_expr_node(expr_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "EXPR");
 	for (; t; t = t->next) {
 		switch (t->op) {
@@ -316,6 +387,9 @@ node_t *conv_expr_node(expr_node_t *t)
 
 node_t *conv_term_node(term_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "TERM");
 	for (; t; t = t->next) {
 		switch (t->op) {
@@ -333,6 +407,9 @@ node_t *conv_term_node(term_node_t *t)
 
 node_t *conv_factor_node(factor_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "FACTOR");
 	d->cate = t->type;
 	switch (t->type) {
@@ -360,6 +437,9 @@ node_t *conv_factor_node(factor_node_t *t)
 
 node_t *conv_cond_node(cond_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "COND");
 	d->cate = t->op;
 	switch (t->op) {
@@ -389,6 +469,9 @@ node_t *conv_cond_node(cond_node_t *t)
 
 node_t *conv_ident_node(ident_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "IDENT");
 	d->idp = t;
 	return d;
@@ -396,6 +479,9 @@ node_t *conv_ident_node(ident_node_t *t)
 
 node_t *conv_para_list_node(para_list_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PARA_LIST");
 	for (; t; t = t->next) {
 		addchild(d, conv_para_def_node(t->pdp), "pdp");
@@ -405,6 +491,9 @@ node_t *conv_para_list_node(para_list_node_t *t)
 
 node_t *conv_para_def_node(para_def_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "PARA_DEF");
 	for (; t; t = t->next) {
 		addchild(d, conv_ident_node(t->idp), "idp");
@@ -414,6 +503,9 @@ node_t *conv_para_def_node(para_def_node_t *t)
 
 node_t *conv_arg_list_node(arg_list_node_t *t)
 {
+	if (!t) {
+		return NULL;
+	}
 	node_t *d = initnode(t->nid, "ARG_LIST");
 	for (; t; t = t->next) {
 		addchild(d, conv_expr_node(t->ep), "ep");
