@@ -13,8 +13,8 @@
 #define MAXEDGES 1024
 
 static int nedges = 0;
-static char *label[MAXNODES];
 static node_t *nodes[MAXNODES];
+static char *label[MAXNODES];
 static int beg[MAXEDGES];
 static int end[MAXEDGES];
 static char *ref[MAXEDGES];
@@ -40,8 +40,8 @@ void visit(node_t *node)
 		}
 	}
 
-	label[node->id] = dupstr(buf);
 	nodes[node->id] = node;
+	label[node->id] = dupstr(buf);
 	for (int i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
 		beg[nedges] = node->id;
