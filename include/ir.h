@@ -61,8 +61,8 @@ typedef struct _inst_struct {
 #define NEWINST(v) INITMEM(inst_t, v)
 
 // hold instructions
-extern inst_t *ihead;
-extern inst_t *itail;
+extern inst_t *xhead;
+extern inst_t *xtail;
 
 // emit an instruction
 inst_t *emit0();

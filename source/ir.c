@@ -2,25 +2,25 @@
 #include "symtab.h"
 
 // instructions
-inst_t *ihead;
-inst_t *itail;
+inst_t *xhead;
+inst_t *xtail;
 
 // instruction count
-int xcnt = 0;
+int instcnt = 0;
 
 static inst_t *emit()
 {
 	inst_t *t;
 	NEWINST(t);
-	t->xid = ++xcnt;
+	t->xid = ++instcnt;
 
-	if (itail == NULL) {
-		t->prev = itail;
-		ihead = itail = t;
+	if (xtail == NULL) {
+		t->prev = xtail;
+		xhead = xtail = t;
 	} else {
-		t->prev = itail;
-		itail->next = t;
-		itail = t;
+		t->prev = xtail;
+		xtail->next = t;
+		xtail = t;
 	}
 	return t;
 }

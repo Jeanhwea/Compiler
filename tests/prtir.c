@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	analysis();
 	generate();
 
-	for (inst_t *x = ihead; x; x = x->next) {
+	for (inst_t *x = xhead; x; x = x->next) {
 		fmtinst(x);
 	}
 	return 0;
