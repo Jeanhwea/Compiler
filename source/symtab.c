@@ -71,12 +71,13 @@ static syment_t *getsym(symtab_t *stab, char *name)
 	return NULL;
 }
 
-static void putsym(symtab_t *stab, syment_t *entry)
+static void putsym(symtab_t *stab, syment_t *e)
 {
-	syment_t *hair = &stab->buckets[hash(entry->name) % MAXBUCKETS];
-	entry->next = hair->next;
-	hair->next = entry;
-	sprintf(entry->label, "L%03d", ++nlabel);
+	syment_t *hair = &stab->buckets[hash(e->name) % MAXBUCKETS];
+	e->next = hair->next;
+	hair->next = e;
+
+	sprintf(e->label, "T%03d", ++nlabel);
 }
 
 static void dumptab(symtab_t *stab)
@@ -207,7 +208,9 @@ syment_t *symalloc(char *name, cate_t cate, type_t type)
 	syment_t *e;
 	NEWENTRY(e);
 	e->name = dupstr(name);
+
 	sprintf(e->label, "T%03d", ++nlabel);
+
 	e->cate = cate;
 	e->type = type;
 	return e;

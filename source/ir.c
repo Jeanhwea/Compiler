@@ -5,10 +5,14 @@
 inst_t *ihead;
 inst_t *itail;
 
+// instruction count
+int xcnt = 0;
+
 static inst_t *emit()
 {
 	inst_t *t;
 	NEWINST(t);
+	t->xid = ++xcnt;
 
 	if (itail == NULL) {
 		t->prev = itail;

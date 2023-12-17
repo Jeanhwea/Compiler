@@ -48,6 +48,7 @@ typedef enum _inst_op_enum {
 
 // Instruction struct
 typedef struct _inst_struct {
+	int xid;
 	op_t op;
 	syment_t *r;
 	syment_t *s;

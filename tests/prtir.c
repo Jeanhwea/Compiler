@@ -23,7 +23,7 @@ char *opcode[32] = {
 void fmtinst(inst_t *x)
 {
 	char buf[1024];
-	sprintf(buf, "%s", opcode[x->op]);
+	sprintf(buf, "%03d: %s", x->xid, opcode[x->op]);
 	if (x->r) {
 		appendf(buf, "\tr=%s", x->r->label);
 	}
