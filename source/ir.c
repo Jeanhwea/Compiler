@@ -14,14 +14,15 @@ static inst_t *emit()
 	NEWINST(t);
 	t->xid = ++instcnt;
 
-	if (xtail == NULL) {
-		t->prev = xtail;
-		xhead = xtail = t;
-	} else {
+	if (xtail) {
 		t->prev = xtail;
 		xtail->next = t;
 		xtail = t;
+	} else {
+		t->prev = xtail;
+		xhead = xtail = t;
 	}
+
 	return t;
 }
 
