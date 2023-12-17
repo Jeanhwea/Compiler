@@ -67,12 +67,15 @@ void writedot()
 		if (!nodes[i]) {
 			continue;
 		}
+		node_t *n = nodes[i];
+
 		char *shape = "oval";
-		if (!strncmp(nodes[i]->name, "IDENT", 5)) {
+		if (!strncmp(n->name, "IDENT", 5)) {
 			shape = "box";
 		}
-		fprintf(fd, "%sn%03d[label=\"#%d %s\", shape=\"%s\"];\n",
-			indent, i, i, label[i], shape);
+
+		fprintf(fd, "%sn%03d[label=\"%d #%d %s\", shape=\"%s\"];\n",
+			indent, n->id, n->id, n->nid, label[i], shape);
 	}
 	for (int i = 0; i < nedges; ++i) {
 		fprintf(fd, "%sn%03d -> n%03d[label=\"%s\"];\n", indent, beg[i],

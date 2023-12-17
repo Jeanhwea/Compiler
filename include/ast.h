@@ -7,6 +7,7 @@
 typedef struct _tree_node node_t;
 typedef struct _tree_node {
 	int id;
+	int nid;
 	char *name;
 	int total;
 	char *refs[MAXCHILD];

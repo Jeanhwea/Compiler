@@ -7,11 +7,14 @@
 #include "syntax.h"
 #include <stdio.h>
 
+static int ncnt = 0;
+
 static node_t *initnode(int nid, char *name)
 {
 	node_t *d;
 	INITMEM(node_t, d);
-	d->id = nid;
+	d->id = ++ncnt;
+	d->nid = nid;
 	d->name = name;
 	return d;
 }
