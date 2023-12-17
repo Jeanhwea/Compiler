@@ -179,15 +179,15 @@ static void gen_repe_stmt(repe_stmt_node_t *node)
 
 static void gen_for_stmt(for_stmt_node_t *node)
 {
-	syment_t *forstart, *fordone;
-	forstart = symalloc("@forstart", LABEL_OBJ, VOID_TYPE);
-	fordone = symalloc("@fordone", LABEL_OBJ, VOID_TYPE);
-
 	syment_t *beg, *end;
 	beg = gen_expr(node->lep);
 	end = gen_expr(node->rep);
 
-	syment_t *r, *d;
+	syment_t *forstart, *fordone;
+	forstart = symalloc("@forstart", LABEL_OBJ, VOID_TYPE);
+	fordone = symalloc("@fordone", LABEL_OBJ, VOID_TYPE);
+
+	syment_t *d;
 	d = node->idp->symbol;
 	emit2(ASS_OP, beg, d);
 	emit1(LABEL_OP, forstart);
@@ -221,7 +221,7 @@ static void gen_pcall_stmt(pcall_stmt_node_t *node)
 
 static void gen_read_stmt(read_stmt_node_t *node)
 {
-	syment_t *d;
+	syment_t *d = NULL;
 	for (read_stmt_node_t *t = node; t; t = t->next) {
 		d = t->idp->symbol;
 		switch (d->type) {
@@ -237,7 +237,7 @@ static void gen_read_stmt(read_stmt_node_t *node)
 
 static void gen_write_stmt(write_stmt_node_t *node)
 {
-	syment_t *d;
+	syment_t *d = NULL;
 	switch (node->type) {
 	case STR_WRITE:
 		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
@@ -281,6 +281,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 static syment_t *gen_expr(expr_node_t *node)
 {
 	syment_t *d, *r, *e;
+	d = r = e = NULL;
 	for (expr_node_t *t = node; t; t = t->next) {
 		r = gen_term(t->tp);
 		if (!d) {
@@ -320,6 +321,7 @@ static syment_t *gen_expr(expr_node_t *node)
 static syment_t *gen_term(term_node_t *node)
 {
 	syment_t *d, *r, *e;
+	d = r = e = NULL;
 	for (term_node_t *t = node; t; t = t->next) {
 		r = gen_factor(t->fp);
 		if (!d) {
@@ -351,6 +353,7 @@ static syment_t *gen_term(term_node_t *node)
 static syment_t *gen_factor(factor_node_t *node)
 {
 	syment_t *d, *r, *e;
+	d = r = e = NULL;
 	switch (node->type) {
 	case ID_FACTOR:
 		d = node->idp->symbol;
@@ -417,6 +420,7 @@ static void gen_cond(cond_node_t *node, syment_t *dest)
 static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 {
 	syment_t *d, *r;
+	d = r = NULL;
 	for (arg_list_node_t *t = node; t; t = t->next) {
 		switch (t->refsym->cate) {
 		case BYVAL_OBJ:
