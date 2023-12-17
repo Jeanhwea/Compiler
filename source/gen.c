@@ -298,12 +298,14 @@ static syment_t *gen_expr(expr_node_t *node)
 			continue;
 		}
 		switch (t->op) {
+		case NOP_ADDOP:
 		case ADD_ADDOP:
 			e = d;
 			d = symalloc("@expr/add", TMP_OBJ, e->type);
 			emit3(ADD_ADDOP, e, r, d);
 			break;
 		case MINUS_ADDOP:
+		case NEG_ADDOP:
 			e = d;
 			d = symalloc("@expr/sub", TMP_OBJ, e->type);
 			emit3(ADD_ADDOP, e, r, d);
@@ -328,6 +330,7 @@ static syment_t *gen_term(term_node_t *node)
 			continue;
 		}
 		switch (t->op) {
+		case NOP_MULTOP:
 		case MULT_MULTOP:
 			e = d;
 			d = symalloc("@term/mul", TMP_OBJ, e->type);
@@ -440,7 +443,9 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 	}
 }
 
-void codegen()
+void generate()
 {
 	gen_pgm(prog);
+	chkerr("generate fail and exit.");
+	phase = CODE_GEN;
 }

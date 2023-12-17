@@ -1,4 +1,5 @@
 #include "anlys.h"
+#include "gen.h"
 #include "global.h"
 #include "scan.h"
 #include "parse.h"
@@ -14,21 +15,13 @@ int main(int argc, char *argv[])
 	}
 
 	// lexical & syntax
-	phase = LEXICAL;
 	parse();
-	if (errnum > 0) {
-		return errnum;
-	}
 
 	// semantic
-	phase = SEMANTIC;
 	analysis();
-	if (errnum > 0) {
-		return errnum;
-	}
 
 	// generation IR
-	phase = IR;
+	generate();
 
 	msg("done\n");
 	return 0;

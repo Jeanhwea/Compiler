@@ -1,5 +1,6 @@
 #include "common.h"
 #include "debug.h"
+#include "error.h"
 #include "global.h"
 #include "parse.h"
 #include "util.h"
@@ -995,5 +996,7 @@ pgm_node_t *parse(void)
 {
 	currtok = gettok();
 	prog = parse_pgm();
+	chkerr("parse fail and exit.");
+	phase = SEMANTIC;
 	return prog;
 }

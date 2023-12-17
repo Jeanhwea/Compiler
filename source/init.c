@@ -41,4 +41,5 @@ void init(int argc, char *argv[])
 {
 	pl0c_read_args(argc, argv);
 	pl0c_init_file(PL0C_PROGNAME);
+	phase = LEXICAL;
 }

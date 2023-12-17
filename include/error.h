@@ -23,4 +23,12 @@
 		exit(err);                                                     \
 	} while (0)
 
+#define chkerr(fmt)                                                            \
+	do {                                                                   \
+		if (errnum > 0) {                                              \
+			printf(fmt);                                           \
+			exit(errnum);                                          \
+		}                                                              \
+	} while (0)
+
 #endif /* End of _ERROR_H_ */
