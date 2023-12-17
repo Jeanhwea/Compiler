@@ -3,6 +3,7 @@
 #include "error.h"
 #include "global.h"
 #include "parse.h"
+#include "scan.h"
 #include "util.h"
 #include "lexical.h"
 #include "syntax.h"
@@ -23,6 +24,7 @@ static void match(token_t expected)
 {
 	// check if token matched
 	if (currtok != expected) {
+		dbg("unexpected token: [%s] at line %d\n", tokbuf, lineno);
 		panic("UNEXPECTED_TOKEN");
 	}
 
