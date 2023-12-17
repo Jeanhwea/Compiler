@@ -12,7 +12,7 @@ static void gen_pgm(pgm_node_t *node)
 	block_node_t *b = node->bp;
 	gen_pf_dec_list(b->pfdlp);
 	// main(...)
-	emit0(ENTER_OP);
+	emit0(ENT_OP);
 	gen_comp_stmt(b->csp);
 	emit0(FIN_OP);
 }
@@ -49,7 +49,7 @@ static void gen_proc_decf(proc_dec_node_t *node)
 		block_node_t *b = t->pdp->bp;
 		gen_pf_dec_list(b->pfdlp);
 
-		emit1(ENTER_OP, t->pdp->php->idp->symbol);
+		emit1(ENT_OP, t->pdp->php->idp->symbol);
 		gen_comp_stmt(b->csp);
 		emit0(FIN_OP);
 	}
@@ -69,7 +69,7 @@ static void gen_fun_decf(fun_dec_node_t *node)
 		block_node_t *b = t->fdp->bp;
 
 		gen_pf_dec_list(b->pfdlp);
-		emit1(ENTER_OP, t->fdp->fhp->idp->symbol);
+		emit1(ENT_OP, t->fdp->fhp->idp->symbol);
 		gen_comp_stmt(b->csp);
 	}
 }
@@ -159,9 +159,9 @@ static void gen_if_stmt(if_stmt_node_t *node)
 		gen_stmt(node->ep);
 	}
 	emit1(JMP_OP, ifdone);
-	emit1(LABEL_OP, ifthen);
+	emit1(LAB_OP, ifthen);
 	gen_stmt(node->tp);
-	emit1(LABEL_OP, ifdone);
+	emit1(LAB_OP, ifdone);
 }
 
 static void gen_repe_stmt(repe_stmt_node_t *node)
@@ -170,11 +170,11 @@ static void gen_repe_stmt(repe_stmt_node_t *node)
 	loopstart = symalloc("@loopstart", LABEL_OBJ, VOID_TYPE);
 	loopdone = symalloc("@loopdone", LABEL_OBJ, VOID_TYPE);
 
-	emit1(LABEL_OP, loopstart);
+	emit1(LAB_OP, loopstart);
 	gen_stmt(node->sp);
 	gen_cond(node->cp, loopdone);
 	emit1(JMP_OP, loopstart);
-	emit1(LABEL_OP, loopdone);
+	emit1(LAB_OP, loopdone);
 }
 
 static void gen_for_stmt(for_stmt_node_t *node)
@@ -190,14 +190,14 @@ static void gen_for_stmt(for_stmt_node_t *node)
 	syment_t *d;
 	d = node->idp->symbol;
 	emit2(ASS_OP, beg, d);
-	emit1(LABEL_OP, forstart);
+	emit1(LAB_OP, forstart);
 	switch (node->type) {
 	case TO_FOR:
 		emit3(GTT_OP, d, end, fordone);
 		gen_stmt(node->sp);
 		emit1(INC_OP, d);
 		emit1(JMP_OP, forstart);
-		emit1(LABEL_OP, fordone);
+		emit1(LAB_OP, fordone);
 		emit1(DEC_OP, d);
 		break;
 	case DOWNTO_FOR:
@@ -205,7 +205,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 		gen_stmt(node->sp);
 		emit1(DEC_OP, d);
 		emit1(JMP_OP, forstart);
-		emit1(LABEL_OP, fordone);
+		emit1(LAB_OP, fordone);
 		emit1(INC_OP, d);
 		break;
 	default:
@@ -431,11 +431,11 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 			d = t->symbol;
 			switch (t->symbol->cate) {
 			case VAR_OBJ:
-				emit2(PUSHA_OP, NULL, d);
+				emit2(PADR_OP, NULL, d);
 				break;
 			case ARRAY_OBJ:
 				r = gen_expr(t->ep);
-				emit2(PUSHA_OP, r, d);
+				emit2(PADR_OP, r, d);
 				break;
 			default:
 				unlikely();
