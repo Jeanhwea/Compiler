@@ -64,15 +64,15 @@ void writedot()
 	char *indent = "  ";
 	// fprintf(fd, "%srankdir=LR;\n", indent);
 	for (int i = 0; i < MAXNODES; ++i) {
-		if (label[i]) {
-			char *shape = "oval";
-			if (!strncmp(nodes[i]->name, "IDENT", 5)) {
-				shape = "box";
-			}
-			fprintf(fd,
-				"%sn%03d[label=\"#%d %s\", shape=\"%s\"];\n",
-				indent, i, i, label[i], shape);
+		if (!nodes[i]) {
+			continue;
 		}
+		char *shape = "oval";
+		if (!strncmp(nodes[i]->name, "IDENT", 5)) {
+			shape = "box";
+		}
+		fprintf(fd, "%sn%03d[label=\"#%d %s\", shape=\"%s\"];\n",
+			indent, i, i, label[i], shape);
 	}
 	for (int i = 0; i < nedges; ++i) {
 		fprintf(fd, "%sn%03d -> n%03d[label=\"%s\"];\n", indent, beg[i],
