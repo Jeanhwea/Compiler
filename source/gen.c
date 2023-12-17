@@ -19,14 +19,6 @@ static void gen_pgm(pgm_node_t *node)
 	emit0(FIN_OP);
 }
 
-static void gen_const_decf(const_dec_node_t *node)
-{
-}
-
-static void gen_var_decf(var_dec_node_t *node)
-{
-}
-
 static void gen_pf_dec_list(pf_dec_list_node_t *node)
 {
 	for (pf_dec_list_node_t *t = node; t; t = t->next) {
@@ -46,8 +38,6 @@ static void gen_pf_dec_list(pf_dec_list_node_t *node)
 static void gen_proc_decf(proc_dec_node_t *node)
 {
 	for (proc_dec_node_t *t = node; t; t = t->next) {
-		gen_proc_head(t->pdp->php);
-
 		block_node_t *b = t->pdp->bp;
 		gen_pf_dec_list(b->pfdlp);
 
@@ -57,33 +47,15 @@ static void gen_proc_decf(proc_dec_node_t *node)
 	}
 }
 
-static void gen_proc_head(proc_head_node_t *node)
-{
-	proc_head_node_t *t = node;
-	gen_para_list(t->idp->symbol, t->plp);
-}
-
 static void gen_fun_decf(fun_dec_node_t *node)
 {
 	for (fun_dec_node_t *t = node; t; t = t->next) {
-		gen_fun_head(t->fdp->fhp);
-
 		block_node_t *b = t->fdp->bp;
 
 		gen_pf_dec_list(b->pfdlp);
 		emit1(ENT_OP, t->fdp->fhp->idp->symbol);
 		gen_comp_stmt(b->csp);
 	}
-}
-
-static void gen_fun_head(fun_head_node_t *node)
-{
-	fun_head_node_t *t = node;
-	gen_para_list(t->idp->symbol, t->plp);
-}
-
-static void gen_para_list(syment_t *sign, para_list_node_t *node)
-{
 }
 
 static void gen_comp_stmt(comp_stmt_node_t *node)
