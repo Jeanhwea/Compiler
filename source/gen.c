@@ -190,14 +190,14 @@ static void gen_for_stmt(for_stmt_node_t *node)
 	syment_t *r, *d;
 	d = node->idp->symbol;
 	emit2(ASS_OP, beg, d);
-	emit1(LABEL_OBJ, forstart);
+	emit1(LABEL_OP, forstart);
 	switch (node->type) {
 	case TO_FOR:
 		emit3(GTT_OP, d, end, fordone);
 		gen_stmt(node->sp);
 		emit1(INC_OP, d);
 		emit1(JMP_OP, forstart);
-		emit1(LABEL_OBJ, fordone);
+		emit1(LABEL_OP, fordone);
 		emit1(DEC_OP, d);
 		break;
 	case DOWNTO_FOR:
@@ -205,7 +205,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 		gen_stmt(node->sp);
 		emit1(DEC_OP, d);
 		emit1(JMP_OP, forstart);
-		emit1(LABEL_OBJ, fordone);
+		emit1(LABEL_OP, fordone);
 		emit1(INC_OP, d);
 		break;
 	default:
@@ -287,7 +287,7 @@ static syment_t *gen_expr(expr_node_t *node)
 			switch (t->op) {
 			case NEG_ADDOP:
 				d = symalloc("@expr/neg", TMP_OBJ, r->type);
-				emit2(NEG_ADDOP, r, d);
+				emit2(NEG_OP, r, d);
 				break;
 			case NOP_ADDOP:
 				d = r;
@@ -302,13 +302,13 @@ static syment_t *gen_expr(expr_node_t *node)
 		case ADD_ADDOP:
 			e = d;
 			d = symalloc("@expr/add", TMP_OBJ, e->type);
-			emit3(ADD_ADDOP, e, r, d);
+			emit3(ADD_OP, e, r, d);
 			break;
 		case MINUS_ADDOP:
 		case NEG_ADDOP:
 			e = d;
 			d = symalloc("@expr/sub", TMP_OBJ, e->type);
-			emit3(ADD_ADDOP, e, r, d);
+			emit3(SUB_OP, e, r, d);
 			break;
 		default:
 			unlikely();
@@ -334,12 +334,12 @@ static syment_t *gen_term(term_node_t *node)
 		case MULT_MULTOP:
 			e = d;
 			d = symalloc("@term/mul", TMP_OBJ, e->type);
-			emit3(MULT_MULTOP, e, r, d);
+			emit3(MUL_OP, e, r, d);
 			break;
 		case DIV_MULTOP:
 			e = d;
 			d = symalloc("@term/div", TMP_OBJ, e->type);
-			emit3(DIV_MULTOP, e, r, d);
+			emit3(DIV_OP, e, r, d);
 			break;
 		default:
 			unlikely();
