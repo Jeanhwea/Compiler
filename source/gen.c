@@ -11,8 +11,10 @@ static void gen_pgm(pgm_node_t *node)
 {
 	block_node_t *b = node->bp;
 	gen_pf_dec_list(b->pfdlp);
-	// main(...)
-	emit0(ENT_OP);
+
+	// main function
+	syment_t *main = symalloc("main", FUN_OBJ, VOID_TYPE);
+	emit1(ENT_OP, main);
 	gen_comp_stmt(b->csp);
 	emit0(FIN_OP);
 }
