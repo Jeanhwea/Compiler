@@ -18,6 +18,10 @@ static node_t *initnode(int nid, char *name)
 
 static void addchild(node_t *parent, node_t *child, char *ref)
 {
+	if (!child) {
+		return;
+	}
+
 	parent->refs[parent->total] = dupstr(ref);
 	parent->childs[parent->total] = child;
 	parent->total++;
