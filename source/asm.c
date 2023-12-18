@@ -20,6 +20,17 @@ void loadvar(reg_t *reg, syment_t *var)
 	}
 }
 
+void loadarr(reg_t *reg, syment_t *arr, reg_t *off)
+{
+	switch (var->cate) {
+	case ARRAY_OBJ:
+		x86_mov3(reg, arr, off);
+		break;
+	default:
+		unlikely();
+	}
+}
+
 void asmbl_add_op(inst_t *x)
 {
 	reg_t *r1 = ralloc();
