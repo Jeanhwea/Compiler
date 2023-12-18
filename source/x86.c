@@ -152,3 +152,45 @@ void x86_dec(reg_t *r1)
 {
 	printf("dec\t%s\n", r1->name);
 }
+
+void x86_pop(reg_t *reg)
+{
+	printf("pop\t%s\n", reg->name);
+}
+
+void x86_push(reg_t *reg)
+{
+	printf("push\t%s\n", reg->name);
+}
+
+void x86_push2(syment_t *var)
+{
+	printf("push\t%s\n", var->label);
+}
+
+void x86_call(syment_t *func)
+{
+	printf("call\t%s\n", func->label);
+	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
+	printf("add\tesp, %d\n", off);
+}
+
+void x86_ret()
+{
+	printf("ret\n");
+}
+
+void x86_label(syment_t *lab)
+{
+	printf("%s:\n", lab->label);
+}
+
+void x86_jmp(syment_t *lab)
+{
+	printf("jmp\t%s\n", lab->label);
+}
+
+void x86_cmp(reg_t *r1, reg_t *r2)
+{
+	printf("cmp\t%s, %s\n", r1->name, r2->name);
+}
