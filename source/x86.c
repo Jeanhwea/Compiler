@@ -26,17 +26,18 @@ reg_t *getreg()
 	}
 
 	panic("NO_REGISTER_LEFT");
+	return 0;
 }
 
 // free a register
-void *putreg(reg_t *r)
+void putreg(reg_t *r)
 {
 	r->refcnt--;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // i386 instructions
-char *deref(syment_t *e)
+char *addr(syment_t *e)
 {
 	char buf[16];
 	sprintf(buf, "[%s-%d]", BP, ALIGN * e->off);
@@ -52,7 +53,7 @@ void x86_mov(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
-		printf("mov\t%s, %s\n", reg->name, deref(var));
+		printf("mov\t%s, %s\n", reg->name, addr(var));
 		break;
 	default:
 		unlikely();
@@ -63,7 +64,7 @@ void x86_mov2(syment_t *var, reg_t *reg)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
-		printf("mov\t%s, %s\n", deref(var), reg->name);
+		printf("mov\t%s, %s\n", addr(var), reg->name);
 		break;
 	default:
 		unlikely();
@@ -74,10 +75,10 @@ void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
-		printf("lea\tedi, %s\n", deref(arr));
+		printf("lea\t%s, %s\n", DI, addr(arr));
 		printf("imul\t%s, %d\n", off->name, ALIGN);
-		printf("sub\tedi, %s\n", off->name);
-		printf("mov\t%s, [edi]\n", reg->name);
+		printf("sub\t%s, %s\n", DI, off->name);
+		printf("mov\t%s, [%s]\n", reg->name, DI);
 		break;
 	default:
 		unlikely();
@@ -88,10 +89,10 @@ void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
-		printf("lea\tedi, %s\n", deref(arr));
+		printf("lea\t%s, %s\n", DI, addr(arr));
 		printf("imul\t%s, %d\n", off->name, ALIGN);
-		printf("sub\tedi, %s\n", off->name);
-		printf("mov\t[edi], %s\n", reg->name);
+		printf("sub\t%s, %s\n", DI, off->name);
+		printf("mov\t[%s], %s\n", DI, reg->name);
 		break;
 	default:
 		unlikely();
@@ -112,7 +113,7 @@ void x86_lea(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
-		printf("lea\t%s, %s\n", reg->name, deref(var));
+		printf("lea\t%s, %s\n", reg->name, addr(var));
 		break;
 	default:
 		unlikely();
@@ -123,7 +124,7 @@ void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case VAR_OBJ:
-		printf("lea\t%s, %s\n", reg->name, deref(arr));
+		printf("lea\t%s, %s\n", reg->name, addr(arr));
 		printf("imul\t%s, %d\n", off->name, ALIGN);
 		printf("sub\t%s, %s\n", reg->name, off->name);
 		break;
@@ -232,4 +233,9 @@ void x86_jl(syment_t *lab)
 void x86_jnl(syment_t *lab)
 {
 	printf("jnl\t%s\n", lab->label);
+}
+
+void x86_sret(syment_t *reg)
+{
+	printf("mov\t[%s-%d], %s\n", BP, ALIGN, reg->name);
 }

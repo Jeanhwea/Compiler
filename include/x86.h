@@ -11,7 +11,7 @@ typedef struct _reg_struct {
 #define DI "ebi"
 
 reg_t *getreg();
-void *putreg(reg_t *r);
+void putreg(reg_t *r);
 
 // asm instructions
 #define ALIGN 4
