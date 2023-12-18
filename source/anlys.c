@@ -374,6 +374,9 @@ static void anlys_factor(factor_node_t *node)
 		idp->symbol = e;
 		break;
 	case ARRAY_FACTOR:
+		nevernil(node->ep);
+		anlys_expr(node->ep);
+
 		nevernil(node->idp);
 		idp = node->idp;
 		e = symfind(idp->name);
