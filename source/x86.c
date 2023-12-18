@@ -34,7 +34,7 @@ void x86_mov_rm(reg_t *reg, syment_t *mem)
 {
 	switch (mem->cate) {
 	case VAR_OBJ:
-		printf("mov\t%s, [ebp - %d];\n");
+		printf("mov\t%s, [ebp - %d];\n", reg->name, OFFSET(mem));
 		break;
 	default:
 		unlikely();

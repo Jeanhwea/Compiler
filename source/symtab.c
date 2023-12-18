@@ -139,7 +139,6 @@ syment_t *syminit(ident_node_t *idp)
 	syment_t *e;
 	NEWENTRY(e);
 	e->sid = ++symcnt;
-	sprintf(e->label, "L%03d", e->sid);
 
 	e->name = dupstr(idp->name);
 	e->initval = idp->value;
@@ -199,6 +198,14 @@ syment_t *syminit(ident_node_t *idp)
 		e->type = VOID_TYPE;
 	}
 
+	sprintf(e->label, "L%03d", e->sid);
+	e->off = top->varoff;
+	if (e->cate == ARRAY_OBJ) {
+		top->varoff += e->arrlen;
+	} else {
+		top->varoff += 1;
+	}
+
 	symadd(e);
 	return e;
 }
@@ -209,9 +216,18 @@ syment_t *symalloc(char *name, cate_t cate, type_t type)
 	NEWENTRY(e);
 	e->name = dupstr(name);
 	e->sid = ++symcnt;
-	sprintf(e->label, "T%03d", e->sid);
 
 	e->cate = cate;
 	e->type = type;
+
+	sprintf(e->label, "T%03d", e->sid);
+	e->off = top->varoff;
+	if (e->cate == ARRAY_OBJ) {
+		top->varoff += e->arrlen;
+	} else {
+		top->varoff += 1;
+	}
+
+	symadd(e);
 	return e;
 }

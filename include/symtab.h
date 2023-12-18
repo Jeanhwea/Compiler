@@ -56,7 +56,7 @@ typedef struct _sym_entry_struct {
 	param_t *ptail;
 	// label for assemble codes
 	char label[MAXLABEL];
-	int off; // offset
+	int off; // offset, for assembly stack mapping
 	// referenced line number
 	int lineno;
 	// which symbol table
@@ -68,6 +68,7 @@ typedef struct _sym_table_struct {
 	int id; // symbol table ID
 	int depth; // symbol table nested depth
 	char *nspace; // namespace
+	// for assembly stack mapping
 	int varoff; // variable offset
 	int tmpoff; // temporary variable offset
 	symtab_t *inner;
