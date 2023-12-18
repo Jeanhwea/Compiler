@@ -384,9 +384,6 @@ static void anlys_factor(factor_node_t *node)
 		idp->symbol = e;
 		break;
 	case ARRAY_FACTOR:
-		nevernil(node->ep);
-		anlys_expr(node->ep);
-
 		nevernil(node->idp);
 		idp = node->idp;
 		e = symfind(idp->name);
@@ -399,6 +396,9 @@ static void anlys_factor(factor_node_t *node)
 			       idp->line, idp->name);
 		}
 		idp->symbol = e;
+
+		nevernil(node->ep);
+		anlys_expr(node->ep);
 		break;
 	case UNSIGN_FACTOR:
 		break;
@@ -471,9 +471,9 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 
 			factor_node_t *fp = tp->fp;
 			ident_node_t *idp;
-			if (fp->type != ID_FACTOR || fp->type != ARRAY_FACTOR) {
+			if (fp->type == ID_FACTOR || fp->type == ARRAY_FACTOR) {
 				idp = fp->idp;
-				fp->stab = scope_top();
+				anlys_factor(fp);
 				goto refok;
 			}
 		referr:
