@@ -181,14 +181,15 @@ void asmbl_load_op(inst_t *x)
 
 	if (x->s) { // load array
 		reg_t *r2 = ralloc(); // offset
-		loadvar(r1, x->s);
+		loadvar(r2, x->s);
 		loadptr2(r1, x->r, r2);
+		savevar(x->d, r1);
 		rfree(r2);
 	} else {
 		loadptr(r1, x->r);
+		savevar(x->d, r1);
 	}
 
-	savevar(x->d, r1);
 	rfree(r1);
 }
 
