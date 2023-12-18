@@ -9,4 +9,6 @@ typedef struct _reg_struct {
 
 reg_t *getreg();
 void *putreg(reg_t *r);
+
+// asm instructions
 #endif /* End of _X86_H_ */

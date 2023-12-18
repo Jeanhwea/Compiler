@@ -1,7 +1,7 @@
 #include "anlys.h"
 #include "debug.h"
 #include "global.h"
-#include "ast.h"
+#include "tree.h"
 #include "ir.h"
 #include "symtab.h"
 #include "util.h"

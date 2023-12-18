@@ -1,5 +1,6 @@
 #include "x86.h"
 #include "debug.h"
+#include "ir.h"
 
 // register table
 reg_t regs[4] = {
@@ -25,4 +26,21 @@ reg_t *getreg()
 void *putreg(reg_t *r)
 {
 	r->refcnt--;
+}
+
+void genasm(inst_t *x)
+{
+	switch (x->op) {
+	case ADD_OP:
+		break;
+	default:
+		unlikely();
+	}
+}
+
+void *assemble()
+{
+	for (inst_t *x = xhead; x; x = x->next) {
+		genasm(x);
+	}
 }

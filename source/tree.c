@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "tree.h"
 #include "debug.h"
 #include "ir.h"
 #include "util.h"

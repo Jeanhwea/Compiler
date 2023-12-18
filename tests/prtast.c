@@ -1,6 +1,6 @@
 #include "anlys.h"
 #include "global.h"
-#include "ast.h"
+#include "tree.h"
 #include "parse.h"
 #include "util.h"
 #include "syntax.h"
