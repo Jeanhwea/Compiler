@@ -1,5 +1,6 @@
 #ifndef _X86_H_
 #define _X86_H_
+#include "symtab.h"
 
 // register
 typedef struct _reg_struct {
