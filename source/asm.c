@@ -4,7 +4,7 @@
 #include "x86.h"
 #include "asm.h"
 
-void loadvar(reg_t *reg, syment_t *var)
+static void loadvar(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case CONST_OBJ:
@@ -24,7 +24,7 @@ void loadvar(reg_t *reg, syment_t *var)
 	}
 }
 
-void savevar(syment_t *var, reg_t *reg)
+static void savevar(syment_t *var, reg_t *reg)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
@@ -36,7 +36,7 @@ void savevar(syment_t *var, reg_t *reg)
 	}
 }
 
-void loadadr(reg_t *reg, syment_t *var)
+static void loadadr(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
@@ -48,7 +48,7 @@ void loadadr(reg_t *reg, syment_t *var)
 	}
 }
 
-void loadadr2(reg_t *reg, syment_t *arr, reg_t *off)
+static void loadadr2(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
@@ -59,7 +59,7 @@ void loadadr2(reg_t *reg, syment_t *arr, reg_t *off)
 	}
 }
 
-void loadarr(reg_t *reg, syment_t *arr, reg_t *off)
+static void loadarr(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
@@ -114,6 +114,7 @@ void asmbl_mul_op(inst_t *x)
 
 void asmbl_div_op(inst_t *x)
 {
+	// idiv use specific registers
 	reg_t *eax = rlock("eax");
 	reg_t *edx = rlock("edx");
 	reg_t *r = ralloc();
@@ -187,8 +188,8 @@ void asmbl_asa_op(inst_t *x)
 	reg_t *r2 = ralloc();
 
 	x86_mov(r1, x->s); // r1 = offset
-	loadadr2(r2, x->r, r1);
-	x86_mov2(x->d, r2);
+	loadarr(r2, x->r, r1);
+	savevar(x->d, r2);
 
 	rfree(r1);
 	rfree(r2);
