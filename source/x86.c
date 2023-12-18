@@ -50,52 +50,28 @@ void x86_enter(syment_t *e)
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
-	switch (var->cate) {
-	case VAR_OBJ:
-		printf("mov\t%s, %s\n", reg->name, addr(var));
-		break;
-	default:
-		unlikely();
-	}
+	printf("mov\t%s, %s\n", reg->name, addr(var));
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)
 {
-	switch (var->cate) {
-	case VAR_OBJ:
-		printf("mov\t%s, %s\n", addr(var), reg->name);
-		break;
-	default:
-		unlikely();
-	}
+	printf("mov\t%s, %s\n", addr(var), reg->name);
 }
 
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 {
-	switch (arr->cate) {
-	case ARRAY_OBJ:
-		printf("lea\t%s, %s\n", DI, addr(arr));
-		printf("imul\t%s, %d\n", off->name, ALIGN);
-		printf("sub\t%s, %s\n", DI, off->name);
-		printf("mov\t%s, [%s]\n", reg->name, DI);
-		break;
-	default:
-		unlikely();
-	}
+	printf("lea\t%s, %s\n", DI, addr(arr));
+	printf("imul\t%s, %d\n", off->name, ALIGN);
+	printf("sub\t%s, %s\n", DI, off->name);
+	printf("mov\t%s, [%s]\n", reg->name, DI);
 }
 
 void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 {
-	switch (arr->cate) {
-	case ARRAY_OBJ:
-		printf("lea\t%s, %s\n", DI, addr(arr));
-		printf("imul\t%s, %d\n", off->name, ALIGN);
-		printf("sub\t%s, %s\n", DI, off->name);
-		printf("mov\t[%s], %s\n", DI, reg->name);
-		break;
-	default:
-		unlikely();
-	}
+	printf("lea\t%s, %s\n", DI, addr(arr));
+	printf("imul\t%s, %d\n", off->name, ALIGN);
+	printf("sub\t%s, %s\n", DI, off->name);
+	printf("mov\t[%s], %s\n", DI, reg->name);
 }
 
 void x86_mov5(reg_t *r1, reg_t *r2)
@@ -110,26 +86,14 @@ void x86_mov6(reg_t *reg, int num)
 
 void x86_lea(reg_t *reg, syment_t *var)
 {
-	switch (var->cate) {
-	case VAR_OBJ:
-		printf("lea\t%s, %s\n", reg->name, addr(var));
-		break;
-	default:
-		unlikely();
-	}
+	printf("lea\t%s, %s\n", reg->name, addr(var));
 }
 
 void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off)
 {
-	switch (arr->cate) {
-	case VAR_OBJ:
-		printf("lea\t%s, %s\n", reg->name, addr(arr));
-		printf("imul\t%s, %d\n", off->name, ALIGN);
-		printf("sub\t%s, %s\n", reg->name, off->name);
-		break;
-	default:
-		unlikely();
-	}
+	printf("lea\t%s, %s\n", reg->name, addr(arr));
+	printf("imul\t%s, %d\n", off->name, ALIGN);
+	printf("sub\t%s, %s\n", reg->name, off->name);
 }
 
 void x86_add(reg_t *r1, reg_t *r2)

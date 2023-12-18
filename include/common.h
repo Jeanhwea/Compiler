@@ -33,7 +33,8 @@ typedef enum _phase_enum {
 	/* 2 */ SYNTAX,
 	/* 3 */ SEMANTIC,
 	/* 4 */ IR,
-	/* 5 */ CODE_GEN
+	/* 5 */ CODE_GEN,
+	/* 6 */ SUCCESS
 } phase_t;
 
 #endif /* End of _COMMON_H_ */
