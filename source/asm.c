@@ -22,7 +22,7 @@ void loadvar(reg_t *reg, syment_t *var)
 
 void loadarr(reg_t *reg, syment_t *arr, reg_t *off)
 {
-	switch (var->cate) {
+	switch (arr->cate) {
 	case ARRAY_OBJ:
 		x86_mov3(reg, arr, off);
 		break;
