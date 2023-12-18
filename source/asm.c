@@ -209,7 +209,7 @@ void asmbl_asa_op(inst_t *x)
 
 	loadvar(r1, x->s); // r1 = offset
 	loadvar(r2, x->r);
-	savearr(x->d, r2, r1);
+	savearr(x->d, r1, r2);
 
 	rfree(r1);
 	rfree(r2);
