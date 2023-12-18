@@ -370,7 +370,17 @@ static void anlys_factor(factor_node_t *node)
 			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
 			       idp->name);
 		}
-		// TODO OBJ5(Const_Obj_t, Var_Obj_t, Para_Val_Obj_t, Para_Ref_Obj_t, Tmp_Obj_t)) {
+		switch (e->cate) {
+		case CONST_OBJ:
+		case VAR_OBJ:
+		case TMP_OBJ_T:
+		case BYVAL_OBJ:
+		case BYREF_OBJ:
+			break;
+		default:
+			giveup(BADCTG, "L%d: symbol %s category is bad.",
+			       idp->line, idp->name);
+		}
 		idp->symbol = e;
 		break;
 	case ARRAY_FACTOR:

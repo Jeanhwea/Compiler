@@ -3,10 +3,11 @@
 
 #define DUPSYM 100
 #define BADSYM 101
-#define ERTYPE 102
-#define BADLEN 103
-#define BADREF 104
-#define OBJREF 105
+#define BADCTG 102
+#define ERTYPE 103
+#define BADLEN 104
+#define BADREF 105
+#define OBJREF 106
 #define EPANIC 996
 #define EABORT 997
 #define EARGMT 998
