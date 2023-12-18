@@ -373,7 +373,7 @@ static void anlys_factor(factor_node_t *node)
 		switch (e->cate) {
 		case CONST_OBJ:
 		case VAR_OBJ:
-		case TMP_OBJ_T:
+		case TMP_OBJ:
 		case BYVAL_OBJ:
 		case BYREF_OBJ:
 			break;
