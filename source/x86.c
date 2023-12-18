@@ -2,6 +2,8 @@
 #include "debug.h"
 #include "ir.h"
 #include "symtab.h"
+#include "util.h"
+#include <stdio.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // register table
@@ -34,6 +36,13 @@ void *putreg(reg_t *r)
 
 ////////////////////////////////////////////////////////////////////////////////
 // i386 instructions
+char *deref(syment_t *e)
+{
+	char buf[16];
+	sprintf(buf, "[%s-%d]", BP, ALIGN * e->off);
+	return dupstr(buf);
+}
+
 void x86_enter(syment_t *e)
 {
 	printf("; enter\n");
@@ -43,7 +52,7 @@ void x86_mov(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
-		printf("mov\t%s, [ebp-%d]\n", reg->name, OFFSET(var));
+		printf("mov\t%s, %s\n", reg->name, deref(var));
 		break;
 	default:
 		unlikely();
@@ -54,7 +63,7 @@ void x86_mov2(syment_t *var, reg_t *reg)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
-		printf("mov\t[ebp-%d], %s\n", OFFSET(var), reg->name);
+		printf("mov\t%s, %s\n", deref(var), reg->name);
 		break;
 	default:
 		unlikely();
@@ -65,7 +74,7 @@ void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
-		printf("lea\tedi, [ebp-%d]\n", OFFSET(arr));
+		printf("lea\tedi, %s\n", deref(arr));
 		printf("imul\t%s, %d\n", off->name, ALIGN);
 		printf("sub\tedi, %s\n", off->name);
 		printf("mov\t%s, [edi]\n", reg->name);
@@ -79,7 +88,7 @@ void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
-		printf("lea\tedi, [ebp-%d]\n", OFFSET(arr));
+		printf("lea\tedi, %s\n", deref(arr));
 		printf("imul\t%s, %d\n", off->name, ALIGN);
 		printf("sub\tedi, %s\n", off->name);
 		printf("mov\t[edi], %s\n", reg->name);
@@ -103,7 +112,7 @@ void x86_lea(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
-		printf("lea\t%s, [ebp-%d]\n", reg->name, OFFSET(var));
+		printf("lea\t%s, %s\n", reg->name, deref(var));
 		break;
 	default:
 		unlikely();
@@ -114,7 +123,7 @@ void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case VAR_OBJ:
-		printf("lea\t%s, [ebp-%d]\n", reg->name, OFFSET(arr));
+		printf("lea\t%s, %s\n", reg->name, deref(arr));
 		printf("imul\t%s, %d\n", off->name, ALIGN);
 		printf("sub\t%s, %s\n", reg->name, off->name);
 		break;
@@ -193,4 +202,34 @@ void x86_jmp(syment_t *lab)
 void x86_cmp(reg_t *r1, reg_t *r2)
 {
 	printf("cmp\t%s, %s\n", r1->name, r2->name);
+}
+
+void x86_jz(syment_t *lab)
+{
+	printf("jz\t%s\n", lab->label);
+}
+
+void x86_jnz(syment_t *lab)
+{
+	printf("jnz\t%s\n", lab->label);
+}
+
+void x86_jg(syment_t *lab)
+{
+	printf("jg\t%s\n", lab->label);
+}
+
+void x86_jng(syment_t *lab)
+{
+	printf("jng\t%s\n", lab->label);
+}
+
+void x86_jl(syment_t *lab)
+{
+	printf("jl\t%s\n", lab->label);
+}
+
+void x86_jnl(syment_t *lab)
+{
+	printf("jnl\t%s\n", lab->label);
 }

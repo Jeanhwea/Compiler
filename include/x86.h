@@ -7,6 +7,9 @@ typedef struct _reg_struct {
 	int refcnt;
 } reg_t;
 
+#define BP "ebp"
+#define DI "ebi"
+
 reg_t *getreg();
 void *putreg(reg_t *r);
 
