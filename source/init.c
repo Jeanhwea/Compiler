@@ -3,7 +3,7 @@
 
 // constants
 char *PL0C_NAME = "pl0c";
-char *PL0C_VERSION = "v0.13.2";
+char *PL0C_VERSION = "v0.13.4";
 char PL0C_PROGNAME[4096];
 
 // debug
