@@ -317,8 +317,8 @@ void asmbl_padr_op(inst_t *x)
 {
 	reg_t *r1 = ralloc();
 	reg_t *r2 = ralloc();
-	if (x->s) {
-		loadvar(r2, x->s);
+	if (x->r) {
+		loadvar(r2, x->r); // offset
 		loadptr2(r1, x->d, r2);
 	} else {
 		loadptr(r1, x->d);
