@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "error.h"
 #include "global.h"
 
 // constants
@@ -21,7 +21,7 @@ void pl0c_read_args(int argc, char *argv[])
 {
 	if (argc < 2) {
 		msg("usage: %s source.pas\n", argv[0]);
-		exit(1);
+		exit(EARGMT);
 	}
 	strcpy(PL0C_PROGNAME, argv[argc - 1]);
 }

@@ -9,6 +9,7 @@
 #define OBJREF 105
 #define EPANIC 996
 #define EABORT 997
+#define EARGMT 998
 
 #define rescue(err, fmt, args...)                                              \
 	do {                                                                   \
