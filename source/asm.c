@@ -15,6 +15,10 @@ void loadvar(reg_t *reg, syment_t *var)
 	case TMP_OBJ:
 		x86_mov(reg, var);
 		break;
+	case BYVAL_OBJ:
+	case BYREF_OBJ:
+		x86_mov(reg, var);
+		break;
 	default:
 		unlikely();
 	}
@@ -192,42 +196,121 @@ void asmbl_asa_op(inst_t *x)
 
 void asmbl_equ_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+	x86_cmp(r1, r2);
+	x86_jz(x->d);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_neq_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+	x86_cmp(r1, r2);
+	x86_jnz(x->d);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_gtt_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+	x86_cmp(r1, r2);
+	x86_jg(x->d);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_geq_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+	x86_cmp(r1, r2);
+	x86_jnl(x->d);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_lst_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+	x86_cmp(r1, r2);
+	x86_jl(x->d);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_leq_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+	x86_cmp(r1, r2);
+	x86_jng(x->d);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_jmp_op(inst_t *x)
 {
+	jmp_asm(x->d);
 }
 
 void asmbl_push_op(inst_t *x)
 {
+	reg_t *r = ralloc();
+	loadvar(r, x->d);
+	x86_push(r);
+	rfree(r);
 }
 
 void asmbl_padr_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+	if (x->s) {
+		loadvar(r2, x->s);
+		loadadr2(r1, x->d, r2);
+	} else {
+		loadadr(r1, x->d);
+	}
+	x86_push(r1);
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_pop_op(inst_t *x)
 {
+	reg_t *r = ralloc();
+	x86_pop(r);
+	rfree(r);
 }
 
 void asmbl_call_op(inst_t *x)
