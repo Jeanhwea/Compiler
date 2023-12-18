@@ -280,7 +280,7 @@ void asmbl_leq_op(inst_t *x)
 
 void asmbl_jmp_op(inst_t *x)
 {
-	jmp_asm(x->d);
+	x86_jmp(x->d);
 }
 
 void asmbl_push_op(inst_t *x)
