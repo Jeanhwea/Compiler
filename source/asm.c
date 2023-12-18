@@ -473,5 +473,6 @@ void *assemble()
 			unlikely();
 		}
 	}
+	chkerr("assemble fail and exit.");
 	phase = SUCCESS;
 }
