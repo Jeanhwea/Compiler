@@ -8,11 +8,14 @@ typedef struct _reg_struct {
 	int refcnt;
 } reg_t;
 
+// Pointer register
 #define BP "ebp"
 #define DI "ebi"
 
-reg_t *getreg();
-void putreg(reg_t *r);
+// General register operations
+reg_t *regalloc();
+reg_t *reglock(char *name);
+void regfree(reg_t *r);
 
 #define ALIGN 4
 #define OFFSET(e) (ALIGN * e->off)

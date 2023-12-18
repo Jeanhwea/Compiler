@@ -13,8 +13,8 @@ reg_t regs[4] = {
 	[3] = { "edx", 0 },
 };
 
-// acquire a register
-reg_t *getreg()
+// Alloc a register
+reg_t *regalloc()
 {
 	for (int i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
 		reg_t *r = &regs[i];
@@ -28,8 +28,23 @@ reg_t *getreg()
 	return 0;
 }
 
-// free a register
-void putreg(reg_t *r)
+// Lock specific register
+reg_t *reglock(char *name)
+{
+	for (int i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
+		reg_t *r = &regs[i];
+		if (!strcmp(r->name, name) && r->refcnt == 0) {
+			r->refcnt++;
+			return r;
+		}
+	}
+
+	panic("NO_REGISTER_LEFT");
+	return 0;
+}
+
+// Free a register
+void regfree(reg_t *r)
 {
 	r->refcnt--;
 }
@@ -111,6 +126,11 @@ void x86_mul(reg_t *r1, reg_t *r2)
 	printf("imul\t%s, %s\n", r1->name, r2->name);
 }
 
+// idiv (r/imm32)
+//    edx:eax / (r/imm32)
+// result:
+//    eax <- quotient
+//    edx <- remainder
 void x86_div(reg_t *r1)
 {
 	printf("idiv\t%s\n", r1->name);

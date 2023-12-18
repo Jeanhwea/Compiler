@@ -1,130 +1,165 @@
+#include "debug.h"
 #include "global.h"
+#include "symtab.h"
 #include "x86.h"
 #include "asm.h"
 
-void asm_add_op(inst_t *x)
+void loadvar(reg_t *reg, syment_t *var)
 {
-	reg_t *r1 = getreg();
-	reg_t *r2 = getreg();
-	x86_mov(r1, x->r);
-	x86_mov(r2, x->s);
+	switch (var->cate) {
+	case CONST_OBJ:
+		x86_mov6(reg, var->initval);
+		break;
+	case VAR_OBJ:
+	case TMP_OBJ:
+		x86_mov(reg, var);
+		break;
+	default:
+		unlikely();
+	}
+}
+
+void asmbl_add_op(inst_t *x)
+{
+	reg_t *r1 = regalloc();
+	reg_t *r2 = regalloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->d);
+
 	x86_add(r1, r2);
+
 	x86_mov2(x->d, r1);
+
+	regfree(r1);
+	regfree(r2);
 }
 
-void asm_sub_op(inst_t *x)
+void asmbl_sub_op(inst_t *x)
+{
+	reg_t *r1 = regalloc();
+	reg_t *r2 = regalloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->d);
+
+	x86_sub(r1, r2);
+
+	x86_mov2(x->d, r1);
+
+	regfree(r1);
+	regfree(r2);
+}
+
+void asmbl_mul_op(inst_t *x)
 {
 }
 
-void asm_mul_op(inst_t *x)
+void asmbl_div_op(inst_t *x)
 {
 }
 
-void asm_div_op(inst_t *x)
+void asmbl_inc_op(inst_t *x)
 {
 }
 
-void asm_inc_op(inst_t *x)
+void asmbl_dec_op(inst_t *x)
 {
 }
 
-void asm_dec_op(inst_t *x)
+void asmbl_neg_op(inst_t *x)
 {
 }
 
-void asm_neg_op(inst_t *x)
+void asmbl_load_op(inst_t *x)
 {
 }
 
-void asm_load_op(inst_t *x)
+void asmbl_ass_op(inst_t *x)
 {
 }
 
-void asm_ass_op(inst_t *x)
+void asmbl_asa_op(inst_t *x)
 {
 }
 
-void asm_asa_op(inst_t *x)
+void asmbl_equ_op(inst_t *x)
 {
 }
 
-void asm_equ_op(inst_t *x)
+void asmbl_neq_op(inst_t *x)
 {
 }
 
-void asm_neq_op(inst_t *x)
+void asmbl_gtt_op(inst_t *x)
 {
 }
 
-void asm_gtt_op(inst_t *x)
+void asmbl_geq_op(inst_t *x)
 {
 }
 
-void asm_geq_op(inst_t *x)
+void asmbl_lst_op(inst_t *x)
 {
 }
 
-void asm_lst_op(inst_t *x)
+void asmbl_leq_op(inst_t *x)
 {
 }
 
-void asm_leq_op(inst_t *x)
+void asmbl_jmp_op(inst_t *x)
 {
 }
 
-void asm_jmp_op(inst_t *x)
+void asmbl_push_op(inst_t *x)
 {
 }
 
-void asm_push_op(inst_t *x)
+void asmbl_padr_op(inst_t *x)
 {
 }
 
-void asm_padr_op(inst_t *x)
+void asmbl_pop_op(inst_t *x)
 {
 }
 
-void asm_pop_op(inst_t *x)
+void asmbl_call_op(inst_t *x)
 {
 }
 
-void asm_call_op(inst_t *x)
+void asmbl_sret_op(inst_t *x)
 {
 }
 
-void asm_sret_op(inst_t *x)
+void asmbl_ent_op(inst_t *x)
 {
 }
 
-void asm_ent_op(inst_t *x)
+void asmbl_fin_op(inst_t *x)
 {
 }
 
-void asm_fin_op(inst_t *x)
+void asmbl_rdi_op(inst_t *x)
 {
 }
 
-void asm_rdi_op(inst_t *x)
+void asmbl_rdc_op(inst_t *x)
 {
 }
 
-void asm_rdc_op(inst_t *x)
+void asmbl_wrs_op(inst_t *x)
 {
 }
 
-void asm_wrs_op(inst_t *x)
+void asmbl_wri_op(inst_t *x)
 {
 }
 
-void asm_wri_op(inst_t *x)
+void asmbl_wrc_op(inst_t *x)
 {
 }
 
-void asm_wrc_op(inst_t *x)
-{
-}
-
-void asm_lab_op(inst_t *x)
+void asmbl_lab_op(inst_t *x)
 {
 }
 
@@ -133,94 +168,94 @@ void *assemble()
 	for (inst_t *x = xhead; x; x = x->next) {
 		switch (x->op) {
 		case ADD_OP:
-			asm_add_op(x);
+			asmbl_add_op(x);
 			break;
 		case SUB_OP:
-			asm_sub_op(x);
+			asmbl_sub_op(x);
 			break;
 		case MUL_OP:
-			asm_mul_op(x);
+			asmbl_mul_op(x);
 			break;
 		case DIV_OP:
-			asm_div_op(x);
+			asmbl_div_op(x);
 			break;
 		case INC_OP:
-			asm_inc_op(x);
+			asmbl_inc_op(x);
 			break;
 		case DEC_OP:
-			asm_dec_op(x);
+			asmbl_dec_op(x);
 			break;
 		case NEG_OP:
-			asm_neg_op(x);
+			asmbl_neg_op(x);
 			break;
 		case LOAD_OP:
-			asm_load_op(x);
+			asmbl_load_op(x);
 			break;
 		case ASS_OP:
-			asm_ass_op(x);
+			asmbl_ass_op(x);
 			break;
 		case ASA_OP:
-			asm_asa_op(x);
+			asmbl_asa_op(x);
 			break;
 		case EQU_OP:
-			asm_equ_op(x);
+			asmbl_equ_op(x);
 			break;
 		case NEQ_OP:
-			asm_neq_op(x);
+			asmbl_neq_op(x);
 			break;
 		case GTT_OP:
-			asm_gtt_op(x);
+			asmbl_gtt_op(x);
 			break;
 		case GEQ_OP:
-			asm_geq_op(x);
+			asmbl_geq_op(x);
 			break;
 		case LST_OP:
-			asm_lst_op(x);
+			asmbl_lst_op(x);
 			break;
 		case LEQ_OP:
-			asm_leq_op(x);
+			asmbl_leq_op(x);
 			break;
 		case JMP_OP:
-			asm_jmp_op(x);
+			asmbl_jmp_op(x);
 			break;
 		case PUSH_OP:
-			asm_push_op(x);
+			asmbl_push_op(x);
 			break;
 		case PADR_OP:
-			asm_padr_op(x);
+			asmbl_padr_op(x);
 			break;
 		case POP_OP:
-			asm_pop_op(x);
+			asmbl_pop_op(x);
 			break;
 		case CALL_OP:
-			asm_call_op(x);
+			asmbl_call_op(x);
 			break;
 		case SRET_OP:
-			asm_sret_op(x);
+			asmbl_sret_op(x);
 			break;
 		case ENT_OP:
-			asm_ent_op(x);
+			asmbl_ent_op(x);
 			break;
 		case FIN_OP:
-			asm_fin_op(x);
+			asmbl_fin_op(x);
 			break;
 		case RDI_OP:
-			asm_rdi_op(x);
+			asmbl_rdi_op(x);
 			break;
 		case RDC_OP:
-			asm_rdc_op(x);
+			asmbl_rdc_op(x);
 			break;
 		case WRS_OP:
-			asm_wrs_op(x);
+			asmbl_wrs_op(x);
 			break;
 		case WRI_OP:
-			asm_wri_op(x);
+			asmbl_wri_op(x);
 			break;
 		case WRC_OP:
-			asm_wrc_op(x);
+			asmbl_wrc_op(x);
 			break;
 		case LAB_OP:
-			asm_lab_op(x);
+			asmbl_lab_op(x);
 			break;
 		default:
 			unlikely();

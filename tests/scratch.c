@@ -4,14 +4,14 @@
 int main(int argc, char *argv[])
 {
 	for (int i = 0; i < 2; ++i) {
-		reg_t *r = getreg();
+		reg_t *r = regalloc();
 		msg("r = %s\n", r->name);
 	}
 
 	for (int i = 0; i < 8; ++i) {
-		reg_t *r = getreg();
+		reg_t *r = regalloc();
 		msg("r = %s\n", r->name);
-		putreg(r);
+		regfree(r);
 	}
 	return 0;
 }
