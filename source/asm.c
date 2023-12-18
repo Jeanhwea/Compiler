@@ -31,6 +31,18 @@ void loadarr(reg_t *reg, syment_t *arr, reg_t *off)
 	}
 }
 
+void savevar(syment_t *var, reg_t *reg)
+{
+	switch (var->cate) {
+	case VAR_OBJ:
+	case TMP_OBJ:
+		x86_mov2(var, reg);
+		break;
+	default:
+		unlikely();
+	}
+}
+
 void asmbl_add_op(inst_t *x)
 {
 	reg_t *r1 = ralloc();
@@ -41,7 +53,7 @@ void asmbl_add_op(inst_t *x)
 
 	x86_add(r1, r2);
 
-	x86_mov2(x->d, r1);
+	savevar(x->d, r1);
 
 	rfree(r1);
 	rfree(r2);
@@ -57,7 +69,7 @@ void asmbl_sub_op(inst_t *x)
 
 	x86_sub(r1, r2);
 
-	x86_mov2(x->d, r1);
+	savevar(x->d, r1);
 
 	rfree(r1);
 	rfree(r2);
@@ -73,7 +85,7 @@ void asmbl_mul_op(inst_t *x)
 
 	x86_mul(r1, r2);
 
-	x86_mov2(x->d, r1);
+	savevar(x->d, r1);
 
 	rfree(r1);
 	rfree(r2);
@@ -90,7 +102,7 @@ void asmbl_div_op(inst_t *x)
 
 	x86_div(r);
 
-	x86_mov2(x->d, eax);
+	savevar(x->d, eax);
 
 	rfree(eax);
 	rfree(edx);
@@ -103,7 +115,7 @@ void asmbl_inc_op(inst_t *x)
 
 	loadvar(r, x->d);
 	x86_inc(r);
-	x86_mov2(x->d, r);
+	savevar(x->d, r);
 
 	rfree(r);
 }
@@ -114,7 +126,7 @@ void asmbl_dec_op(inst_t *x)
 
 	loadvar(r, x->d);
 	x86_dec(r);
-	x86_mov2(x->d, r);
+	savevar(x->d, r);
 
 	rfree(r);
 }
@@ -125,21 +137,42 @@ void asmbl_neg_op(inst_t *x)
 
 	loadvar(r, x->r);
 	x86_neg(r);
-	x86_mov2(x->d, r);
+	savevar(x->d, r);
 
 	rfree(r);
 }
 
 void asmbl_load_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+
+	x86_lea(r1, x->r);
+	savevar(x->d, r1);
+
+	rfree(r1);
 }
 
 void asmbl_ass_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+
+	loadvar(r1, x->r);
+	savevar(x->d, r1);
+
+	rfree(r1);
 }
 
 void asmbl_asa_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	x86_mov(r1, x->s);
+	x86_lea2(r2, x->r, r1);
+	x86_mov(x->d, r2);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_equ_op(inst_t *x)
