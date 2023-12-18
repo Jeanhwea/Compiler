@@ -10,7 +10,6 @@
 static void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
-	node->entry = symalloc("@main", FUN_OBJ, VOID_TYPE);
 
 	nevernil(node->bp);
 	block_node_t *b = node->bp;
