@@ -13,10 +13,10 @@ static void loadvar(reg_t *reg, syment_t *var)
 		break;
 	case VAR_OBJ:
 	case TMP_OBJ:
-		x86_mov(reg, var);
-		break;
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
+		x86_mov(reg, var);
+		break;
 		x86_mov(reg, var);
 		break;
 	default:
@@ -29,6 +29,8 @@ static void savevar(syment_t *var, reg_t *reg)
 	switch (var->cate) {
 	case VAR_OBJ:
 	case TMP_OBJ:
+	case BYVAL_OBJ:
+	case BYREF_OBJ:
 		x86_mov2(var, reg);
 		break;
 	default:
@@ -36,7 +38,7 @@ static void savevar(syment_t *var, reg_t *reg)
 	}
 }
 
-static void loadadr(reg_t *reg, syment_t *var)
+static void loadptr(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case VAR_OBJ:
@@ -48,7 +50,7 @@ static void loadadr(reg_t *reg, syment_t *var)
 	}
 }
 
-static void loadadr2(reg_t *reg, syment_t *arr, reg_t *off)
+static void loadptr2(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	switch (arr->cate) {
 	case ARRAY_OBJ:
@@ -64,6 +66,17 @@ static void loadarr(reg_t *reg, syment_t *arr, reg_t *off)
 	switch (arr->cate) {
 	case ARRAY_OBJ:
 		x86_mov3(reg, arr, off);
+		break;
+	default:
+		unlikely();
+	}
+}
+
+static void savearr(syment_t *arr, reg_t *off, reg_t *reg)
+{
+	switch (arr->cate) {
+	case ARRAY_OBJ:
+		x86_mov4(arr, off, reg);
 		break;
 	default:
 		unlikely();
@@ -166,9 +179,16 @@ void asmbl_load_op(inst_t *x)
 {
 	reg_t *r1 = ralloc();
 
-	loadadr(r1, x->r);
-	savevar(x->d, r1);
+	if (x->s) { // load array
+		reg_t *r2 = ralloc(); // offset
+		loadvar(r1, x->s);
+		loadptr2(r1, x->r, r2);
+		rfree(r2);
+	} else {
+		loadptr(r1, x->r);
+	}
 
+	savevar(x->d, r1);
 	rfree(r1);
 }
 
@@ -187,9 +207,9 @@ void asmbl_asa_op(inst_t *x)
 	reg_t *r1 = ralloc();
 	reg_t *r2 = ralloc();
 
-	x86_mov(r1, x->s); // r1 = offset
-	loadarr(r2, x->r, r1);
-	savevar(x->d, r2);
+	loadvar(r1, x->s); // r1 = offset
+	loadvar(r2, x->r);
+	savearr(x->d, r2, r1);
 
 	rfree(r1);
 	rfree(r2);
@@ -298,9 +318,9 @@ void asmbl_padr_op(inst_t *x)
 	reg_t *r2 = ralloc();
 	if (x->s) {
 		loadvar(r2, x->s);
-		loadadr2(r1, x->d, r2);
+		loadptr2(r1, x->d, r2);
 	} else {
-		loadadr(r1, x->d);
+		loadptr(r1, x->d);
 	}
 	x86_push(r1);
 	rfree(r1);
