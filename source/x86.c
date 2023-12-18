@@ -1,6 +1,7 @@
 #include "x86.h"
 #include "debug.h"
 #include "ir.h"
+#include "symtab.h"
 
 // register table
 reg_t regs[4] = {
@@ -28,19 +29,14 @@ void *putreg(reg_t *r)
 	r->refcnt--;
 }
 
-void genasm(inst_t *x)
+// i386 assembly
+void x86_mov_rm(reg_t *reg, syment_t *mem)
 {
-	switch (x->op) {
-	case ADD_OP:
+	switch (mem->cate) {
+	case VAR_OBJ:
+		printf("mov\t%s, [ebp - %d];\n");
 		break;
 	default:
 		unlikely();
-	}
-}
-
-void *assemble()
-{
-	for (inst_t *x = xhead; x; x = x->next) {
-		genasm(x);
 	}
 }
