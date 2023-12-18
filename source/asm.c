@@ -8,6 +8,7 @@ void loadvar(reg_t *reg, syment_t *var)
 {
 	switch (var->cate) {
 	case CONST_OBJ:
+	case NUM_OBJ:
 		x86_mov6(reg, var->initval);
 		break;
 	case VAR_OBJ:
@@ -21,54 +22,101 @@ void loadvar(reg_t *reg, syment_t *var)
 
 void asmbl_add_op(inst_t *x)
 {
-	reg_t *r1 = regalloc();
-	reg_t *r2 = regalloc();
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
 
 	loadvar(r1, x->r);
-	loadvar(r2, x->d);
+	loadvar(r2, x->s);
 
 	x86_add(r1, r2);
 
 	x86_mov2(x->d, r1);
 
-	regfree(r1);
-	regfree(r2);
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_sub_op(inst_t *x)
 {
-	reg_t *r1 = regalloc();
-	reg_t *r2 = regalloc();
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
 
 	loadvar(r1, x->r);
-	loadvar(r2, x->d);
+	loadvar(r2, x->s);
 
 	x86_sub(r1, r2);
 
 	x86_mov2(x->d, r1);
 
-	regfree(r1);
-	regfree(r2);
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_mul_op(inst_t *x)
 {
+	reg_t *r1 = ralloc();
+	reg_t *r2 = ralloc();
+
+	loadvar(r1, x->r);
+	loadvar(r2, x->s);
+
+	x86_mul(r1, r2);
+
+	x86_mov2(x->d, r1);
+
+	rfree(r1);
+	rfree(r2);
 }
 
 void asmbl_div_op(inst_t *x)
 {
+	reg_t *eax = rlock("eax");
+	reg_t *edx = rlock("edx");
+	reg_t *r = ralloc();
+
+	loadvar(eax, x->r);
+	loadvar(edx, x->s);
+
+	x86_div(r);
+
+	x86_mov2(x->d, eax);
+
+	rfree(eax);
+	rfree(edx);
+	rfree(r);
 }
 
 void asmbl_inc_op(inst_t *x)
 {
+	reg_t *r = ralloc();
+
+	loadvar(r, x->d);
+	x86_inc(r);
+	x86_mov2(x->d, r);
+
+	rfree(r);
 }
 
 void asmbl_dec_op(inst_t *x)
 {
+	reg_t *r = ralloc();
+
+	loadvar(r, x->d);
+	x86_dec(r);
+	x86_mov2(x->d, r);
+
+	rfree(r);
 }
 
 void asmbl_neg_op(inst_t *x)
 {
+	reg_t *r = ralloc();
+
+	loadvar(r, x->r);
+	x86_neg(r);
+	x86_mov2(x->d, r);
+
+	rfree(r);
 }
 
 void asmbl_load_op(inst_t *x)

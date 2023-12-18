@@ -14,7 +14,7 @@ reg_t regs[4] = {
 };
 
 // Alloc a register
-reg_t *regalloc()
+reg_t *ralloc()
 {
 	for (int i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
 		reg_t *r = &regs[i];
@@ -29,7 +29,7 @@ reg_t *regalloc()
 }
 
 // Lock specific register
-reg_t *reglock(char *name)
+reg_t *rlock(char *name)
 {
 	for (int i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
 		reg_t *r = &regs[i];
@@ -44,7 +44,7 @@ reg_t *reglock(char *name)
 }
 
 // Free a register
-void regfree(reg_t *r)
+void rfree(reg_t *r)
 {
 	r->refcnt--;
 }
@@ -134,6 +134,11 @@ void x86_mul(reg_t *r1, reg_t *r2)
 void x86_div(reg_t *r1)
 {
 	printf("idiv\t%s\n", r1->name);
+}
+
+void x86_neg(reg_t *r1)
+{
+	printf("neg\t%s\n", r1->name);
 }
 
 void x86_inc(reg_t *r1)

@@ -134,7 +134,7 @@ static const_def_node_t *parse_const_def(void)
 			break;
 		case MC_UNS:
 			t->idp->kind = INT_CONST_IDENT;
-			t->idp->value = -atoi(tokbuf);
+			t->idp->value = atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case MC_CH:

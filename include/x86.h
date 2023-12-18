@@ -13,9 +13,9 @@ typedef struct _reg_struct {
 #define DI "ebi"
 
 // General register operations
-reg_t *regalloc();
-reg_t *reglock(char *name);
-void regfree(reg_t *r);
+reg_t *ralloc();
+reg_t *rlock(char *name);
+void rfree(reg_t *r);
 
 #define ALIGN 4
 #define OFFSET(e) (ALIGN * e->off)
@@ -34,6 +34,7 @@ void x86_add(reg_t *r1, reg_t *r2);
 void x86_sub(reg_t *r1, reg_t *r2);
 void x86_mul(reg_t *r1, reg_t *r2);
 void x86_div(reg_t *r1);
+void x86_neg(reg_t *r1);
 void x86_inc(reg_t *r1);
 void x86_dec(reg_t *r1);
 void x86_pop(reg_t *reg);
