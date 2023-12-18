@@ -84,6 +84,7 @@ typedef struct _sym_table_struct {
 // scope management
 symtab_t *scope_entry(char *nspace);
 symtab_t *scope_exit(void);
+symtab_t *scope_top();
 // symbol operator
 void symadd(syment_t *entry);
 // symget only search current scope, while symfind search all.
@@ -91,5 +92,5 @@ syment_t *symget(char *name);
 syment_t *symfind(char *name);
 void symdump();
 syment_t *syminit(ident_node_t *idp);
-syment_t *symalloc(char *name, cate_t cate, type_t type);
+syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type);
 #endif /* End of _SYMTAB_H_ */

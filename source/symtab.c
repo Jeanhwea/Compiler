@@ -40,6 +40,12 @@ symtab_t *scope_exit(void)
 	return t;
 }
 
+symtab_t *scope_top(void)
+{
+	nevernil(top);
+	return top;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // entry management
 
@@ -210,7 +216,7 @@ syment_t *syminit(ident_node_t *idp)
 	return e;
 }
 
-syment_t *symalloc(char *name, cate_t cate, type_t type)
+syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 {
 	syment_t *e;
 	NEWENTRY(e);
@@ -221,13 +227,14 @@ syment_t *symalloc(char *name, cate_t cate, type_t type)
 	e->type = type;
 
 	sprintf(e->label, "T%03d", e->sid);
-	e->off = top->varoff;
+	e->off = stab->varoff;
 	if (e->cate == ARRAY_OBJ) {
-		top->varoff += e->arrlen;
+		stab->varoff += e->arrlen;
 	} else {
-		top->varoff += 1;
+		stab->varoff += 1;
 	}
 
-	symadd(e);
+	e->stab = stab;
+	putsym(stab, e);
 	return e;
 }

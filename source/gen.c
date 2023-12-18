@@ -13,7 +13,7 @@ static void gen_pgm(pgm_node_t *node)
 	gen_pf_dec_list(b->pfdlp);
 
 	// main function
-	syment_t *main = symalloc("@main", FUN_OBJ, VOID_TYPE);
+	syment_t *main = symalloc(node->stab, "@main", FUN_OBJ, VOID_TYPE);
 	emit1(ENT_OP, main);
 	gen_comp_stmt(b->csp);
 	emit0(FIN_OP);
@@ -125,8 +125,8 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 static void gen_if_stmt(if_stmt_node_t *node)
 {
 	syment_t *ifthen, *ifdone;
-	ifthen = symalloc("@ifthen", LABEL_OBJ, VOID_TYPE);
-	ifdone = symalloc("@ifdone", LABEL_OBJ, VOID_TYPE);
+	ifthen = symalloc(node->stab, "@ifthen", LABEL_OBJ, VOID_TYPE);
+	ifdone = symalloc(node->stab, "@ifdone", LABEL_OBJ, VOID_TYPE);
 
 	gen_cond(node->cp, ifthen);
 	if (node->ep) {
@@ -141,8 +141,8 @@ static void gen_if_stmt(if_stmt_node_t *node)
 static void gen_repe_stmt(repe_stmt_node_t *node)
 {
 	syment_t *loopstart, *loopdone;
-	loopstart = symalloc("@loopstart", LABEL_OBJ, VOID_TYPE);
-	loopdone = symalloc("@loopdone", LABEL_OBJ, VOID_TYPE);
+	loopstart = symalloc(node->stab, "@loopstart", LABEL_OBJ, VOID_TYPE);
+	loopdone = symalloc(node->stab, "@loopdone", LABEL_OBJ, VOID_TYPE);
 
 	emit1(LAB_OP, loopstart);
 	gen_stmt(node->sp);
@@ -158,8 +158,8 @@ static void gen_for_stmt(for_stmt_node_t *node)
 	end = gen_expr(node->rep);
 
 	syment_t *forstart, *fordone;
-	forstart = symalloc("@forstart", LABEL_OBJ, VOID_TYPE);
-	fordone = symalloc("@fordone", LABEL_OBJ, VOID_TYPE);
+	forstart = symalloc(node->stab, "@forstart", LABEL_OBJ, VOID_TYPE);
+	fordone = symalloc(node->stab, "@fordone", LABEL_OBJ, VOID_TYPE);
 
 	syment_t *d;
 	d = node->idp->symbol;
@@ -214,7 +214,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 	syment_t *d = NULL;
 	switch (node->type) {
 	case STR_WRITE:
-		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
+		d = symalloc(node->stab, "@write/str", STR_OBJ, STR_TYPE);
 		d->str = dupstr(node->sp);
 		emit1(WRS_OP, d);
 		break;
@@ -232,7 +232,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 		}
 		break;
 	case STRID_WRITE:
-		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
+		d = symalloc(node->stab, "@write/str", STR_OBJ, STR_TYPE);
 		d->str = dupstr(node->sp);
 		emit1(WRS_OP, d);
 		d = gen_expr(node->ep);
@@ -261,7 +261,8 @@ static syment_t *gen_expr(expr_node_t *node)
 		if (!d) {
 			switch (t->op) {
 			case NEG_ADDOP:
-				d = symalloc("@expr/neg", TMP_OBJ, r->type);
+				d = symalloc(node->stab, "@expr/neg", TMP_OBJ,
+					     r->type);
 				emit2(NEG_OP, r, d);
 				break;
 			case NOP_ADDOP:
@@ -276,13 +277,13 @@ static syment_t *gen_expr(expr_node_t *node)
 		case NOP_ADDOP:
 		case ADD_ADDOP:
 			e = d;
-			d = symalloc("@expr/add", TMP_OBJ, e->type);
+			d = symalloc(node->stab, "@expr/add", TMP_OBJ, e->type);
 			emit3(ADD_OP, e, r, d);
 			break;
 		case MINUS_ADDOP:
 		case NEG_ADDOP:
 			e = d;
-			d = symalloc("@expr/sub", TMP_OBJ, e->type);
+			d = symalloc(node->stab, "@expr/sub", TMP_OBJ, e->type);
 			emit3(SUB_OP, e, r, d);
 			break;
 		default:
@@ -309,12 +310,12 @@ static syment_t *gen_term(term_node_t *node)
 		case NOP_MULTOP:
 		case MULT_MULTOP:
 			e = d;
-			d = symalloc("@term/mul", TMP_OBJ, e->type);
+			d = symalloc(node->stab, "@term/mul", TMP_OBJ, e->type);
 			emit3(MUL_OP, e, r, d);
 			break;
 		case DIV_MULTOP:
 			e = d;
-			d = symalloc("@term/div", TMP_OBJ, e->type);
+			d = symalloc(node->stab, "@term/div", TMP_OBJ, e->type);
 			emit3(DIV_OP, e, r, d);
 			break;
 		default:
@@ -335,11 +336,11 @@ static syment_t *gen_factor(factor_node_t *node)
 	case ARRAY_FACTOR:
 		r = node->idp->symbol;
 		e = gen_expr(node->ep);
-		d = symalloc("@factor/array", TMP_OBJ, r->type);
+		d = symalloc(node->stab, "@factor/array", TMP_OBJ, r->type);
 		emit3(LOAD_OP, r, e, d);
 		break;
 	case UNSIGN_FACTOR:
-		d = symalloc("@factor/usi", NUM_OBJ, INT_TYPE);
+		d = symalloc(node->stab, "@factor/usi", NUM_OBJ, INT_TYPE);
 		d->initval = node->usi;
 		break;
 	case EXPR_FACTOR:
@@ -358,7 +359,7 @@ static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 {
 	syment_t *d, *e;
 	e = node->idp->symbol;
-	d = symalloc("@fcall/ret", TMP_OBJ, e->type);
+	d = symalloc(node->stab, "@fcall/ret", TMP_OBJ, e->type);
 	gen_arg_list(e, node->alp);
 	emit2(CALL_OP, e, d);
 	return d;
