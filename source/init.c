@@ -36,28 +36,28 @@ void pl0c_read_args(int argc, char *argv[])
 	chgsuf(PL0C_TARGET, ".run", ".pas");
 }
 
-void pl0c_init_file(char *name)
+void pl0c_init_file()
 {
 	// Open Source Code File
 	source = fopen(PL0C_INPUT, "r");
 	if (source == NULL) {
 		panic("source file not found!");
 	}
-	msg("reading file %s\n", name);
+	msg("reading file %s\n", PL0C_INPUT);
 
 	// Open Target File
 	target = fopen(PL0C_ASSEM, "w");
 	if (target == NULL) {
 		panic("target file not found!");
 	}
-	msg("open target file %s\n", name);
+	msg("open target file %s\n", PL0C_ASSEM);
 }
 
 // init
 void init(int argc, char *argv[])
 {
 	pl0c_read_args(argc, argv);
-	pl0c_init_file(PL0C_INPUT);
+	pl0c_init_file();
 	chkerr("init fail and exit.");
 	phase = LEXICAL;
 }
