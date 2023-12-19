@@ -365,6 +365,11 @@ void asmbl_rdc_op(inst_t *x)
 
 void asmbl_wrs_op(inst_t *x)
 {
+	x86_alloc_string(x->d->label, x->d->str);
+	reg_t *eax = lockreg("eax");
+	x86_mov7(eax, x->d->label);
+	x86_syscall(LIBWSTR, eax);
+	freereg(eax);
 }
 
 void asmbl_wri_op(inst_t *x)

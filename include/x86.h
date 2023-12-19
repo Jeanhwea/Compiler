@@ -51,6 +51,7 @@ void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off);
 void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg);
 void x86_mov5(reg_t *r1, reg_t *r2);
 void x86_mov6(reg_t *reg, int num);
+void x86_mov7(reg_t *reg, char *strconst);
 void x86_lea(reg_t *reg, syment_t *var);
 void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off);
 void x86_add(reg_t *r1, reg_t *r2);
@@ -76,5 +77,6 @@ void x86_jng(syment_t *lab);
 void x86_jl(syment_t *lab);
 void x86_jnl(syment_t *lab);
 void x86_sret(syment_t *reg);
+void x86_alloc_string(char *name, char *initval);
 
 #endif /* End of _X86_H_ */

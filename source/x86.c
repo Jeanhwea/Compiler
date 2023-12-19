@@ -88,7 +88,7 @@ void addlabel(char *label)
 }
 
 // send data
-void adddata3(char *name, char *initval)
+void adddata2(char *name, char *initval)
 {
 	x86i_t *d = &prog.data[prog.idata++];
 	d->islab = FALSE;
@@ -167,7 +167,7 @@ void x86_iolib_exit()
 
 void x86_iolib_wrtchar()
 {
-	adddata3("_chrbuf", "x");
+	adddata2("_chrbuf", "x");
 
 	addlabel(LIBWCHR);
 	addcode3("mov", "[_chrbuf]", "eax");
@@ -179,9 +179,29 @@ void x86_iolib_wrtchar()
 	addcode1("ret");
 }
 
+void x86_iolib_wrtstr()
+{
+	addlabel(LIBWSTR);
+	addcode3("mov", "esi", "eax");
+	addlabel("_loopnext");
+	addcode3("mov", "ecx", "[esi]");
+	addcode3("cmp", "ecx", "ecx");
+	addcode2("jz", "_writestr");
+	addcode2("inc", "esi");
+	addcode2("jmp", "_loopnext");
+	addlabel("_writestr");
+	addcode3("sub", "esi", "eax");
+	addcode3("mov", "ecx", "eax");
+	addcode3("mov", "eax", "4");
+	addcode3("mov", "ebx", "1");
+	addcode3("mov", "edx", "esi");
+	addcode2("int", "0x80");
+	addcode1("ret");
+}
+
 void x86_iolib_wrtint()
 {
-	adddata3("_intbuf", "????????????????");
+	adddata2("_intbuf", "????????????????");
 
 	addlabel(LIBWINT);
 	addcode3("xor", "edi", "edi"); // negtive flag
@@ -217,12 +237,12 @@ void x86_iolib_wrtint()
 	addcode2("int", "0x80");
 	addcode1("ret");
 }
-
 void x86_init()
 {
 	addcode2("global", "_start");
 
 	x86_iolib_wrtchar();
+	x86_iolib_wrtstr();
 	x86_iolib_wrtint();
 	x86_iolib_exit();
 }
@@ -272,6 +292,11 @@ void x86_mov5(reg_t *r1, reg_t *r2)
 void x86_mov6(reg_t *reg, int num)
 {
 	addcode3("mov", reg->name, tostr(num));
+}
+
+void x86_mov7(reg_t *reg, char *strconst)
+{
+	addcode3("mov", reg->name, strconst);
 }
 
 void x86_lea(reg_t *reg, syment_t *var)
@@ -411,4 +436,9 @@ void x86_sret(syment_t *reg)
 	char retref[16];
 	sprintf(retref, "[%s-%d]", EBPREG, ALIGN);
 	addcode3("mov", retref, reg->name);
+}
+
+void x86_alloc_string(char *name, char *initval)
+{
+	adddata2(name, initval);
 }

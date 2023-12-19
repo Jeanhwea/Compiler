@@ -3,8 +3,9 @@
 #include "ir.h"
 
 #define LIBEXIT "_libexit"
-#define LIBWINT "_libwrtint"
 #define LIBWCHR "_libwrtchar"
+#define LIBWSTR "_libwrtstr"
+#define LIBWINT "_libwrtint"
 
 void assemble();
 
