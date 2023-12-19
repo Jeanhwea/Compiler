@@ -123,7 +123,7 @@ void addcode1(char *op)
 
 void progdump()
 {
-	msg(".section .text\n");
+	msg("section .text\n");
 	for (int k = 0; k < prog.itext; ++k) {
 		x86i_t *i = &prog.text[k];
 		if (i->islab) {
@@ -146,7 +146,7 @@ void progdump()
 	if (!prog.idata)
 		return;
 
-	msg(".section .data\n");
+	msg("section .data\n");
 	for (int k = 0; k < prog.idata; ++k) {
 		x86i_t *d = &prog.data[k];
 		msg("\t%s db '%s', 0\n", d->op, d->fa);
