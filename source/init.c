@@ -4,7 +4,7 @@
 
 // constants
 char *PL0C_NAME = "pl0c";
-char *PL0C_VERSION = "v0.13.5";
+char *PL0C_VERSION = "v0.13.6";
 char PL0C_PROGNAME[4096];
 char PL0C_TARGET[4096];
 
