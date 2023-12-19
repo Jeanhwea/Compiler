@@ -48,5 +48,7 @@ index: clean
 .PHONY: all clean distclean index setup tests
 clean:
 	$(RM) -r $(BLD_DIR) pl0c bin/* viz*
+	find -iname "*.o" -or -iname "*.s" -or -iname "*.run" -delete
+
 distclean:
 	$(RM) -r compile_commands.json cscope.* TAGS
