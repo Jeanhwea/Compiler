@@ -78,23 +78,20 @@ static char *sround(char *label)
 }
 
 // send label
-void sendl(char *label)
+void addlabel(char *label)
 {
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = TRUE;
 	strncpy(i->op, label, MAXOPLEN);
 }
 
+// send data
 void adddata3(char *name, int size, char *initval)
 {
 	x86i_t *d = &prog.data[prog.idata++];
 	d->islab = FALSE;
 	strncpy(d->op, name, MAXOPLEN);
 	strncpy(d->fa, initval, MAXOPLEN);
-}
-
-void adddata(char *name, int size)
-{
 }
 
 // send text/code
@@ -125,7 +122,7 @@ void addcode1(char *op)
 
 void dumpprog()
 {
-	msg("dump prog codes\n");
+	msg(".section .text\n");
 	for (int k = 0; k < prog.itext; ++k) {
 		x86i_t *i = &prog.text[k];
 		if (i->islab) {
@@ -146,9 +143,18 @@ void dumpprog()
 	}
 }
 
+void x86_init()
+{
+	addcode2("global", "_start");
+}
+
 void x86_enter(syment_t *e)
 {
-	printf("; enter\n");
+	if (!strcmp(e->name, "@main")) {
+		addlabel("_start");
+	} else {
+		addlabel(e->name);
+	}
 }
 
 void x86_mov(reg_t *reg, syment_t *var)
@@ -268,7 +274,7 @@ void x86_ret()
 
 void x86_label(syment_t *lab)
 {
-	sendl(lab->label);
+	addlabel(lab->label);
 }
 
 void x86_jmp(syment_t *lab)

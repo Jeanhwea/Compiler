@@ -43,6 +43,7 @@ typedef struct _program_code_struct {
 void dumpprog();
 
 // asm instructions
+void x86_init();
 void x86_enter(syment_t *e);
 void x86_mov(reg_t *reg, syment_t *var);
 void x86_mov2(syment_t *var, reg_t *reg);

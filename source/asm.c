@@ -345,6 +345,7 @@ void asmbl_sret_op(inst_t *x)
 
 void asmbl_ent_op(inst_t *x)
 {
+	x86_enter(x->d);
 }
 
 void asmbl_fin_op(inst_t *x)
@@ -377,6 +378,7 @@ void asmbl_lab_op(inst_t *x)
 
 void assemble()
 {
+	x86_init();
 	for (inst_t *x = xhead; x; x = x->next) {
 		switch (x->op) {
 		case ADD_OP:
