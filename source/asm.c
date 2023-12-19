@@ -367,6 +367,7 @@ void asmbl_wrs_op(inst_t *x)
 void asmbl_wri_op(inst_t *x)
 {
 	reg_t *eax = lockreg("eax");
+	loadvar(eax, x->d);
 	x86_syscall(LIBWCHR, eax);
 	freereg(eax);
 }
