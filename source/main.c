@@ -2,6 +2,7 @@
 #include "asm.h"
 #include "gen.h"
 #include "global.h"
+#include "post.h"
 #include "scan.h"
 #include "parse.h"
 
@@ -23,6 +24,10 @@ int main(int argc, char *argv[])
 
 	// generate target code
 	assemble();
+
+	// post works
+	post_nasm();
+	post_link();
 
 	msg("done\n");
 	return 0;

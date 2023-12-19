@@ -9,7 +9,10 @@
 // consts
 extern char *PL0C_NAME;
 extern char *PL0C_VERSION;
-extern char PL0C_PROGNAME[];
+extern char PL0C_INPUT[];
+extern char PL0C_ASSEM[];
+extern char PL0C_OBJECT[];
+extern char PL0C_TARGET[];
 
 // print control
 extern bool echo;
