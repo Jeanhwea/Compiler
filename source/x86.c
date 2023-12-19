@@ -179,18 +179,15 @@ void x86_iolib_wrtint()
 	adddata3("_intbuf", "????????????????");
 
 	addlabel(LIBWINT);
-	addcode3("xor", "edi", "edi");
+	addcode3("xor", "edi", "edi"); // negtive flag
 	addcode3("cmp", "eax", "0");
 	addcode2("jnl", "_notneg");
 	addcode2("inc", "edi");
 	addcode2("neg", "eax");
 	addlabel("_notneg");
-	// number base
-	addcode3("mov", "ebx", "10");
-	// number string length
-	addcode3("xor", "ecx", "ecx");
-	// number string pointer
-	addcode3("mov", "esi", "_numbuf+15");
+	addcode3("mov", "ebx", "10"); // number base
+	addcode3("xor", "ecx", "ecx"); // number string length
+	addcode3("mov", "esi", "_numbuf+15"); // number string pointer
 	addlabel("_loopdigit");
 	addcode3("xor", "edx", "edx");
 	addcode2("div", "ebx");
@@ -208,10 +205,10 @@ void x86_iolib_wrtint()
 	addcode3("mov", "byte[esi]", "'-'");
 	addcode2("inc", "ecx");
 	addlabel("_wrtint");
-	addcode4("mov", "edx", "ecx", "strlen");
-	addcode4("mov", "eax", "4  ", "syscall number");
-	addcode4("mov", "ebx", "1  ", "stdout");
-	addcode4("mov", "ecx", "esi", "ptr");
+	addcode3("mov", "edx", "ecx"); // string length
+	addcode3("mov", "eax", "4"); // syscall number, NR
+	addcode3("mov", "ebx", "1"); // fd: 1=stdout
+	addcode3("mov", "ecx", "esi"); // ptr to string buffer
 	addcode2("int", "0x80");
 	addcode1("ret");
 }
