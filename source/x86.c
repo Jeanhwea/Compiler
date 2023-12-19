@@ -123,21 +123,22 @@ void addcode1(char *op)
 
 void progdump()
 {
-	msg("section .text\n");
+	fprintf(target, "section .text\n");
 	for (int k = 0; k < prog.itext; ++k) {
 		x86i_t *i = &prog.text[k];
 		if (i->islab) {
-			msg("%s:\n", i->op);
+			fprintf(target, "%s:\n", i->op);
 			continue;
 		}
 		if (strlen(i->et)) {
-			msg("\t%s\t%s, %s\t; %s\n", i->op, i->fa, i->fb, i->et);
+			fprintf(target, "\t%s\t%s, %s\t; %s\n", i->op, i->fa,
+				i->fb, i->et);
 		} else if (strlen(i->fb)) {
-			msg("\t%s\t%s, %s\n", i->op, i->fa, i->fb);
+			fprintf(target, "\t%s\t%s, %s\n", i->op, i->fa, i->fb);
 		} else if (strlen(i->fa)) {
-			msg("\t%s\t%s\n", i->op, i->fa);
+			fprintf(target, "\t%s\t%s\n", i->op, i->fa);
 		} else if (strlen(i->op)) {
-			msg("\t%s\n", i->op);
+			fprintf(target, "\t%s\n", i->op);
 		} else {
 			unlikely();
 		}
@@ -146,10 +147,10 @@ void progdump()
 	if (!prog.idata)
 		return;
 
-	msg("section .data\n");
+	fprintf(target, "section .data\n");
 	for (int k = 0; k < prog.idata; ++k) {
 		x86i_t *d = &prog.data[k];
-		msg("\t%s db '%s', 0\n", d->op, d->fa);
+		fprintf(target, "\t%s db '%s', 0\n", d->op, d->fa);
 	}
 }
 

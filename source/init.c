@@ -33,14 +33,14 @@ void pl0c_read_args(int argc, char *argv[])
 void pl0c_init_file(char *name)
 {
 	// Open Source Code File
-	source = fopen(name, "r");
+	source = fopen(PL0C_PROGNAME, "r");
 	if (source == NULL) {
 		panic("source file not found!");
 	}
 	msg("reading file %s\n", name);
 
 	// Open Target File
-	target = fopen(name, "w");
+	target = fopen(PL0C_TARGET, "w");
 	if (target == NULL) {
 		panic("target file not found!");
 	}
