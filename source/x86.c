@@ -166,6 +166,7 @@ void x86_iolib_wrtchar()
 	adddata3("_chrbuf", "x");
 
 	addlabel(LIBWCHR);
+	addcode3("mov", "[_chrbuf]", "eax");
 	addcode3("mov", "eax", "4");
 	addcode3("mov", "ebx", "1");
 	addcode3("mov", "ecx", "_chrbuf");
