@@ -85,219 +85,219 @@ static void savearr(syment_t *arr, reg_t *off, reg_t *reg)
 
 void asmbl_add_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_add(r1, r2);
 	savevar(x->d, r1);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_sub_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_sub(r1, r2);
 	savevar(x->d, r1);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_mul_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_mul(r1, r2);
 	savevar(x->d, r1);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_div_op(inst_t *x)
 {
 	// idiv use specific registers
-	reg_t *eax = rlock("eax");
-	reg_t *edx = rlock("edx");
-	reg_t *r = ralloc();
+	reg_t *eax = lockreg("eax");
+	reg_t *edx = lockreg("edx");
+	reg_t *r = allocreg();
 
 	loadvar(eax, x->r);
 	loadvar(edx, x->s);
 	x86_div(r);
 	savevar(x->d, eax);
 
-	rfree(eax);
-	rfree(edx);
-	rfree(r);
+	freereg(eax);
+	freereg(edx);
+	freereg(r);
 }
 
 void asmbl_inc_op(inst_t *x)
 {
-	reg_t *r = ralloc();
+	reg_t *r = allocreg();
 
 	loadvar(r, x->d);
 	x86_inc(r);
 	savevar(x->d, r);
 
-	rfree(r);
+	freereg(r);
 }
 
 void asmbl_dec_op(inst_t *x)
 {
-	reg_t *r = ralloc();
+	reg_t *r = allocreg();
 
 	loadvar(r, x->d);
 	x86_dec(r);
 	savevar(x->d, r);
 
-	rfree(r);
+	freereg(r);
 }
 
 void asmbl_neg_op(inst_t *x)
 {
-	reg_t *r = ralloc();
+	reg_t *r = allocreg();
 
 	loadvar(r, x->r);
 	x86_neg(r);
 	savevar(x->d, r);
 
-	rfree(r);
+	freereg(r);
 }
 
 void asmbl_load_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
+	reg_t *r1 = allocreg();
 
 	if (x->s) { // load array
-		reg_t *r2 = ralloc(); // offset
+		reg_t *r2 = allocreg(); // offset
 		loadvar(r2, x->s);
 		loadptr2(r1, x->r, r2);
 		savevar(x->d, r1);
-		rfree(r2);
+		freereg(r2);
 	} else {
 		loadptr(r1, x->r);
 		savevar(x->d, r1);
 	}
 
-	rfree(r1);
+	freereg(r1);
 }
 
 void asmbl_ass_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
+	reg_t *r1 = allocreg();
 
 	loadvar(r1, x->r);
 	savevar(x->d, r1);
 
-	rfree(r1);
+	freereg(r1);
 }
 
 void asmbl_asa_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->s); // r1 = offset
 	loadvar(r2, x->r);
 	savearr(x->d, r1, r2);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_equ_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_cmp(r1, r2);
 	x86_jz(x->d);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_neq_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_cmp(r1, r2);
 	x86_jnz(x->d);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_gtt_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_cmp(r1, r2);
 	x86_jg(x->d);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_geq_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_cmp(r1, r2);
 	x86_jnl(x->d);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_lst_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_cmp(r1, r2);
 	x86_jl(x->d);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_leq_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 
 	loadvar(r1, x->r);
 	loadvar(r2, x->s);
 	x86_cmp(r1, r2);
 	x86_jng(x->d);
 
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_jmp_op(inst_t *x)
@@ -307,16 +307,16 @@ void asmbl_jmp_op(inst_t *x)
 
 void asmbl_push_op(inst_t *x)
 {
-	reg_t *r = ralloc();
+	reg_t *r = allocreg();
 	loadvar(r, x->d);
 	x86_push(r);
-	rfree(r);
+	freereg(r);
 }
 
 void asmbl_padr_op(inst_t *x)
 {
-	reg_t *r1 = ralloc();
-	reg_t *r2 = ralloc();
+	reg_t *r1 = allocreg();
+	reg_t *r2 = allocreg();
 	if (x->r) {
 		loadvar(r2, x->r); // offset
 		loadptr2(r1, x->d, r2);
@@ -324,15 +324,15 @@ void asmbl_padr_op(inst_t *x)
 		loadptr(r1, x->d);
 	}
 	x86_push(r1);
-	rfree(r1);
-	rfree(r2);
+	freereg(r1);
+	freereg(r2);
 }
 
 void asmbl_pop_op(inst_t *x)
 {
-	reg_t *r = ralloc();
+	reg_t *r = allocreg();
 	x86_pop(r);
-	rfree(r);
+	freereg(r);
 }
 
 void asmbl_call_op(inst_t *x)

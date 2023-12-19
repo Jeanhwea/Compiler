@@ -14,9 +14,9 @@ typedef struct _reg_struct {
 #define IDXREG "ebi"
 
 // General register operations
-reg_t *ralloc();
-reg_t *rlock(char *name);
-void rfree(reg_t *r);
+reg_t *allocreg();
+reg_t *lockreg(char *name);
+void freereg(reg_t *r);
 
 #define ALIGN 4
 #define OFFSET(e) (ALIGN * e->off)
