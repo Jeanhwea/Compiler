@@ -2,6 +2,7 @@
 #include "asm.h"
 #include "common.h"
 #include "debug.h"
+#include "global.h"
 #include "ir.h"
 #include "symtab.h"
 #include "util.h"
@@ -152,6 +153,8 @@ void progdump()
 		x86i_t *d = &prog.data[k];
 		fprintf(target, "\t%s db '%s', 0\n", d->op, d->fa);
 	}
+
+	fclose(target);
 }
 
 void x86_iolib_exit()

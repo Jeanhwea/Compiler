@@ -7,6 +7,7 @@
 #include "util.h"
 #include "lexical.h"
 #include "syntax.h"
+#include <stdio.h>
 
 // AST
 pgm_node_t *ast;
@@ -1001,5 +1002,6 @@ pgm_node_t *parse(void)
 	ast = parse_pgm();
 	chkerr("parse fail and exit.");
 	phase = SEMANTIC;
+	fclose(source);
 	return ast;
 }
