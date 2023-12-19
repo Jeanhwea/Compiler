@@ -16,7 +16,7 @@ static void gen_pgm(pgm_node_t *node)
 	syment_t *main = symalloc(node->stab, "@main", FUN_OBJ, VOID_TYPE);
 	emit1(ENT_OP, main);
 	gen_comp_stmt(b->csp);
-	emit0(FIN_OP);
+	emit1(FIN_OP, main);
 }
 
 static void gen_pf_dec_list(pf_dec_list_node_t *node)
@@ -43,7 +43,7 @@ static void gen_proc_decf(proc_dec_node_t *node)
 
 		emit1(ENT_OP, t->pdp->php->idp->symbol);
 		gen_comp_stmt(b->csp);
-		emit0(FIN_OP);
+		emit1(FIN_OP, t->pdp->php->idp->symbol);
 	}
 }
 
@@ -55,6 +55,7 @@ static void gen_fun_decf(fun_dec_node_t *node)
 		gen_pf_dec_list(b->pfdlp);
 		emit1(ENT_OP, t->fdp->fhp->idp->symbol);
 		gen_comp_stmt(b->csp);
+		emit1(FIN_OP, t->fdp->fhp->idp->symbol);
 	}
 }
 
