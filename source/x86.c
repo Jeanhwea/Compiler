@@ -4,6 +4,7 @@
 #include "ir.h"
 #include "symtab.h"
 #include "util.h"
+#include <stdio.h>
 #include <string.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,21 +56,37 @@ progcode_t prog;
 
 ////////////////////////////////////////////////////////////////////////////////
 // i386 instructions
-char *addr(syment_t *e)
+static char addrbuf[16];
+static char *addr(syment_t *e)
 {
-	char buf[16];
-	sprintf(buf, "[%s-%d]", BP, ALIGN * e->off);
-	return dupstr(buf);
+	sprintf(addrbuf, "[%s-%d]", EBPREG, ALIGN * e->off);
+	return addrbuf;
 }
 
-void addlabel(char *label)
+static char numbuf[16];
+static char *tostr(int num)
+{
+	sprintf(numbuf, "%d", num);
+	return numbuf;
+}
+
+static char srdbuf[16];
+static char *sround(char *label)
+{
+	sprintf(srdbuf, "[%s]", label);
+	return srdbuf;
+}
+
+// send label
+void sendl(char *label)
 {
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = TRUE;
 	strncpy(i->op, label, MAXOPLEN);
 }
 
-void addcode(char *op, char *fa, char *fb, char *extra)
+// send text/code
+void sendt4(char *op, char *fa, char *fb, char *extra)
 {
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = FALSE;
@@ -77,6 +94,21 @@ void addcode(char *op, char *fa, char *fb, char *extra)
 	strncpy(i->fa, fa, MAXOPLEN);
 	strncpy(i->fb, fb, MAXOPLEN);
 	strncpy(i->et, extra, MAXOPLEN);
+}
+
+void sendt3(char *op, char *fa, char *fb)
+{
+	sendt4(op, fa, fb, "");
+}
+
+void sendt2(char *op, char *fa)
+{
+	sendt4(op, fa, "", "");
+}
+
+void sendt1(char *op)
+{
+	sendt4(op, "", "", "");
 }
 
 void dumpprog()
@@ -109,65 +141,65 @@ void x86_enter(syment_t *e)
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
-	addcode("mov", reg->name, addr(var), var->label);
+	sendt4("mov", reg->name, addr(var), var->label);
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)
 {
-	printf("mov\t%s, %s\n", addr(var), reg->name);
+	sendt4("mov", addr(var), reg->name, var->label);
 }
 
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 {
-	printf("lea\t%s, %s\n", DI, addr(arr));
-	printf("imul\t%s, %d\n", off->name, ALIGN);
-	printf("sub\t%s, %s\n", DI, off->name);
-	printf("mov\t%s, [%s]\n", reg->name, DI);
+	sendt4("lea", IDXREG, addr(arr), arr->label);
+	sendt3("imul", off->name, tostr(ALIGN));
+	sendt3("sub", IDXREG, off->name);
+	sendt3("mov", reg->name, sround(IDXREG));
 }
 
 void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 {
-	printf("lea\t%s, %s\n", DI, addr(arr));
-	printf("imul\t%s, %d\n", off->name, ALIGN);
-	printf("sub\t%s, %s\n", DI, off->name);
-	printf("mov\t[%s], %s\n", DI, reg->name);
+	sendt4("lea", IDXREG, addr(arr), arr->label);
+	sendt3("imul", off->name, tostr(ALIGN));
+	sendt3("sub", IDXREG, off->name);
+	sendt3("mov", sround(IDXREG), reg->name);
 }
 
 void x86_mov5(reg_t *r1, reg_t *r2)
 {
-	printf("mov\t%s, %s\n", r1->name, r2->name);
+	sendt3("mov", r1->name, r2->name);
 }
 
 void x86_mov6(reg_t *reg, int num)
 {
-	printf("mov\t%s, %d\n", reg->name, num);
+	sendt3("mov", reg->name, tostr(num));
 }
 
 void x86_lea(reg_t *reg, syment_t *var)
 {
-	printf("lea\t%s, %s\n", reg->name, addr(var));
+	sendt3("lea", reg->name, addr(var));
 }
 
 void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off)
 {
-	printf("lea\t%s, %s\n", reg->name, addr(arr));
-	printf("imul\t%s, %d\n", off->name, ALIGN);
-	printf("sub\t%s, %s\n", reg->name, off->name);
+	sendt3("lea", reg->name, addr(arr));
+	sendt3("imul", off->name, tostr(ALIGN));
+	sendt3("sub", reg->name, off->name);
 }
 
 void x86_add(reg_t *r1, reg_t *r2)
 {
-	printf("add\t%s, %s\n", r1->name, r2->name);
+	sendt3("add", r1->name, r2->name);
 }
 
 void x86_sub(reg_t *r1, reg_t *r2)
 {
-	printf("sub\t%s, %s\n", r1->name, r2->name);
+	sendt3("sub", r1->name, r2->name);
 }
 
 void x86_mul(reg_t *r1, reg_t *r2)
 {
-	printf("imul\t%s, %s\n", r1->name, r2->name);
+	sendt3("imul", r1->name, r2->name);
 }
 
 // idiv (r/imm32)
@@ -177,97 +209,99 @@ void x86_mul(reg_t *r1, reg_t *r2)
 //    edx <- remainder
 void x86_div(reg_t *r1)
 {
-	printf("idiv\t%s\n", r1->name);
+	sendt2("idiv", r1->name);
 }
 
 void x86_neg(reg_t *r1)
 {
-	printf("neg\t%s\n", r1->name);
+	sendt2("neg", r1->name);
 }
 
 void x86_inc(reg_t *r1)
 {
-	printf("inc\t%s\n", r1->name);
+	sendt2("inc", r1->name);
 }
 
 void x86_dec(reg_t *r1)
 {
-	printf("dec\t%s\n", r1->name);
+	sendt2("dec", r1->name);
 }
 
 void x86_pop(reg_t *reg)
 {
-	printf("pop\t%s\n", reg->name);
+	sendt2("pop", reg->name);
 }
 
 void x86_push(reg_t *reg)
 {
-	printf("push\t%s\n", reg->name);
+	sendt2("push", reg->name);
 }
 
 void x86_push2(syment_t *var)
 {
-	printf("push\t%s\n", var->label);
+	sendt2("push", var->label);
 }
 
 void x86_call(syment_t *func)
 {
-	printf("call\t%s\n", func->label);
+	sendt2("call", func->label);
 	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
-	printf("add\tesp, %d\n", off);
+	sendt3("add", ESPREG, tostr(off));
 }
 
 void x86_ret()
 {
-	printf("ret\n");
+	sendt1("ret");
 }
 
 void x86_label(syment_t *lab)
 {
-	printf("%s:\n", lab->label);
+	sendl(lab->label);
 }
 
 void x86_jmp(syment_t *lab)
 {
-	printf("jmp\t%s\n", lab->label);
+	sendt2("jmp", lab->label);
 }
 
 void x86_cmp(reg_t *r1, reg_t *r2)
 {
-	printf("cmp\t%s, %s\n", r1->name, r2->name);
+	sendt3("cmp", r1->name, r2->name);
 }
 
 void x86_jz(syment_t *lab)
 {
-	printf("jz\t%s\n", lab->label);
+	sendt2("jz", lab->label);
 }
 
 void x86_jnz(syment_t *lab)
 {
-	printf("jnz\t%s\n", lab->label);
+	sendt2("jnz", lab->label);
 }
 
 void x86_jg(syment_t *lab)
 {
-	printf("jg\t%s\n", lab->label);
+	sendt2("jg", lab->label);
 }
 
 void x86_jng(syment_t *lab)
 {
-	printf("jng\t%s\n", lab->label);
+	sendt2("jng", lab->label);
 }
 
 void x86_jl(syment_t *lab)
 {
-	printf("jl\t%s\n", lab->label);
+	sendt2("jl", lab->label);
 }
 
 void x86_jnl(syment_t *lab)
 {
-	printf("jnl\t%s\n", lab->label);
+	sendt2("jnl", lab->label);
 }
 
 void x86_sret(syment_t *reg)
 {
-	printf("mov\t[%s-%d], %s\n", BP, ALIGN, reg->name);
+	char retref[16];
+	sprintf(retref, "[%s-%d]", EBPREG, ALIGN);
+	sendt3("mov", retref, reg->name);
 }

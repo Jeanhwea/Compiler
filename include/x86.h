@@ -9,8 +9,9 @@ typedef struct _reg_struct {
 } reg_t;
 
 // Pointer register
-#define BP "ebp"
-#define DI "ebi"
+#define EBPREG "ebp"
+#define ESPREG "esp"
+#define IDXREG "ebi"
 
 // General register operations
 reg_t *ralloc();
