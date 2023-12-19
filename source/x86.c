@@ -156,8 +156,8 @@ void progdump()
 void x86_iolib_exit()
 {
 	addlabel(LIBEXIT);
-	addcode3("mov", "eax", "1");
-	addcode3("xor", "eax", "eax");
+	addcode3("mov", "eax", "1"); // syscall number
+	addcode3("xor", "ebx", "ebx"); // return value
 	addcode2("int", "0x80");
 }
 
@@ -226,6 +226,8 @@ void x86_enter(syment_t *e)
 {
 	if (!strcmp(e->name, "@main")) {
 		addlabel("_start");
+		addcode2("push", EBPREG);
+		addcode3("mov", EBPREG, ESPREG);
 	} else {
 		addlabel(e->name);
 	}
