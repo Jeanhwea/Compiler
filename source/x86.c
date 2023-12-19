@@ -1,4 +1,5 @@
 #include "x86.h"
+#include "asm.h"
 #include "common.h"
 #include "debug.h"
 #include "ir.h"
@@ -141,11 +142,32 @@ void dumpprog()
 			unlikely();
 		}
 	}
+
+	if (!prog.idata)
+		return;
+
+	msg(".section .data\n");
+	for (int k = 0; k < prog.idata; ++k) {
+		x86i_t *d = &prog.data[k];
+		msg("\t%s db '%s', 0\n", d->op, d->fa);
+	}
 }
 
 void x86_init()
 {
 	addcode2("global", "_start");
+
+	// lib
+	adddata3("_chrbuf", 2, "x");
+
+	addlabel(PRTCHR);
+	addcode3("mov", "eax", "4");
+	addcode3("mov", "ebx", "1");
+	addcode3("mov", "ecx", "_chrbuf");
+	addcode3("mov", "edx", "1");
+	addcode2("int", "0x80");
+
+	adddata3("_intbuf", 1, "?");
 }
 
 void x86_enter(syment_t *e)
