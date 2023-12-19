@@ -4,6 +4,8 @@ bin/*
 output/*
 compile_commands.json
 *.s
+*.o
+*.run
 
 # gdb
 .gdb_*
