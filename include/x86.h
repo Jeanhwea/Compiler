@@ -23,11 +23,11 @@ void rfree(reg_t *r);
 // x86 instructions
 #define MAXOPLEN 16
 typedef struct _x86_inst_struct {
-	bool indent; // do indent?
+	bool islab; // if instruction is a label
 	char op[MAXOPLEN]; // operator or label
-	char fa[MAXOPLEN]; // operand a
-	char fb[MAXOPLEN]; // operand b
-	char fc[MAXOPLEN]; // operand c
+	char fa[MAXOPLEN]; // operand field a
+	char fb[MAXOPLEN]; // operand field b
+	char comment[MAXOPLEN]; // comment
 } x86i_t;
 
 #define MAXDATASEC 32

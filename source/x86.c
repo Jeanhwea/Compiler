@@ -4,6 +4,7 @@
 #include "ir.h"
 #include "symtab.h"
 #include "util.h"
+#include <string.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // register table
@@ -59,6 +60,18 @@ char *addr(syment_t *e)
 	char buf[16];
 	sprintf(buf, "[%s-%d]", BP, ALIGN * e->off);
 	return dupstr(buf);
+}
+
+void addcode(bool islab, char *op, char *fa, char *fb, char *comment)
+{
+	x86i_t *i = &prog.itext[itext++];
+	i->islab = islab;
+	strncpy(i->op, op, MAXOPLEN);
+	if (!i->islab) {
+		strncpy(i->fa, fa, MAXOPLEN);
+		strncpy(i->fb, fb, MAXOPLEN);
+		strncpy(i->comment, comment, MAXOPLEN);
+	}
 }
 
 void x86_enter(syment_t *e)
