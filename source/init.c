@@ -27,7 +27,7 @@ void pl0c_read_args(int argc, char *argv[])
 	}
 	strcpy(PL0C_PROGNAME, argv[argc - 1]);
 	strcpy(PL0C_TARGET, PL0C_PROGNAME);
-	chgsuf(PL0C_TARGET, ".out", ".pas");
+	chgsuf(PL0C_TARGET, ".s", ".pas");
 }
 
 void pl0c_init_file(char *name)
