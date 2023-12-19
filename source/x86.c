@@ -168,6 +168,7 @@ void x86_init()
 	addcode2("int", "0x80");
 
 	adddata3("_intbuf", 1, "?");
+	addlabel(PRTINT);
 }
 
 void x86_enter(syment_t *e)
