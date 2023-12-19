@@ -22,7 +22,7 @@ void freereg(reg_t *r);
 #define OFFSET(e) (ALIGN * e->off)
 
 // x86 instructions
-#define MAXOPLEN 16
+#define MAXOPLEN 128
 typedef struct _x86_inst_struct {
 	bool islab; // if instruction is a label
 	char op[MAXOPLEN]; // operator or label

@@ -85,6 +85,18 @@ void sendl(char *label)
 	strncpy(i->op, label, MAXOPLEN);
 }
 
+void adddata3(char *name, int size, char *initval)
+{
+	x86i_t *d = &prog.data[prog.idata++];
+	d->islab = FALSE;
+	strncpy(d->op, name, MAXOPLEN);
+	strncpy(d->fa, initval, MAXOPLEN);
+}
+
+void adddata(char *name, int size)
+{
+}
+
 // send text/code
 void addcode4(char *op, char *fa, char *fb, char *extra)
 {
