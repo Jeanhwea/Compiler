@@ -3,6 +3,7 @@ pl0c
 bin/*
 output/*
 compile_commands.json
+*.s
 
 # gdb
 .gdb_*
