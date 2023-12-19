@@ -133,8 +133,8 @@ void asmbl_div_op(inst_t *x)
 	reg_t *r = allocreg();
 
 	loadvar(eax, x->r);
-	loadvar(edx, x->s);
-	x86_div(r);
+	loadvar(r, x->s);
+	eax = x86_div(r, eax, edx);
 	savevar(x->d, eax);
 
 	freereg(eax);

@@ -248,9 +248,11 @@ void x86_mul(reg_t *r1, reg_t *r2)
 // result:
 //    eax <- quotient
 //    edx <- remainder
-void x86_div(reg_t *r1)
+reg_t *x86_div(reg_t *r1, reg_t *eax, reg_t *edx)
 {
+	addcode3("xor", edx->name, edx->name);
 	addcode2("idiv", r1->name);
+	return eax;
 }
 
 void x86_neg(reg_t *r1)

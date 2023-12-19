@@ -56,7 +56,7 @@ void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off);
 void x86_add(reg_t *r1, reg_t *r2);
 void x86_sub(reg_t *r1, reg_t *r2);
 void x86_mul(reg_t *r1, reg_t *r2);
-void x86_div(reg_t *r1);
+reg_t *x86_div(reg_t *r1, reg_t *eax, reg_t *edx);
 void x86_neg(reg_t *r1);
 void x86_inc(reg_t *r1);
 void x86_dec(reg_t *r1);
