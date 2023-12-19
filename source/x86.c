@@ -69,14 +69,37 @@ void addlabel(char *label)
 	strncpy(i->op, label, MAXOPLEN);
 }
 
-void addcode(char *op, char *fa, char *fb, char *comment)
+void addcode(char *op, char *fa, char *fb, char *extra)
 {
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = FALSE;
 	strncpy(i->op, op, MAXOPLEN);
 	strncpy(i->fa, fa, MAXOPLEN);
 	strncpy(i->fb, fb, MAXOPLEN);
-	strncpy(i->comment, comment, MAXOPLEN);
+	strncpy(i->et, extra, MAXOPLEN);
+}
+
+void dumpprog()
+{
+	msg("dump prog codes\n");
+	for (int k = 0; k < prog.itext; ++k) {
+		x86i_t *i = &prog.text[k];
+		if (i->islab) {
+			msg("%s:\n", i->op);
+			continue;
+		}
+		if (strlen(i->et)) {
+			msg("\t%s\t%s, %s\t; %s\n", i->op, i->fa, i->fb, i->et);
+		} else if (strlen(i->fb)) {
+			msg("\t%s\t%s, %s\n", i->op, i->fa, i->fb);
+		} else if (strlen(i->fa)) {
+			msg("\t%s\t%s\n", i->op, i->fa);
+		} else if (strlen(i->op)) {
+			msg("\t%s\n", i->op);
+		} else {
+			unlikely();
+		}
+	}
 }
 
 void x86_enter(syment_t *e)
@@ -87,7 +110,6 @@ void x86_enter(syment_t *e)
 void x86_mov(reg_t *reg, syment_t *var)
 {
 	addcode("mov", reg->name, addr(var), var->label);
-	printf("mov\t%s, %s\n", reg->name, addr(var));
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)

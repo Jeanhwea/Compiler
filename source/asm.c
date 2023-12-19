@@ -375,7 +375,7 @@ void asmbl_lab_op(inst_t *x)
 {
 }
 
-void *assemble()
+void assemble()
 {
 	for (inst_t *x = xhead; x; x = x->next) {
 		switch (x->op) {
@@ -475,4 +475,5 @@ void *assemble()
 	}
 	chkerr("assemble fail and exit.");
 	phase = SUCCESS;
+	dumpprog();
 }

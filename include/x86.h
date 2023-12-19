@@ -27,7 +27,7 @@ typedef struct _x86_inst_struct {
 	char op[MAXOPLEN]; // operator or label
 	char fa[MAXOPLEN]; // operand field a
 	char fb[MAXOPLEN]; // operand field b
-	char comment[MAXOPLEN]; // comment
+	char et[MAXOPLEN]; // extra: comment, label etc.
 } x86i_t;
 
 #define MAXDATASEC 32
@@ -38,6 +38,8 @@ typedef struct _program_code_struct {
 	int itext;
 	x86i_t text[MAXTEXTSEC];
 } progcode_t;
+
+void dumpprog();
 
 // asm instructions
 void x86_enter(syment_t *e);
@@ -71,4 +73,5 @@ void x86_jng(syment_t *lab);
 void x86_jl(syment_t *lab);
 void x86_jnl(syment_t *lab);
 void x86_sret(syment_t *reg);
+
 #endif /* End of _X86_H_ */
