@@ -65,6 +65,7 @@ void x86_push(reg_t *reg);
 void x86_push2(syment_t *var);
 void x86_call(syment_t *func);
 void x86_ret();
+reg_t *x86_syscall(char *func, reg_t *eax);
 void x86_label(syment_t *lab);
 void x86_jmp(syment_t *lab);
 void x86_cmp(reg_t *r1, reg_t *r2);

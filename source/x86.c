@@ -187,7 +187,7 @@ void x86_iolib_wrtint()
 	addlabel("_notneg");
 	addcode3("mov", "ebx", "10"); // number base
 	addcode3("xor", "ecx", "ecx"); // number string length
-	addcode3("mov", "esi", "_numbuf+15"); // number string pointer
+	addcode3("mov", "esi", "_intbuf+15"); // number string pointer
 	addlabel("_loopdigit");
 	addcode3("xor", "edx", "edx");
 	addcode2("div", "ebx");
@@ -221,6 +221,7 @@ void x86_init()
 	x86_iolib_wrtint();
 	x86_iolib_exit();
 }
+
 void x86_enter(syment_t *e)
 {
 	if (!strcmp(e->name, "@main")) {
@@ -345,6 +346,12 @@ void x86_call(syment_t *func)
 void x86_ret()
 {
 	addcode1("ret");
+}
+
+reg_t *x86_syscall(char *func, reg_t *eax)
+{
+	addcode2("call", func);
+	return eax;
 }
 
 void x86_label(syment_t *lab)
