@@ -2,8 +2,9 @@
 #define _ASM_H_
 #include "ir.h"
 
-#define PRTINT "_prtint"
-#define PRTCHR "_prtchar"
+#define LIBEXIT "_libexit"
+#define LIBWINT "_libwrtint"
+#define LIBWCHR "_libwrtchar"
 
 void assemble();
 

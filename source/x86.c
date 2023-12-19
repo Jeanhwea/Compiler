@@ -87,7 +87,7 @@ void addlabel(char *label)
 }
 
 // send data
-void adddata3(char *name, int size, char *initval)
+void adddata3(char *name, char *initval)
 {
 	x86i_t *d = &prog.data[prog.idata++];
 	d->islab = FALSE;
@@ -153,24 +153,41 @@ void progdump()
 	}
 }
 
-void x86_init()
+void x86_iolib_exit()
 {
-	addcode2("global", "_start");
+	addlabel(LIBEXIT);
+	addcode3("mov", "eax", "1");
+	addcode3("xor", "eax", "eax");
+	addcode2("int", "0x80");
+}
 
-	// lib
-	adddata3("_chrbuf", 2, "x");
-
-	addlabel(PRTCHR);
+void x86_iolib_wrtchar()
+{
+	addlabel(LIBWCHR);
 	addcode3("mov", "eax", "4");
 	addcode3("mov", "ebx", "1");
 	addcode3("mov", "ecx", "_chrbuf");
 	addcode3("mov", "edx", "1");
 	addcode2("int", "0x80");
-
-	adddata3("_intbuf", 1, "?");
-	addlabel(PRTINT);
+	addcode1("ret");
+	adddata3("_chrbuf", "x");
 }
 
+void x86_iolib_wrtint()
+{
+	addlabel(LIBWINT);
+	addcode1("ret");
+	adddata3("_intbuf", "????????????????");
+}
+
+void x86_init()
+{
+	addcode2("global", "_start");
+
+	x86_iolib_wrtchar();
+	x86_iolib_wrtint();
+	x86_iolib_exit();
+}
 void x86_enter(syment_t *e)
 {
 	if (!strcmp(e->name, "@main")) {
