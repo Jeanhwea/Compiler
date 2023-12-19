@@ -11,9 +11,6 @@ int main(int argc, char *argv[])
 
 	// initial
 	init(argc, argv);
-	if (errnum > 0) {
-		return errnum;
-	}
 
 	// lexical & syntax
 	parse();

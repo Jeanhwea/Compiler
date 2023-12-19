@@ -38,6 +38,13 @@ void pl0c_init_file(char *name)
 		panic("source file not found!");
 	}
 	msg("reading file %s\n", name);
+
+	// Open Target File
+	target = fopen(name, "w");
+	if (target == NULL) {
+		panic("target file not found!");
+	}
+	msg("open target file %s\n", name);
 }
 
 // init
@@ -45,5 +52,6 @@ void init(int argc, char *argv[])
 {
 	pl0c_read_args(argc, argv);
 	pl0c_init_file(PL0C_PROGNAME);
+	chkerr("init fail and exit.");
 	phase = LEXICAL;
 }
