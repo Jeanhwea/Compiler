@@ -62,16 +62,21 @@ char *addr(syment_t *e)
 	return dupstr(buf);
 }
 
-void addcode(bool islab, char *op, char *fa, char *fb, char *comment)
+void addlabel(char *label)
 {
-	x86i_t *i = &prog.itext[itext++];
-	i->islab = islab;
+	x86i_t *i = &prog.text[prog.itext++];
+	i->islab = TRUE;
+	strncpy(i->op, label, MAXOPLEN);
+}
+
+void addcode(char *op, char *fa, char *fb, char *comment)
+{
+	x86i_t *i = &prog.text[prog.itext++];
+	i->islab = FALSE;
 	strncpy(i->op, op, MAXOPLEN);
-	if (!i->islab) {
-		strncpy(i->fa, fa, MAXOPLEN);
-		strncpy(i->fb, fb, MAXOPLEN);
-		strncpy(i->comment, comment, MAXOPLEN);
-	}
+	strncpy(i->fa, fa, MAXOPLEN);
+	strncpy(i->fb, fb, MAXOPLEN);
+	strncpy(i->comment, comment, MAXOPLEN);
 }
 
 void x86_enter(syment_t *e)
@@ -81,6 +86,7 @@ void x86_enter(syment_t *e)
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
+	addcode("mov", reg->name, addr(var), var->label);
 	printf("mov\t%s, %s\n", reg->name, addr(var));
 }
 
