@@ -1,7 +1,7 @@
 #include "anlys.h"
 #include "debug.h"
 #include "global.h"
-#include "ast.h"
+#include "tree.h"
 #include "symtab.h"
 #include "util.h"
 #include "syntax.h"
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 	init(argc, argv);
 	parse();
 	analysis();
-	node_t *tree = conv_pgm_node(prog);
+	node_t *tree = conv_pgm_node(ast);
 	visit(tree);
 	writedot();
 	system("dot -Tpdf viz.dot -o viz.pdf");

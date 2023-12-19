@@ -44,6 +44,7 @@ typedef struct _sym_param_struct {
 
 typedef struct _sym_entry_struct {
 	// identifier name
+	int sid;
 	char *name;
 	cate_t cate;
 	type_t type;
@@ -55,6 +56,7 @@ typedef struct _sym_entry_struct {
 	param_t *ptail;
 	// label for assemble codes
 	char label[MAXLABEL];
+	int off; // offset, for assembly stack mapping
 	// referenced line number
 	int lineno;
 	// which symbol table
@@ -63,9 +65,12 @@ typedef struct _sym_entry_struct {
 } syment_t;
 
 typedef struct _sym_table_struct {
-	int id;
-	int depth;
+	int id; // symbol table ID
+	int depth; // symbol table nested depth
 	char *nspace; // namespace
+	// for assembly stack mapping
+	int varoff; // variable offset
+	int tmpoff; // temporary variable offset
 	symtab_t *inner;
 	symtab_t *outer;
 	syment_t buckets[MAXBUCKETS];
@@ -79,6 +84,7 @@ typedef struct _sym_table_struct {
 // scope management
 symtab_t *scope_entry(char *nspace);
 symtab_t *scope_exit(void);
+symtab_t *scope_top();
 // symbol operator
 void symadd(syment_t *entry);
 // symget only search current scope, while symfind search all.
@@ -86,5 +92,5 @@ syment_t *symget(char *name);
 syment_t *symfind(char *name);
 void symdump();
 syment_t *syminit(ident_node_t *idp);
-syment_t *symalloc(char *name, cate_t cate, type_t type);
+syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type);
 #endif /* End of _SYMTAB_H_ */

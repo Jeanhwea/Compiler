@@ -11,18 +11,12 @@ static void gen_pgm(pgm_node_t *node)
 {
 	block_node_t *b = node->bp;
 	gen_pf_dec_list(b->pfdlp);
-	// main(...)
-	emit0(ENTER_OP);
+
+	// main function
+	syment_t *main = symalloc(node->stab, "@main", FUN_OBJ, VOID_TYPE);
+	emit1(ENT_OP, main);
 	gen_comp_stmt(b->csp);
-	emit0(FIN_OP);
-}
-
-static void gen_const_decf(const_dec_node_t *node)
-{
-}
-
-static void gen_var_decf(var_dec_node_t *node)
-{
+	emit1(FIN_OP, main);
 }
 
 static void gen_pf_dec_list(pf_dec_list_node_t *node)
@@ -44,44 +38,25 @@ static void gen_pf_dec_list(pf_dec_list_node_t *node)
 static void gen_proc_decf(proc_dec_node_t *node)
 {
 	for (proc_dec_node_t *t = node; t; t = t->next) {
-		gen_proc_head(t->pdp->php);
-
 		block_node_t *b = t->pdp->bp;
 		gen_pf_dec_list(b->pfdlp);
 
-		emit1(ENTER_OP, t->pdp->php->idp->symbol);
+		emit1(ENT_OP, t->pdp->php->idp->symbol);
 		gen_comp_stmt(b->csp);
-		emit0(FIN_OP);
+		emit1(FIN_OP, t->pdp->php->idp->symbol);
 	}
-}
-
-static void gen_proc_head(proc_head_node_t *node)
-{
-	proc_head_node_t *t = node;
-	gen_para_list(t->idp->symbol, t->plp);
 }
 
 static void gen_fun_decf(fun_dec_node_t *node)
 {
 	for (fun_dec_node_t *t = node; t; t = t->next) {
-		gen_fun_head(t->fdp->fhp);
-
 		block_node_t *b = t->fdp->bp;
 
 		gen_pf_dec_list(b->pfdlp);
-		emit1(ENTER_OP, t->fdp->fhp->idp->symbol);
+		emit1(ENT_OP, t->fdp->fhp->idp->symbol);
 		gen_comp_stmt(b->csp);
+		emit1(FIN_OP, t->fdp->fhp->idp->symbol);
 	}
-}
-
-static void gen_fun_head(fun_head_node_t *node)
-{
-	fun_head_node_t *t = node;
-	gen_para_list(t->idp->symbol, t->plp);
-}
-
-static void gen_para_list(syment_t *sign, para_list_node_t *node)
-{
 }
 
 static void gen_comp_stmt(comp_stmt_node_t *node)
@@ -151,53 +126,53 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 static void gen_if_stmt(if_stmt_node_t *node)
 {
 	syment_t *ifthen, *ifdone;
-	ifthen = symalloc("@ifthen", LABEL_OBJ, VOID_TYPE);
-	ifdone = symalloc("@ifdone", LABEL_OBJ, VOID_TYPE);
+	ifthen = symalloc(node->stab, "@ifthen", LABEL_OBJ, VOID_TYPE);
+	ifdone = symalloc(node->stab, "@ifdone", LABEL_OBJ, VOID_TYPE);
 
 	gen_cond(node->cp, ifthen);
 	if (node->ep) {
 		gen_stmt(node->ep);
 	}
 	emit1(JMP_OP, ifdone);
-	emit1(LABEL_OP, ifthen);
+	emit1(LAB_OP, ifthen);
 	gen_stmt(node->tp);
-	emit1(LABEL_OP, ifdone);
+	emit1(LAB_OP, ifdone);
 }
 
 static void gen_repe_stmt(repe_stmt_node_t *node)
 {
 	syment_t *loopstart, *loopdone;
-	loopstart = symalloc("@loopstart", LABEL_OBJ, VOID_TYPE);
-	loopdone = symalloc("@loopdone", LABEL_OBJ, VOID_TYPE);
+	loopstart = symalloc(node->stab, "@loopstart", LABEL_OBJ, VOID_TYPE);
+	loopdone = symalloc(node->stab, "@loopdone", LABEL_OBJ, VOID_TYPE);
 
-	emit1(LABEL_OP, loopstart);
+	emit1(LAB_OP, loopstart);
 	gen_stmt(node->sp);
 	gen_cond(node->cp, loopdone);
 	emit1(JMP_OP, loopstart);
-	emit1(LABEL_OP, loopdone);
+	emit1(LAB_OP, loopdone);
 }
 
 static void gen_for_stmt(for_stmt_node_t *node)
 {
-	syment_t *forstart, *fordone;
-	forstart = symalloc("@forstart", LABEL_OBJ, VOID_TYPE);
-	fordone = symalloc("@fordone", LABEL_OBJ, VOID_TYPE);
-
 	syment_t *beg, *end;
 	beg = gen_expr(node->lep);
 	end = gen_expr(node->rep);
 
-	syment_t *r, *d;
+	syment_t *forstart, *fordone;
+	forstart = symalloc(node->stab, "@forstart", LABEL_OBJ, VOID_TYPE);
+	fordone = symalloc(node->stab, "@fordone", LABEL_OBJ, VOID_TYPE);
+
+	syment_t *d;
 	d = node->idp->symbol;
 	emit2(ASS_OP, beg, d);
-	emit1(LABEL_OBJ, forstart);
+	emit1(LAB_OP, forstart);
 	switch (node->type) {
 	case TO_FOR:
 		emit3(GTT_OP, d, end, fordone);
 		gen_stmt(node->sp);
 		emit1(INC_OP, d);
 		emit1(JMP_OP, forstart);
-		emit1(LABEL_OBJ, fordone);
+		emit1(LAB_OP, fordone);
 		emit1(DEC_OP, d);
 		break;
 	case DOWNTO_FOR:
@@ -205,7 +180,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 		gen_stmt(node->sp);
 		emit1(DEC_OP, d);
 		emit1(JMP_OP, forstart);
-		emit1(LABEL_OBJ, fordone);
+		emit1(LAB_OP, fordone);
 		emit1(INC_OP, d);
 		break;
 	default:
@@ -221,7 +196,7 @@ static void gen_pcall_stmt(pcall_stmt_node_t *node)
 
 static void gen_read_stmt(read_stmt_node_t *node)
 {
-	syment_t *d;
+	syment_t *d = NULL;
 	for (read_stmt_node_t *t = node; t; t = t->next) {
 		d = t->idp->symbol;
 		switch (d->type) {
@@ -237,10 +212,10 @@ static void gen_read_stmt(read_stmt_node_t *node)
 
 static void gen_write_stmt(write_stmt_node_t *node)
 {
-	syment_t *d;
+	syment_t *d = NULL;
 	switch (node->type) {
 	case STR_WRITE:
-		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
+		d = symalloc(node->stab, "@write/str", STR_OBJ, STR_TYPE);
 		d->str = dupstr(node->sp);
 		emit1(WRS_OP, d);
 		break;
@@ -258,7 +233,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 		}
 		break;
 	case STRID_WRITE:
-		d = symalloc("@write/str", STR_OBJ, STR_TYPE);
+		d = symalloc(node->stab, "@write/str", STR_OBJ, STR_TYPE);
 		d->str = dupstr(node->sp);
 		emit1(WRS_OP, d);
 		d = gen_expr(node->ep);
@@ -281,13 +256,15 @@ static void gen_write_stmt(write_stmt_node_t *node)
 static syment_t *gen_expr(expr_node_t *node)
 {
 	syment_t *d, *r, *e;
+	d = r = e = NULL;
 	for (expr_node_t *t = node; t; t = t->next) {
 		r = gen_term(t->tp);
 		if (!d) {
 			switch (t->op) {
 			case NEG_ADDOP:
-				d = symalloc("@expr/neg", TMP_OBJ, r->type);
-				emit2(NEG_ADDOP, r, d);
+				d = symalloc(node->stab, "@expr/neg", TMP_OBJ,
+					     r->type);
+				emit2(NEG_OP, r, d);
 				break;
 			case NOP_ADDOP:
 				d = r;
@@ -301,14 +278,14 @@ static syment_t *gen_expr(expr_node_t *node)
 		case NOP_ADDOP:
 		case ADD_ADDOP:
 			e = d;
-			d = symalloc("@expr/add", TMP_OBJ, e->type);
-			emit3(ADD_ADDOP, e, r, d);
+			d = symalloc(node->stab, "@expr/add", TMP_OBJ, e->type);
+			emit3(ADD_OP, e, r, d);
 			break;
 		case MINUS_ADDOP:
 		case NEG_ADDOP:
 			e = d;
-			d = symalloc("@expr/sub", TMP_OBJ, e->type);
-			emit3(ADD_ADDOP, e, r, d);
+			d = symalloc(node->stab, "@expr/sub", TMP_OBJ, e->type);
+			emit3(SUB_OP, e, r, d);
 			break;
 		default:
 			unlikely();
@@ -320,6 +297,7 @@ static syment_t *gen_expr(expr_node_t *node)
 static syment_t *gen_term(term_node_t *node)
 {
 	syment_t *d, *r, *e;
+	d = r = e = NULL;
 	for (term_node_t *t = node; t; t = t->next) {
 		r = gen_factor(t->fp);
 		if (!d) {
@@ -333,13 +311,13 @@ static syment_t *gen_term(term_node_t *node)
 		case NOP_MULTOP:
 		case MULT_MULTOP:
 			e = d;
-			d = symalloc("@term/mul", TMP_OBJ, e->type);
-			emit3(MULT_MULTOP, e, r, d);
+			d = symalloc(node->stab, "@term/mul", TMP_OBJ, e->type);
+			emit3(MUL_OP, e, r, d);
 			break;
 		case DIV_MULTOP:
 			e = d;
-			d = symalloc("@term/div", TMP_OBJ, e->type);
-			emit3(DIV_MULTOP, e, r, d);
+			d = symalloc(node->stab, "@term/div", TMP_OBJ, e->type);
+			emit3(DIV_OP, e, r, d);
 			break;
 		default:
 			unlikely();
@@ -351,6 +329,7 @@ static syment_t *gen_term(term_node_t *node)
 static syment_t *gen_factor(factor_node_t *node)
 {
 	syment_t *d, *r, *e;
+	d = r = e = NULL;
 	switch (node->type) {
 	case ID_FACTOR:
 		d = node->idp->symbol;
@@ -358,11 +337,11 @@ static syment_t *gen_factor(factor_node_t *node)
 	case ARRAY_FACTOR:
 		r = node->idp->symbol;
 		e = gen_expr(node->ep);
-		d = symalloc("@factor/array", TMP_OBJ, r->type);
+		d = symalloc(node->stab, "@factor/array", TMP_OBJ, r->type);
 		emit3(LOAD_OP, r, e, d);
 		break;
 	case UNSIGN_FACTOR:
-		d = symalloc("@factor/usi", NUM_OBJ, INT_TYPE);
+		d = symalloc(node->stab, "@factor/usi", NUM_OBJ, INT_TYPE);
 		d->initval = node->usi;
 		break;
 	case EXPR_FACTOR:
@@ -381,7 +360,7 @@ static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 {
 	syment_t *d, *e;
 	e = node->idp->symbol;
-	d = symalloc("@fcall/ret", TMP_OBJ, e->type);
+	d = symalloc(node->stab, "@fcall/ret", TMP_OBJ, e->type);
 	gen_arg_list(e, node->alp);
 	emit2(CALL_OP, e, d);
 	return d;
@@ -417,6 +396,7 @@ static void gen_cond(cond_node_t *node, syment_t *dest)
 static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 {
 	syment_t *d, *r;
+	d = r = NULL;
 	for (arg_list_node_t *t = node; t; t = t->next) {
 		switch (t->refsym->cate) {
 		case BYVAL_OBJ:
@@ -424,14 +404,14 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 			emit1(PUSH_OP, d);
 			break;
 		case BYREF_OBJ:
-			d = t->symbol;
-			switch (t->symbol->cate) {
+			d = t->argsym;
+			switch (t->argsym->cate) {
 			case VAR_OBJ:
-				emit2(PUSHA_OP, NULL, d);
+				emit2(PADR_OP, NULL, d);
 				break;
 			case ARRAY_OBJ:
 				r = gen_expr(t->ep);
-				emit2(PUSHA_OP, r, d);
+				emit2(PADR_OP, r, d);
 				break;
 			default:
 				unlikely();
@@ -445,7 +425,7 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 
 void generate()
 {
-	gen_pgm(prog);
+	gen_pgm(ast);
 	chkerr("generate fail and exit.");
 	phase = CODE_GEN;
 }

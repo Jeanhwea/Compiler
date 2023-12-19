@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-char *dupstr(char *s);
-
+#define MAXSTRBUF 4096
 #define PRTBUFSIZE 4096
 extern char prtbuf[PRTBUFSIZE];
 
@@ -15,4 +14,6 @@ extern char prtbuf[PRTBUFSIZE];
 		strcat(s, prtbuf);                                             \
 	} while (0)
 
+char *dupstr(char *s);
+void chgsuf(char *str, char *to, char *from);
 #endif /* End of _UTIL_H_ */

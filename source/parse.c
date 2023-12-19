@@ -3,12 +3,13 @@
 #include "error.h"
 #include "global.h"
 #include "parse.h"
+#include "scan.h"
 #include "util.h"
 #include "lexical.h"
 #include "syntax.h"
 
 // AST
-pgm_node_t *prog;
+pgm_node_t *ast;
 int nidcnt = 0;
 
 // current token
@@ -23,6 +24,7 @@ static void match(token_t expected)
 {
 	// check if token matched
 	if (currtok != expected) {
+		dbg("unexpected token: [%s] at line %d\n", tokbuf, lineno);
 		panic("UNEXPECTED_TOKEN");
 	}
 
@@ -132,7 +134,7 @@ static const_def_node_t *parse_const_def(void)
 			break;
 		case MC_UNS:
 			t->idp->kind = INT_CONST_IDENT;
-			t->idp->value = -atoi(tokbuf);
+			t->idp->value = atoi(tokbuf);
 			match(MC_UNS);
 			break;
 		case MC_CH:
@@ -952,14 +954,14 @@ static para_def_node_t *parse_para_def(void)
 		match(KW_INTEGER);
 		for (p = t; p; p = p->next) {
 			p->idp->kind =
-				byref ? INT_PARA_REF_IDENT : INT_PARA_VAL_IDENT;
+				byref ? INT_BYADR_IDENT : INT_BYVAL_IDENT;
 		}
 		break;
 	case KW_CHAR:
 		match(KW_CHAR);
 		for (p = t; p; p = p->next) {
-			p->idp->kind = byref ? CHAR_PARA_REF_IDENT :
-					       CHAR_PARA_VAL_IDENT;
+			p->idp->kind =
+				byref ? CHAR_BYADR_IDENT : CHAR_BYVAL_IDENT;
 		}
 		break;
 	default:
@@ -996,8 +998,8 @@ static arg_list_node_t *parse_arg_list(void)
 pgm_node_t *parse(void)
 {
 	currtok = gettok();
-	prog = parse_pgm();
+	ast = parse_pgm();
 	chkerr("parse fail and exit.");
 	phase = SEMANTIC;
-	return prog;
+	return ast;
 }

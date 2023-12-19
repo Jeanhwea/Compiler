@@ -4,14 +4,9 @@
 #include "symtab.h"
 
 static void gen_pgm(pgm_node_t *node);
-static void gen_const_decf(const_dec_node_t *node);
-static void gen_var_decf(var_dec_node_t *node);
 static void gen_pf_dec_list(pf_dec_list_node_t *node);
 static void gen_proc_decf(proc_dec_node_t *node);
-static void gen_proc_head(proc_head_node_t *node);
 static void gen_fun_decf(fun_dec_node_t *node);
-static void gen_fun_head(fun_head_node_t *node);
-static void gen_para_list(syment_t *sign, para_list_node_t *node);
 static void gen_comp_stmt(comp_stmt_node_t *node);
 static void gen_stmt(stmt_node_t *node);
 static void gen_assign_stmt(assign_stmt_node_t *node);

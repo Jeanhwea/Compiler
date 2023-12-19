@@ -10,6 +10,7 @@
 static void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
+	node->stab = scope_top();
 
 	nevernil(node->bp);
 	block_node_t *b = node->bp;
@@ -252,6 +253,7 @@ static void anlys_assign_stmt(assign_stmt_node_t *node)
 
 static void anlys_if_stmt(if_stmt_node_t *node)
 {
+	node->stab = scope_top();
 	anlys_cond(node->cp);
 	if (node->ep) {
 		anlys_stmt(node->ep);
@@ -261,12 +263,14 @@ static void anlys_if_stmt(if_stmt_node_t *node)
 
 static void anlys_repe_stmt(repe_stmt_node_t *node)
 {
+	node->stab = scope_top();
 	anlys_stmt(node->sp);
 	anlys_cond(node->cp);
 }
 
 static void anlys_for_stmt(for_stmt_node_t *node)
 {
+	node->stab = scope_top();
 	anlys_expr(node->lep);
 	anlys_expr(node->rep);
 
@@ -321,6 +325,7 @@ static void anlys_read_stmt(read_stmt_node_t *node)
 
 static void anlys_write_stmt(write_stmt_node_t *node)
 {
+	node->stab = scope_top();
 	switch (node->type) {
 	case STR_WRITE:
 		break;
@@ -335,6 +340,7 @@ static void anlys_write_stmt(write_stmt_node_t *node)
 
 static void anlys_expr(expr_node_t *node)
 {
+	node->stab = scope_top();
 	for (expr_node_t *t = node; t; t = t->next) {
 		nevernil(t->tp);
 		anlys_term(t->tp);
@@ -343,6 +349,7 @@ static void anlys_expr(expr_node_t *node)
 
 static void anlys_term(term_node_t *node)
 {
+	node->stab = scope_top();
 	for (term_node_t *t = node; t; t = t->next) {
 		nevernil(t->fp);
 		anlys_factor(t->fp);
@@ -351,6 +358,7 @@ static void anlys_term(term_node_t *node)
 
 static void anlys_factor(factor_node_t *node)
 {
+	node->stab = scope_top();
 	ident_node_t *idp;
 	syment_t *e;
 	switch (node->type) {
@@ -362,7 +370,17 @@ static void anlys_factor(factor_node_t *node)
 			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
 			       idp->name);
 		}
-		// TODO OBJ5(Const_Obj_t, Var_Obj_t, Para_Val_Obj_t, Para_Ref_Obj_t, Tmp_Obj_t)) {
+		switch (e->cate) {
+		case CONST_OBJ:
+		case VAR_OBJ:
+		case TMP_OBJ:
+		case BYVAL_OBJ:
+		case BYREF_OBJ:
+			break;
+		default:
+			giveup(BADCTG, "L%d: symbol %s category is bad.",
+			       idp->line, idp->name);
+		}
 		idp->symbol = e;
 		break;
 	case ARRAY_FACTOR:
@@ -378,6 +396,9 @@ static void anlys_factor(factor_node_t *node)
 			       idp->line, idp->name);
 		}
 		idp->symbol = e;
+
+		nevernil(node->ep);
+		anlys_expr(node->ep);
 		break;
 	case UNSIGN_FACTOR:
 		break;
@@ -396,6 +417,7 @@ static void anlys_factor(factor_node_t *node)
 
 static void anlys_fcall_stmt(fcall_stmt_node_t *node)
 {
+	node->stab = scope_top();
 	nevernil(node->idp);
 	ident_node_t *idp = node->idp;
 	syment_t *e = symfind(idp->name);
@@ -449,8 +471,9 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 
 			factor_node_t *fp = tp->fp;
 			ident_node_t *idp;
-			if (fp->type != ID_FACTOR || fp->type != ARRAY_FACTOR) {
+			if (fp->type == ID_FACTOR || fp->type == ARRAY_FACTOR) {
 				idp = fp->idp;
+				anlys_factor(fp);
 				goto refok;
 			}
 		referr:
@@ -459,22 +482,22 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			       sign->lineno, sign->name, pos);
 			continue;
 		refok:
-			syment_t *e = symfind(idp->name);
-			if (!e) {
+			syment_t *a = symfind(idp->name);
+			if (!a) {
 				giveup(BADSYM, "L%d: symbol %s not found.",
 				       idp->line, idp->name);
 			}
-			if (fp->type == ID_FACTOR && e->cate != VAR_OBJ) {
+			if (fp->type == ID_FACTOR && a->cate != VAR_OBJ) {
 				giveup(OBJREF,
 				       "L%d: argument %s call by reference is not variable object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
-			if (fp->type == ARRAY_FACTOR && e->cate != ARRAY_OBJ) {
+			if (fp->type == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
 				giveup(OBJREF,
 				       "L%d: argument %s call by reference is not array object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
-			t->symbol = fp->idp->symbol;
+			t->argsym = idp->symbol = a;
 			t->refsym = e;
 			break;
 		default:
@@ -491,7 +514,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 
 void analysis()
 {
-	anlys_pgm(prog);
+	anlys_pgm(ast);
 	chkerr("annlysis fail and exit.");
 	phase = IR;
 }

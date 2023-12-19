@@ -1,10 +1,12 @@
-#include <stdio.h>
+#include "error.h"
 #include "global.h"
+#include "util.h"
 
 // constants
 char *PL0C_NAME = "pl0c";
-char *PL0C_VERSION = "v0.13.0";
+char *PL0C_VERSION = "v0.13.5";
 char PL0C_PROGNAME[4096];
+char PL0C_TARGET[4096];
 
 // debug
 bool echo = FALSE;
@@ -21,9 +23,11 @@ void pl0c_read_args(int argc, char *argv[])
 {
 	if (argc < 2) {
 		msg("usage: %s source.pas\n", argv[0]);
-		exit(1);
+		exit(EARGMT);
 	}
 	strcpy(PL0C_PROGNAME, argv[argc - 1]);
+	strcpy(PL0C_TARGET, PL0C_PROGNAME);
+	chgsuf(PL0C_TARGET, ".s", ".pas");
 }
 
 void pl0c_init_file(char *name)

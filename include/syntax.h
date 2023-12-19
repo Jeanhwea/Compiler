@@ -7,6 +7,7 @@
 typedef struct _pgm_node {
 	int nid;
 	block_node_t *bp;
+	symtab_t *stab;
 } pgm_node_t;
 
 /* block */
@@ -115,11 +116,13 @@ typedef struct _if_stmt_node {
 	stmt_node_t *tp;
 	/* else */
 	stmt_node_t *ep;
+	symtab_t *stab;
 } if_stmt_node_t;
 typedef struct _repe_stmt_node {
 	int nid;
 	stmt_node_t *sp;
 	cond_node_t *cp;
+	symtab_t *stab;
 } repe_stmt_node_t;
 typedef enum _for_enum { TO_FOR, DOWNTO_FOR } for_t;
 typedef struct _for_stmt_node {
@@ -129,6 +132,7 @@ typedef struct _for_stmt_node {
 	expr_node_t *lep;
 	expr_node_t *rep;
 	stmt_node_t *sp;
+	symtab_t *stab;
 } for_stmt_node_t;
 typedef struct _pcall_stmt_node {
 	int nid;
@@ -139,6 +143,7 @@ typedef struct _fcall_stmt_node {
 	int nid;
 	ident_node_t *idp;
 	arg_list_node_t *alp;
+	symtab_t *stab;
 } fcall_stmt_node_t;
 typedef struct _comp_stmt_node {
 	int nid;
@@ -157,6 +162,7 @@ typedef struct _write_stmt_node {
 	/* string pointer */
 	char *sp;
 	expr_node_t *ep;
+	symtab_t *stab;
 } write_stmt_node_t;
 
 /* expression term factor condition */
@@ -171,6 +177,7 @@ typedef struct _expr_node {
 	addop_t op;
 	term_node_t *tp;
 	expr_node_t *next;
+	symtab_t *stab;
 } expr_node_t;
 typedef enum _multop_enum { NOP_MULTOP, MULT_MULTOP, DIV_MULTOP } multop_t;
 typedef struct _term_node {
@@ -178,6 +185,7 @@ typedef struct _term_node {
 	multop_t op;
 	factor_node_t *fp;
 	term_node_t *next;
+	symtab_t *stab;
 } term_node_t;
 typedef enum _factor_enum {
 	ID_FACTOR,
@@ -193,6 +201,7 @@ typedef struct _factor_node {
 	expr_node_t *ep;
 	int usi; // store unsign int value
 	fcall_stmt_node_t *fcsp;
+	symtab_t *stab;
 } factor_node_t;
 typedef enum _rela_enum {
 	EQU_RELA,
@@ -207,34 +216,33 @@ typedef struct _cond_node {
 	expr_node_t *lep;
 	rela_t op;
 	expr_node_t *rep;
+	symtab_t *stab;
 } cond_node_t;
 
 /* ident parameter argument*/
 typedef enum _ident_enum {
-	/* normal identifier type */
-	INIT_IDENT,
-	PROC_IDENT,
-	INT_FUN_IDENT,
-	CHAR_FUN_IDENT,
-	/* const identifier type */
-	INT_CONST_IDENT,
-	CHAR_CONST_IDENT,
-	/* variable identifier type */
-	INT_VAR_IDENT,
-	CHAR_VAR_IDENT,
-	INT_ARRVAR_IDENT,
-	CHAR_ARRVAR_IDENT,
-	/* parameter identifier type */
-	/* call by value */
-	INT_PARA_VAL_IDENT,
-	CHAR_PARA_VAL_IDENT,
-	/* call by address */
-	INT_PARA_REF_IDENT,
-	CHAR_PARA_REF_IDENT
-} ident_t;
+	// Normal Identifier
+	/*  0 */ INIT_IDENT,
+	/*  1 */ PROC_IDENT,
+	/*  2 */ INT_FUN_IDENT,
+	/*  3 */ CHAR_FUN_IDENT,
+	// Const Identifier
+	/*  4 */ INT_CONST_IDENT,
+	/*  5 */ CHAR_CONST_IDENT,
+	// Variable Identifier
+	/*  6 */ INT_VAR_IDENT,
+	/*  7 */ CHAR_VAR_IDENT,
+	/*  8 */ INT_ARRVAR_IDENT,
+	/*  9 */ CHAR_ARRVAR_IDENT,
+	// Parameter Identifier, (by value, by address)
+	/* 10 */ INT_BYVAL_IDENT,
+	/* 11 */ CHAR_BYVAL_IDENT,
+	/* 12 */ INT_BYADR_IDENT,
+	/* 13 */ CHAR_BYADR_IDENT
+} idekind_t;
 typedef struct _ident_node {
 	int nid;
-	ident_t kind;
+	idekind_t kind;
 	char *name;
 	int value;
 	int length;
@@ -256,7 +264,7 @@ typedef struct _arg_list_node {
 	expr_node_t *ep;
 	arg_list_node_t *next;
 	// link to referenced variable or array
-	syment_t *symbol;
+	syment_t *argsym;
 	syment_t *refsym;
 } arg_list_node_t;
 

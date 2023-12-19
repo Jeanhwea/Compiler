@@ -9,7 +9,7 @@
 symtab_t *top = NULL;
 int depth = 0;
 int ntab = 0;
-int nlabel = 0;
+int symcnt = 0;
 
 symtab_t *scope_entry(char *nspace)
 {
@@ -38,6 +38,12 @@ symtab_t *scope_exit(void)
 	depth--;
 
 	return t;
+}
+
+symtab_t *scope_top(void)
+{
+	nevernil(top);
+	return top;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,12 +77,11 @@ static syment_t *getsym(symtab_t *stab, char *name)
 	return NULL;
 }
 
-static void putsym(symtab_t *stab, syment_t *entry)
+static void putsym(symtab_t *stab, syment_t *e)
 {
-	syment_t *hair = &stab->buckets[hash(entry->name) % MAXBUCKETS];
-	entry->next = hair->next;
-	hair->next = entry;
-	sprintf(entry->label, "L%03d", ++nlabel);
+	syment_t *hair = &stab->buckets[hash(e->name) % MAXBUCKETS];
+	e->next = hair->next;
+	hair->next = e;
 }
 
 static void dumptab(symtab_t *stab)
@@ -139,6 +144,7 @@ syment_t *syminit(ident_node_t *idp)
 {
 	syment_t *e;
 	NEWENTRY(e);
+	e->sid = ++symcnt;
 
 	e->name = dupstr(idp->name);
 	e->initval = idp->value;
@@ -165,12 +171,12 @@ syment_t *syminit(ident_node_t *idp)
 	case CHAR_ARRVAR_IDENT:
 		e->cate = ARRAY_OBJ;
 		break;
-	case INT_PARA_VAL_IDENT:
-	case CHAR_PARA_VAL_IDENT:
+	case INT_BYVAL_IDENT:
+	case CHAR_BYVAL_IDENT:
 		e->cate = BYVAL_OBJ;
 		break;
-	case INT_PARA_REF_IDENT:
-	case CHAR_PARA_REF_IDENT:
+	case INT_BYADR_IDENT:
+	case CHAR_BYADR_IDENT:
 		e->cate = BYREF_OBJ;
 		break;
 	default:
@@ -182,33 +188,53 @@ syment_t *syminit(ident_node_t *idp)
 	case INT_CONST_IDENT:
 	case INT_VAR_IDENT:
 	case INT_ARRVAR_IDENT:
-	case INT_PARA_VAL_IDENT:
-	case INT_PARA_REF_IDENT:
+	case INT_BYVAL_IDENT:
+	case INT_BYADR_IDENT:
 		e->type = INT_TYPE;
 		break;
 	case CHAR_FUN_IDENT:
 	case CHAR_CONST_IDENT:
 	case CHAR_VAR_IDENT:
 	case CHAR_ARRVAR_IDENT:
-	case CHAR_PARA_VAL_IDENT:
-	case CHAR_PARA_REF_IDENT:
+	case CHAR_BYVAL_IDENT:
+	case CHAR_BYADR_IDENT:
 		e->type = CHAR_TYPE;
 		break;
 	default:
 		e->type = VOID_TYPE;
 	}
 
+	sprintf(e->label, "L%03d", e->sid);
+	e->off = top->varoff;
+	if (e->cate == ARRAY_OBJ) {
+		top->varoff += e->arrlen;
+	} else {
+		top->varoff += 1;
+	}
+
 	symadd(e);
 	return e;
 }
 
-syment_t *symalloc(char *name, cate_t cate, type_t type)
+syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 {
 	syment_t *e;
 	NEWENTRY(e);
 	e->name = dupstr(name);
-	sprintf(e->label, "T%03d", ++nlabel);
+	e->sid = ++symcnt;
+
 	e->cate = cate;
 	e->type = type;
+
+	sprintf(e->label, "T%03d", e->sid);
+	e->off = stab->varoff;
+	if (e->cate == ARRAY_OBJ) {
+		stab->varoff += e->arrlen;
+	} else {
+		stab->varoff += 1;
+	}
+
+	e->stab = stab;
+	putsym(stab, e);
 	return e;
 }

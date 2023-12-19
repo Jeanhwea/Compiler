@@ -36,7 +36,7 @@ typedef enum _phase_enum {
 	/* 5 */ CODE_GEN,
 	/* 6 */ ASSEMBLE,
 	/* 7 */ LINK,
-	/* 8 */ OK
+	/* 8 */ SUCCESS
 } phase_t;
 
 #endif /* End of _COMMON_H_ */

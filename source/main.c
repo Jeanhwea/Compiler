@@ -1,4 +1,5 @@
 #include "anlys.h"
+#include "asm.h"
 #include "gen.h"
 #include "global.h"
 #include "scan.h"
@@ -20,8 +21,11 @@ int main(int argc, char *argv[])
 	// semantic
 	analysis();
 
-	// generation IR
+	// generate IR
 	generate();
+
+	// generate target code
+	assemble();
 
 	msg("done\n");
 	return 0;
