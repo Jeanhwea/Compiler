@@ -38,7 +38,7 @@ token_t gettok(void);
 
 // Syntax
 // prog as AST, in parse.c
-extern pgm_node_t *prog;
+extern pgm_node_t *ast;
 pgm_node_t *parse(void);
 
 // Semantic

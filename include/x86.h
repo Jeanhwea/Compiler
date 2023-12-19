@@ -20,6 +20,25 @@ void rfree(reg_t *r);
 #define ALIGN 4
 #define OFFSET(e) (ALIGN * e->off)
 
+// x86 instructions
+#define MAXOPLEN 16
+typedef struct _x86_inst_struct {
+	bool indent; // do indent?
+	char op[MAXOPLEN]; // operator or label
+	char fa[MAXOPLEN]; // operand a
+	char fb[MAXOPLEN]; // operand b
+	char fc[MAXOPLEN]; // operand c
+} x86i_t;
+
+#define MAXDATASEC 32
+#define MAXTEXTSEC 1024
+typedef struct _program_code_struct {
+	int idata;
+	x86i_t data[MAXDATASEC];
+	int itext;
+	x86i_t text[MAXTEXTSEC];
+} progcode_t;
+
 // asm instructions
 void x86_enter(syment_t *e);
 void x86_mov(reg_t *reg, syment_t *var);

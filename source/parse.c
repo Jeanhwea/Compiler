@@ -9,7 +9,7 @@
 #include "syntax.h"
 
 // AST
-pgm_node_t *prog;
+pgm_node_t *ast;
 int nidcnt = 0;
 
 // current token
@@ -998,8 +998,8 @@ static arg_list_node_t *parse_arg_list(void)
 pgm_node_t *parse(void)
 {
 	currtok = gettok();
-	prog = parse_pgm();
+	ast = parse_pgm();
 	chkerr("parse fail and exit.");
 	phase = SEMANTIC;
-	return prog;
+	return ast;
 }

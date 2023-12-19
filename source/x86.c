@@ -1,4 +1,5 @@
 #include "x86.h"
+#include "common.h"
 #include "debug.h"
 #include "ir.h"
 #include "symtab.h"
@@ -48,6 +49,8 @@ void rfree(reg_t *r)
 {
 	r->refcnt--;
 }
+
+progcode_t prog2;
 
 ////////////////////////////////////////////////////////////////////////////////
 // i386 instructions

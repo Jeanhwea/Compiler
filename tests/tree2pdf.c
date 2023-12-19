@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 	init(argc, argv);
 	parse();
 	analysis();
-	node_t *tree = conv_pgm_node(prog);
+	node_t *tree = conv_pgm_node(ast);
 	visit(tree);
 	writedot();
 	system("dot -Tpdf viz.dot -o viz.pdf");

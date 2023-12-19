@@ -424,7 +424,7 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 
 void generate()
 {
-	gen_pgm(prog);
+	gen_pgm(ast);
 	chkerr("generate fail and exit.");
 	phase = CODE_GEN;
 }
