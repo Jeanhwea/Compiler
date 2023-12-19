@@ -163,6 +163,8 @@ void x86_iolib_exit()
 
 void x86_iolib_wrtchar()
 {
+	adddata3("_chrbuf", "x");
+
 	addlabel(LIBWCHR);
 	addcode3("mov", "eax", "4");
 	addcode3("mov", "ebx", "1");
@@ -170,14 +172,48 @@ void x86_iolib_wrtchar()
 	addcode3("mov", "edx", "1");
 	addcode2("int", "0x80");
 	addcode1("ret");
-	adddata3("_chrbuf", "x");
 }
 
 void x86_iolib_wrtint()
 {
-	addlabel(LIBWINT);
-	addcode1("ret");
 	adddata3("_intbuf", "????????????????");
+
+	addlabel(LIBWINT);
+	addcode3("xor", "edi", "edi");
+	addcode3("cmp", "eax", "0");
+	addcode2("jnl", "_notneg");
+	addcode2("inc", "edi");
+	addcode2("neg", "eax");
+	addlabel("_notneg");
+	// number base
+	addcode3("mov", "ebx", "10");
+	// number string length
+	addcode3("xor", "ecx", "ecx");
+	// number string pointer
+	addcode3("mov", "esi", "_numbuf+15");
+	addlabel("_loopdigit");
+	addcode3("xor", "edx", "edx");
+	addcode2("div", "ebx");
+	addcode3("add", "edx", "'0'");
+	addcode3("mov", "[esi]", "dl");
+	addcode2("dec", "esi");
+	addcode2("inc", "ecx");
+	addcode3("test", "eax", "eax");
+	addcode2("jnz", "_loopdigit");
+	addcode3("test", "edi", "edi");
+	addcode2("jnz", "_negsign");
+	addcode2("inc", "esi");
+	addcode2("jmp", "_wrtint");
+	addlabel("_negsign");
+	addcode3("mov", "byte[esi]", "'-'");
+	addcode2("inc", "ecx");
+	addlabel("_wrtint");
+	addcode4("mov", "edx", "ecx", "strlen");
+	addcode4("mov", "eax", "4  ", "syscall number");
+	addcode4("mov", "ebx", "1  ", "stdout");
+	addcode4("mov", "ecx", "esi", "ptr");
+	addcode2("int", "0x80");
+	addcode1("ret");
 }
 
 void x86_init()
@@ -268,7 +304,7 @@ void x86_mul(reg_t *r1, reg_t *r2)
 reg_t *x86_div(reg_t *r1, reg_t *eax, reg_t *edx)
 {
 	addcode3("xor", edx->name, edx->name);
-	addcode2("idiv", r1->name);
+	addcode2("div", r1->name);
 	return eax;
 }
 
