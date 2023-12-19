@@ -1,3 +1,3 @@
 begin
-  write("Hello")
+  write("Hello World.")
 end.

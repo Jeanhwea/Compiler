@@ -183,9 +183,10 @@ void x86_iolib_wrtstr()
 {
 	addlabel(LIBWSTR);
 	addcode3("mov", "esi", "eax");
+	addcode3("xor", "ecx", "ecx");
 	addlabel("_loopnext");
-	addcode3("mov", "ecx", "[esi]");
-	addcode3("cmp", "ecx", "ecx");
+	addcode3("mov", "cl", "[esi]");
+	addcode3("test", "ecx", "ecx");
 	addcode2("jz", "_writestr");
 	addcode2("inc", "esi");
 	addcode2("jmp", "_loopnext");
