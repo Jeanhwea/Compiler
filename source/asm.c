@@ -477,5 +477,5 @@ void assemble()
 	}
 	chkerr("assemble fail and exit.");
 	phase = SUCCESS;
-	dumpprog();
+	progdump();
 }

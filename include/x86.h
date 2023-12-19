@@ -40,7 +40,7 @@ typedef struct _program_code_struct {
 	x86i_t text[MAXTEXTSEC];
 } progcode_t;
 
-void dumpprog();
+void progdump();
 
 // asm instructions
 void x86_init();

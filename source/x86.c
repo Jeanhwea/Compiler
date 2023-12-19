@@ -121,7 +121,7 @@ void addcode1(char *op)
 	addcode4(op, "", "", "");
 }
 
-void dumpprog()
+void progdump()
 {
 	msg(".section .text\n");
 	for (int k = 0; k < prog.itext; ++k) {
