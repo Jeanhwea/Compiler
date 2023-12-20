@@ -355,9 +355,7 @@ void asmbl_ent_op(inst_t *x)
 
 void asmbl_fin_op(inst_t *x)
 {
-	if (!strcmp(x->d->name, "@main")) {
-		x86_syscall(LIBEXIT, NULL);
-	}
+	x86_leave(x->d);
 }
 
 void asmbl_rdi_op(inst_t *x)

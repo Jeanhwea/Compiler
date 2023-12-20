@@ -13,7 +13,7 @@ static void gen_pgm(pgm_node_t *node)
 	gen_pf_dec_list(b->pfdlp);
 
 	// main function
-	syment_t *main = symalloc(node->stab, "@main", FUN_OBJ, VOID_TYPE);
+	syment_t *main = symalloc(node->stab, MAINFUNC, FUN_OBJ, VOID_TYPE);
 	emit1(ENT_OP, main);
 	gen_comp_stmt(b->csp);
 	emit1(FIN_OP, main);

@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "global.h"
 #include "ir.h"
+#include "gen.h"
 #include "symtab.h"
 #include "util.h"
 #include <stdio.h>
@@ -311,20 +312,6 @@ void x86_init()
 	x86_iolib_wrtint();
 	x86_iolib_exit();
 }
-void x86_enter(syment_t *e)
-{
-	if (!strcmp(e->name, "@main")) {
-		addlabel("_start");
-		addcode2("push", REG_BP);
-		addcode3("mov", REG_BP, REG_SP);
-	} else {
-		addlabel(e->name);
-	}
-	int off = ALIGN * (e->stab->varoff + e->stab->tmpoff);
-	char buf[32];
-	sprintf(buf, "reserve %d bytes", off);
-	addcode4("sub", REG_SP, tostr(off), buf);
-}
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
@@ -444,6 +431,30 @@ void x86_push(reg_t *reg)
 void x86_push2(syment_t *var)
 {
 	addcode2("push", var->label);
+}
+
+void x86_enter(syment_t *e)
+{
+	if (!strcmp(e->name, MAINFUNC)) {
+		addlabel("_start");
+	} else {
+		addlabel(e->name);
+	}
+	addcode2("push", REG_BP);
+	addcode3("mov", REG_BP, REG_SP);
+
+	int off = ALIGN * (e->stab->varoff + e->stab->tmpoff);
+	char buf[32];
+	sprintf(buf, "reserve %d bytes", off);
+	addcode4("sub", REG_SP, tostr(off), buf);
+}
+
+void x86_leave(syment_t *e)
+{
+	if (!strcmp(x->d->name, MAINFUNC)) {
+		x86_syscall(LIBEXIT, NULL);
+		return
+	}
 }
 
 void x86_call(syment_t *func)

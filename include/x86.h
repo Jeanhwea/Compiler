@@ -53,7 +53,6 @@ void progdump();
 
 // asm instructions
 void x86_init();
-void x86_enter(syment_t *e);
 void x86_mov(reg_t *reg, syment_t *var);
 void x86_mov2(syment_t *var, reg_t *reg);
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off);
@@ -75,6 +74,8 @@ void x86_cls(reg_t *r1);
 void x86_pop(reg_t *reg);
 void x86_push(reg_t *reg);
 void x86_push2(syment_t *var);
+void x86_enter(syment_t *e);
+void x86_leave(syment_t *e);
 void x86_call(syment_t *func);
 void x86_ret();
 reg_t *x86_syscall(char *func, reg_t *eax);
