@@ -1,10 +1,11 @@
+const ch = 'x';
 var i: integer; nl: char;
 begin
-   nl := 10;
+   nl := ch;
 
-   for i := 1 to 3 do
+   for i := 1 to 5 do
    begin
-      write(i);
+      {write(i);}
       write(nl)
    end
 
