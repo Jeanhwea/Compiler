@@ -208,7 +208,7 @@ void x86_iolib_wrtint()
 	addcode3("xor", REG_SI, REG_SI); // negtive flag
 	addcode3("cmp", REG_RA, "0");
 	addcode2("jnl", "_nonneg");
-	addcode2("inc", REG_SI);
+	addcode2("inc", REG_DI);
 	addcode2("neg", REG_RA);
 	addlabel("_nonneg");
 	addcode3("mov", REG_RB, "10"); // number base
@@ -223,7 +223,7 @@ void x86_iolib_wrtint()
 	addcode2("inc", REG_RC);
 	addcode3("test", REG_RA, REG_RA);
 	addcode2("jnz", "_loopdigit");
-	addcode3("test", REG_SI, REG_SI);
+	addcode3("test", REG_DI, REG_DI);
 	addcode2("jnz", "_negsign");
 	addcode2("inc", REG_SI);
 	addcode2("jmp", "_wrtint");

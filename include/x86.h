@@ -11,7 +11,7 @@ typedef struct _reg_struct {
 // Pointer register
 #define REG_BP "ebp"
 #define REG_SP "esp"
-#define REG_BI "ebi"
+#define REG_DI "edi"
 #define REG_SI "esi"
 #define REG_RA "eax"
 #define REG_RB "ebx"
