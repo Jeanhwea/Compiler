@@ -228,7 +228,7 @@ void x86_iolib_wrtint()
 	addcode2("inc", REG_SI);
 	addcode2("jmp", "_wrtint");
 	addlabel("_negsign");
-	addcode3("mov", REG_SI, "'-'");
+	addcode3("movb", REG_SI, "'-'");
 	addcode2("inc", REG_RC);
 	addlabel("_wrtint");
 	addcode3("mov", REG_RD, REG_RC); // string length
