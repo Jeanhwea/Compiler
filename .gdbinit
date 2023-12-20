@@ -1,5 +1,6 @@
 set pagination off
 set disassemble-next-line on
+set disassembly-flavor intel
 # set print array-indexes on
 
 # set history save on
