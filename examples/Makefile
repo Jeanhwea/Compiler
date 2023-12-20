@@ -7,6 +7,7 @@ all: $(RUNS)
 
 %.run: %.pas
 	$(CC) $<
+	rm *.o
 
 clean:
 	-rm *.s *.o *.run
