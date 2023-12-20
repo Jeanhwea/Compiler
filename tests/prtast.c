@@ -12,7 +12,8 @@ int indent = 0;
 void prtnode(node_t *node)
 {
 	indent++;
-	for (int i = 1; i < indent; ++i) {
+	int i;
+	for (i = 1; i < indent; ++i) {
 		msg(" ");
 	}
 
@@ -39,7 +40,7 @@ void prtnode(node_t *node)
 	}
 	msg("%s\n", buf);
 
-	for (int i = 0; i < node->total; ++i) {
+	for (i = 0; i < node->total; ++i) {
 		prtnode(node->childs[i]);
 	}
 

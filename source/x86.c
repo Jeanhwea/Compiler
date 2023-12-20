@@ -21,7 +21,8 @@ reg_t regs[4] = {
 // Alloc a register
 reg_t *allocreg()
 {
-	for (int i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
+	int i;
+	for (i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
 		reg_t *r = &regs[i];
 		if (r->refcnt == 0) {
 			r->refcnt++;
@@ -36,7 +37,8 @@ reg_t *allocreg()
 // Lock specific register
 reg_t *lockreg(char *name)
 {
-	for (int i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
+	int i;
+	for (i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
 		reg_t *r = &regs[i];
 		if (!strcmp(r->name, name) && r->refcnt == 0) {
 			r->refcnt++;
@@ -125,7 +127,8 @@ void addcode1(char *op)
 void progdump()
 {
 	fprintf(target, "section .text\n");
-	for (int k = 0; k < prog.itext; ++k) {
+	int k;
+	for (k = 0; k < prog.itext; ++k) {
 		x86i_t *i = &prog.text[k];
 		if (i->islab) {
 			fprintf(target, "%s:\n", i->op);
@@ -149,7 +152,7 @@ void progdump()
 		return;
 
 	fprintf(target, "section .data\n");
-	for (int k = 0; k < prog.idata; ++k) {
+	for (k = 0; k < prog.idata; ++k) {
 		x86i_t *d = &prog.data[k];
 		fprintf(target, "\t%s db '%s', 0\n", d->op, d->fa);
 	}

@@ -345,11 +345,12 @@ node_t *conv_write_stmt_node(write_stmt_node_t *t)
 	if (!t) {
 		return NULL;
 	}
+
 	node_t *d = initnode(t->nid, "WRITE_STMT");
+	char buf[1024];
 	d->cate = t->type;
 	switch (t->type) {
 	case STR_WRITE:
-		char buf[1024];
 		sprintf(buf, "\\\"%s\\\"", t->sp);
 		d->extra = dupstr(buf);
 		break;
@@ -364,6 +365,7 @@ node_t *conv_write_stmt_node(write_stmt_node_t *t)
 	default:
 		unlikely();
 	}
+
 	return d;
 }
 
@@ -413,7 +415,9 @@ node_t *conv_factor_node(factor_node_t *t)
 	if (!t) {
 		return NULL;
 	}
+
 	node_t *d = initnode(t->nid, "FACTOR");
+	char buf[1024];
 	d->cate = t->type;
 	switch (t->type) {
 	case ID_FACTOR:
@@ -424,7 +428,6 @@ node_t *conv_factor_node(factor_node_t *t)
 		addchild(d, conv_expr_node(t->ep), "ep");
 		break;
 	case UNSIGN_FACTOR:
-		char buf[32];
 		sprintf(buf, "%d", t->usi);
 		d->extra = dupstr(buf);
 		break;

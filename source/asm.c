@@ -406,7 +406,8 @@ void asmbl_lab_op(inst_t *x)
 void genasm()
 {
 	x86_init();
-	for (inst_t *x = xhead; x; x = x->next) {
+	inst_t *x;
+	for (x = xhead; x; x = x->next) {
 		switch (x->op) {
 		case ADD_OP:
 			asmbl_add_op(x);

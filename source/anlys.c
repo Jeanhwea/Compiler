@@ -24,7 +24,8 @@ static void anlys_pgm(pgm_node_t *node)
 
 static void anlys_const_decf(const_dec_node_t *node)
 {
-	for (const_dec_node_t *t = node; t; t = t->next) {
+	const_dec_node_t *t;
+	for (t = node; t; t = t->next) {
 		nevernil(t->cdp);
 		nevernil(t->cdp->idp);
 		ident_node_t *idp = t->cdp->idp;
@@ -41,8 +42,10 @@ static void anlys_const_decf(const_dec_node_t *node)
 
 static void anlys_var_decf(var_dec_node_t *node)
 {
-	for (var_dec_node_t *t = node; t; t = t->next) {
-		for (var_def_node_t *p = t->vdp; p; p = p->next) {
+	var_dec_node_t *t;
+	var_def_node_t *p;
+	for (t = node; t; t = t->next) {
+		for (p = t->vdp; p; p = p->next) {
 			nevernil(p->idp);
 			ident_node_t *idp = p->idp;
 			syment_t *e = symget(idp->name);
@@ -60,7 +63,8 @@ static void anlys_var_decf(var_dec_node_t *node)
 
 static void anlys_pf_dec_list(pf_dec_list_node_t *node)
 {
-	for (pf_dec_list_node_t *t = node; t; t = t->next) {
+	pf_dec_list_node_t *t;
+	for (t = node; t; t = t->next) {
 		switch (t->type) {
 		case PROC_PFDEC:
 			anlys_proc_decf(t->pdp);
@@ -76,7 +80,8 @@ static void anlys_pf_dec_list(pf_dec_list_node_t *node)
 
 static void anlys_proc_decf(proc_dec_node_t *node)
 {
-	for (proc_dec_node_t *t = node; t; t = t->next) {
+	proc_dec_node_t *t;
+	for (t = node; t; t = t->next) {
 		nevernil(t->pdp);
 		nevernil(t->pdp->php);
 		anlys_proc_head(t->pdp->php);
@@ -116,7 +121,8 @@ static void anlys_proc_head(proc_head_node_t *node)
 
 static void anlys_fun_decf(fun_dec_node_t *node)
 {
-	for (fun_dec_node_t *t = node; t; t = t->next) {
+	fun_dec_node_t *t;
+	for (t = node; t; t = t->next) {
 		nevernil(t->fdp);
 		nevernil(t->fdp->fhp);
 		anlys_fun_head(t->fdp->fhp);
@@ -156,8 +162,10 @@ static void anlys_fun_head(fun_head_node_t *node)
 
 static void anlys_para_list(syment_t *sign, para_list_node_t *node)
 {
-	for (para_list_node_t *t = node; t; t = t->next) {
-		for (para_def_node_t *p = t->pdp; p; p = p->next) {
+	para_list_node_t *t;
+	para_def_node_t *p;
+	for (t = node; t; t = t->next) {
+		for (p = t->pdp; p; p = p->next) {
 			nevernil(p->idp);
 			ident_node_t *idp = p->idp;
 			syment_t *e = symget(idp->name);
@@ -187,7 +195,8 @@ static void anlys_para_list(syment_t *sign, para_list_node_t *node)
 
 static void anlys_comp_stmt(comp_stmt_node_t *node)
 {
-	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
+	comp_stmt_node_t *t;
+	for (t = node; t != NULL; t = t->next) {
 		nevernil(t->sp);
 		anlys_stmt(t->sp);
 	}
@@ -311,7 +320,8 @@ static void anlys_pcall_stmt(pcall_stmt_node_t *node)
 
 static void anlys_read_stmt(read_stmt_node_t *node)
 {
-	for (read_stmt_node_t *t = node; t; t = t->next) {
+	read_stmt_node_t *t;
+	for (t = node; t; t = t->next) {
 		nevernil(t->idp);
 		ident_node_t *idp = t->idp;
 		syment_t *e = symfind(idp->name);
@@ -341,7 +351,8 @@ static void anlys_write_stmt(write_stmt_node_t *node)
 static void anlys_expr(expr_node_t *node)
 {
 	node->stab = scope_top();
-	for (expr_node_t *t = node; t; t = t->next) {
+	expr_node_t *t;
+	for (t = node; t; t = t->next) {
 		nevernil(t->tp);
 		anlys_term(t->tp);
 	}
@@ -350,7 +361,8 @@ static void anlys_expr(expr_node_t *node)
 static void anlys_term(term_node_t *node)
 {
 	node->stab = scope_top();
-	for (term_node_t *t = node; t; t = t->next) {
+	term_node_t *t;
+	for (t = node; t; t = t->next) {
 		nevernil(t->fp);
 		anlys_factor(t->fp);
 	}
@@ -450,7 +462,8 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 	int pos = 0;
 	for (; t && p; t = t->next, p = p->next) {
 		pos++;
-		syment_t *e = p->symbol;
+		syment_t *e, *a;
+		e = p->symbol;
 		switch (e->cate) {
 		case BYVAL_OBJ:
 			nevernil(t->ep);
@@ -482,7 +495,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			       sign->lineno, sign->name, pos);
 			continue;
 		refok:
-			syment_t *a = symfind(idp->name);
+			a = symfind(idp->name);
 			if (!a) {
 				giveup(BADSYM, "L%d: symbol %s not found.",
 				       idp->line, idp->name);

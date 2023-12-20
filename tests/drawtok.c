@@ -9,7 +9,8 @@ int main(int argc, char *argv[])
 
 	token_t tok;
 	while ((tok = gettok()) != ENDFILE) {
-		for (int i = 0; i < 80; ++i) {
+		int i;
+		for (i = 0; i < 80; ++i) {
 			msg("-");
 		}
 		msg("\n");
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
 		int toksize = strlen(tokbuf);
 		int start = colmno - toksize;
 		msg("     ");
-		for (int i = 0; i < bufsize; ++i) {
+		for (i = 0; i < bufsize; ++i) {
 			if (i < start) {
 				msg(" ");
 			} else if (i < start + toksize) {
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
 		msg("\n");
 
 		msg("     ");
-		for (int i = 0; i < start + toksize; ++i) {
+		for (i = 0; i < start + toksize; ++i) {
 			msg(" ");
 		}
 		msg("`--(%d)-- ", ++counter);

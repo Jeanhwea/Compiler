@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
 	analysis();
 	genir();
 
-	for (inst_t *x = xhead; x; x = x->next) {
+	inst_t *x;
+	for (x = xhead; x; x = x->next) {
 		fmtinst(x);
 	}
 	return 0;

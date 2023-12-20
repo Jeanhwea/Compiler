@@ -58,8 +58,8 @@ static inline int hash(char *key)
 		panic("BAD_HASH_KEY");
 	}
 
-	int h = 0;
-	for (int i = 0; key[i] != '\0'; i++) {
+	int h, i;
+	for (i = h = 0; key[i] != '\0'; i++) {
 		h = ((h << HASHSHIFT) + key[i]) % HASHSIZE;
 	}
 
@@ -68,8 +68,9 @@ static inline int hash(char *key)
 
 static syment_t *getsym(symtab_t *stab, char *name)
 {
-	syment_t *hair = &stab->buckets[hash(name) % MAXBUCKETS];
-	for (syment_t *e = hair->next; e; e = e->next) {
+	syment_t *hair, *e;
+	hair = &stab->buckets[hash(name) % MAXBUCKETS];
+	for (e = hair->next; e; e = e->next) {
 		if (!strcmp(e->name, name)) {
 			return e;
 		}
@@ -87,7 +88,8 @@ static void putsym(symtab_t *stab, syment_t *e)
 static void dumptab(symtab_t *stab)
 {
 	char indent[128] = "\0";
-	for (int i = 0; i < stab->depth; ++i) {
+	int i;
+	for (i = 0; i < stab->depth; ++i) {
 		strcat(indent, "  ");
 	}
 
@@ -96,9 +98,10 @@ static void dumptab(symtab_t *stab)
 	    t->nspace);
 
 	strcat(indent, "  ");
-	for (int i = 0; i < MAXBUCKETS; ++i) {
-		syment_t *hair = &stab->buckets[i];
-		for (syment_t *e = hair->next; e; e = e->next) {
+	for (i = 0; i < MAXBUCKETS; ++i) {
+		syment_t *hair, *e;
+		hair = &stab->buckets[i];
+		for (e = hair->next; e; e = e->next) {
 			msg("%sname=%s, value=%d, label=%s, obj=%d, type=%d\n",
 			    indent, e->name, e->initval, e->label, e->cate,
 			    e->type);
@@ -115,8 +118,10 @@ syment_t *symget(char *name)
 syment_t *symfind(char *name)
 {
 	nevernil(top);
-	syment_t *e = NULL;
-	for (symtab_t *t = top; t; t = t->outer) {
+	syment_t *e;
+	symtab_t *t;
+	e = NULL;
+	for (t = top; t; t = t->outer) {
 		if ((e = getsym(t, name)) != NULL) {
 			return e;
 		}
@@ -134,7 +139,8 @@ void symadd(syment_t *entry)
 void symdump()
 {
 	msg("DUMP SYMBOL TABLE:\n");
-	for (symtab_t *t = top; t; t = t->outer) {
+	symtab_t *t;
+	for (t = top; t; t = t->outer) {
 		dumptab(t);
 	}
 	msg("\n");

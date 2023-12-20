@@ -42,7 +42,8 @@ void visit(node_t *node)
 
 	nodes[node->id] = node;
 	label[node->id] = dupstr(buf);
-	for (int i = 0; i < node->total; ++i) {
+	int i;
+	for (i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
 		beg[nedges] = node->id;
 		end[nedges] = child->id;
@@ -50,7 +51,7 @@ void visit(node_t *node)
 		++nedges;
 	}
 
-	for (int i = 0; i < node->total; ++i) {
+	for (i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
 		visit(child);
 	}
@@ -63,7 +64,8 @@ void writedot()
 	fprintf(fd, "digraph viz {\n");
 	char *indent = "  ";
 	// fprintf(fd, "%srankdir=LR;\n", indent);
-	for (int i = 0; i < MAXNODES; ++i) {
+	int i;
+	for (i = 0; i < MAXNODES; ++i) {
 		if (!nodes[i]) {
 			continue;
 		}
@@ -77,7 +79,7 @@ void writedot()
 		fprintf(fd, "%sn%03d[label=\"%d #%d %s\", shape=\"%s\"];\n",
 			indent, n->id, n->id, n->nid, label[i], shape);
 	}
-	for (int i = 0; i < nedges; ++i) {
+	for (i = 0; i < nedges; ++i) {
 		fprintf(fd, "%sn%03d -> n%03d[label=\"%s\"];\n", indent, beg[i],
 			end[i], ref[i]);
 	}

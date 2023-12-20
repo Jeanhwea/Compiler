@@ -21,7 +21,8 @@ static void gen_pgm(pgm_node_t *node)
 
 static void gen_pf_dec_list(pf_dec_list_node_t *node)
 {
-	for (pf_dec_list_node_t *t = node; t; t = t->next) {
+	pf_dec_list_node_t *t;
+	for (t = node; t; t = t->next) {
 		switch (t->type) {
 		case PROC_PFDEC:
 			gen_proc_decf(t->pdp);
@@ -37,7 +38,8 @@ static void gen_pf_dec_list(pf_dec_list_node_t *node)
 
 static void gen_proc_decf(proc_dec_node_t *node)
 {
-	for (proc_dec_node_t *t = node; t; t = t->next) {
+	proc_dec_node_t *t;
+	for (t = node; t; t = t->next) {
 		block_node_t *b = t->pdp->bp;
 		gen_pf_dec_list(b->pfdlp);
 
@@ -49,7 +51,8 @@ static void gen_proc_decf(proc_dec_node_t *node)
 
 static void gen_fun_decf(fun_dec_node_t *node)
 {
-	for (fun_dec_node_t *t = node; t; t = t->next) {
+	fun_dec_node_t *t;
+	for (t = node; t; t = t->next) {
 		block_node_t *b = t->fdp->bp;
 
 		gen_pf_dec_list(b->pfdlp);
@@ -61,7 +64,8 @@ static void gen_fun_decf(fun_dec_node_t *node)
 
 static void gen_comp_stmt(comp_stmt_node_t *node)
 {
-	for (comp_stmt_node_t *t = node; t != NULL; t = t->next) {
+	comp_stmt_node_t *t;
+	for (t = node; t != NULL; t = t->next) {
 		gen_stmt(t->sp);
 	}
 }
@@ -196,8 +200,9 @@ static void gen_pcall_stmt(pcall_stmt_node_t *node)
 
 static void gen_read_stmt(read_stmt_node_t *node)
 {
+	read_stmt_node_t *t;
 	syment_t *d = NULL;
-	for (read_stmt_node_t *t = node; t; t = t->next) {
+	for (t = node; t; t = t->next) {
 		d = t->idp->symbol;
 		switch (d->type) {
 		case CHAR_TYPE:
@@ -255,9 +260,10 @@ static void gen_write_stmt(write_stmt_node_t *node)
 
 static syment_t *gen_expr(expr_node_t *node)
 {
+	expr_node_t *t;
 	syment_t *d, *r, *e;
 	d = r = e = NULL;
-	for (expr_node_t *t = node; t; t = t->next) {
+	for (t = node; t; t = t->next) {
 		r = gen_term(t->tp);
 		if (!d) {
 			switch (t->op) {
@@ -296,9 +302,10 @@ static syment_t *gen_expr(expr_node_t *node)
 
 static syment_t *gen_term(term_node_t *node)
 {
+	term_node_t *t;
 	syment_t *d, *r, *e;
 	d = r = e = NULL;
-	for (term_node_t *t = node; t; t = t->next) {
+	for (t = node; t; t = t->next) {
 		r = gen_factor(t->fp);
 		if (!d) {
 			if (t->op != NOP_MULTOP) {
@@ -395,9 +402,10 @@ static void gen_cond(cond_node_t *node, syment_t *dest)
 
 static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 {
+	arg_list_node_t *t;
 	syment_t *d, *r;
 	d = r = NULL;
-	for (arg_list_node_t *t = node; t; t = t->next) {
+	for (t = node; t; t = t->next) {
 		switch (t->refsym->cate) {
 		case BYVAL_OBJ:
 			d = gen_expr(t->ep);
