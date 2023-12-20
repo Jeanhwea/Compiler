@@ -497,6 +497,13 @@ static assign_stmt_node_t *parse_assign_stmt(void)
 		match(SS_ASGN);
 		t->rep = parse_expr();
 		break;
+	case SS_EQU: // bad case
+		t->type = NORM_ASSGIN;
+		t->idp = parse_ident(READPREV);
+		match(SS_EQU);
+		t->lep = NULL;
+		t->rep = parse_expr();
+		break;
 	default:
 		unlikely();
 	}

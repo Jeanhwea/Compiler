@@ -16,7 +16,9 @@
 #define rescue(err, fmt, args...)                                              \
 	do {                                                                   \
 		errnum = err;                                                  \
+		printf("ERROR: ");                                             \
 		printf(fmt, ##args);                                           \
+		printf("\n");                                                  \
 	} while (0)
 
 #define giveup(err, fmt, args...)                                              \
@@ -30,6 +32,7 @@
 	do {                                                                   \
 		if (errnum > 0) {                                              \
 			printf(fmt);                                           \
+			printf("\n");                                          \
 			exit(errnum);                                          \
 		}                                                              \
 	} while (0)
