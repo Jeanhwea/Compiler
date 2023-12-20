@@ -167,7 +167,7 @@ void x86_iolib_exit()
 
 void x86_iolib_wrtchr()
 {
-	adddata2("_chrbuf", "x");
+	adddata2("_chrbuf", "?");
 
 	addlabel(LIBWCHR);
 	addcode3("mov", "[_chrbuf]", "eax");
@@ -239,10 +239,32 @@ void x86_iolib_wrtint()
 	addcode1("ret");
 }
 
+void x86_iolib_readchr()
+{
+	adddata2("_scanbuf", "????????????????");
+
+	addlabel(LIBRCHR);
+	addlabel("_readchr");
+	addcode3("mov", "eax", "3"); // syscall number, NR
+	addcode3("mov", "ebx", "0"); // fd: 0=stdin
+	addcode3("mov", "ecx", "_scanbuf"); // ptr to scan buffer
+	addcode3("mov", "edx", "1"); // buffer size
+	addcode2("int", "0x80");
+	addcode3("mov", "eax", "[_scanbuf]"); // save result to eax
+	addcode1("ret");
+}
+
+void x86_iolib_readint()
+{
+	addlabel(LIBRINT);
+}
+
 void x86_init()
 {
 	addcode2("global", "_start");
 
+	x86_iolib_readchr();
+	x86_iolib_readint();
 	x86_iolib_wrtchr();
 	x86_iolib_wrtstr();
 	x86_iolib_wrtint();
