@@ -451,10 +451,13 @@ void x86_enter(syment_t *e)
 
 void x86_leave(syment_t *e)
 {
-	if (!strcmp(x->d->name, MAINFUNC)) {
+	if (!strcmp(e->name, MAINFUNC)) {
 		x86_syscall(LIBEXIT, NULL);
-		return
+		return;
 	}
+	addcode3("mov", REG_SP, REG_BP);
+	addcode2("pop", REG_BP);
+	x86_ret();
 }
 
 void x86_call(syment_t *func)
