@@ -25,8 +25,9 @@ static void match(token_t expected)
 {
 	// check if token matched
 	if (currtok != expected) {
-		msg("unexpected token: [%s] at line %d\n", tokbuf, lineno);
-		panic("UNEXPECTED_TOKEN");
+		char buf[1024];
+		sprintf(buf, "UNEXPECTED_TOKEN: LINE%d [%s]", lineno, tokbuf);
+		panic(buf);
 	}
 
 	// store previous token
