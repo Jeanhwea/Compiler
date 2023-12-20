@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
 	analysis();
 
 	// generate IR
-	generate();
+	genir();
 
 	// generate target code
-	assemble();
+	genasm();
 
 	// post works
 	post_nasm();

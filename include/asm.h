@@ -7,6 +7,5 @@
 #define LIBWSTR "_libwrtstr"
 #define LIBWINT "_libwrtint"
 
-void assemble();
-
+void genasm();
 #endif /* End of _ASM_H_ */

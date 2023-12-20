@@ -1,3 +1,4 @@
+#include "common.h"
 #include "debug.h"
 #include "global.h"
 #include "symtab.h"
@@ -388,7 +389,7 @@ void asmbl_lab_op(inst_t *x)
 {
 }
 
-void assemble()
+void genasm()
 {
 	x86_init();
 	for (inst_t *x = xhead; x; x = x->next) {
@@ -488,6 +489,6 @@ void assemble()
 		}
 	}
 	chkerr("assemble fail and exit.");
-	phase = SUCCESS;
+	phase = ASSEMBLE;
 	progdump();
 }

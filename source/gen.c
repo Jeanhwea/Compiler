@@ -423,7 +423,7 @@ static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
 	}
 }
 
-void generate()
+void genir()
 {
 	gen_pgm(ast);
 	chkerr("generate fail and exit.");
