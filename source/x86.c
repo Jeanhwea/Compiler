@@ -457,7 +457,7 @@ void x86_jnl(syment_t *lab)
 	addcode2("jnl", lab->label);
 }
 
-void x86_sret(syment_t *reg)
+void x86_sret(reg_t *reg)
 {
 	char retref[16];
 	sprintf(retref, "[%s-%d]", REG_BP, ALIGN);
