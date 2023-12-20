@@ -259,6 +259,7 @@ void x86_iolib_readchr()
 void x86_iolib_readint()
 {
 	addlabel(LIBRINT);
+	addcode1("ret");
 }
 
 void x86_init()
