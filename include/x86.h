@@ -19,6 +19,7 @@ typedef struct _reg_struct {
 #define REG_RD "edx"
 #define PTR_BI "[ebi]"
 #define PTR_SI "[esi]"
+#define BTP_SI "byte[esi]"
 #define SYSCAL "0x80"
 
 // General register operations
