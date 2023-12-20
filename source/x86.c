@@ -162,7 +162,7 @@ void x86_iolib_exit()
 	addlabel(LIBEXIT);
 	addcode3("mov", "eax", "1"); // syscall number
 	addcode3("xor", "ebx", "ebx"); // return value
-	addcode2("int", "0x80");
+	addcode2("int", SYSCALL);
 }
 
 void x86_iolib_wrtchr()
@@ -175,7 +175,7 @@ void x86_iolib_wrtchr()
 	addcode3("mov", "ebx", "1");
 	addcode3("mov", "ecx", "_chrbuf");
 	addcode3("mov", "edx", "1");
-	addcode2("int", "0x80");
+	addcode2("int", SYSCALL);
 	addcode1("ret");
 }
 
@@ -196,7 +196,7 @@ void x86_iolib_wrtstr()
 	addcode3("mov", "eax", "4");
 	addcode3("mov", "ebx", "1");
 	addcode3("mov", "edx", "esi");
-	addcode2("int", "0x80");
+	addcode2("int", SYSCALL);
 	addcode1("ret");
 }
 
@@ -235,7 +235,7 @@ void x86_iolib_wrtint()
 	addcode3("mov", "eax", "4"); // syscall number, NR
 	addcode3("mov", "ebx", "1"); // fd: 1=stdout
 	addcode3("mov", "ecx", "esi"); // ptr to string buffer
-	addcode2("int", "0x80");
+	addcode2("int", SYSCALL);
 	addcode1("ret");
 }
 
@@ -249,7 +249,7 @@ void x86_iolib_readchr()
 	addcode3("mov", "ebx", "0"); // fd: 0=stdin
 	addcode3("mov", "ecx", "_scanbuf"); // ptr to scan buffer
 	addcode3("mov", "edx", "1"); // buffer size
-	addcode2("int", "0x80");
+	addcode2("int", SYSCALL);
 	addcode3("mov", "eax", "[_scanbuf]"); // save result to eax
 	addcode1("ret");
 }

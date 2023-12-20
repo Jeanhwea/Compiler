@@ -6,6 +6,7 @@ compile_commands.json
 *.s
 *.o
 *.run
+*.swp
 
 # gdb
 .gdb_*

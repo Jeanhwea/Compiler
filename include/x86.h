@@ -12,6 +12,7 @@ typedef struct _reg_struct {
 #define EBPREG "ebp"
 #define ESPREG "esp"
 #define IDXREG "ebi"
+#define SYSCALL "0x80"
 
 // General register operations
 reg_t *allocreg();
