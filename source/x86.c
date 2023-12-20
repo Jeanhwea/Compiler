@@ -330,6 +330,7 @@ void x86_iolib_readint()
 	addcode2("jl", "_nondigit");
 	addcode3("cmp", REG_RC, "'9'");
 	addcode2("jg", "_nondigit");
+	addcode3("sub", REG_RC, "'0'");
 	addcode3("imul", REG_RA, "10");
 	addcode3("add", REG_RA, REG_RC);
 	addcode2("inc", REG_SI);
