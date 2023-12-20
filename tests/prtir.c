@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	genir();
 
 	int i;
-	for (i = 1; i < symcnt; ++i) {
+	for (i = 1; i <= symcnt; ++i) {
 		syment_t *e = syments[i];
 		dumpent(e);
 	}
