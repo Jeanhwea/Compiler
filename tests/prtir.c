@@ -57,12 +57,14 @@ int main(int argc, char *argv[])
 	analysis();
 	genir();
 
+	msg("\n");
 	int i;
 	for (i = 1; i <= symcnt; ++i) {
 		syment_t *e = syments[i];
 		dumpent(e);
 	}
 
+	msg("\n");
 	inst_t *x;
 	for (x = xhead; x; x = x->next) {
 		fmtinst(x);
