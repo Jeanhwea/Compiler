@@ -206,10 +206,21 @@ syment_t *syminit(ident_node_t *idp)
 
 	sprintf(e->label, "L%03d", e->sid);
 	e->off = top->varoff;
-	if (e->cate == ARRAY_OBJ) {
-		top->varoff += e->arrlen;
-	} else {
+	switch (e->cate) {
+	case NOP_OBJ:
+	case CONST_OBJ:
+	case VAR_OBJ:
+	case PROC_OBJ:
+	case FUN_OBJ:
+	case BYVAL_OBJ:
+	case BYREF_OBJ:
 		top->varoff += 1;
+		break;
+	case ARRAY_OBJ:
+		top->varoff += e->arrlen;
+		break;
+	default:
+		unlikely();
 	}
 
 	symadd(e);
@@ -228,10 +239,18 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 
 	sprintf(e->label, "T%03d", e->sid);
 	e->off = stab->varoff;
-	if (e->cate == ARRAY_OBJ) {
-		stab->varoff += e->arrlen;
-	} else {
+	switch (e->cate) {
+	case TMP_OBJ:
+	case FUN_OBJ:
 		stab->varoff += 1;
+		break;
+	case LABEL_OBJ:
+	case NUM_OBJ:
+	case STR_OBJ:
+		// label never use bytes
+		break;
+	default:
+		unlikely();
 	}
 
 	e->stab = stab;

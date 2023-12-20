@@ -157,19 +157,17 @@ void progdump()
 	fclose(target);
 }
 
-void x86_frame_enter()
+void x86_lib_enter()
 {
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 	addcode2("push", REG_SI);
 	addcode2("push", REG_DI);
 	addcode2("push", REG_RB);
-	// addcode1("pusha");
 }
 
-void x86_frame_return()
+void x86_lib_leave()
 {
-	// addcode1("popa");
 	addcode2("pop", REG_RB);
 	addcode2("pop", REG_DI);
 	addcode2("pop", REG_SI);
@@ -191,7 +189,7 @@ void x86_iolib_wrtchr()
 	adddata2("_chrbuf", "?");
 
 	addlabel(LIBWCHR);
-	x86_frame_enter();
+	x86_lib_enter();
 
 	addcode3("mov", "[_chrbuf]", REG_RA);
 	addcode3("mov", REG_RA, "4");
@@ -200,13 +198,13 @@ void x86_iolib_wrtchr()
 	addcode3("mov", REG_RD, "1");
 	addcode2("int", SYSCAL);
 
-	x86_frame_return();
+	x86_lib_leave();
 }
 
 void x86_iolib_wrtstr()
 {
 	addlabel(LIBWSTR);
-	x86_frame_enter();
+	x86_lib_enter();
 
 	addcode3("mov", REG_SI, REG_RA);
 	addcode3("xor", REG_RC, REG_RC);
@@ -225,7 +223,7 @@ void x86_iolib_wrtstr()
 	addcode2("int", SYSCAL);
 	addcode1("ret");
 
-	x86_frame_return();
+	x86_lib_leave();
 }
 
 void x86_iolib_wrtint()
@@ -233,7 +231,7 @@ void x86_iolib_wrtint()
 	adddata2("_intbuf", "????????????????");
 
 	addlabel(LIBWINT);
-	x86_frame_enter();
+	x86_lib_enter();
 
 	addcode3("xor", REG_SI, REG_SI); // negtive flag
 	addcode3("cmp", REG_RA, "0");
@@ -267,7 +265,7 @@ void x86_iolib_wrtint()
 	addcode3("mov", REG_RC, REG_SI); // ptr to string buffer
 	addcode2("int", SYSCAL);
 
-	x86_frame_return();
+	x86_lib_leave();
 }
 
 void x86_iolib_readchr()
@@ -275,7 +273,7 @@ void x86_iolib_readchr()
 	adddata2("_scanbuf", "????????????????");
 
 	addlabel(LIBRCHR);
-	x86_frame_enter();
+	x86_lib_enter();
 
 	addlabel("_readchar");
 	addcode3("mov", REG_RA, "3"); // syscall number, NR
@@ -288,15 +286,15 @@ void x86_iolib_readchr()
 	addcode3("cmp", "al", "10"); // if ra == 'nl'(10), retry
 	addcode2("jz", "_readchar");
 
-	x86_frame_return();
+	x86_lib_leave();
 }
 
 void x86_iolib_readint()
 {
 	addlabel(LIBRINT);
-	x86_frame_enter();
+	x86_lib_enter();
 
-	x86_frame_return();
+	x86_lib_leave();
 }
 
 void x86_init()
@@ -320,7 +318,9 @@ void x86_enter(syment_t *e)
 		addlabel(e->name);
 	}
 	int off = ALIGN * (e->stab->varoff + e->stab->tmpoff);
-	addcode3("sub", REG_SP, tostr(off));
+	char buf[32];
+	sprintf(buf, "reserve %d bytes", off);
+	addcode4("sub", REG_SP, tostr(off), buf);
 }
 
 void x86_mov(reg_t *reg, syment_t *var)
