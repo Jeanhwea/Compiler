@@ -1,11 +1,11 @@
-var i: integer; nl : char;
+var i: integer; newline : char;
 begin
-   nl := 10;
+   newline := 10;
 
    for i := 1 to 3 do
    begin
       write(i);
-      write(nl)
+      write(newline)
    end
 
 end.
