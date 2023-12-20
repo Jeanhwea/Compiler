@@ -163,10 +163,12 @@ void x86_frame_enter()
 	addcode3("mov", REG_BP, REG_SP);
 	addcode2("push", REG_SI);
 	addcode2("push", REG_DI);
+	addcode1("pusha");
 }
 
 void x86_frame_return()
 {
+	addcode1("popa");
 	addcode2("pop", REG_DI);
 	addcode2("pop", REG_SI);
 	addcode3("mov", REG_SP, REG_BP);
@@ -273,6 +275,7 @@ void x86_iolib_readchr()
 	addlabel(LIBRCHR);
 	x86_frame_enter();
 
+	addlabel("_readchar");
 	addcode3("mov", REG_RA, "3"); // syscall number, NR
 	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
@@ -281,7 +284,7 @@ void x86_iolib_readchr()
 	addcode3("xor", REG_RA, REG_RA); // save result to eax
 	addcode3("mov", "al", "[_scanbuf]");
 	addcode3("cmp", "al", "10"); // if ra == 'nl'(10), retry
-	addcode2("jz", LIBRCHR);
+	addcode2("jz", "_readchar");
 
 	x86_frame_return();
 }
