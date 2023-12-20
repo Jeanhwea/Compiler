@@ -342,6 +342,10 @@ void asmbl_call_op(inst_t *x)
 
 void asmbl_sret_op(inst_t *x)
 {
+	reg_t *r = allocreg();
+	loadvar(r, x->d);
+	x86_sret(r);
+	freereg(r);
 }
 
 void asmbl_ent_op(inst_t *x)
@@ -395,6 +399,7 @@ void asmbl_wrc_op(inst_t *x)
 
 void asmbl_lab_op(inst_t *x)
 {
+	x86_label(x->d);
 }
 
 void genasm()
