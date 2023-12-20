@@ -1,17 +1,10 @@
-var ch: char;
+var ch: char; i : integer;
 begin
-   read(ch);
-   write(ch);
-   ch := 10;
-   write(ch);
-
-   read(ch);
-   write(ch);
-   ch := 10;
-   write(ch);
-
-   read(ch);
-   write(ch);
-   ch := 10;
-   write(ch)
+   for i := 1 to 2 do
+   begin
+      read(ch);
+      write(ch);
+      ch := 10;
+      write(ch)
+   end
 end.
