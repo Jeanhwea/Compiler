@@ -70,6 +70,8 @@ reg_t *x86_div(reg_t *r1, reg_t *eax, reg_t *edx);
 void x86_neg(reg_t *r1);
 void x86_inc(reg_t *r1);
 void x86_dec(reg_t *r1);
+void x86_xor(reg_t *r1, reg_t *r2);
+void x86_cls(reg_t *r1);
 void x86_pop(reg_t *reg);
 void x86_push(reg_t *reg);
 void x86_push2(syment_t *var);

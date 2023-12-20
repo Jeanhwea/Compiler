@@ -380,6 +380,16 @@ void x86_dec(reg_t *r1)
 	addcode2("dec", r1->name);
 }
 
+void x86_xor(reg_t *r1, reg_t *r2)
+{
+	addcode3("xor", r1->name, r2->name);
+}
+
+void x86_cls(reg_t *r1)
+{
+	addcode3("xor", r1->name, r1->name);
+}
+
 void x86_pop(reg_t *reg)
 {
 	addcode2("pop", reg->name);

@@ -392,6 +392,7 @@ void asmbl_wri_op(inst_t *x)
 void asmbl_wrc_op(inst_t *x)
 {
 	reg_t *ra = lockreg(REG_RA);
+	x86_cls(ra);
 	loadvar(ra, x->d);
 	x86_syscall(LIBWCHR, ra);
 	freereg(ra);
