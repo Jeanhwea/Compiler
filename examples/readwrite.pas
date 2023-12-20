@@ -1,4 +1,4 @@
-const ch = 'x';
+var ch:char;
 begin
    read(ch);
    write(ch)

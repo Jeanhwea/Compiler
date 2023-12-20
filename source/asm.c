@@ -129,17 +129,17 @@ void asmbl_mul_op(inst_t *x)
 void asmbl_div_op(inst_t *x)
 {
 	// idiv use specific registers
-	reg_t *eax = lockreg("eax");
-	reg_t *edx = lockreg("edx");
+	reg_t *ra = lockreg(REG_RA);
+	reg_t *rd = lockreg(REG_RD);
 	reg_t *r = allocreg();
 
-	loadvar(eax, x->r);
+	loadvar(ra, x->r);
 	loadvar(r, x->s);
-	eax = x86_div(r, eax, edx);
-	savevar(x->d, eax);
+	ra = x86_div(r, ra, rd);
+	savevar(x->d, ra);
 
-	freereg(eax);
-	freereg(edx);
+	freereg(ra);
+	freereg(rd);
 	freereg(r);
 }
 
@@ -362,31 +362,35 @@ void asmbl_rdi_op(inst_t *x)
 
 void asmbl_rdc_op(inst_t *x)
 {
+	reg_t *ra = lockreg(REG_RA);
+	x86_syscall(LIBRCHR, ra);
+	savevar(x->d, ra);
+	freereg(ra);
 }
 
 void asmbl_wrs_op(inst_t *x)
 {
 	x86_alloc_string(x->d->label, x->d->str);
-	reg_t *eax = lockreg("eax");
-	x86_mov7(eax, x->d->label);
-	x86_syscall(LIBWSTR, eax);
-	freereg(eax);
+	reg_t *ra = lockreg(REG_RA);
+	x86_mov7(ra, x->d->label);
+	x86_syscall(LIBWSTR, ra);
+	freereg(ra);
 }
 
 void asmbl_wri_op(inst_t *x)
 {
-	reg_t *eax = lockreg("eax");
-	loadvar(eax, x->d);
-	x86_syscall(LIBWINT, eax);
-	freereg(eax);
+	reg_t *ra = lockreg(REG_RA);
+	loadvar(ra, x->d);
+	x86_syscall(LIBWINT, ra);
+	freereg(ra);
 }
 
 void asmbl_wrc_op(inst_t *x)
 {
-	reg_t *eax = lockreg("eax");
-	loadvar(eax, x->d);
-	x86_syscall(LIBWCHR, eax);
-	freereg(eax);
+	reg_t *ra = lockreg(REG_RA);
+	loadvar(ra, x->d);
+	x86_syscall(LIBWCHR, ra);
+	freereg(ra);
 }
 
 void asmbl_lab_op(inst_t *x)
