@@ -8,7 +8,7 @@ void post_nasm()
 	sprintf(cmd, "nasm -f elf -o %s %s", PL0C_OBJECT, PL0C_ASSEM);
 	errnum = system(cmd);
 	chkerr("post_nasm fail and exit.");
-	msg("assemble object file %s", PL0C_OBJECT);
+	msg("assemble object file %s\n", PL0C_OBJECT);
 }
 
 void post_link()
@@ -17,5 +17,5 @@ void post_link()
 	sprintf(cmd, "ld -m elf_i386 -o %s %s", PL0C_TARGET, PL0C_OBJECT);
 	errnum = system(cmd);
 	chkerr("post_link fail and exit.");
-	msg("link target file %s", PL0C_TARGET);
+	msg("link target file %s\n", PL0C_TARGET);
 }
