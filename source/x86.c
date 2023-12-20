@@ -157,6 +157,23 @@ void progdump()
 	fclose(target);
 }
 
+void x86_frame_enter()
+{
+	addcode2("push", REG_BP);
+	addcode3("mov", REG_BP, REG_SP);
+	addcode2("push", REG_SI);
+	addcode2("push", REG_DI);
+}
+
+void x86_frame_return()
+{
+	addcode2("pop", REG_DI);
+	addcode2("pop", REG_SI);
+	addcode3("mov", REG_SP, REG_BP);
+	addcode2("pop", REG_BP);
+	addcode1("ret");
+}
+
 void x86_iolib_exit()
 {
 	addlabel(LIBEXIT);
@@ -170,18 +187,23 @@ void x86_iolib_wrtchr()
 	adddata2("_chrbuf", "?");
 
 	addlabel(LIBWCHR);
+	x86_frame_enter();
+
 	addcode3("mov", "[_chrbuf]", REG_RA);
 	addcode3("mov", REG_RA, "4");
 	addcode3("mov", REG_RB, "1");
 	addcode3("mov", REG_RC, "_chrbuf");
 	addcode3("mov", REG_RD, "1");
 	addcode2("int", SYSCAL);
-	addcode1("ret");
+
+	x86_frame_return();
 }
 
 void x86_iolib_wrtstr()
 {
 	addlabel(LIBWSTR);
+	x86_frame_enter();
+
 	addcode3("mov", REG_SI, REG_RA);
 	addcode3("xor", REG_RC, REG_RC);
 	addlabel("_loopnext");
@@ -198,6 +220,8 @@ void x86_iolib_wrtstr()
 	addcode3("mov", REG_RD, REG_SI);
 	addcode2("int", SYSCAL);
 	addcode1("ret");
+
+	x86_frame_return();
 }
 
 void x86_iolib_wrtint()
@@ -205,6 +229,8 @@ void x86_iolib_wrtint()
 	adddata2("_intbuf", "????????????????");
 
 	addlabel(LIBWINT);
+	x86_frame_enter();
+
 	addcode3("xor", REG_SI, REG_SI); // negtive flag
 	addcode3("cmp", REG_RA, "0");
 	addcode2("jnl", "_nonneg");
@@ -236,7 +262,8 @@ void x86_iolib_wrtint()
 	addcode3("mov", REG_RB, "1"); // fd: 1=stdout
 	addcode3("mov", REG_RC, REG_SI); // ptr to string buffer
 	addcode2("int", SYSCAL);
-	addcode1("ret");
+
+	x86_frame_return();
 }
 
 void x86_iolib_readchr()
@@ -244,6 +271,8 @@ void x86_iolib_readchr()
 	adddata2("_scanbuf", "????????????????");
 
 	addlabel(LIBRCHR);
+	x86_frame_enter();
+
 	addcode3("mov", REG_RA, "3"); // syscall number, NR
 	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
@@ -253,13 +282,16 @@ void x86_iolib_readchr()
 	addcode3("mov", "al", "[_scanbuf]");
 	addcode3("cmp", "al", "10"); // if ra == 'nl'(10), retry
 	addcode2("jz", LIBRCHR);
-	addcode1("ret");
+
+	x86_frame_return();
 }
 
 void x86_iolib_readint()
 {
 	addlabel(LIBRINT);
-	addcode1("ret");
+	x86_frame_enter();
+
+	x86_frame_return();
 }
 
 void x86_init()
@@ -273,7 +305,6 @@ void x86_init()
 	x86_iolib_wrtint();
 	x86_iolib_exit();
 }
-
 void x86_enter(syment_t *e)
 {
 	if (!strcmp(e->name, "@main")) {
