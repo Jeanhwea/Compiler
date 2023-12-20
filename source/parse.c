@@ -451,6 +451,10 @@ static stmt_node_t *parse_stmt(void)
 		} else if (CURRTOK_ANY2(SS_ASGN, SS_LBRA)) {
 			t->type = ASSGIN_STMT;
 			t->asp = parse_assign_stmt();
+		} else if (CURRTOK_ANY(SS_EQU)) {
+			t->type = ASSGIN_STMT;
+			t->asp = parse_assign_stmt();
+			rescue(ERRTOK, "L%d: bad token, = may be :=", lineno);
 		} else {
 			unlikely();
 		}

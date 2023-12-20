@@ -1,12 +1,13 @@
 #ifndef _ERROR_H_
 #define _ERROR_H_
 
-#define DUPSYM 100
-#define BADSYM 101
-#define BADCTG 102
-#define ERTYPE 103
-#define BADLEN 104
-#define BADREF 105
+#define ERRTOK 100
+#define DUPSYM 110
+#define BADSYM 111
+#define BADCTG 112
+#define ERTYPE 113
+#define BADLEN 114
+#define BADREF 115
 #define OBJREF 106
 #define EPANIC 996
 #define EABORT 997
