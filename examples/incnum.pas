@@ -1,4 +1,4 @@
-var x : integer
+var x : integer;
 begin
    read(x);
    x := x + 1;
