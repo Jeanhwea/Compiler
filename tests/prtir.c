@@ -71,5 +71,7 @@ int main(int argc, char *argv[])
 	for (x = xhead; x; x = x->next) {
 		fmtinst(x);
 	}
+	msg("\n");
+
 	return 0;
 }
