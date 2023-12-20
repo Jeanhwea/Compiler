@@ -163,12 +163,14 @@ void x86_frame_enter()
 	addcode3("mov", REG_BP, REG_SP);
 	addcode2("push", REG_SI);
 	addcode2("push", REG_DI);
-	addcode1("pusha");
+	addcode2("push", REG_RB);
+	// addcode1("pusha");
 }
 
 void x86_frame_return()
 {
-	addcode1("popa");
+	// addcode1("popa");
+	addcode2("pop", REG_RB);
 	addcode2("pop", REG_DI);
 	addcode2("pop", REG_SI);
 	addcode3("mov", REG_SP, REG_BP);
@@ -317,6 +319,8 @@ void x86_enter(syment_t *e)
 	} else {
 		addlabel(e->name);
 	}
+	int off = ALIGN * (e->stab->varoff + e->stab->tmpoff);
+	addcode3("sub", REG_SP, tostr(off));
 }
 
 void x86_mov(reg_t *reg, syment_t *var)
@@ -442,8 +446,6 @@ void x86_push2(syment_t *var)
 void x86_call(syment_t *func)
 {
 	addcode2("call", func->label);
-	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
-	addcode3("add", REG_SP, tostr(off));
 }
 
 void x86_ret()
