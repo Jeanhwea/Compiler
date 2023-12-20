@@ -4,7 +4,7 @@
 
 // constants
 char PL0C_NAME[32] = "pl0c";
-char PL0C_VERSION[32] = "v0.14.0";
+char PL0C_VERSION[32] = "v0.14.1";
 char PL0C_INPUT[4096] = "input.pas";
 char PL0C_ASSEM[4096] = "input.s";
 char PL0C_OBJECT[4096] = "input.o";
