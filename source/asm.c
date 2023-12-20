@@ -360,6 +360,10 @@ void asmbl_fin_op(inst_t *x)
 
 void asmbl_rdi_op(inst_t *x)
 {
+	reg_t *ra = lockreg(REG_RA);
+	x86_syscall(LIBRINT, ra);
+	savevar(x->d, ra);
+	freereg(ra);
 }
 
 void asmbl_rdc_op(inst_t *x)
