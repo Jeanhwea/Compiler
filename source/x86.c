@@ -251,6 +251,8 @@ void x86_iolib_readchr()
 	addcode3("mov", REG_RD, "1"); // buffer size
 	addcode2("int", SYSCAL);
 	addcode3("mov", REG_RA, "[_scanbuf]"); // save result to eax
+	addcode3("cmp", REG_RA, "10"); // if ra == 'nl', retry
+	addcode2("jz", "_readchr"); // if ra == 'nl', retry
 	addcode1("ret");
 }
 
