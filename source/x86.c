@@ -244,15 +244,15 @@ void x86_iolib_readchr()
 	adddata2("_scanbuf", "????????????????");
 
 	addlabel(LIBRCHR);
-	addlabel("_readchr");
 	addcode3("mov", REG_RA, "3"); // syscall number, NR
 	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
 	addcode3("mov", REG_RD, "1"); // buffer size
 	addcode2("int", SYSCAL);
-	addcode3("mov", REG_RA, "[_scanbuf]"); // save result to eax
-	addcode3("cmp", REG_RA, "10"); // if ra == 'nl', retry
-	addcode2("jz", "_readchr"); // if ra == 'nl', retry
+	addcode3("xor", REG_RA, REG_RA); // save result to eax
+	addcode3("mov", "al", "[_scanbuf]");
+	addcode3("cmp", "al", "10"); // if ra == 'nl'(10), retry
+	addcode2("jz", LIBRCHR);
 	addcode1("ret");
 }
 
