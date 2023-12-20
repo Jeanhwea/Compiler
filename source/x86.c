@@ -295,8 +295,42 @@ void x86_iolib_readchr()
 
 void x86_iolib_readint()
 {
+	adddata2("_scanint", "????????????????");
+
 	addlabel(LIBRINT);
 	x86_lib_enter();
+
+	addcode3("xor", "eax", "eax");
+	addcode3("xor", "ecx", "ecx");
+	addcode3("mov", "ebx", "1");
+	addcode3("mov", "esi", "_scanint");
+	addlabel("_begchar");
+	addcode3("mov", "cl", "[esi]");
+	addcode3("cmp", "ecx", "'-'");
+	addcode2("jz", "_negnum");
+	addcode3("cmp", "ecx", "'0'");
+	addcode2("jl", "_skipchar");
+	addcode3("cmp", "ecx", "'9'");
+	addcode2("jg", "_skipchar");
+	addcode2("jmp", "_loopchar");
+	addlabel("_skipchar");
+	addcode2("inc", "esi");
+	addcode2("jmp", "_begchar");
+	addlabel("_negnum");
+	addcode3("mov", "ebx", "-1");
+	addcode2("inc", "esi");
+	addlabel("_loopchar");
+	addcode3("mov", "cl", "[esi]");
+	addcode3("cmp", "ecx", "'0'");
+	addcode2("jl", "_nondigit");
+	addcode3("cmp", "ecx", "'9'");
+	addcode2("jg", "_nondigit");
+	addcode3("imul", "eax", "10");
+	addcode3("add", "eax", "ecx");
+	addcode2("inc", "esi");
+	addcode2("jmp", "_loopchar");
+	addlabel("_nondigit");
+	addcode3("imul", "eax", "ebx");
 
 	x86_lib_leave();
 }
