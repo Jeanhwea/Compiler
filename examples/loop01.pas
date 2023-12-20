@@ -1,9 +1,9 @@
-const ch = 'x';
-var i: integer; nl: char;
+var i, sum: integer;
 begin
-   nl := ch;
+   sum := 0;
 
-   for i := 1 to 5 do
-      write(nl);
+   for i := 1 to 100 do
+      sum := sum + i;
 
+   write(sum)
 end.
