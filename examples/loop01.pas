@@ -4,9 +4,9 @@ begin
    nl := ch;
 
    for i := 1 to 5 do
+      write(nl)
    begin
       {write(i);}
-      write(nl)
    end
 
 end.
