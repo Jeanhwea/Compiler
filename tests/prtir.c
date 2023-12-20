@@ -56,15 +56,17 @@ int main(int argc, char *argv[])
 	parse();
 	analysis();
 	genir();
-
 	msg("\n");
+
+	msg("dump symbols:\n");
 	int i;
 	for (i = 1; i <= symcnt; ++i) {
 		syment_t *e = syments[i];
 		dumpent(e);
 	}
-
 	msg("\n");
+
+	msg("dump intermediate representation:\n");
 	inst_t *x;
 	for (x = xhead; x; x = x->next) {
 		fmtinst(x);
