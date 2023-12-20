@@ -12,10 +12,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // register table
 reg_t regs[4] = {
-	[0] = { "eax", 0 },
-	[1] = { "ebx", 0 },
-	[2] = { "ecx", 0 },
-	[3] = { "edx", 0 },
+	[0] = { REG_RA, 0 },
+	[1] = { REG_RB, 0 },
+	[2] = { REG_RC, 0 },
+	[3] = { REG_RD, 0 },
 };
 
 // Alloc a register
@@ -61,7 +61,7 @@ progcode_t prog;
 static char addrbuf[16];
 static char *addr(syment_t *e)
 {
-	sprintf(addrbuf, "[%s-%d]", EBPREG, ALIGN * e->off);
+	sprintf(addrbuf, "[%s-%d]", REG_BP, ALIGN * e->off);
 	return addrbuf;
 }
 
@@ -160,9 +160,9 @@ void progdump()
 void x86_iolib_exit()
 {
 	addlabel(LIBEXIT);
-	addcode3("mov", "eax", "1"); // syscall number
-	addcode3("xor", "ebx", "ebx"); // return value
-	addcode2("int", SYSCALL);
+	addcode3("mov", REG_RA, "1"); // syscall number
+	addcode3("xor", REG_RB, REG_RB); // return value
+	addcode2("int", SYSCAL);
 }
 
 void x86_iolib_wrtchr()
@@ -170,33 +170,33 @@ void x86_iolib_wrtchr()
 	adddata2("_chrbuf", "?");
 
 	addlabel(LIBWCHR);
-	addcode3("mov", "[_chrbuf]", "eax");
-	addcode3("mov", "eax", "4");
-	addcode3("mov", "ebx", "1");
-	addcode3("mov", "ecx", "_chrbuf");
-	addcode3("mov", "edx", "1");
-	addcode2("int", SYSCALL);
+	addcode3("mov", "[_chrbuf]", REG_RA);
+	addcode3("mov", REG_RA, "4");
+	addcode3("mov", REG_RB, "1");
+	addcode3("mov", REG_RC, "_chrbuf");
+	addcode3("mov", REG_RD, "1");
+	addcode2("int", SYSCAL);
 	addcode1("ret");
 }
 
 void x86_iolib_wrtstr()
 {
 	addlabel(LIBWSTR);
-	addcode3("mov", "esi", "eax");
-	addcode3("xor", "ecx", "ecx");
+	addcode3("mov", REG_SI, REG_RA);
+	addcode3("xor", REG_RC, REG_RC);
 	addlabel("_loopnext");
-	addcode3("mov", "cl", "[esi]");
-	addcode3("test", "ecx", "ecx");
+	addcode3("mov", "cl", PTR_SI);
+	addcode3("test", REG_RC, REG_RC);
 	addcode2("jz", "_writestr");
-	addcode2("inc", "esi");
+	addcode2("inc", REG_SI);
 	addcode2("jmp", "_loopnext");
 	addlabel("_writestr");
-	addcode3("sub", "esi", "eax");
-	addcode3("mov", "ecx", "eax");
-	addcode3("mov", "eax", "4");
-	addcode3("mov", "ebx", "1");
-	addcode3("mov", "edx", "esi");
-	addcode2("int", SYSCALL);
+	addcode3("sub", REG_SI, REG_RA);
+	addcode3("mov", REG_RC, REG_RA);
+	addcode3("mov", REG_RA, "4");
+	addcode3("mov", REG_RB, "1");
+	addcode3("mov", REG_RD, REG_SI);
+	addcode2("int", SYSCAL);
 	addcode1("ret");
 }
 
@@ -205,37 +205,37 @@ void x86_iolib_wrtint()
 	adddata2("_intbuf", "????????????????");
 
 	addlabel(LIBWINT);
-	addcode3("xor", "edi", "edi"); // negtive flag
-	addcode3("cmp", "eax", "0");
+	addcode3("xor", REG_SI, REG_SI); // negtive flag
+	addcode3("cmp", REG_RA, "0");
 	addcode2("jnl", "_nonneg");
-	addcode2("inc", "edi");
-	addcode2("neg", "eax");
+	addcode2("inc", REG_SI);
+	addcode2("neg", REG_RA);
 	addlabel("_nonneg");
-	addcode3("mov", "ebx", "10"); // number base
-	addcode3("xor", "ecx", "ecx"); // number string length
-	addcode3("mov", "esi", "_intbuf+15"); // number string pointer
+	addcode3("mov", REG_RB, "10"); // number base
+	addcode3("xor", REG_RC, REG_RC); // number string length
+	addcode3("mov", REG_SI, "_intbuf+15"); // number string pointer
 	addlabel("_loopdigit");
-	addcode3("xor", "edx", "edx");
-	addcode2("div", "ebx");
-	addcode3("add", "edx", "'0'");
-	addcode3("mov", "[esi]", "dl");
-	addcode2("dec", "esi");
-	addcode2("inc", "ecx");
-	addcode3("test", "eax", "eax");
+	addcode3("xor", REG_RD, REG_RD);
+	addcode2("div", REG_RB);
+	addcode3("add", REG_RD, "'0'");
+	addcode3("mov", PTR_SI, "dl");
+	addcode2("dec", REG_SI);
+	addcode2("inc", REG_RC);
+	addcode3("test", REG_RA, REG_RA);
 	addcode2("jnz", "_loopdigit");
-	addcode3("test", "edi", "edi");
+	addcode3("test", REG_SI, REG_SI);
 	addcode2("jnz", "_negsign");
-	addcode2("inc", "esi");
+	addcode2("inc", REG_SI);
 	addcode2("jmp", "_wrtint");
 	addlabel("_negsign");
-	addcode3("mov", "byte[esi]", "'-'");
-	addcode2("inc", "ecx");
+	addcode3("mov", REG_SI, "'-'");
+	addcode2("inc", REG_RC);
 	addlabel("_wrtint");
-	addcode3("mov", "edx", "ecx"); // string length
-	addcode3("mov", "eax", "4"); // syscall number, NR
-	addcode3("mov", "ebx", "1"); // fd: 1=stdout
-	addcode3("mov", "ecx", "esi"); // ptr to string buffer
-	addcode2("int", SYSCALL);
+	addcode3("mov", REG_RD, REG_RC); // string length
+	addcode3("mov", REG_RA, "4"); // syscall number, NR
+	addcode3("mov", REG_RB, "1"); // fd: 1=stdout
+	addcode3("mov", REG_RC, REG_SI); // ptr to string buffer
+	addcode2("int", SYSCAL);
 	addcode1("ret");
 }
 
@@ -245,12 +245,12 @@ void x86_iolib_readchr()
 
 	addlabel(LIBRCHR);
 	addlabel("_readchr");
-	addcode3("mov", "eax", "3"); // syscall number, NR
-	addcode3("mov", "ebx", "0"); // fd: 0=stdin
-	addcode3("mov", "ecx", "_scanbuf"); // ptr to scan buffer
-	addcode3("mov", "edx", "1"); // buffer size
-	addcode2("int", SYSCALL);
-	addcode3("mov", "eax", "[_scanbuf]"); // save result to eax
+	addcode3("mov", REG_RA, "3"); // syscall number, NR
+	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
+	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
+	addcode3("mov", REG_RD, "1"); // buffer size
+	addcode2("int", SYSCAL);
+	addcode3("mov", REG_RA, "[_scanbuf]"); // save result to eax
 	addcode1("ret");
 }
 
@@ -275,8 +275,8 @@ void x86_enter(syment_t *e)
 {
 	if (!strcmp(e->name, "@main")) {
 		addlabel("_start");
-		addcode2("push", EBPREG);
-		addcode3("mov", EBPREG, ESPREG);
+		addcode2("push", REG_BP);
+		addcode3("mov", REG_BP, REG_SP);
 	} else {
 		addlabel(e->name);
 	}
@@ -294,18 +294,18 @@ void x86_mov2(syment_t *var, reg_t *reg)
 
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 {
-	addcode4("lea", IDXREG, addr(arr), arr->label);
+	addcode4("lea", REG_SI, addr(arr), arr->label);
 	addcode3("imul", off->name, tostr(ALIGN));
-	addcode3("sub", IDXREG, off->name);
-	addcode3("mov", reg->name, sround(IDXREG));
+	addcode3("sub", REG_SI, off->name);
+	addcode3("mov", reg->name, sround(REG_SI));
 }
 
 void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 {
-	addcode4("lea", IDXREG, addr(arr), arr->label);
+	addcode4("lea", REG_SI, addr(arr), arr->label);
 	addcode3("imul", off->name, tostr(ALIGN));
-	addcode3("sub", IDXREG, off->name);
-	addcode3("mov", sround(IDXREG), reg->name);
+	addcode3("sub", REG_SI, off->name);
+	addcode3("mov", sround(REG_SI), reg->name);
 }
 
 void x86_mov5(reg_t *r1, reg_t *r2)
@@ -396,7 +396,7 @@ void x86_call(syment_t *func)
 {
 	addcode2("call", func->label);
 	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
-	addcode3("add", ESPREG, tostr(off));
+	addcode3("add", REG_SP, tostr(off));
 }
 
 void x86_ret()
@@ -458,7 +458,7 @@ void x86_jnl(syment_t *lab)
 void x86_sret(syment_t *reg)
 {
 	char retref[16];
-	sprintf(retref, "[%s-%d]", EBPREG, ALIGN);
+	sprintf(retref, "[%s-%d]", REG_BP, ALIGN);
 	addcode3("mov", retref, reg->name);
 }
 

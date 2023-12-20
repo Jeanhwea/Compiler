@@ -9,10 +9,17 @@ typedef struct _reg_struct {
 } reg_t;
 
 // Pointer register
-#define EBPREG "ebp"
-#define ESPREG "esp"
-#define IDXREG "ebi"
-#define SYSCALL "0x80"
+#define REG_BP "ebp"
+#define REG_SP "esp"
+#define REG_BI "ebi"
+#define REG_SI "esi"
+#define REG_RA "eax"
+#define REG_RB "ebx"
+#define REG_RC "ecx"
+#define REG_RD "edx"
+#define PTR_BI "[ebi]"
+#define PTR_SI "[esi]"
+#define SYSCAL "0x80"
 
 // General register operations
 reg_t *allocreg();
