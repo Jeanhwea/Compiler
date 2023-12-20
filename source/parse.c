@@ -207,7 +207,7 @@ static var_def_node_t *parse_var_def(void)
 	case KW_CHAR:
 		match(KW_CHAR);
 		for (p = t; p; p = p->next) {
-			p->idp->kind = INT_VAR_IDENT;
+			p->idp->kind = CHAR_VAR_IDENT;
 		}
 		break;
 	case KW_ARRAY: // array[10] of integer
