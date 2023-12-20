@@ -300,6 +300,11 @@ void x86_iolib_readint()
 	addlabel(LIBRINT);
 	x86_lib_enter();
 
+	addcode3("mov", REG_RA, "3"); // syscall number, NR
+	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
+	addcode3("mov", REG_RC, "_scanint"); // ptr to scan buffer
+	addcode3("mov", REG_RD, "16"); // buffer size
+	addcode2("int", SYSCAL);
 	addcode3("xor", REG_RA, REG_RA);
 	addcode3("xor", REG_RC, REG_RC);
 	addcode3("mov", REG_RB, "1");
