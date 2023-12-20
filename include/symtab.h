@@ -56,7 +56,7 @@ typedef struct _sym_entry_struct {
 	param_t *ptail;
 	// label for assemble codes
 	char label[MAXLABEL];
-	int off; // offset, for assembly stack mapping
+	int off; // offset, for local variable stack mapping
 	// referenced line number
 	int lineno;
 	// which symbol table
@@ -80,6 +80,11 @@ typedef struct _sym_table_struct {
 #define NEWPARAM(v) INITMEM(param_t, v)
 #define NEWENTRY(v) INITMEM(syment_t, v)
 #define NEWSTAB(v) INITMEM(symtab_t, v)
+
+// debugging
+#define MAXSYMENT 1024
+extern syment_t *syments[MAXSYMENT];
+extern int symcnt;
 
 // scope management
 symtab_t *scope_entry(char *nspace);

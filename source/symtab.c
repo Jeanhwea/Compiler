@@ -9,6 +9,8 @@
 symtab_t *top = NULL;
 int depth = 0;
 int ntab = 0;
+
+syment_t *syments[MAXSYMENT];
 int symcnt = 0;
 
 symtab_t *scope_entry(char *nspace)
@@ -151,6 +153,7 @@ syment_t *syminit(ident_node_t *idp)
 	syment_t *e;
 	NEWENTRY(e);
 	e->sid = ++symcnt;
+	syments[e->sid] = e;
 
 	e->name = dupstr(idp->name);
 	e->initval = idp->value;
@@ -211,7 +214,6 @@ syment_t *syminit(ident_node_t *idp)
 	}
 
 	sprintf(e->label, "L%03d", e->sid);
-	e->off = top->varoff;
 	switch (e->cate) {
 	case NOP_OBJ:
 	case CONST_OBJ:
@@ -220,9 +222,11 @@ syment_t *syminit(ident_node_t *idp)
 	case FUN_OBJ:
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
+		e->off = top->varoff;
 		top->varoff += 1;
 		break;
 	case ARRAY_OBJ:
+		e->off = top->varoff;
 		top->varoff += e->arrlen;
 		break;
 	default:
@@ -239,15 +243,16 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 	NEWENTRY(e);
 	e->name = dupstr(name);
 	e->sid = ++symcnt;
+	syments[e->sid] = e;
 
 	e->cate = cate;
 	e->type = type;
 
 	sprintf(e->label, "T%03d", e->sid);
-	e->off = stab->varoff;
 	switch (e->cate) {
 	case TMP_OBJ:
 	case FUN_OBJ:
+		e->off = stab->varoff;
 		stab->varoff += 1;
 		break;
 	case LABEL_OBJ:

@@ -20,6 +20,12 @@ char *opcode[32] = {
 	[28] = "WRC",  [29] = "LAB",
 };
 
+char *symcate[12] = {
+	[0] = "NOP", [1] = "CONST", [2] = "VAR",   [3] = "PROC",
+	[4] = "FUN", [5] = "ARRAY", [6] = "BYVAL", [7] = "BYREF",
+	[8] = "TMP", [9] = "LABEL", [10] = "NUM",  [11] = "STR",
+};
+
 void fmtinst(inst_t *x)
 {
 	char buf[1024];
@@ -36,6 +42,13 @@ void fmtinst(inst_t *x)
 	msg("%s\n", buf);
 }
 
+void dumpent(syment_t *e)
+{
+	msg("label=%s type=%d cate=%s name=%s off=%d initval=%d arrlen=%d str=%s\n",
+	    e->label, e->type, symcate[e->cate], e->name, e->off, e->initval,
+	    e->arrlen, e->str);
+}
+
 int main(int argc, char *argv[])
 {
 	echo = 0;
@@ -43,6 +56,12 @@ int main(int argc, char *argv[])
 	parse();
 	analysis();
 	genir();
+
+	int i;
+	for (i = 1; i < symcnt; ++i) {
+		syment_t *e = syments[i];
+		dumpent(e);
+	}
 
 	inst_t *x;
 	for (x = xhead; x; x = x->next) {
