@@ -165,7 +165,7 @@ void x86_iolib_exit()
 	addcode2("int", "0x80");
 }
 
-void x86_iolib_wrtchar()
+void x86_iolib_wrtchr()
 {
 	adddata2("_chrbuf", "x");
 
@@ -207,10 +207,10 @@ void x86_iolib_wrtint()
 	addlabel(LIBWINT);
 	addcode3("xor", "edi", "edi"); // negtive flag
 	addcode3("cmp", "eax", "0");
-	addcode2("jnl", "_notneg");
+	addcode2("jnl", "_nonneg");
 	addcode2("inc", "edi");
 	addcode2("neg", "eax");
-	addlabel("_notneg");
+	addlabel("_nonneg");
 	addcode3("mov", "ebx", "10"); // number base
 	addcode3("xor", "ecx", "ecx"); // number string length
 	addcode3("mov", "esi", "_intbuf+15"); // number string pointer
@@ -238,11 +238,12 @@ void x86_iolib_wrtint()
 	addcode2("int", "0x80");
 	addcode1("ret");
 }
+
 void x86_init()
 {
 	addcode2("global", "_start");
 
-	x86_iolib_wrtchar();
+	x86_iolib_wrtchr();
 	x86_iolib_wrtstr();
 	x86_iolib_wrtint();
 	x86_iolib_exit();
