@@ -218,7 +218,7 @@ void x86_iolib_wrtint()
 	addcode3("xor", REG_RD, REG_RD);
 	addcode2("div", REG_RB);
 	addcode3("add", REG_RD, "'0'");
-	addcode3("mov", PTR_SI, "dl");
+	addcode3("mov", BTP_SI, "dl");
 	addcode2("dec", REG_SI);
 	addcode2("inc", REG_RC);
 	addcode3("test", REG_RA, REG_RA);
