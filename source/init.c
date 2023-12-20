@@ -3,8 +3,8 @@
 #include "util.h"
 
 // constants
-char *PL0C_NAME = "pl0c";
-char *PL0C_VERSION = "v0.14.0";
+char PL0C_NAME[32] = "pl0c";
+char PL0C_VERSION[32] = "v0.14.0";
 char PL0C_INPUT[4096];
 char PL0C_ASSEM[4096];
 char PL0C_OBJECT[4096];

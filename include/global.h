@@ -7,8 +7,8 @@
 #include "debug.h"
 
 // consts
-extern char *PL0C_NAME;
-extern char *PL0C_VERSION;
+extern char PL0C_NAME[];
+extern char PL0C_VERSION[];
 extern char PL0C_INPUT[];
 extern char PL0C_ASSEM[];
 extern char PL0C_OBJECT[];
