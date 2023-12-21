@@ -54,7 +54,11 @@ typedef struct _program_code_struct {
 // dump all assemble codes
 void progdump();
 
-typedef enum _rwmemmode_enum { READ, WRITE } rwmode_t;
+typedef enum _rwmemmode_enum {
+	READ_MEM_VAL,
+	SAVE_REG_VAL,
+	LOAD_MEM_ADDR
+} rwmode_t;
 
 // asm instructions
 void x86_init();

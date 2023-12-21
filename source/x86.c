@@ -166,40 +166,61 @@ static char *ptr(char *reg, int offset)
 
 static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, syment_t *idx)
 {
-	symtab_t *tab = var->stab;
+	char *mem;
 	int off, gap;
+	symtab_t *tab = var->stab;
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
 		off = tab->argoff + currdepth - var->off;
-		addcode4("mov", reg->name, ptr(REG_BP, off), var->label);
-		return;
+		mem = REG_BP;
+		goto doit;
 	case TMP_OBJ:
-		off = tab->varoff + var->off;
-		addcode4("mov", reg->name, ptr(REG_BP, -off), var->label);
-		return;
+		off = -(tab->varoff + var->off);
+		mem = REG_BP;
+		goto doit;
 	case VAR_OBJ:
 	case ARRAY_OBJ:
 	case FUN_OBJ:
 	case PROC_OBJ:
-		goto hardcase;
+		goto findaddr;
 	default:
 		unlikely();
 	}
 
-hardcase:
+findaddr:
 	gap = currdepth - tab->depth;
-	// TODO off = var->off + idx;
-	off = var->off;
+	off = -var->off;
 	if (gap == 0) {
-		addcode4("mov", reg->name, ptr(REG_BP, -off), var->label);
+		mem = REG_BP;
 	} else if (gap == 1) {
 		addcode3("mov", REG_SI, ptr(REG_BP, 0));
-		addcode4("mov", reg->name, ptr(REG_SI, -off), var->label);
+		mem = REG_SI;
 	} else if (gap > 1) {
 		addcode3("mov", REG_SI, ptr(REG_BP, gap));
-		addcode4("mov", reg->name, ptr(REG_SI, -off), var->label);
+		mem = REG_SI;
 	} else {
+		unlikely();
+	}
+
+	if (var->cate == ARRAY_OBJ) {
+		nevernil(idx);
+		addcode3("imul", idx->name, itoa(ALIGN));
+		addcode3("sub", mem, idx->name);
+	}
+
+doit:
+	switch (mode) {
+	case READ_MEM_VAL:
+		addcode4("mov", reg->name, ptr(mem, off), var->label);
+		break;
+	case SAVE_REG_VAL:
+		addcode4("mov", ptr(mem, off), reg->name, var->label);
+		break;
+	case LOAD_MEM_ADDR:
+		addcode4("lea", reg->name, ptr(mem, off), var->label);
+		break;
+	default:
 		unlikely();
 	}
 }
@@ -401,29 +422,22 @@ void x86_init()
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
-	// addcode4("mov", reg->name, addr(var), var->label);
-	rwmem(READ, reg, var, 0);
+	rwmem(READ_MEM_VAL, reg, var, NULL);
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)
 {
-	addcode4("mov", addr(var), reg->name, var->label);
+	rwmem(SAVE_REG_VAL, reg, var, NULL);
 }
 
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *idx)
 {
-	addcode4("lea", REG_SI, addr(arr), arr->label);
-	addcode3("imul", idx->name, itoa(ALIGN));
-	addcode3("sub", REG_SI, idx->name);
-	addcode3("mov", reg->name, PTR_SI);
+	rwmem(READ_MEM_VAL, reg, arr, idx);
 }
 
 void x86_mov4(syment_t *arr, reg_t *idx, reg_t *reg)
 {
-	addcode4("lea", REG_SI, addr(arr), arr->label);
-	addcode3("imul", idx->name, itoa(ALIGN));
-	addcode3("sub", REG_SI, idx->name);
-	addcode3("mov", PTR_SI, reg->name);
+	rwmem(SAVE_REG_VAL, reg, arr, idx);
 }
 
 void x86_mov5(reg_t *r1, reg_t *r2)
@@ -443,14 +457,12 @@ void x86_mov7(reg_t *reg, char *strconst)
 
 void x86_lea(reg_t *reg, syment_t *var)
 {
-	addcode3("lea", reg->name, addr(var));
+	rwmem(LOAD_MEM_ADDR, reg, var, NULL);
 }
 
 void x86_lea2(reg_t *reg, syment_t *arr, reg_t *idx)
 {
-	addcode3("lea", reg->name, addr(arr));
-	addcode3("imul", idx->name, itoa(ALIGN));
-	addcode3("sub", reg->name, idx->name);
+	rwmem(LOAD_MEM_ADDR, reg, arr, idx);
 }
 
 void x86_add(reg_t *r1, reg_t *r2)
