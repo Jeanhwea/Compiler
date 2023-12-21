@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 
 	token_t tok;
 	int seq = 0;
+	char *indent = "              ";
 	while ((tok = gettok()) != ENDFILE) {
 		int i;
 		for (i = 0; i < 80; ++i) {
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
 
 		int toksize = strlen(tokbuf);
 		int start = colmno - toksize;
-		msg("     ");
+		msg("%s", indent);
 		for (i = 0; i < bufsize; ++i) {
 			if (i < start) {
 				msg(" ");
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
 		}
 		msg("\n");
 
-		msg("     ");
+		msg("%s", indent);
 		for (i = 0; i < start + toksize; ++i) {
 			msg(" ");
 		}
