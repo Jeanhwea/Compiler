@@ -301,11 +301,13 @@ void x86_iolib_readint()
 	addlabel(LIBRINT);
 	x86_lib_enter();
 
+	addlabel("_sysread@rint");
 	addcode3("mov", REG_RA, "3"); // syscall number, NR
 	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanint"); // ptr to scan buffer
 	addcode3("mov", REG_RD, "16"); // buffer size
 	addcode2("int", SYSCAL);
+	addlabel("_init@rint");
 	addcode3("xor", REG_RA, REG_RA);
 	addcode3("xor", REG_RC, REG_RC);
 	addcode3("mov", REG_RB, "1");
@@ -318,25 +320,25 @@ void x86_iolib_readint()
 	addcode2("jl", "_skipchar@rint");
 	addcode3("cmp", REG_RC, "'9'");
 	addcode2("jg", "_skipchar@rint");
-	addcode2("jmp", "_begchar@rint");
+	addcode2("jmp", "_numchar@rint");
 	addlabel("_skipchar@rint");
 	addcode2("inc", REG_SI);
 	addcode2("jmp", "_begchar@rint");
 	addlabel("_negnum@rint");
 	addcode3("mov", REG_RB, "-1");
 	addcode2("inc", REG_SI);
-	addlabel("_begchar@rint");
+	addlabel("_numchar@rint");
 	addcode3("mov", REG_CL, BTP_SI);
 	addcode3("cmp", REG_RC, "'0'");
-	addcode2("jl", "_nondigit@rint");
+	addcode2("jl", "_notdigit@rint");
 	addcode3("cmp", REG_RC, "'9'");
-	addcode2("jg", "_nondigit@rint");
+	addcode2("jg", "_notdigit@rint");
 	addcode3("sub", REG_RC, "'0'");
 	addcode3("imul", REG_RA, "10");
 	addcode3("add", REG_RA, REG_RC);
 	addcode2("inc", REG_SI);
-	addcode2("jmp", "_begchar@rint");
-	addlabel("_nondigit@rint");
+	addcode2("jmp", "_numchar@rint");
+	addlabel("_notdigit@rint");
 	addcode3("imul", REG_RA, REG_RB);
 
 	x86_lib_leave();
