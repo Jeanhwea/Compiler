@@ -468,6 +468,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 		case BYVAL_OBJ:
 			nevernil(t->ep);
 			anlys_expr(t->ep);
+			t->refsym = e;
 			break;
 		case BYREF_OBJ: // var, arr[exp]
 			if (!t->ep || t->ep->op != NOP_ADDOP) {

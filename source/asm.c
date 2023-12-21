@@ -32,6 +32,7 @@ static void savevar(syment_t *var, reg_t *reg)
 	case TMP_OBJ:
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
+	case FUN_OBJ:
 		x86_mov2(var, reg);
 		break;
 	default:
