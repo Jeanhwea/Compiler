@@ -57,30 +57,8 @@ void freereg(reg_t *r)
 	r->refcnt--;
 }
 
+// hold x86 program code and data
 progcode_t prog;
-
-////////////////////////////////////////////////////////////////////////////////
-// i386 instructions
-static char addrbuf[16];
-static char *addr(syment_t *e)
-{
-	sprintf(addrbuf, "[%s-%d]", REG_BP, ALIGN * e->off);
-	return addrbuf;
-}
-
-static char numbuf[16];
-static char *tostr(int num)
-{
-	sprintf(numbuf, "%d", num);
-	return numbuf;
-}
-
-static char srdbuf[16];
-static char *sround(char *label)
-{
-	sprintf(srdbuf, "[%s]", label);
-	return srdbuf;
-}
 
 // send label
 void addlabel(char *label)
@@ -159,6 +137,61 @@ void progdump()
 	}
 
 	fclose(target);
+}
+
+// hold current depth
+int currdepth = 0;
+
+////////////////////////////////////////////////////////////////////////////////
+// i386 instructions
+static char addrbuf[16];
+static char *addr(syment_t *e)
+{
+	sprintf(addrbuf, "[%s-%d]", REG_BP, ALIGN * e->off);
+	return addrbuf;
+}
+
+// conv offset to base pointer
+static char *off2bptr(int offset)
+{
+	if (offset > 0) {
+		sprintf(addrbuf, "[%s-%d]", REG_BP, offset * ALIGN);
+	} else if (offset < 0) {
+		sprintf(addrbuf, "[%s+%d]", REG_BP, -offset * ALIGN);
+	} else {
+		sprintf(addrbuf, "[%s]", REG_BP);
+	}
+	return addrbuf;
+}
+
+static void loadptr(reg_t *r, syment_t *var)
+{
+	symtab_t *tab = var->stab;
+	int off;
+	switch (var->cate) {
+	case BYVAL_OBJ:
+	case BYREF_OBJ:
+		off = tab->argoff + currdepth - var->off;
+		addcode4("mov", r->name, off2bptr(-off), var->label);
+		break;
+	case TMP_OBJ:
+		off = tab->varoff;
+		break;
+	default:
+		unlikely();
+	}
+	if (tab->depth == currdepth) {
+		// addcode4("mov", r->name, off2bptr(var->off), var->label);
+	} else {
+		// addcode4("lea", REG_SI, addr(arr), arr->label);
+	}
+}
+
+static char numbuf[16];
+static char *tostr(int num)
+{
+	sprintf(numbuf, "%d", num);
+	return numbuf;
 }
 
 void x86_lib_enter()
@@ -371,7 +404,7 @@ void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 	addcode4("lea", REG_SI, addr(arr), arr->label);
 	addcode3("imul", off->name, tostr(ALIGN));
 	addcode3("sub", REG_SI, off->name);
-	addcode3("mov", reg->name, sround(REG_SI));
+	addcode3("mov", reg->name, PTR_SI);
 }
 
 void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
@@ -379,7 +412,7 @@ void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 	addcode4("lea", REG_SI, addr(arr), arr->label);
 	addcode3("imul", off->name, tostr(ALIGN));
 	addcode3("sub", REG_SI, off->name);
-	addcode3("mov", sround(REG_SI), reg->name);
+	addcode3("mov", PTR_SI, reg->name);
 }
 
 void x86_mov5(reg_t *r1, reg_t *r2)
