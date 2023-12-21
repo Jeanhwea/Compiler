@@ -145,11 +145,6 @@ int currdepth = 0;
 ////////////////////////////////////////////////////////////////////////////////
 // i386 instructions
 static char addrbuf[16];
-static char *addr(syment_t *e)
-{
-	sprintf(addrbuf, "[%s-%d]", REG_BP, ALIGN * e->off);
-	return addrbuf;
-}
 
 // conv offset to base pointer
 static char *ptr(char *reg, int offset)
