@@ -543,10 +543,10 @@ void x86_enter(syment_t *func)
 
 	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
 	sprintf(buf, "reserve %d bytes", off);
+	addcode4("sub", REG_SP, itoa(off), buf);
 	addcode2("push", REG_SI);
 	addcode2("push", REG_DI);
 	addcode2("push", REG_RB);
-	addcode4("sub", REG_SP, itoa(off), buf);
 }
 
 void x86_leave(syment_t *func)
