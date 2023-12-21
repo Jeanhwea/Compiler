@@ -68,9 +68,12 @@ typedef struct _sym_table_struct {
 	int id; // symbol table ID
 
 	// for assembly stack mapping
-	//    1. return value
-	//    2. local variables     (varoff)
-	//    3. temporary variables (tmpoff)
+	//    1. arguments values
+	//    2. saved ebps
+	//    3. return value
+	//    4. local variables     (varoff)
+	//    5. temporary variables (tmpoff)
+	int argoff; // argument variable offset in total
 	int varoff; // variable offset in total
 	int tmpoff; // temporary variable offset in total
 

@@ -221,10 +221,13 @@ syment_t *syminit(ident_node_t *idp)
 	case VAR_OBJ:
 	case PROC_OBJ:
 	case FUN_OBJ:
-	case BYVAL_OBJ:
-	case BYREF_OBJ:
 		e->off = top->varoff;
 		top->varoff++;
+		break;
+	case BYVAL_OBJ:
+	case BYREF_OBJ:
+		e->off = top->argoff;
+		top->argoff++;
 		break;
 	case ARRAY_OBJ:
 		e->off = top->varoff;
