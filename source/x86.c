@@ -310,7 +310,7 @@ void x86_iolib_readint()
 	addcode3("mov", REG_RB, "1");
 	addcode3("mov", REG_SI, "_scanint");
 	addlabel("_begchar");
-	addcode3("mov", "cl", BTP_SI);
+	addcode3("mov", REG_RC, BTP_SI);
 	addcode3("cmp", REG_RC, "'-'");
 	addcode2("jz", "_negnum");
 	addcode3("cmp", REG_RC, "'0'");
@@ -325,7 +325,7 @@ void x86_iolib_readint()
 	addcode3("mov", REG_RB, "-1");
 	addcode2("inc", REG_SI);
 	addlabel("_loopchar");
-	addcode3("mov", "cl", BTP_SI);
+	addcode3("mov", REG_RC, BTP_SI);
 	addcode3("cmp", REG_RC, "'0'");
 	addcode2("jl", "_nondigit");
 	addcode3("cmp", REG_RC, "'9'");
