@@ -285,6 +285,7 @@ void x86_iolib_readchr()
 	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
 	addcode3("mov", REG_RD, "1"); // buffer size
 	addcode2("int", SYSCAL);
+	addcode3("xor", REG_RC, REG_RC);
 	addcode3("mov", REG_CL, "[_scanbuf]");
 	addcode3("cmp", REG_CL, "10"); // if ra == 'nl'(10), retry
 	addcode2("jz", "_sysread@rchr");
