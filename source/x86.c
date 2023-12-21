@@ -164,7 +164,7 @@ static char *ptr(char *reg, int offset)
 	return addrbuf;
 }
 
-static void loadval(reg_t *r, syment_t *var, int idx)
+static void loadval(reg_t *reg, syment_t *var, int idx)
 {
 	symtab_t *tab = var->stab;
 	int off, gap;
@@ -172,31 +172,34 @@ static void loadval(reg_t *r, syment_t *var, int idx)
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
 		off = tab->argoff + currdepth - var->off;
-		addcode4("mov", r->name, ptr(REG_BP, off), var->label);
-		break;
+		addcode4("mov", reg->name, ptr(REG_BP, off), var->label);
+		return;
 	case TMP_OBJ:
 		off = tab->varoff + var->off;
-		addcode4("mov", r->name, ptr(REG_BP, -off), var->label);
-		break;
+		addcode4("mov", reg->name, ptr(REG_BP, -off), var->label);
+		return;
 	case VAR_OBJ:
 	case ARRAY_OBJ:
 	case FUN_OBJ:
 	case PROC_OBJ:
-		gap = currdepth - tab->depth;
-		off = var->off + idx;
-		if (gap == 0) {
-			addcode4("mov", r->name, ptr(REG_BP, -off), var->label);
-		} else if (gap == 1) {
-			addcode3("mov", REG_SI, ptr(REG_BP, 0));
-			addcode4("mov", r->name, ptr(REG_SI, -off), var->label);
-		} else if (gap > 1) {
-			addcode3("mov", REG_SI, ptr(REG_BP, gap));
-			addcode4("mov", r->name, ptr(REG_SI, -off), var->label);
-		} else {
-			unlikely();
-		}
+		goto complex;
 		break;
 	default:
+		unlikely();
+	}
+
+complex:
+	gap = currdepth - tab->depth;
+	off = var->off + idx;
+	if (gap == 0) {
+		addcode4("mov", reg->name, ptr(REG_BP, -off), var->label);
+	} else if (gap == 1) {
+		addcode3("mov", REG_SI, ptr(REG_BP, 0));
+		addcode4("mov", reg->name, ptr(REG_SI, -off), var->label);
+	} else if (gap > 1) {
+		addcode3("mov", REG_SI, ptr(REG_BP, gap));
+		addcode4("mov", reg->name, ptr(REG_SI, -off), var->label);
+	} else {
 		unlikely();
 	}
 }
@@ -405,7 +408,8 @@ void x86_init()
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
-	addcode4("mov", reg->name, addr(var), var->label);
+	// addcode4("mov", reg->name, addr(var), var->label);
+	loadval(reg, var, 0);
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)
