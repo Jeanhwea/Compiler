@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	genir();
 	msg("\n");
 
-	msg("dump symbols:\n");
+	msg("DUMP SYMBOLS:\n");
 	int i;
 	for (i = 1; i <= symcnt; ++i) {
 		syment_t *e = syments[i];
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 	}
 	msg("\n");
 
-	msg("dump intermediate representation:\n");
+	msg("DUMP INTERMEDIATE REPRESENTATION:\n");
 	inst_t *x;
 	for (x = xhead; x; x = x->next) {
 		fmtinst(x);
