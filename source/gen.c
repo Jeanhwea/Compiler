@@ -198,7 +198,7 @@ static void gen_pcall_stmt(pcall_stmt_node_t *node)
 	emit2(CALL_OP, node->idp->symbol, NULL);
 	arg_list_node_t *t;
 	for (t = node->alp; t; t = t->next) {
-		emit1(POP_OP, t->refsym);
+		emit1(POP_OP, NULL);
 	}
 }
 
@@ -376,7 +376,7 @@ static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 	emit2(CALL_OP, e, d);
 	arg_list_node_t *t;
 	for (t = node->alp; t; t = t->next) {
-		emit1(POP_OP, t->refsym);
+		emit1(POP_OP, NULL);
 	}
 	return d;
 }
