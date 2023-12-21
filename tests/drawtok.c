@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 			msg("-");
 		}
 		msg("\n");
-		msg("%03d LINE%03d: %s", ++seq, lineno, linebuf);
+		msg("#%03d LINE%03d: %s", ++seq, lineno, linebuf);
 
 		int toksize = strlen(tokbuf);
 		int start = colmno - toksize;
