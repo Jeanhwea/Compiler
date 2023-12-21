@@ -534,6 +534,7 @@ void x86_push2(syment_t *var)
 
 void x86_enter(syment_t *func)
 {
+	currdepth++;
 	char buf[64];
 	if (!strcmp(func->name, MAINFUNC)) {
 		addlabel("_start");
@@ -558,6 +559,7 @@ void x86_leave(syment_t *func)
 	addcode3("mov", REG_SP, REG_BP);
 	addcode2("pop", REG_BP);
 	x86_ret();
+	currdepth--;
 }
 
 void x86_call(syment_t *func)
