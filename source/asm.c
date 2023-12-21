@@ -341,7 +341,7 @@ void asmbl_call_op(inst_t *x)
 {
 	reg_t *r = allocreg();
 	x86_call(x->r);
-	x86_sret(r);
+	// x86_sret(r);
 	// savevar(x->d, r);
 	freereg(r);
 }

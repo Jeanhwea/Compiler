@@ -12,6 +12,9 @@ static void anlys_pgm(pgm_node_t *node)
 	scope_entry("main");
 	node->stab = scope_top();
 
+	syment_t *e = syminit(node->entry);
+	node->entry->symbol = e;
+
 	nevernil(node->bp);
 	block_node_t *b = node->bp;
 	anlys_const_decf(b->cdp);

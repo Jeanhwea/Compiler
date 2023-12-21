@@ -1,5 +1,6 @@
 #include "global.h"
 #include "debug.h"
+#include "parse.h"
 #include "util.h"
 #include "syntax.h"
 #include "symtab.h"
@@ -218,6 +219,8 @@ syment_t *syminit(ident_node_t *idp)
 	switch (e->cate) {
 	case NOP_OBJ:
 	case CONST_OBJ:
+		// no need allocation
+		break;
 	case VAR_OBJ:
 	case PROC_OBJ:
 	case FUN_OBJ:
@@ -255,7 +258,6 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 	sprintf(e->label, "T%03d", e->sid);
 	switch (e->cate) {
 	case TMP_OBJ:
-	case FUN_OBJ:
 		// from now on, we will NEVER alloc local variables so just
 		// alloc temporary variables
 		e->off = stab->varoff + stab->tmpoff;

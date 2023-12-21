@@ -1,6 +1,7 @@
 #include "common.h"
 #include "debug.h"
 #include "error.h"
+#include "gen.h"
 #include "global.h"
 #include "parse.h"
 #include "scan.h"
@@ -48,9 +49,18 @@ static pgm_node_t *parse_pgm(void)
 	pgm_node_t *t;
 	NEWNODE(pgm_node_t, t);
 
+	// setup entrypoint
+	ident_node_t *main;
+	NEWNODE(ident_node_t, main);
+	main->kind = INT_FUN_IDENT;
+	main->value = 0;
+	main->length = 0;
+	main->line = lineno;
+	main->name = MAINFUNC;
+	t->entry = main;
+
 	t->bp = parse_block();
 	match(SS_DOT);
-
 	return t;
 }
 
