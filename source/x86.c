@@ -164,7 +164,7 @@ static char *ptr(char *reg, int offset)
 	return addrbuf;
 }
 
-static void loadval(reg_t *r, syment_t *var)
+static void loadval(reg_t *r, syment_t *var, int idx)
 {
 	symtab_t *tab = var->stab;
 	int off, gap;
@@ -183,7 +183,7 @@ static void loadval(reg_t *r, syment_t *var)
 	case FUN_OBJ:
 	case PROC_OBJ:
 		gap = currdepth - tab->depth;
-		off = var->off;
+		off = var->off + idx;
 		if (gap == 0) {
 			addcode4("mov", r->name, ptr(REG_BP, -off), var->label);
 		} else if (gap == 1) {
