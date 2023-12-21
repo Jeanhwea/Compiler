@@ -410,32 +410,36 @@ static void gen_cond(cond_node_t *node, syment_t *dest)
 
 static void gen_arg_list(arg_list_node_t *node)
 {
-	arg_list_node_t *t;
-	syment_t *d, *r;
-	d = r = NULL;
-	for (t = node; t; t = t->next) {
-		switch (t->refsym->cate) {
-		case BYVAL_OBJ:
-			d = gen_expr(t->ep);
-			emit1(PUSH_OP, d);
+	if (!node) {
+		return;
+	}
+	arg_list_node_t *t = node;
+
+	// Push arguments in reverse order
+	gen_arg_list(t->next);
+
+	syment_t *d = NULL, *r = NULL;
+	switch (t->refsym->cate) {
+	case BYVAL_OBJ:
+		d = gen_expr(t->ep);
+		emit1(PUSH_OP, d);
+		break;
+	case BYREF_OBJ:
+		d = t->argsym;
+		switch (t->argsym->cate) {
+		case VAR_OBJ:
+			emit2(PADR_OP, NULL, d);
 			break;
-		case BYREF_OBJ:
-			d = t->argsym;
-			switch (t->argsym->cate) {
-			case VAR_OBJ:
-				emit2(PADR_OP, NULL, d);
-				break;
-			case ARRAY_OBJ:
-				r = gen_expr(t->ep);
-				emit2(PADR_OP, r, d);
-				break;
-			default:
-				unlikely();
-			}
+		case ARRAY_OBJ:
+			r = gen_expr(t->ep);
+			emit2(PADR_OP, r, d);
 			break;
 		default:
 			unlikely();
 		}
+		break;
+	default:
+		unlikely();
 	}
 }
 
