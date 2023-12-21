@@ -212,14 +212,14 @@ void x86_iolib_wrtstr()
 
 	addcode3("mov", REG_SI, REG_RA);
 	addcode3("xor", REG_RC, REG_RC);
-	addlabel("_loopnext@wstr");
+	addlabel("_nextchar@wstr");
 	addcode3("mov", REG_CL, BTP_SI);
 	addcode3("test", REG_RC, REG_RC);
-	addcode2("jz", "_putstr@wstr");
+	addcode2("jz", "_syswrite@wstr");
 	addcode2("inc", REG_SI);
-	addcode2("jmp", "_loopnext@wstr");
-	addlabel("_putstr@wstr");
-	addcode3("sub", REG_SI, REG_RA);
+	addcode2("jmp", "_nextchar@wstr");
+	addlabel("_syswrite@wstr");
+	addcode3("sub", REG_SI, REG_RA); // string length
 	addcode3("mov", REG_RC, REG_RA);
 	addcode3("mov", REG_RA, "4");
 	addcode3("mov", REG_RB, "1");
@@ -239,10 +239,10 @@ void x86_iolib_wrtint()
 
 	addcode3("xor", REG_SI, REG_SI); // negtive flag
 	addcode3("cmp", REG_RA, "0");
-	addcode2("jnl", "_nonneg@wint");
+	addcode2("jnl", "_noneneg@wint");
 	addcode2("inc", REG_DI);
 	addcode2("neg", REG_RA);
-	addlabel("_nonneg@wint");
+	addlabel("_noneneg@wint");
 	addcode3("mov", REG_RB, "10"); // number base
 	addcode3("xor", REG_RC, REG_RC); // number string length
 	addcode3("mov", REG_SI, "_intbuf+15"); // number string pointer
@@ -258,11 +258,11 @@ void x86_iolib_wrtint()
 	addcode3("test", REG_DI, REG_DI);
 	addcode2("jnz", "_negsign@wint");
 	addcode2("inc", REG_SI);
-	addcode2("jmp", "_putint@wint");
+	addcode2("jmp", "_syswrite@wint");
 	addlabel("_negsign@wint");
 	addcode3("mov", BTP_SI, "'-'");
 	addcode2("inc", REG_RC);
-	addlabel("_putint@wint");
+	addlabel("_syswrite@wint");
 	addcode3("mov", REG_RD, REG_RC); // string length
 	addcode3("mov", REG_RA, "4"); // syscall number, NR
 	addcode3("mov", REG_RB, "1"); // fd: 1=stdout
@@ -279,7 +279,7 @@ void x86_iolib_readchr()
 	addlabel(LIBRCHR);
 	x86_lib_enter();
 
-	addlabel("_rdnextchr@rchr");
+	addlabel("_sysread@rchr");
 	addcode3("mov", REG_RA, "3"); // syscall number, NR
 	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
@@ -287,7 +287,7 @@ void x86_iolib_readchr()
 	addcode2("int", SYSCAL);
 	addcode3("mov", REG_CL, "[_scanbuf]");
 	addcode3("cmp", REG_CL, "10"); // if ra == 'nl'(10), retry
-	addcode2("jz", "_rdnextchr@rchr");
+	addcode2("jz", "_sysread@rchr");
 	addcode3("xor", REG_RA, REG_RA); // save result to eax
 	addcode3("mov", REG_RA, REG_RC);
 
@@ -318,14 +318,14 @@ void x86_iolib_readint()
 	addcode2("jl", "_skipchar@rint");
 	addcode3("cmp", REG_RC, "'9'");
 	addcode2("jg", "_skipchar@rint");
-	addcode2("jmp", "_loopchar@rint");
+	addcode2("jmp", "_begchar@rint");
 	addlabel("_skipchar@rint");
 	addcode2("inc", REG_SI);
 	addcode2("jmp", "_begchar@rint");
 	addlabel("_negnum@rint");
 	addcode3("mov", REG_RB, "-1");
 	addcode2("inc", REG_SI);
-	addlabel("_loopchar@rint");
+	addlabel("_begchar@rint");
 	addcode3("mov", REG_CL, BTP_SI);
 	addcode3("cmp", REG_RC, "'0'");
 	addcode2("jl", "_nondigit@rint");
@@ -335,7 +335,7 @@ void x86_iolib_readint()
 	addcode3("imul", REG_RA, "10");
 	addcode3("add", REG_RA, REG_RC);
 	addcode2("inc", REG_SI);
-	addcode2("jmp", "_loopchar@rint");
+	addcode2("jmp", "_begchar@rint");
 	addlabel("_nondigit@rint");
 	addcode3("imul", REG_RA, REG_RB);
 
