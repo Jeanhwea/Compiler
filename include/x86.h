@@ -51,7 +51,10 @@ typedef struct _program_code_struct {
 	x86i_t text[MAXTEXTSEC];
 } progcode_t;
 
+// dump all assemble codes
 void progdump();
+
+typedef enum _rwmemmode_enum { READ, WRITE } rwmode_t;
 
 // asm instructions
 void x86_init();
@@ -92,5 +95,4 @@ void x86_jl(syment_t *lab);
 void x86_jnl(syment_t *lab);
 void x86_sret(reg_t *reg);
 void x86_alloc_string(char *name, char *initval);
-
 #endif /* End of _X86_H_ */

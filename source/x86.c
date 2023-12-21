@@ -164,7 +164,7 @@ static char *ptr(char *reg, int offset)
 	return addrbuf;
 }
 
-static void loadval(reg_t *reg, syment_t *var, int idx)
+static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, syment_t *idx)
 {
 	symtab_t *tab = var->stab;
 	int off, gap;
@@ -189,7 +189,8 @@ static void loadval(reg_t *reg, syment_t *var, int idx)
 
 hardcase:
 	gap = currdepth - tab->depth;
-	off = var->off + idx;
+	// TODO off = var->off + idx;
+	off = var->off;
 	if (gap == 0) {
 		addcode4("mov", reg->name, ptr(REG_BP, -off), var->label);
 	} else if (gap == 1) {
@@ -401,7 +402,7 @@ void x86_init()
 void x86_mov(reg_t *reg, syment_t *var)
 {
 	// addcode4("mov", reg->name, addr(var), var->label);
-	loadval(reg, var, 0);
+	rwmem(READ, reg, var, 0);
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)
