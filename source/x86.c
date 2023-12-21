@@ -152,14 +152,14 @@ static char *addr(syment_t *e)
 }
 
 // conv offset to base pointer
-static char *ptr(char *ptr, int offset)
+static char *ptr(char *reg, int offset)
 {
 	if (offset > 0) {
-		sprintf(addrbuf, "[%s+%d]", ptr, offset * ALIGN);
+		sprintf(addrbuf, "[%s+%d]", reg, offset * ALIGN);
 	} else if (offset < 0) {
-		sprintf(addrbuf, "[%s-%d]", ptr, -offset * ALIGN);
+		sprintf(addrbuf, "[%s-%d]", reg, -offset * ALIGN);
 	} else {
-		sprintf(addrbuf, "[%s]", ptr);
+		sprintf(addrbuf, "[%s]", reg);
 	}
 	return addrbuf;
 }
