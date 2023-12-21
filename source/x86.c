@@ -164,10 +164,10 @@ static char *ptr(char *reg, int offset)
 	return addrbuf;
 }
 
-static void loadptr(reg_t *r, syment_t *var)
+static void loadval(reg_t *r, syment_t *var)
 {
 	symtab_t *tab = var->stab;
-	int off, diff;
+	int off, gap;
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
@@ -182,15 +182,15 @@ static void loadptr(reg_t *r, syment_t *var)
 	case ARRAY_OBJ:
 	case FUN_OBJ:
 	case PROC_OBJ:
-		diff = currdepth - tab->depth;
+		gap = currdepth - tab->depth;
 		off = var->off;
-		if (diff == 0) {
+		if (gap == 0) {
 			addcode4("mov", r->name, ptr(REG_BP, -off), var->label);
-		} else if (diff == 1) {
+		} else if (gap == 1) {
 			addcode3("mov", REG_SI, ptr(REG_BP, 0));
 			addcode4("mov", r->name, ptr(REG_SI, -off), var->label);
-		} else if (diff > 1) {
-			addcode3("mov", REG_SI, ptr(REG_BP, diff));
+		} else if (gap > 1) {
+			addcode3("mov", REG_SI, ptr(REG_BP, gap));
 			addcode4("mov", r->name, ptr(REG_SI, -off), var->label);
 		} else {
 			unlikely();
@@ -198,11 +198,6 @@ static void loadptr(reg_t *r, syment_t *var)
 		break;
 	default:
 		unlikely();
-	}
-	if (tab->depth == currdepth) {
-		// addcode4("mov", r->name, off2bptr(var->off), var->label);
-	} else {
-		// addcode4("lea", REG_SI, addr(arr), arr->label);
 	}
 }
 
