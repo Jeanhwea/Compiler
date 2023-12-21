@@ -476,25 +476,26 @@ void x86_push2(syment_t *var)
 	addcode2("push", var->label);
 }
 
-void x86_enter(syment_t *e)
+void x86_enter(syment_t *func)
 {
-	if (!strcmp(e->name, MAINFUNC)) {
+	char buf[64];
+	if (!strcmp(func->name, MAINFUNC)) {
 		addlabel("_start");
 	} else {
-		addlabel(e->name);
+		sprintf(buf, "%s$%s", func->label, func->name);
+		addlabel(buf);
 	}
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 
-	int off = ALIGN * (e->stab->varoff + e->stab->tmpoff);
-	char buf[32];
+	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff + 1);
 	sprintf(buf, "reserve %d bytes", off);
 	addcode4("sub", REG_SP, tostr(off), buf);
 }
 
-void x86_leave(syment_t *e)
+void x86_leave(syment_t *func)
 {
-	if (!strcmp(e->name, MAINFUNC)) {
+	if (!strcmp(func->name, MAINFUNC)) {
 		x86_syscall(LIBEXIT, NULL);
 		return;
 	}
@@ -505,7 +506,9 @@ void x86_leave(syment_t *e)
 
 void x86_call(syment_t *func)
 {
-	addcode2("call", func->label);
+	char buf[64];
+	sprintf(buf, "%s$%s", func->label, func->name);
+	addcode2("call", buf);
 }
 
 void x86_ret()

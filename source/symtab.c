@@ -20,6 +20,7 @@ symtab_t *scope_entry(char *nspace)
 	t->id = ++ntab;
 	t->depth = ++depth;
 	t->nspace = dupstr(nspace);
+	t->varoff = 1; // reserve function return value
 
 	// Push
 	t->outer = top;
@@ -223,7 +224,7 @@ syment_t *syminit(ident_node_t *idp)
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
 		e->off = top->varoff;
-		top->varoff += 1;
+		top->varoff++;
 		break;
 	case ARRAY_OBJ:
 		e->off = top->varoff;
@@ -252,13 +253,15 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 	switch (e->cate) {
 	case TMP_OBJ:
 	case FUN_OBJ:
-		e->off = stab->varoff;
-		stab->varoff += 1;
+		// from now on, we will NEVER alloc local variables so just
+		// alloc temporary variables
+		e->off = stab->varoff + stab->tmpoff;
+		stab->tmpoff++;
 		break;
 	case LABEL_OBJ:
 	case NUM_OBJ:
 	case STR_OBJ:
-		// label never use bytes
+		// label/number/string never use bytes
 		break;
 	default:
 		unlikely();

@@ -339,7 +339,10 @@ void asmbl_pop_op(inst_t *x)
 
 void asmbl_call_op(inst_t *x)
 {
+	reg_t *r = allocreg();
 	x86_call(x->d);
+	x86_sret(r);
+	freereg(r);
 }
 
 void asmbl_sret_op(inst_t *x)

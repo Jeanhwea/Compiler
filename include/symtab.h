@@ -66,13 +66,21 @@ typedef struct _sym_entry_struct {
 
 typedef struct _sym_table_struct {
 	int id; // symbol table ID
+
+	// for assembly stack mapping
+	//    1. return value
+	//    2. local variables     (varoff)
+	//    3. temporary variables (tmpoff)
+	int varoff; // variable offset in total
+	int tmpoff; // temporary variable offset in total
+
+	// for function scope management
 	int depth; // symbol table nested depth
 	char *nspace; // namespace
-	// for assembly stack mapping
-	int varoff; // variable offset
-	int tmpoff; // temporary variable offset
-	symtab_t *inner;
-	symtab_t *outer;
+	symtab_t *inner; // inner scope
+	symtab_t *outer; // outer scope
+
+	// entries buckets
 	syment_t buckets[MAXBUCKETS];
 } symtab_t;
 
