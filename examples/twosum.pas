@@ -1,4 +1,4 @@
-const a = 1, b = 2;
+const a = 133, b = -10;
 var x: integer;
 begin
    x := a + b;
