@@ -339,6 +339,7 @@ void asmbl_pop_op(inst_t *x)
 
 void asmbl_call_op(inst_t *x)
 {
+	x86_call(x->d);
 }
 
 void asmbl_sret_op(inst_t *x)
