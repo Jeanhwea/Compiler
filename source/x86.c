@@ -289,8 +289,7 @@ void x86_iolib_readchr()
 	addcode3("mov", REG_CL, "[_scanbuf]");
 	addcode3("cmp", REG_CL, "10"); // if ra == 'nl'(10), retry
 	addcode2("jz", "_sysread@rchr");
-	addcode3("xor", REG_RA, REG_RA); // save result to eax
-	addcode3("mov", REG_RA, REG_RC);
+	addcode3("mov", REG_RA, REG_RC); // save result to eax
 
 	x86_lib_leave();
 }
