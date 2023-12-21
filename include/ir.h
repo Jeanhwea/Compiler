@@ -33,16 +33,16 @@ typedef enum _inst_op_enum {
 	/* 19 */ POP_OP,
 	// Function Management
 	/* 20 */ CALL_OP,
-	/* 22 */ ENT_OP,
-	/* 23 */ FIN_OP,
+	/* 21 */ ENT_OP,
+	/* 22 */ FIN_OP,
 	// I/O Management
-	/* 24 */ RDI_OP,
-	/* 25 */ RDC_OP,
-	/* 26 */ WRS_OP,
-	/* 27 */ WRI_OP,
-	/* 28 */ WRC_OP,
+	/* 23 */ RDI_OP,
+	/* 24 */ RDC_OP,
+	/* 25 */ WRS_OP,
+	/* 26 */ WRI_OP,
+	/* 27 */ WRC_OP,
 	// Label Marker
-	/* 29 */ LAB_OP
+	/* 28 */ LAB_OP
 } op_t;
 
 // Instruction struct
