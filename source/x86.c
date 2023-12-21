@@ -532,16 +532,15 @@ void x86_enter(syment_t *func)
 	char buf[64];
 	if (!strcmp(func->name, MAINFUNC)) {
 		addlabel("_start");
-		currdepth = func->stab->depth;
 	} else {
 		sprintf(buf, "%s$%s", func->label, func->name);
 		addlabel(buf);
-		currdepth = func->stab->depth + 1;
 	}
+	currdepth = func->scope->depth;
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 
-	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
+	int off = ALIGN * (func->scope->varoff + func->scope->tmpoff);
 	sprintf(buf, "reserve %d bytes", off);
 	addcode4("sub", REG_SP, itoa(off), buf);
 	addcode2("push", REG_SI);

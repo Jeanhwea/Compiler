@@ -8,7 +8,6 @@ typedef struct _pgm_node {
 	int nid;
 	block_node_t *bp;
 	ident_node_t *entry;
-	symtab_t *stab;
 } pgm_node_t;
 
 /* block */

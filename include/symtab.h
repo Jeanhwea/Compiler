@@ -54,6 +54,7 @@ typedef struct _sym_entry_struct {
 	char *str;
 	param_t *phead;
 	param_t *ptail;
+	symtab_t *scope;
 	// label for assemble codes
 	char label[MAXLABEL];
 	int off; // offset, for local variable stack mapping

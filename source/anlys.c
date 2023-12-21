@@ -10,10 +10,10 @@
 static void anlys_pgm(pgm_node_t *node)
 {
 	scope_entry("main");
-	node->stab = scope_top();
 
 	syment_t *e = syminit(node->entry);
 	node->entry->symbol = e;
+	node->entry->symbol->scope = scope_top();
 
 	nevernil(node->bp);
 	block_node_t *b = node->bp;
@@ -116,7 +116,7 @@ static void anlys_proc_head(proc_head_node_t *node)
 	}
 	idp->symbol = e;
 
-	scope_entry(idp->name);
+	e->scope = scope_entry(idp->name);
 
 	nevernil(t->plp);
 	anlys_para_list(idp->symbol, t->plp);
@@ -157,7 +157,7 @@ static void anlys_fun_head(fun_head_node_t *node)
 	}
 	idp->symbol = e;
 
-	scope_entry(idp->name);
+	e->scope = scope_entry(idp->name);
 
 	nevernil(t->plp);
 	anlys_para_list(idp->symbol, t->plp);
