@@ -33,7 +33,6 @@ typedef enum _inst_op_enum {
 	/* 19 */ POP_OP,
 	// Function Management
 	/* 20 */ CALL_OP,
-	/* 21 */ SRET_OP,
 	/* 22 */ ENT_OP,
 	/* 23 */ FIN_OP,
 	// I/O Management

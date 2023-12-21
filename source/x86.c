@@ -625,13 +625,6 @@ void x86_jnl(syment_t *lab)
 	addcode2("jnl", lab->label);
 }
 
-void x86_sret(reg_t *reg)
-{
-	char retref[16];
-	sprintf(retref, "[%s-%d]", REG_BP, ALIGN);
-	addcode3("mov", retref, reg->name);
-}
-
 void x86_alloc_string(char *name, char *initval)
 {
 	adddata2(name, initval);

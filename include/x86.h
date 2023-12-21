@@ -97,6 +97,5 @@ void x86_jg(syment_t *lab);
 void x86_jng(syment_t *lab);
 void x86_jl(syment_t *lab);
 void x86_jnl(syment_t *lab);
-void x86_sret(reg_t *reg);
 void x86_alloc_string(char *name, char *initval);
 #endif /* End of _X86_H_ */

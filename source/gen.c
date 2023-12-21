@@ -115,7 +115,7 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 		break;
 	case FUN_ASSGIN:
 		r = gen_expr(node->rep);
-		emit2(SRET_OP, r, d);
+		emit2(ASS_OP, r, d);
 		break;
 	case ARRAY_ASSGIN:
 		s = gen_expr(node->lep);

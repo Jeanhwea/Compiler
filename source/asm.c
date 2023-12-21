@@ -348,14 +348,6 @@ void asmbl_call_op(inst_t *x)
 	freereg(r);
 }
 
-void asmbl_sret_op(inst_t *x)
-{
-	reg_t *r = allocreg();
-	loadvar(r, x->d);
-	x86_sret(r);
-	freereg(r);
-}
-
 void asmbl_ent_op(inst_t *x)
 {
 	x86_enter(x->d);
@@ -481,9 +473,6 @@ void genasm()
 			break;
 		case CALL_OP:
 			asmbl_call_op(x);
-			break;
-		case SRET_OP:
-			asmbl_sret_op(x);
 			break;
 		case ENT_OP:
 			asmbl_ent_op(x);
