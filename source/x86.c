@@ -164,7 +164,7 @@ static char *ptr(char *reg, int offset)
 	return addrbuf;
 }
 
-static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, syment_t *idx)
+static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 {
 	char *mem;
 	int off, gap;
