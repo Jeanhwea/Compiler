@@ -409,19 +409,19 @@ void x86_mov2(syment_t *var, reg_t *reg)
 	addcode4("mov", addr(var), reg->name, var->label);
 }
 
-void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
+void x86_mov3(reg_t *reg, syment_t *arr, reg_t *idx)
 {
 	addcode4("lea", REG_SI, addr(arr), arr->label);
-	addcode3("imul", off->name, itoa(ALIGN));
-	addcode3("sub", REG_SI, off->name);
+	addcode3("imul", idx->name, itoa(ALIGN));
+	addcode3("sub", REG_SI, idx->name);
 	addcode3("mov", reg->name, PTR_SI);
 }
 
-void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
+void x86_mov4(syment_t *arr, reg_t *idx, reg_t *reg)
 {
 	addcode4("lea", REG_SI, addr(arr), arr->label);
-	addcode3("imul", off->name, itoa(ALIGN));
-	addcode3("sub", REG_SI, off->name);
+	addcode3("imul", idx->name, itoa(ALIGN));
+	addcode3("sub", REG_SI, idx->name);
 	addcode3("mov", PTR_SI, reg->name);
 }
 
@@ -445,11 +445,11 @@ void x86_lea(reg_t *reg, syment_t *var)
 	addcode3("lea", reg->name, addr(var));
 }
 
-void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off)
+void x86_lea2(reg_t *reg, syment_t *arr, reg_t *idx)
 {
 	addcode3("lea", reg->name, addr(arr));
-	addcode3("imul", off->name, itoa(ALIGN));
-	addcode3("sub", reg->name, off->name);
+	addcode3("imul", idx->name, itoa(ALIGN));
+	addcode3("sub", reg->name, idx->name);
 }
 
 void x86_add(reg_t *r1, reg_t *r2)
