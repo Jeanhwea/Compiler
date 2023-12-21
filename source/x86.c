@@ -556,16 +556,16 @@ void x86_enter(syment_t *func)
 
 void x86_leave(syment_t *func)
 {
-	if (!strcmp(func->name, MAINFUNC)) {
-		x86_syscall(LIBEXIT, NULL);
-		return;
-	}
 	addcode2("pop", REG_RB);
 	addcode2("pop", REG_DI);
 	addcode2("pop", REG_SI);
 	addcode3("mov", REG_SP, REG_BP);
 	addcode2("pop", REG_BP);
-	x86_ret();
+	if (!strcmp(func->name, MAINFUNC)) {
+		x86_syscall(LIBEXIT, NULL);
+	} else {
+		x86_ret();
+	}
 }
 
 void x86_call(syment_t *func)
