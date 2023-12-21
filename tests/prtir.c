@@ -30,23 +30,23 @@ void fmtinst(inst_t *x)
 {
 	char buf[1024];
 	sprintf(buf, "#%03d: %s", x->xid, opcode[x->op]);
+	if (x->d) {
+		appendf(buf, "\td=%s", x->d->label);
+	}
 	if (x->r) {
 		appendf(buf, "\tr=%s", x->r->label);
 	}
 	if (x->s) {
 		appendf(buf, "\ts=%s", x->s->label);
 	}
-	if (x->d) {
-		appendf(buf, "\td=%s", x->d->label);
-	}
 	msg("%s\n", buf);
 }
 
 void dumpent(syment_t *e)
 {
-	msg("label=%s type=%d cate=%s name=%s off=%d initval=%d arrlen=%d str=%s\n",
-	    e->label, e->type, symcate[e->cate], e->name, e->off, e->initval,
-	    e->arrlen, e->str);
+	msg("label=%s type=%d cate=%s name=%s off=%d stab=%d depth=%d initval=%d arrlen=%d str=%s\n",
+	    e->label, e->type, symcate[e->cate], e->name, e->off, e->stab->id,
+	    e->stab->depth, e->initval, e->arrlen, e->str);
 }
 
 int main(int argc, char *argv[])

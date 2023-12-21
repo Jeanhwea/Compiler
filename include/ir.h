@@ -50,9 +50,9 @@ typedef enum _inst_op_enum {
 typedef struct _inst_struct {
 	int xid;
 	op_t op;
+	syment_t *d;
 	syment_t *r;
 	syment_t *s;
-	syment_t *d;
 	inst_t *prev;
 	inst_t *next;
 } inst_t;
