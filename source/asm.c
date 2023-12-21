@@ -334,6 +334,7 @@ void asmbl_pop_op(inst_t *x)
 {
 	reg_t *r = allocreg();
 	x86_pop(r);
+	savevar(x->d, r);
 	freereg(r);
 }
 

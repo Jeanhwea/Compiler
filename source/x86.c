@@ -14,9 +14,9 @@
 // register table
 reg_t regs[4] = {
 	[0] = { REG_RA, 0 },
-	[1] = { REG_RB, 0 },
-	[2] = { REG_RC, 0 },
-	[3] = { REG_RD, 0 },
+	[1] = { REG_RC, 0 },
+	[2] = { REG_RD, 0 },
+	[3] = { REG_RB, 0 },
 };
 
 // Alloc a register
@@ -172,7 +172,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		off = tab->argoff + currdepth - var->off;
+		off = currdepth + var->off;
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
