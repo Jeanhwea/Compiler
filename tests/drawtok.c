@@ -8,13 +8,14 @@ int main(int argc, char *argv[])
 	int counter = 0;
 
 	token_t tok;
+	int seq = 0;
 	while ((tok = gettok()) != ENDFILE) {
 		int i;
 		for (i = 0; i < 80; ++i) {
 			msg("-");
 		}
 		msg("\n");
-		msg("%03d: %s", lineno, linebuf);
+		msg("%03d LINE%03d: %s", ++seq, lineno, linebuf);
 
 		int toksize = strlen(tokbuf);
 		int start = colmno - toksize;
