@@ -38,3 +38,10 @@ void chgsuf(char *str, char *to, char *from)
 		strcpy(str, buf);
 	}
 }
+
+char numbuf[32];
+char *itoa(int num)
+{
+	sprintf(numbuf, "%d", num);
+	return numbuf;
+}

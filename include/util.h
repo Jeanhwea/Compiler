@@ -16,4 +16,5 @@ extern char prtbuf[PRTBUFSIZE];
 
 char *dupstr(char *s);
 void chgsuf(char *str, char *to, char *from);
+char *itoa(int num);
 #endif /* End of _UTIL_H_ */

@@ -204,13 +204,6 @@ jumpcase:
 	}
 }
 
-static char numbuf[16];
-static char *tostr(int num)
-{
-	sprintf(numbuf, "%d", num);
-	return numbuf;
-}
-
 void x86_lib_enter()
 {
 	addcode2("push", REG_BP);
@@ -420,7 +413,7 @@ void x86_mov2(syment_t *var, reg_t *reg)
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	addcode4("lea", REG_SI, addr(arr), arr->label);
-	addcode3("imul", off->name, tostr(ALIGN));
+	addcode3("imul", off->name, itoa(ALIGN));
 	addcode3("sub", REG_SI, off->name);
 	addcode3("mov", reg->name, PTR_SI);
 }
@@ -428,7 +421,7 @@ void x86_mov3(reg_t *reg, syment_t *arr, reg_t *off)
 void x86_mov4(syment_t *arr, reg_t *off, reg_t *reg)
 {
 	addcode4("lea", REG_SI, addr(arr), arr->label);
-	addcode3("imul", off->name, tostr(ALIGN));
+	addcode3("imul", off->name, itoa(ALIGN));
 	addcode3("sub", REG_SI, off->name);
 	addcode3("mov", PTR_SI, reg->name);
 }
@@ -440,7 +433,7 @@ void x86_mov5(reg_t *r1, reg_t *r2)
 
 void x86_mov6(reg_t *reg, int num)
 {
-	addcode3("mov", reg->name, tostr(num));
+	addcode3("mov", reg->name, itoa(num));
 }
 
 void x86_mov7(reg_t *reg, char *strconst)
@@ -456,7 +449,7 @@ void x86_lea(reg_t *reg, syment_t *var)
 void x86_lea2(reg_t *reg, syment_t *arr, reg_t *off)
 {
 	addcode3("lea", reg->name, addr(arr));
-	addcode3("imul", off->name, tostr(ALIGN));
+	addcode3("imul", off->name, itoa(ALIGN));
 	addcode3("sub", reg->name, off->name);
 }
 
@@ -541,7 +534,7 @@ void x86_enter(syment_t *func)
 
 	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
 	sprintf(buf, "reserve %d bytes", off);
-	addcode4("sub", REG_SP, tostr(off), buf);
+	addcode4("sub", REG_SP, itoa(off), buf);
 }
 
 void x86_leave(syment_t *func)
