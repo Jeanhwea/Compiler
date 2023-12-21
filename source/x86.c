@@ -152,14 +152,14 @@ static char *addr(syment_t *e)
 }
 
 // conv offset to base pointer
-static char *off2bptr(int offset)
+static char *ptr(char *ptr, int offset)
 {
 	if (offset > 0) {
-		sprintf(addrbuf, "[%s-%d]", REG_BP, offset * ALIGN);
+		sprintf(addrbuf, "[%s+%d]", ptr, offset * ALIGN);
 	} else if (offset < 0) {
-		sprintf(addrbuf, "[%s+%d]", REG_BP, -offset * ALIGN);
+		sprintf(addrbuf, "[%s-%d]", ptr, -offset * ALIGN);
 	} else {
-		sprintf(addrbuf, "[%s]", REG_BP);
+		sprintf(addrbuf, "[%s]", ptr);
 	}
 	return addrbuf;
 }
@@ -167,15 +167,34 @@ static char *off2bptr(int offset)
 static void loadptr(reg_t *r, syment_t *var)
 {
 	symtab_t *tab = var->stab;
-	int off;
+	int off, diff;
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
 		off = tab->argoff + currdepth - var->off;
-		addcode4("mov", r->name, off2bptr(-off), var->label);
+		addcode4("mov", r->name, ptr(REG_BP, off), var->label);
 		break;
 	case TMP_OBJ:
-		off = tab->varoff;
+		off = tab->varoff + var->off;
+		addcode4("mov", r->name, ptr(REG_BP, -off), var->label);
+		break;
+	case VAR_OBJ:
+	case ARRAY_OBJ:
+	case FUN_OBJ:
+	case PROC_OBJ:
+		diff = currdepth - tab->depth;
+		off = var->off;
+		if (diff == 0) {
+			addcode4("mov", r->name, ptr(REG_BP, -off), var->label);
+		} else if (diff == 1) {
+			addcode3("mov", REG_SI, ptr(REG_BP, 0));
+			addcode4("mov", r->name, ptr(REG_SI, -off), var->label);
+		} else if (diff > 1) {
+			addcode3("mov", REG_SI, ptr(REG_BP, diff));
+			addcode4("mov", r->name, ptr(REG_SI, -off), var->label);
+		} else {
+			unlikely();
+		}
 		break;
 	default:
 		unlikely();
