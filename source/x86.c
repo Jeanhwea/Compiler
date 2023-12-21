@@ -182,13 +182,12 @@ static void loadval(reg_t *reg, syment_t *var, int idx)
 	case ARRAY_OBJ:
 	case FUN_OBJ:
 	case PROC_OBJ:
-		goto jumpcase;
-		break;
+		goto hardcase;
 	default:
 		unlikely();
 	}
 
-jumpcase:
+hardcase:
 	gap = currdepth - tab->depth;
 	off = var->off + idx;
 	if (gap == 0) {
