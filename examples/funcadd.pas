@@ -1,4 +1,4 @@
-const a = 1, b = 3;
+const a = 1, b = 5;
 var sum: integer;
 
 function add(x, y : integer):integer;

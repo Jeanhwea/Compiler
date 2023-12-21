@@ -16,8 +16,7 @@ static void loadvar(reg_t *reg, syment_t *var)
 	case TMP_OBJ:
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		x86_mov(reg, var);
-		break;
+	case FUN_OBJ:
 		x86_mov(reg, var);
 		break;
 	default:
@@ -334,7 +333,7 @@ void asmbl_pop_op(inst_t *x)
 {
 	reg_t *r = allocreg();
 	x86_pop(r);
-	savevar(x->d, r);
+	// savevar(x->d, r);
 	freereg(r);
 }
 
@@ -342,8 +341,8 @@ void asmbl_call_op(inst_t *x)
 {
 	reg_t *r = allocreg();
 	x86_call(x->r);
-	// x86_sret(r);
-	// savevar(x->d, r);
+	loadvar(r, x->r);
+	savevar(x->d, r);
 	freereg(r);
 }
 

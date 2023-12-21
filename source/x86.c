@@ -176,7 +176,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
-		off = -(tab->varoff + var->off);
+		off = -var->off;
 		mem = REG_BP;
 		goto doit;
 	case VAR_OBJ:
@@ -534,19 +534,23 @@ void x86_push2(syment_t *var)
 
 void x86_enter(syment_t *func)
 {
-	currdepth++;
 	char buf[64];
 	if (!strcmp(func->name, MAINFUNC)) {
 		addlabel("_start");
+		currdepth = func->stab->depth;
 	} else {
 		sprintf(buf, "%s$%s", func->label, func->name);
 		addlabel(buf);
+		currdepth = func->stab->depth + 1;
 	}
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 
 	int off = ALIGN * (func->stab->varoff + func->stab->tmpoff);
 	sprintf(buf, "reserve %d bytes", off);
+	addcode2("push", REG_SI);
+	addcode2("push", REG_DI);
+	addcode2("push", REG_RB);
 	addcode4("sub", REG_SP, itoa(off), buf);
 }
 
@@ -556,10 +560,12 @@ void x86_leave(syment_t *func)
 		x86_syscall(LIBEXIT, NULL);
 		return;
 	}
+	addcode2("pop", REG_RB);
+	addcode2("pop", REG_DI);
+	addcode2("pop", REG_SI);
 	addcode3("mov", REG_SP, REG_BP);
 	addcode2("pop", REG_BP);
 	x86_ret();
-	currdepth--;
 }
 
 void x86_call(syment_t *func)
