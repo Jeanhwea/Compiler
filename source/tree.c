@@ -35,6 +35,7 @@ node_t *conv_pgm_node(pgm_node_t *t)
 		return NULL;
 	}
 	node_t *d = initnode(t->nid, "PGM");
+	addchild(d, conv_ident_node(t->entry), "entry");
 	addchild(d, conv_block_node(t->bp), "bp");
 	return d;
 }
