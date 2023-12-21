@@ -23,7 +23,7 @@ static syment_t *gen_term(term_node_t *node);
 static syment_t *gen_factor(factor_node_t *node);
 static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node);
 static void gen_cond(cond_node_t *node, syment_t *dest);
-static void gen_arg_list(syment_t *sign, arg_list_node_t *node);
+static void gen_arg_list(arg_list_node_t *node);
 
 void genir();
 #endif /* End of _GEN_H_ */

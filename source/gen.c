@@ -194,8 +194,12 @@ static void gen_for_stmt(for_stmt_node_t *node)
 
 static void gen_pcall_stmt(pcall_stmt_node_t *node)
 {
-	gen_arg_list(node->idp->symbol, node->alp);
+	gen_arg_list(node->alp);
 	emit2(CALL_OP, node->idp->symbol, NULL);
+	arg_list_node_t *t;
+	for (t = node->alp; t; t = t->next) {
+		emit1(POP_OP, t->refsym);
+	}
 }
 
 static void gen_read_stmt(read_stmt_node_t *node)
@@ -368,8 +372,12 @@ static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 	syment_t *d, *e;
 	e = node->idp->symbol;
 	d = symalloc(node->stab, "@fcall/ret", TMP_OBJ, e->type);
-	gen_arg_list(e, node->alp);
+	gen_arg_list(node->alp);
 	emit2(CALL_OP, e, d);
+	arg_list_node_t *t;
+	for (t = node->alp; t; t = t->next) {
+		emit1(POP_OP, t->refsym);
+	}
 	return d;
 }
 
@@ -400,7 +408,7 @@ static void gen_cond(cond_node_t *node, syment_t *dest)
 	}
 }
 
-static void gen_arg_list(syment_t *sign, arg_list_node_t *node)
+static void gen_arg_list(arg_list_node_t *node)
 {
 	arg_list_node_t *t;
 	syment_t *d, *r;
