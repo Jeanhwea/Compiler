@@ -276,7 +276,7 @@ static struct _pl0_keywords_struct {
 	char *str;
 	// represented token
 	token_t tok;
-} PL0_KEYWORDS[] = {
+} PL0E_KEYWORDS[] = {
 	/*  0 */ { "array", KW_ARRAY },
 	/*  1 */ { "begin", KW_BEGIN },
 	/*  2 */ { "char", KW_CHAR },
@@ -300,7 +300,7 @@ static struct _pl0_keywords_struct {
 	/* 20 */ { "write", KW_WRITE }
 };
 
-#define MAXRESERVED (sizeof(PL0_KEYWORDS) / sizeof(PL0_KEYWORDS[0]))
+#define MAXRESERVED (sizeof(PL0E_KEYWORDS) / sizeof(PL0E_KEYWORDS[0]))
 
 // get keyword
 // if s is keyword return token, otherwise return MC_ID
@@ -308,8 +308,8 @@ static token_t getkw(char *s)
 {
 	int i;
 	for (i = 0; i < MAXRESERVED; i++) {
-		if (!strcmp(s, PL0_KEYWORDS[i].str)) {
-			return PL0_KEYWORDS[i].tok;
+		if (!strcmp(s, PL0E_KEYWORDS[i].str)) {
+			return PL0E_KEYWORDS[i].tok;
 		}
 	}
 	return MC_ID;

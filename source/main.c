@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-	msg("compiler %s start, version %s\n", PL0C_NAME, PL0C_VERSION);
+	msg("compiler %s start, version %s\n", PL0E_NAME, PL0E_VERSION);
 
 	// initial
 	init(argc, argv);
