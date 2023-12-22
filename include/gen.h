@@ -3,7 +3,7 @@
 #include "parse.h"
 #include "symtab.h"
 
-#define MAINFUNC "@main"
+#define MAINFUNC "_start"
 
 static void gen_pgm(pgm_node_t *node);
 static void gen_pf_dec_list(pf_dec_list_node_t *node);

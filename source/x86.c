@@ -205,15 +205,17 @@ findaddr:
 	}
 
 doit:
+	char extra[128];
+	sprintf(extra, "%s %s", var->label, var->name);
 	switch (mode) {
 	case READ_MEM_VAL:
-		addcode4("mov", reg->name, ptr(mem, off), var->label);
+		addcode4("mov", reg->name, ptr(mem, off), extra);
 		break;
 	case SAVE_REG_VAL:
-		addcode4("mov", ptr(mem, off), reg->name, var->label);
+		addcode4("mov", ptr(mem, off), reg->name, extra);
 		break;
 	case LOAD_MEM_ADDR:
-		addcode4("lea", reg->name, ptr(mem, off), var->label);
+		addcode4("lea", reg->name, ptr(mem, off), extra);
 		break;
 	default:
 		unlikely();
@@ -405,7 +407,7 @@ void x86_iolib_readint()
 
 void x86_init()
 {
-	addcode2("global", "_start");
+	addcode2("global", MAINFUNC);
 
 	x86_iolib_readchr();
 	x86_iolib_readint();
@@ -531,7 +533,7 @@ void x86_enter(syment_t *func)
 {
 	char buf[64];
 	if (!strcmp(func->name, MAINFUNC)) {
-		addlabel("_start");
+		addlabel(MAINFUNC);
 	} else {
 		sprintf(buf, "%s$%s", func->label, func->name);
 		addlabel(buf);
