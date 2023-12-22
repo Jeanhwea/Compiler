@@ -541,7 +541,7 @@ void x86_enter(syment_t *func)
 	addcode3("mov", REG_BP, REG_SP);
 
 	int off = ALIGN * (func->scope->varoff + func->scope->tmpoff);
-	sprintf(buf, "reserve %d bytes", off);
+	sprintf(buf, "reserve %d bytes for %s", off, func->name);
 	addcode4("sub", REG_SP, itoa(off), buf);
 	addcode2("push", REG_SI);
 	addcode2("push", REG_DI);
