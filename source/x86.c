@@ -12,21 +12,21 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // register table
-reg_t regs[4] = {
+reg_t X86_REG_TBL[4] = {
 	[0] = { REG_RA, 0 },
 	[1] = { REG_RC, 0 },
 	[2] = { REG_RD, 0 },
 	[3] = { REG_RB, 0 },
 };
 
-#define MAXREGS (sizeof(regs) / sizeof(reg_t))
+#define MAXREGS (sizeof(X86_REG_TBL) / sizeof(reg_t))
 
 // Alloc a register
 reg_t *allocreg()
 {
 	int i;
 	for (i = 0; i < MAXREGS; ++i) {
-		reg_t *r = &regs[i];
+		reg_t *r = &X86_REG_TBL[i];
 		if (r->refcnt == 0) {
 			r->refcnt++;
 			return r;
@@ -42,7 +42,7 @@ reg_t *lockreg(char *name)
 {
 	int i;
 	for (i = 0; i < MAXREGS; ++i) {
-		reg_t *r = &regs[i];
+		reg_t *r = &X86_REG_TBL[i];
 		if (!strcmp(r->name, name) && r->refcnt == 0) {
 			r->refcnt++;
 			return r;
