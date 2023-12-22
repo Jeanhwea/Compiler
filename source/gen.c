@@ -431,7 +431,7 @@ static void gen_arg_list(arg_list_node_t *node)
 			emit2(PADR_OP, NULL, d);
 			break;
 		case ARRAY_OBJ:
-			r = gen_expr(t->ep);
+			r = gen_expr(t->idx);
 			emit2(PADR_OP, r, d);
 			break;
 		default:

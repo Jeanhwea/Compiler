@@ -264,8 +264,9 @@ typedef struct _arg_list_node {
 	expr_node_t *ep;
 	arg_list_node_t *next;
 	// link to referenced variable or array
-	syment_t *argsym;
-	syment_t *refsym;
+	syment_t *refsym; // referenced parameter
+	syment_t *argsym; // local argument
+	expr_node_t *idx; // array reference index
 } arg_list_node_t;
 
 #endif /* End of _SYNTAX_H_ */

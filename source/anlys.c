@@ -490,6 +490,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			ident_node_t *idp;
 			if (fp->type == ID_FACTOR || fp->type == ARRAY_FACTOR) {
 				idp = fp->idp;
+				t->idx = fp->ep;
 				anlys_factor(fp);
 				goto refok;
 			}
