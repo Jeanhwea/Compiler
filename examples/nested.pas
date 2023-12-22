@@ -12,6 +12,7 @@ begin
    func01 := x + val + func02(2)
 end;
 begin
+   val := 1;
    ans := func01(1);
    write(ans)
 end.
