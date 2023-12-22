@@ -1,39 +1,42 @@
+# global
+TARGET   := pl0c
 BLD_DIR  := output
 INC_DIR  := include
 SRC_DIR  := source
 BIN_DIR  := bin
-TEST_DIR := tests
-
+TOOL_DIR := tool
+# source codes
 SRCS     := $(shell find $(SRC_DIR) -name *.c)
 OBJS     := $(SRCS:%=$(BLD_DIR)/%.o)
 DEPS     := $(OBJS:.o=.d)
-TARGET   := pl0c
-
-TSRCS    := $(shell find $(TEST_DIR) -name *.c)
+# tools
+TSRCS    := $(shell find $(TOOL_DIR) -name *.c)
 TOBJS    := $(filter-out $(BLD_DIR)/$(SRC_DIR)/main.c.o,$(OBJS))
 TDEPS    := $(TOBJS:.o=.d)
-TESTS    := $(TSRCS:$(TEST_DIR)/%.c=$(BIN_DIR)/%)
-
-
+TOOLS    := $(TSRCS:$(TOOL_DIR)/%.c=$(BIN_DIR)/%)
+# build config
 CC       := gcc
 CCFLAGS  := -I$(INC_DIR) -g -MMD -MP
 LDFLAGS  := -I$(INC_DIR) -g
 
-all: $(TARGET) $(TESTS)
+# all build targets
+all: $(TARGET) $(TOOLS)
 
 
 # target
 $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
-# unit test
-$(BIN_DIR)/%: $(TOBJS) $(BLD_DIR)/$(TEST_DIR)/%.c.o
-	$(CC) $(LDFLAGS) $^ -o $@
-
 # c source
 $(BLD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c $< -o $@
+# tools
+$(BIN_DIR)/%: $(TOBJS) $(BLD_DIR)/$(TOOL_DIR)/%.c.o
+	$(CC) $(LDFLAGS) $^ -o $@
+
+# include dependencies
+-include $(DEPS)
 
 setup: clean index
 	bear -- make
@@ -43,12 +46,11 @@ index: clean
 	cscope -bqk
 	ctags -e -L cscope.files
 
--include $(DEPS)
-
-.PHONY: all clean distclean index setup tests
 clean:
-	$(RM) -r $(BLD_DIR) pl0c bin/* viz*
+	$(RM) -r $(BLD_DIR) $(TARGET) bin/* viz*
 	find . -iname "*.o" -or -iname "*.s" -or -iname "*.run" | xargs -I {} rm -f {}
 
 distclean:
 	$(RM) -r compile_commands.json cscope.* TAGS
+
+.PHONY: all clean distclean index setup
