@@ -139,8 +139,8 @@ void progdump()
 	fclose(target);
 }
 
-// hold current depth
-int currdepth = 0;
+// hold current scope, especially for get current depth
+symtab_t *scope = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
 // i386 instructions
@@ -167,7 +167,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		off = currdepth + var->off;
+		off = scope->depth + var->off;
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
@@ -184,7 +184,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	}
 
 findaddr:
-	gap = currdepth - tab->depth;
+	gap = scope->depth - tab->depth;
 	off = -var->off;
 	if (gap == 0) {
 		mem = REG_BP;
@@ -537,7 +537,7 @@ void x86_enter(syment_t *func)
 		sprintf(buf, "%s$%s", func->label, func->name);
 		addlabel(buf);
 	}
-	currdepth = func->scope->depth;
+	scope = func->scope->depth;
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 
