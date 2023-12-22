@@ -50,14 +50,14 @@ static pgm_node_t *parse_pgm(void)
 	NEWNODE(pgm_node_t, t);
 
 	// setup entrypoint
-	ident_node_t *main;
-	NEWNODE(ident_node_t, main);
-	main->kind = INT_FUN_IDENT;
-	main->value = 0;
-	main->length = 0;
-	main->line = lineno;
-	main->name = MAINFUNC;
-	t->entry = main;
+	ident_node_t *entry;
+	NEWNODE(ident_node_t, entry);
+	entry->kind = INT_FUN_IDENT;
+	entry->value = 0;
+	entry->length = 0;
+	entry->line = lineno;
+	entry->name = MAINFUNC;
+	t->entry = entry;
 
 	t->bp = parse_block();
 	match(SS_DOT);
