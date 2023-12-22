@@ -183,7 +183,7 @@ void asmbl_load_op(inst_t *x)
 	if (x->s) { // load array
 		reg_t *r2 = allocreg(); // offset
 		loadvar(r2, x->s);
-		loadptr2(r1, x->r, r2);
+		loadarr(r1, x->r, r2);
 		savevar(x->d, r1);
 		freereg(r2);
 	} else {
