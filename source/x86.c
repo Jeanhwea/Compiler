@@ -221,8 +221,8 @@ doit:
 		addcode4("mov", ptr(mem, off), reg->name, extra);
 		break;
 	case SAVE_MEM_REF:
-		addcode4("mov", REG_DI, ptr(reg->name, 0), extra);
-		addcode4("mov", ptr(mem, off), REG_DI, extra);
+		addcode4("mov", REG_DI, ptr(mem, off), extra);
+		addcode4("mov", ptr(REG_DI, 0), reg->name, extra);
 		break;
 	case LOAD_MEM_ADDR:
 		addcode4("lea", reg->name, ptr(mem, off), extra);
@@ -428,12 +428,26 @@ void x86_init()
 
 void x86_mov(reg_t *reg, syment_t *var)
 {
-	rwmem(READ_MEM_VAL, reg, var, NULL);
+	switch (var->cate) {
+	case BYREF_OBJ:
+		rwmem(READ_MEM_REF, reg, var, NULL);
+		break;
+	default:
+		rwmem(READ_MEM_VAL, reg, var, NULL);
+		break;
+	}
 }
 
 void x86_mov2(syment_t *var, reg_t *reg)
 {
-	rwmem(SAVE_REG_VAL, reg, var, NULL);
+	switch (var->cate) {
+	case BYREF_OBJ:
+		rwmem(SAVE_MEM_REF, reg, var, NULL);
+		break;
+	default:
+		rwmem(SAVE_REG_VAL, reg, var, NULL);
+		break;
+	}
 }
 
 void x86_mov3(reg_t *reg, syment_t *arr, reg_t *idx)
