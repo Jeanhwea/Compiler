@@ -38,19 +38,11 @@ void pl0c_read_args(int argc, char *argv[])
 
 void pl0c_init_file()
 {
-	// Open Source Code File
 	source = fopen(PL0E_INPUT, "r");
 	if (source == NULL) {
 		panic("source file not found!");
 	}
 	msg("reading file %s\n", PL0E_INPUT);
-
-	// Open Target File
-	target = fopen(PL0E_ASSEM, "w");
-	if (target == NULL) {
-		panic("target file not found!");
-	}
-	msg("open target file %s\n", PL0E_ASSEM);
 }
 
 // init

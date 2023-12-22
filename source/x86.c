@@ -106,6 +106,14 @@ void addcode1(char *op)
 
 void progdump()
 {
+	// Open Target File
+	target = fopen(PL0E_ASSEM, "w");
+	if (target == NULL) {
+		panic("target file not found!");
+	}
+	msg("open target file %s\n", PL0E_ASSEM);
+
+	// Write content
 	fprintf(target, "section .text\n");
 	int k;
 	for (k = 0; k < prog.itext; ++k) {
@@ -128,8 +136,9 @@ void progdump()
 		}
 	}
 
-	if (!prog.idata)
-		return;
+	if (!prog.idata) {
+		goto dofree;
+	}
 
 	fprintf(target, "section .data\n");
 	for (k = 0; k < prog.idata; ++k) {
@@ -137,6 +146,7 @@ void progdump()
 		fprintf(target, "\t%s db '%s', 0\n", d->op, d->fa);
 	}
 
+dofree:
 	fclose(target);
 }
 
