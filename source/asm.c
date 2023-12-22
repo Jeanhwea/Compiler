@@ -181,16 +181,15 @@ void asmbl_load_op(inst_t *x)
 	reg_t *r1 = allocreg();
 
 	if (x->s) { // load array
-		reg_t *r2 = allocreg(); // offset
-		loadvar(r2, x->s);
-		loadarr(r1, x->r, r2);
-		savevar(x->d, r1);
-		freereg(r2);
+		reg_t *offreg = allocreg();
+		loadvar(offreg, x->s);
+		loadarr(r1, x->r, offreg);
+		freereg(offreg);
 	} else {
 		loadptr(r1, x->r);
-		savevar(x->d, r1);
 	}
 
+	savevar(x->d, r1);
 	freereg(r1);
 }
 
@@ -317,16 +316,16 @@ void asmbl_push_op(inst_t *x)
 void asmbl_padr_op(inst_t *x)
 {
 	reg_t *r1 = allocreg();
-	reg_t *r2 = allocreg();
 	if (x->r) {
-		loadvar(r2, x->r); // offset
-		loadptr2(r1, x->d, r2);
+		reg_t *offreg = allocreg();
+		loadvar(offreg, x->r);
+		loadptr2(r1, x->d, offreg);
+		freereg(offreg);
 	} else {
 		loadptr(r1, x->d);
 	}
 	x86_push(r1);
 	freereg(r1);
-	freereg(r2);
 }
 
 void asmbl_pop_op(inst_t *x)
