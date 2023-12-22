@@ -1,17 +1,17 @@
-var ans : integer;
+var ans, val : integer;
 function func01(x : integer ) : integer;
    function func02(y : integer ) : integer;
       function func03(z : integer ) : integer;
       begin
-         func03 := z + 3
+         func03 := z + val
       end;
    begin
-      func02 := func03(y) + 2
+      func02 := y + val + func03(3)
    end;
 begin
-   func01 := func02(x) + 1
+   func01 := x + val + func02(2)
 end;
 begin
-   ans := func01(0);
+   ans := func01(1);
    write(ans)
 end.
