@@ -1,6 +1,6 @@
 var u, v: integer;
 
-procedure swap(var x, y : integer):integer;
+procedure swap(var x, y : integer);
 var t :  integer;
 begin
    t := x;

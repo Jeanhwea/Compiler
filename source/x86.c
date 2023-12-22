@@ -286,7 +286,6 @@ void x86_iolib_wrtstr()
 	addcode3("mov", REG_RB, "1");
 	addcode3("mov", REG_RD, REG_SI);
 	addcode2("int", SYSCAL);
-	addcode1("ret");
 
 	x86_lib_leave();
 }
