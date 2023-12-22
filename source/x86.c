@@ -19,11 +19,13 @@ reg_t regs[4] = {
 	[3] = { REG_RB, 0 },
 };
 
+#define MAXREGS (sizeof(regs) / sizeof(reg_t))
+
 // Alloc a register
 reg_t *allocreg()
 {
 	int i;
-	for (i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
+	for (i = 0; i < MAXREGS; ++i) {
 		reg_t *r = &regs[i];
 		if (r->refcnt == 0) {
 			r->refcnt++;
@@ -39,7 +41,7 @@ reg_t *allocreg()
 reg_t *lockreg(char *name)
 {
 	int i;
-	for (i = 0; i < sizeof(regs) / sizeof(reg_t); ++i) {
+	for (i = 0; i < MAXREGS; ++i) {
 		reg_t *r = &regs[i];
 		if (!strcmp(r->name, name) && r->refcnt == 0) {
 			r->refcnt++;
