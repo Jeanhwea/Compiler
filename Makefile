@@ -12,7 +12,7 @@ TARGET   := pl0c
 TSRCS    := $(shell find $(TEST_DIR) -name *.c)
 TOBJS    := $(filter-out $(BLD_DIR)/$(SRC_DIR)/main.c.o,$(OBJS))
 TDEPS    := $(TOBJS:.o=.d)
-TESTS    := $(TSRCS:$(TEST_DIR)/%.c=$(BIN_DIR)/%.test)
+TESTS    := $(TSRCS:$(TEST_DIR)/%.c=$(BIN_DIR)/%)
 
 
 CC       := gcc
