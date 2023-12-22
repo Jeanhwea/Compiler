@@ -27,7 +27,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 # unit test
-$(BIN_DIR)/%.test: $(TOBJS) $(BLD_DIR)/$(TEST_DIR)/%.c.o
+$(BIN_DIR)/%: $(TOBJS) $(BLD_DIR)/$(TEST_DIR)/%.c.o
 	$(CC) $(LDFLAGS) $^ -o $@
 
 # c source
