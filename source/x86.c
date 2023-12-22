@@ -205,6 +205,10 @@ findaddr:
 
 	if (var->cate == ARRAY_OBJ) {
 		nevernil(idx);
+		if (!strcmp(mem, REG_BP)) {
+			addcode3("mov", REG_SI, mem);
+			mem = REG_SI;
+		}
 		addcode3("imul", idx->name, itoa(ALIGN));
 		addcode3("sub", mem, idx->name);
 	}
