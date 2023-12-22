@@ -3,7 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-	echo = FALSE;
+	echo = 0;
+	silent = 1;
 	init(argc, argv);
 
 	token_t tok;
@@ -11,32 +12,32 @@ int main(int argc, char *argv[])
 	char *indent = "              ";
 	while ((tok = gettok()) != ENDFILE) {
 		int i;
-		for (i = 0; i < 80; ++i) {
-			msg("-");
+		for (i = 0; i < 60; ++i) {
+			printf("-");
 		}
-		msg("\n");
-		msg("#%03d LINE%03d: %s", ++seq, lineno, linebuf);
+		printf("\n");
+		printf("#%03d LINE%03d: %s", ++seq, lineno, linebuf);
 
 		int toksize = strlen(tokbuf);
 		int start = colmno - toksize;
-		msg("%s", indent);
+		printf("%s", indent);
 		for (i = 0; i < bufsize; ++i) {
 			if (i < start) {
-				msg(" ");
+				printf(" ");
 			} else if (i < start + toksize) {
-				msg("^");
+				printf("^");
 			} else {
 				break;
 			}
 		}
-		msg("\n");
+		printf("\n");
 
-		msg("%s", indent);
+		printf("%s", indent);
 		for (i = 0; i < start + toksize; ++i) {
-			msg(" ");
+			printf(" ");
 		}
-		msg("`-- ");
-		msg("token=%d, buf=[%s]\n", tok, tokbuf);
+		printf("`-- ");
+		printf("token=%d, buf=[%s]\n", tok, tokbuf);
 	}
 
 	return 0;
