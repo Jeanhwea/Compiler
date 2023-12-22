@@ -56,7 +56,9 @@ void progdump();
 
 typedef enum _rwmemmode_enum {
 	READ_MEM_VAL,
+	READ_MEM_REF,
 	SAVE_REG_VAL,
+	SAVE_MEM_REF,
 	LOAD_MEM_ADDR
 } rwmode_t;
 

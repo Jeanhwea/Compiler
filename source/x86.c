@@ -163,6 +163,10 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 {
 	char *mem;
 	int off, gap;
+
+	char extra[128];
+	sprintf(extra, "%s %s", var->label, var->name);
+
 	symtab_t *tab = var->stab;
 	switch (var->cate) {
 	case BYVAL_OBJ:
@@ -205,14 +209,20 @@ findaddr:
 	}
 
 doit:
-	char extra[128];
-	sprintf(extra, "%s %s", var->label, var->name);
 	switch (mode) {
 	case READ_MEM_VAL:
 		addcode4("mov", reg->name, ptr(mem, off), extra);
 		break;
+	case READ_MEM_REF:
+		addcode4("mov", REG_DI, ptr(mem, off), extra);
+		addcode4("mov", reg->name, ptr(REG_DI, 0), extra);
+		break;
 	case SAVE_REG_VAL:
 		addcode4("mov", ptr(mem, off), reg->name, extra);
+		break;
+	case SAVE_MEM_REF:
+		addcode4("mov", REG_DI, ptr(reg->name, 0), extra);
+		addcode4("mov", ptr(mem, off), REG_DI, extra);
 		break;
 	case LOAD_MEM_ADDR:
 		addcode4("lea", reg->name, ptr(mem, off), extra);
@@ -537,7 +547,7 @@ void x86_enter(syment_t *func)
 		sprintf(buf, "%s$%s", func->label, func->name);
 		addlabel(buf);
 	}
-	scope = func->scope->depth;
+	scope = func->scope;
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 
