@@ -233,6 +233,27 @@ doit:
 	}
 }
 
+// duplicate current ebp area to new function
+static void dupebp(syment_t *func)
+{
+	int funcdep = func->stab->depth;
+	int currdep = scope->depth;
+
+	int off, i;
+	for (i = 0; i < funcdep - 1; i++) {
+		off = currdep - i - 1;
+
+		// skip return value
+		if (off == 1) {
+			off--;
+		}
+
+		// dup ebp
+		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup ebp");
+		addcode2("push", REG_DI);
+	}
+}
+
 void x86_lib_enter()
 {
 	addcode2("push", REG_BP);
@@ -590,6 +611,7 @@ void x86_leave(syment_t *func)
 
 void x86_call(syment_t *func)
 {
+	dupebp(func);
 	char buf[64];
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
