@@ -5,7 +5,6 @@ int main(int argc, char *argv[])
 {
 	echo = FALSE;
 	init(argc, argv);
-	int counter = 0;
 
 	token_t tok;
 	int seq = 0;
@@ -36,7 +35,7 @@ int main(int argc, char *argv[])
 		for (i = 0; i < start + toksize; ++i) {
 			msg(" ");
 		}
-		msg("`--(%d)-- ", ++counter);
+		msg("`-- ");
 		msg("token=%d, buf=[%s]\n", tok, tokbuf);
 	}
 
