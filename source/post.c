@@ -27,9 +27,11 @@ void post_clean()
 {
 	if (!PL0E_OPT_KEEP_NASM_FILE) {
 		remove(PL0E_ASSEM);
+		msg("remove file %s\n", PL0E_ASSEM);
 	}
 
 	if (!PL0E_OPT_KEEP_OBJECT_FILE) {
 		remove(PL0E_OBJECT);
+		msg("remove file %s\n", PL0E_OBJECT);
 	}
 }
