@@ -13,6 +13,7 @@ char PL0E_OBJECT[4096] = "input.o";
 char PL0E_TARGET[4096] = "a.out";
 
 // options
+bool PL0E_OPT_QUIET = FALSE;
 bool PL0E_OPT_KEEP_NASM_FILE = FALSE;
 bool PL0E_OPT_KEEP_OBJECT_FILE = FALSE;
 bool PL0E_OPT_SET_TARGET_NAME = FALSE;
@@ -36,6 +37,12 @@ void pl0c_read_args(int argc, char *argv[])
 	}
 
 	for (int i = 0; i < argc; ++i) {
+		if (!strcmp("-q", argv[i])) {
+			PL0E_OPT_QUIET = TRUE;
+			echo = FLASE;
+			silent = TRUE;
+			continue;
+		}
 		if (!strcmp("-s", argv[i])) {
 			PL0E_OPT_KEEP_NASM_FILE = TRUE;
 			continue;
