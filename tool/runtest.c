@@ -55,12 +55,27 @@ void test(int id)
 		panic("fail to runtest.");
 	}
 
-	while (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
-		printf("%s", actual);
+	while (fgets(expect, MAXOUTPUT - 1, fe) != NULL) {
+		if (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
+			if (!strncmp(expect, actual, MAXOUTPUT - 1)) {
+				continue;
+			}
+			msg("test case: %s failed.\n", cases[id]);
+			goto done;
+		}
 	}
 
+	if (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
+		msg("test case: %s failed.\n", cases[id]);
+		goto done;
+	}
+
+	msg("test case: %s pass.\n", cases[id]);
+
+done:
 	pclose(fe);
 	pclose(fa);
+	remove(exeu);
 }
 
 int main(int argc, char *argv[])
