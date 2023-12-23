@@ -65,16 +65,8 @@ void test(int id)
 
 	while (fgets(expect, MAXOUTPUT - 1, fe) != NULL) {
 		if (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
-			int len;
-			len = strlen(expect);
-			if (expect[len - 1] == '\n') {
-				expect[len - 1] = '\0';
-			}
-
-			len = strlen(actual);
-			if (actual[len - 1] == '\n') {
-				actual[len - 1] = '\0';
-			}
+			rtrim(expect);
+			rtrim(actual);
 
 			if (!strncmp(expect, actual, MAXOUTPUT - 1)) {
 				continue;
