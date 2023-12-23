@@ -1,13 +1,12 @@
+#include "global.h"
 #include "anlys.h"
 #include "debug.h"
-#include "global.h"
-#include "tree.h"
+#include "conv.h"
 #include "ir.h"
 #include "symtab.h"
 #include "util.h"
 #include "syntax.h"
 #include "gen.h"
-#include <stdio.h>
 
 char *opcode[32] = {
 	[0] = "ADD",   [1] = "SUB",  [2] = "MUL",   [3] = "DIV",   [4] = "INC",

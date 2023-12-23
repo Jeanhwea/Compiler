@@ -1,11 +1,9 @@
-#include "anlys.h"
 #include "global.h"
-#include "tree.h"
+#include "anlys.h"
+#include "conv.h"
 #include "parse.h"
 #include "util.h"
 #include "syntax.h"
-#include <stdio.h>
-#include <string.h>
 
 int indent = 0;
 
