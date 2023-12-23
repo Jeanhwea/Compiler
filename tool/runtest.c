@@ -71,6 +71,7 @@ void test(int id)
 			if (!strncmp(expect, actual, MAXOUTPUT - 1)) {
 				continue;
 			}
+
 			msg("test case: %s failed.\n", cases[id]);
 			goto done;
 		}
