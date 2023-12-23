@@ -29,7 +29,7 @@ void gettests()
 void build(int id)
 {
 	char cmd[4096];
-	sprintf(cmd, "./pl0c %s", cases[id]);
+	sprintf(cmd, "./pl0c -q %s", cases[id]);
 	system(cmd);
 }
 
