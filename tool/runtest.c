@@ -39,7 +39,7 @@ void test(int id)
 
 	char expt[MAXNAMELEN];
 	strncpy(expt, cases[id], MAXNAMELEN);
-	chgsuf(expt, ".pas", ".txt");
+	chgsuf(expt, ".txt", ".pas");
 
 	fe = fopen(expt, "r");
 	if (fe == NULL) {
@@ -48,7 +48,7 @@ void test(int id)
 
 	char exeu[MAXNAMELEN];
 	strncpy(exeu, cases[id], MAXNAMELEN);
-	chgsuf(exeu, ".pas", ".run");
+	chgsuf(exeu, ".run", ".pas");
 
 	fa = popen(exeu, "r");
 	if (fa == NULL) {
