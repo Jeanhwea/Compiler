@@ -3,7 +3,7 @@ procedure writeln(x : integer);
 var newline : char;
 begin
    write(x);
-   newline = 10;
+   newline := 10;
    write(newline)
 end;
 
