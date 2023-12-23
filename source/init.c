@@ -1,6 +1,8 @@
+#include "debug.h"
 #include "error.h"
 #include "global.h"
 #include "util.h"
+#include <string.h>
 
 // constants
 char PL0E_NAME[32] = "pl0c";
@@ -9,6 +11,11 @@ char PL0E_INPUT[4096] = "input.pas";
 char PL0E_ASSEM[4096] = "input.s";
 char PL0E_OBJECT[4096] = "input.o";
 char PL0E_TARGET[4096] = "a.out";
+
+// options
+bool PL0E_OPT_KEEP_NASM_FILE = FALSE;
+bool PL0E_OPT_KEEP_OBJECT_FILE = FALSE;
+bool PL0E_OPT_SET_TARGET_NAME = FALSE;
 
 // debug
 bool echo = FALSE;
@@ -27,13 +34,36 @@ void pl0c_read_args(int argc, char *argv[])
 		msg("usage: %s source.pas\n", argv[0]);
 		exit(EARGMT);
 	}
-	strcpy(PL0E_INPUT, argv[argc - 1]);
+
+	for (int i = 0; i < argc; ++i) {
+		if (!strcmp("-s", argv[i])) {
+			PL0E_OPT_KEEP_NASM_FILE = TRUE;
+			continue;
+		}
+		if (!strcmp("-c", argv[i])) {
+			PL0E_OPT_KEEP_OBJECT_FILE = TRUE;
+			continue;
+		}
+		if (!strcmp("-o", argv[i])) {
+			PL0E_OPT_SET_TARGET_NAME = TRUE;
+			i++;
+			if (i == argc) {
+				panic("should give target file name after -o");
+			}
+			strcpy(PL0E_TARGET, argv[i]);
+			continue;
+		}
+		strcpy(PL0E_INPUT, argv[i]);
+	}
+
 	strcpy(PL0E_ASSEM, PL0E_INPUT);
-	strcpy(PL0E_OBJECT, PL0E_INPUT);
-	strcpy(PL0E_TARGET, PL0E_INPUT);
 	chgsuf(PL0E_ASSEM, ".s", ".pas");
+	strcpy(PL0E_OBJECT, PL0E_INPUT);
 	chgsuf(PL0E_OBJECT, ".o", ".pas");
-	chgsuf(PL0E_TARGET, ".run", ".pas");
+	if (!PL0E_OPT_SET_TARGET_NAME) {
+		strcpy(PL0E_TARGET, PL0E_INPUT);
+		chgsuf(PL0E_TARGET, ".run", ".pas");
+	}
 }
 
 void pl0c_init_file()

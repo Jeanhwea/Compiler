@@ -14,6 +14,11 @@ extern char PL0E_ASSEM[];
 extern char PL0E_OBJECT[];
 extern char PL0E_TARGET[];
 
+// option
+extern bool PL0E_OPT_KEEP_NASM_FILE;
+extern bool PL0E_OPT_KEEP_OBJECT_FILE;
+extern bool PL0E_OPT_SET_TARGET_NAME;
+
 // print control
 extern bool echo;
 extern bool silent;

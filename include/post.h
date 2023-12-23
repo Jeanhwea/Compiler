@@ -3,4 +3,5 @@
 
 void post_nasm();
 void post_link();
+void post_clean();
 #endif /* End of _POST_H_ */

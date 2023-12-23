@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	post_nasm();
 	post_link();
 
+	post_clean();
 	msg("done\n");
 	return 0;
 }
