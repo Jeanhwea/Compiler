@@ -70,8 +70,7 @@ void test(int id)
 		goto done;
 	}
 
-	msg("test case: %s pass.\n", cases[id]);
-
+	// msg("test case: %s pass.\n", cases[id]);
 done:
 	pclose(fe);
 	pclose(fa);
