@@ -26,6 +26,14 @@ void gettests()
 	globfree(&glob_result);
 }
 
+void rtrim(char *s)
+{
+	int len = strlen(s);
+	if (s[len - 1] == '\n') {
+		s[len - 1] = '\0';
+	}
+}
+
 void build(int id)
 {
 	char cmd[4096];
@@ -57,6 +65,17 @@ void test(int id)
 
 	while (fgets(expect, MAXOUTPUT - 1, fe) != NULL) {
 		if (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
+			int len;
+			len = strlen(expect);
+			if (expect[len - 1] == '\n') {
+				expect[len - 1] = '\0';
+			}
+
+			len = strlen(actual);
+			if (actual[len - 1] == '\n') {
+				actual[len - 1] = '\0';
+			}
+
 			if (!strncmp(expect, actual, MAXOUTPUT - 1)) {
 				continue;
 			}
@@ -65,9 +84,12 @@ void test(int id)
 		}
 	}
 
-	if (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
-		msg("test case: %s failed.\n", cases[id]);
-		goto done;
+	while (fgets(actual, MAXOUTPUT - 1, fa) != NULL) {
+		rtrim(actual);
+		if (strlen(actual) > 0) {
+			msg("test case: %s failed.\n", cases[id]);
+			goto done;
+		}
 	}
 
 	// msg("test case: %s pass.\n", cases[id]);
