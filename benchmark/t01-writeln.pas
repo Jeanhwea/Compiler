@@ -1,4 +1,5 @@
 const a = 1, b = 2, c = 3;
+
 procedure writeln(x : integer);
 var newline : char;
 begin
