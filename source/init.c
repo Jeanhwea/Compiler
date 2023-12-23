@@ -1,3 +1,4 @@
+#include "common.h"
 #include "debug.h"
 #include "error.h"
 #include "global.h"
@@ -39,7 +40,7 @@ void pl0c_read_args(int argc, char *argv[])
 	for (int i = 0; i < argc; ++i) {
 		if (!strcmp("-q", argv[i])) {
 			PL0E_OPT_QUIET = TRUE;
-			echo = FLASE;
+			echo = FALSE;
 			silent = TRUE;
 			continue;
 		}
