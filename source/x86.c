@@ -153,7 +153,6 @@ dofree:
 // hold current scope, especially for get current depth
 symtab_t *scope = NULL;
 
-////////////////////////////////////////////////////////////////////////////////
 // i386 instructions
 static char addrbuf[16];
 

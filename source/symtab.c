@@ -5,7 +5,6 @@
 #include "syntax.h"
 #include "symtab.h"
 
-////////////////////////////////////////////////////////////////////////////////
 // symbol table management
 symtab_t *top = NULL;
 int depth = 0;
@@ -50,9 +49,7 @@ symtab_t *scope_top(void)
 	return top;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // entry management
-
 const int HASHSIZE = 211;
 const int HASHSHIFT = 4;
 

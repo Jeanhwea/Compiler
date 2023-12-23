@@ -14,7 +14,6 @@ typedef int bool;
 typedef enum _token_enum token_t;
 typedef struct _pgm_node pgm_node_t;
 
-////////////////////////////////////////////////////////////////////////////////
 // Initialize struct, allocate memory
 //     INITMEM(s: struct, v: variable, sturct pointer)
 #define INITMEM(s, v)                                                          \

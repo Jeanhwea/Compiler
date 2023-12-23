@@ -1,5 +1,5 @@
-#ifndef _TREE_H_
-#define _TREE_H_
+#ifndef _CONV_H_
+#define _CONV_H_
 #include "global.h"
 #include "parse.h"
 
@@ -52,4 +52,4 @@ node_t *conv_para_list_node(para_list_node_t *t);
 node_t *conv_para_def_node(para_def_node_t *t);
 node_t *conv_arg_list_node(arg_list_node_t *t);
 
-#endif /* End of _TREE_H_ */
+#endif /* End of _CONV_H_ */

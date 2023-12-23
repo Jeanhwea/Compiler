@@ -10,7 +10,7 @@
 #include "syntax.h"
 #include <stdio.h>
 
-// AST
+// syntax tree
 pgm_node_t *ast;
 int nidcnt = 0;
 

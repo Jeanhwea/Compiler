@@ -3,8 +3,7 @@
 #include "global.h"
 #include "scan.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// Declaretion of a bundle of tree node for AST
+// Declaretion of a bundle of tree node
 typedef struct _pgm_node pgm_node_t;
 typedef struct _block_node block_node_t;
 typedef struct _const_dec_node const_dec_node_t;
@@ -61,7 +60,6 @@ extern int nidcnt;
 	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
 	 currtok == (d) || currtok == (e) || currtok == (f))
 
-////////////////////////////////////////////////////////////////////////////////
 // ID read mode, for parse_ident()
 typedef enum _idreadmode_enum { READCURR, READPREV } idreadmode_t;
 
@@ -98,7 +96,6 @@ static para_list_node_t *parse_para_list(void);
 static para_def_node_t *parse_para_def(void);
 static arg_list_node_t *parse_arg_list(void);
 
-////////////////////////////////////////////////////////////////////////////////
-// Parse source file to AST
+// syntax analysis, produce the syntax tree
 pgm_node_t *parse(void);
 #endif /* End of _PARSE_H_ */
