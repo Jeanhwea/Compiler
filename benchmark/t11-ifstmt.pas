@@ -1,30 +1,66 @@
-var x: integer;
+var x, y: integer;
 
 procedure newline();
-var newline : char;
+var nl : char;
 begin
-   newline := 10;
-   write(newline)
+   nl := 10;
+   write(nl)
 end;
 
 begin
 
    x := 0;
-   if x =  1 then writeln(0) else writeln(1); { 1 }
-   if x <> 1 then writeln(2) else writeln(0); { 2 }
-   if x >  1 then writeln(0) else writeln(3); { 3 }
-   if x <  1 then writeln(4) else writeln(0); { 4 }
-   if x >= 1 then writeln(0) else writeln(5); { 5 }
-   if x <= 1 then writeln(6) else writeln(0); { 6 }
-
+   if x =  1 then write(0) else write(1); { 1 }
+   if x <> 1 then write(2) else write(0); { 2 }
+   if x >  1 then write(0) else write(3); { 3 }
+   if x <  1 then write(4) else write(0); { 4 }
+   if x >= 1 then write(0) else write(5); { 5 }
+   if x <= 1 then write(6) else write(0); { 6 }
    newline();
 
    x := 1;
-   if x =  1 then writeln(1) else writeln(0); { 1 }
-   if x <> 1 then writeln(0) else writeln(2); { 2 }
-   if x >  1 then writeln(0) else writeln(3); { 3 }
-   if x <  1 then writeln(0) else writeln(4); { 4 }
-   if x >= 1 then writeln(5) else writeln(0); { 5 }
-   if x <= 1 then writeln(6) else writeln(0); { 6 }
+   if x =  1 then write(1) else write(0); { 1 }
+   if x <> 1 then write(0) else write(2); { 2 }
+   if x >  1 then write(0) else write(3); { 3 }
+   if x <  1 then write(0) else write(4); { 4 }
+   if x >= 1 then write(5) else write(0); { 5 }
+   if x <= 1 then write(6) else write(0); { 6 }
+   newline();
+
+   x := 2;
+   if x =  1 then write(0) else write(1); { 1 }
+   if x <> 1 then write(2) else write(0); { 2 }
+   if x >  1 then write(3) else write(0); { 3 }
+   if x <  1 then write(0) else write(4); { 4 }
+   if x >= 1 then write(5) else write(0); { 5 }
+   if x <= 1 then write(0) else write(6); { 6 }
+   newline();
+
+   x := 0; y := 1;
+   if x =  y then write(0) else write(1); { 1 }
+   if x <> y then write(2) else write(0); { 2 }
+   if x >  y then write(0) else write(3); { 3 }
+   if x <  y then write(4) else write(0); { 4 }
+   if x >= y then write(0) else write(5); { 5 }
+   if x <= y then write(6) else write(0); { 6 }
+   newline();
+
+   x := 1; y := 1;
+   if x =  y then write(1) else write(0); { 1 }
+   if x <> y then write(0) else write(2); { 2 }
+   if x >  y then write(0) else write(3); { 3 }
+   if x <  y then write(0) else write(4); { 4 }
+   if x >= y then write(5) else write(0); { 5 }
+   if x <= y then write(6) else write(0); { 6 }
+   newline();
+
+   x := 2; y := 1;
+   if x =  y then write(0) else write(1); { 1 }
+   if x <> y then write(2) else write(0); { 2 }
+   if x >  y then write(3) else write(0); { 3 }
+   if x <  y then write(0) else write(4); { 4 }
+   if x >= y then write(5) else write(0); { 5 }
+   if x <= y then write(0) else write(6); { 6 }
+   newline();
 
 end.

@@ -1,8 +1,8 @@
 procedure newline();
-var ch : char;
+var nl : char;
 begin
-   ch := 10;
-   write(ch)
+   nl := 10;
+   write(nl)
 end;
 
 begin
