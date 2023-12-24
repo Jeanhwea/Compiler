@@ -51,4 +51,9 @@ begin
    end;
    newline();
 
+   for i := 1 to 3 do
+      for j := 3 downto 1 do
+         write(j);
+   newline();
+
 end.
