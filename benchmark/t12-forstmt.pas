@@ -9,29 +9,23 @@ end;
 
 begin
 
-   i := 999;
    for i := 1 to 3 do write(i);
    write(i);
    newline();
 
-   i := 999;
    for i := 3 downto 1 do write(i);
    write(i);
    newline();
 
-   i := 999;
    for i := 1 to 1 do write(i);
    newline();
 
-   i := 999;
    for i := 3 downto 3 do write(i);
    newline();
 
-   i := 999;
    for i := 3 to 1 do write(i);
    newline();
 
-   i := 999;
    for i := 1 downto 3 do write(i);
    newline();
 
