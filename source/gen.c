@@ -353,7 +353,11 @@ static syment_t *gen_factor(factor_node_t *node)
 		break;
 	case UNSIGN_FACTOR:
 		d = symalloc(node->stab, "@factor/usi", NUM_OBJ, INT_TYPE);
-		d->initval = node->usi;
+		d->initval = node->value;
+		break;
+	case CHAR_FACTOR:
+		d = symalloc(node->stab, "@factor/char", NUM_OBJ, CHAR_TYPE);
+		d->initval = node->value;
 		break;
 	case EXPR_FACTOR:
 		d = gen_expr(node->ep);

@@ -191,6 +191,7 @@ typedef enum _factor_enum {
 	ID_FACTOR,
 	ARRAY_FACTOR,
 	UNSIGN_FACTOR,
+	CHAR_FACTOR,
 	EXPR_FACTOR,
 	FUNCALL_FACTOR
 } factor_t;
@@ -199,7 +200,8 @@ typedef struct _factor_node {
 	factor_t type;
 	ident_node_t *idp;
 	expr_node_t *ep;
-	int usi; // store unsign int value
+	// value: store unsigned int or char
+	int value;
 	fcall_stmt_node_t *fcsp;
 	symtab_t *stab;
 } factor_node_t;

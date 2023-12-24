@@ -417,6 +417,8 @@ static void anlys_factor(factor_node_t *node)
 		break;
 	case UNSIGN_FACTOR:
 		break;
+	case CHAR_FACTOR:
+		break;
 	case EXPR_FACTOR:
 		nevernil(node->ep);
 		anlys_expr(node->ep);

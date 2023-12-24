@@ -429,7 +429,11 @@ node_t *conv_factor_node(factor_node_t *t)
 		addchild(d, conv_expr_node(t->ep), "ep");
 		break;
 	case UNSIGN_FACTOR:
-		sprintf(buf, "%d", t->usi);
+		sprintf(buf, "%d", t->value);
+		d->extra = dupstr(buf);
+		break;
+	case CHAR_FACTOR:
+		sprintf(buf, "'%c'", t->value);
 		d->extra = dupstr(buf);
 		break;
 	case EXPR_FACTOR:

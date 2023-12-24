@@ -742,6 +742,7 @@ static expr_node_t *parse_expr(void)
 		t->tp = parse_term();
 		break;
 	case MC_ID:
+	case MC_CH:
 	case MC_UNS:
 	case SS_LPAR:
 		t->op = NOP_ADDOP;
@@ -821,8 +822,13 @@ static factor_node_t *parse_factor(void)
 	switch (currtok) {
 	case MC_UNS:
 		t->type = UNSIGN_FACTOR;
-		t->usi = atoi(tokbuf);
+		t->value = atoi(tokbuf);
 		match(MC_UNS);
+		break;
+	case MC_CH:
+		t->type = CHAR_FACTOR;
+		t->value = (int)tokbuf[0];
+		match(MC_CH);
 		break;
 	case SS_LPAR:
 		match(SS_LPAR);
