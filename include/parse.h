@@ -46,17 +46,16 @@ extern int nidcnt;
 	} while (0)
 
 // use like:
-//   if (CURRTOK_ANY(a, b, c, ...)) { ... }
-#define CURRTOK_ANY(a) (currtok == (a))
-#define CURRTOK_ANY2(a, b) (currtok == (a) || currtok == (b))
-#define CURRTOK_ANY3(a, b, c)                                                  \
-	(currtok == (a) || currtok == (b) || currtok == (c))
-#define CURRTOK_ANY4(a, b, c, d)                                               \
+//   if (TOKANY(a, b, c, ...)) { ... }
+#define TOKANY(a) (currtok == (a))
+#define TOKANY2(a, b) (currtok == (a) || currtok == (b))
+#define TOKANY3(a, b, c) (currtok == (a) || currtok == (b) || currtok == (c))
+#define TOKANY4(a, b, c, d)                                                    \
 	(currtok == (a) || currtok == (b) || currtok == (c) || currtok == (d))
-#define CURRTOK_ANY5(a, b, c, d, e)                                            \
+#define TOKANY5(a, b, c, d, e)                                                 \
 	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
 	 currtok == (d) || currtok == (e))
-#define CURRTOK_ANY6(a, b, c, d, e, f)                                         \
+#define TOKANY6(a, b, c, d, e, f)                                              \
 	(currtok == (a) || currtok == (b) || currtok == (c) ||                 \
 	 currtok == (d) || currtok == (e) || currtok == (f))
 

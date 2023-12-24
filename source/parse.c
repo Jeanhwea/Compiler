@@ -73,19 +73,19 @@ static block_node_t *parse_block(void)
 	block_node_t *t;
 	NEWNODE(block_node_t, t);
 
-	if (CURRTOK_ANY(KW_CONST)) {
+	if (TOKANY(KW_CONST)) {
 		t->cdp = parse_const_dec();
 	}
 
-	if (CURRTOK_ANY(KW_VAR)) {
+	if (TOKANY(KW_VAR)) {
 		t->vdp = parse_var_dec();
 	}
 
-	if (CURRTOK_ANY2(KW_FUNCTION, KW_PROCEDURE)) {
+	if (TOKANY2(KW_FUNCTION, KW_PROCEDURE)) {
 		t->pfdlp = parse_pf_dec_list();
 	}
 
-	if (CURRTOK_ANY(KW_BEGIN)) {
+	if (TOKANY(KW_BEGIN)) {
 		t->csp = parse_comp_stmt();
 	}
 
@@ -104,7 +104,7 @@ static const_dec_node_t *parse_const_dec(void)
 	match(KW_CONST);
 	t->cdp = parse_const_def();
 
-	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+	for (p = t; TOKANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
 		NEWNODE(const_dec_node_t, q);
 		p->next = q;
@@ -124,13 +124,13 @@ static const_def_node_t *parse_const_def(void)
 	const_def_node_t *t;
 	NEWNODE(const_def_node_t, t);
 
-	if (CURRTOK_ANY(MC_ID)) {
+	if (TOKANY(MC_ID)) {
 		t->idp = parse_ident(READCURR);
 	}
 
 	match(SS_EQU);
 
-	if (CURRTOK_ANY4(SS_PLUS, SS_MINUS, MC_UNS, MC_CH)) {
+	if (TOKANY4(SS_PLUS, SS_MINUS, MC_UNS, MC_CH)) {
 		switch (currtok) {
 		case SS_PLUS:
 			match(SS_PLUS);
@@ -177,7 +177,7 @@ static var_dec_node_t *parse_var_dec(void)
 	t->vdp = parse_var_def();
 	match(SS_SEMI);
 
-	for (p = t; CURRTOK_ANY(MC_ID); p = q) {
+	for (p = t; TOKANY(MC_ID); p = q) {
 		NEWNODE(var_dec_node_t, q);
 		p->next = q;
 		q->vdp = parse_var_def();
@@ -199,7 +199,7 @@ static var_def_node_t *parse_var_def(void)
 	int arrlen = 0;
 	t->idp = parse_ident(READCURR);
 
-	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+	for (p = t; TOKANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
 		NEWNODE(var_def_node_t, q);
 		p->next = q;
@@ -224,7 +224,7 @@ static var_def_node_t *parse_var_def(void)
 	case KW_ARRAY: // array[10] of integer
 		match(KW_ARRAY);
 		match(SS_LBRA);
-		if (CURRTOK_ANY(MC_UNS)) {
+		if (TOKANY(MC_UNS)) {
 			arrlen = atoi(tokbuf);
 			match(MC_UNS);
 		} else {
@@ -232,13 +232,13 @@ static var_def_node_t *parse_var_def(void)
 		}
 		match(SS_RBRA);
 		match(KW_OF);
-		if (CURRTOK_ANY(KW_INTEGER)) {
+		if (TOKANY(KW_INTEGER)) {
 			match(KW_INTEGER);
 			for (p = t; p; p = p->next) {
 				p->idp->kind = INT_ARRVAR_IDENT;
 				p->idp->length = arrlen;
 			}
-		} else if (CURRTOK_ANY(KW_CHAR)) {
+		} else if (TOKANY(KW_CHAR)) {
 			match(KW_CHAR);
 			for (p = t; p; p = p->next) {
 				p->idp->kind = CHAR_ARRVAR_IDENT;
@@ -263,7 +263,7 @@ static pf_dec_list_node_t *parse_pf_dec_list(void)
 {
 	pf_dec_list_node_t *t, *p, *q;
 
-	for (p = t = NULL; CURRTOK_ANY2(KW_FUNCTION, KW_PROCEDURE); p = q) {
+	for (p = t = NULL; TOKANY2(KW_FUNCTION, KW_PROCEDURE); p = q) {
 		NEWNODE(pf_dec_list_node_t, q);
 		if (p == NULL) {
 			t = q;
@@ -299,7 +299,7 @@ static proc_dec_node_t *parse_proc_dec(void)
 	t->pdp = parse_proc_def();
 	match(SS_SEMI);
 
-	for (p = t; CURRTOK_ANY(KW_PROCEDURE); p = q) {
+	for (p = t; TOKANY(KW_PROCEDURE); p = q) {
 		NEWNODE(proc_dec_node_t, q);
 		p->next = q;
 		q->pdp = parse_proc_def();
@@ -336,7 +336,7 @@ static proc_head_node_t *parse_proc_head(void)
 	t->idp->kind = PROC_IDENT;
 
 	match(SS_LPAR);
-	if (CURRTOK_ANY2(KW_VAR, MC_ID)) {
+	if (TOKANY2(KW_VAR, MC_ID)) {
 		t->plp = parse_para_list();
 	}
 	match(SS_RPAR);
@@ -357,7 +357,7 @@ static fun_dec_node_t *parse_fun_dec(void)
 	t->fdp = parse_fun_def();
 	match(SS_SEMI);
 
-	for (p = t; CURRTOK_ANY(KW_FUNCTION); p = q) {
+	for (p = t; TOKANY(KW_FUNCTION); p = q) {
 		NEWNODE(fun_dec_node_t, q);
 		p->next = q;
 		q->fdp = parse_fun_def();
@@ -394,7 +394,7 @@ static fun_head_node_t *parse_fun_head(void)
 	match(KW_FUNCTION);
 	t->idp = parse_ident(READCURR);
 	match(SS_LPAR);
-	if (CURRTOK_ANY2(KW_VAR, MC_ID)) {
+	if (TOKANY2(KW_VAR, MC_ID)) {
 		t->plp = parse_para_list();
 	} else {
 		unlikely();
@@ -456,13 +456,13 @@ static stmt_node_t *parse_stmt(void)
 		break;
 	case MC_ID:
 		match(MC_ID);
-		if (CURRTOK_ANY(SS_LPAR)) {
+		if (TOKANY(SS_LPAR)) {
 			t->type = PCALL_STMT;
 			t->pcp = parse_pcall_stmt();
-		} else if (CURRTOK_ANY2(SS_ASGN, SS_LBRA)) {
+		} else if (TOKANY2(SS_ASGN, SS_LBRA)) {
 			t->type = ASSGIN_STMT;
 			t->asp = parse_assign_stmt();
-		} else if (CURRTOK_ANY(SS_EQU)) {
+		} else if (TOKANY(SS_EQU)) {
 			t->type = ASSGIN_STMT;
 			t->asp = parse_assign_stmt();
 			rescue(ERRTOK, "L%d: bad token, = may be :=", lineno);
@@ -538,7 +538,7 @@ static if_stmt_node_t *parse_if_stmt(void)
 	match(KW_THEN);
 	t->tp = parse_stmt();
 
-	if (CURRTOK_ANY(KW_ELSE)) {
+	if (TOKANY(KW_ELSE)) {
 		match(KW_ELSE);
 		t->ep = parse_stmt();
 	}
@@ -612,7 +612,7 @@ static pcall_stmt_node_t *parse_pcall_stmt(void)
 	t->idp = parse_ident(READPREV);
 	match(SS_LPAR);
 
-	if (CURRTOK_ANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
+	if (TOKANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
 		t->alp = parse_arg_list();
 	}
 	match(SS_RPAR);
@@ -634,7 +634,7 @@ static fcall_stmt_node_t *parse_fcall_stmt(void)
 	t->idp = parse_ident(READPREV);
 	match(SS_LPAR);
 
-	if (CURRTOK_ANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
+	if (TOKANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
 		t->alp = parse_arg_list();
 	}
 	match(SS_RPAR);
@@ -653,7 +653,7 @@ static comp_stmt_node_t *parse_comp_stmt(void)
 	match(KW_BEGIN);
 	t->sp = parse_stmt();
 
-	for (p = t; CURRTOK_ANY(SS_SEMI); p = q) {
+	for (p = t; TOKANY(SS_SEMI); p = q) {
 		match(SS_SEMI);
 		NEWNODE(comp_stmt_node_t, q);
 		p->next = q;
@@ -677,7 +677,7 @@ static read_stmt_node_t *parse_read_stmt(void)
 	match(KW_READ);
 	match(SS_LPAR);
 	t->idp = parse_ident(READCURR);
-	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+	for (p = t; TOKANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
 		NEWNODE(read_stmt_node_t, q);
 		p->next = q;
@@ -700,17 +700,17 @@ static write_stmt_node_t *parse_write_stmt(void)
 
 	match(KW_WRITE);
 	match(SS_LPAR);
-	if (CURRTOK_ANY(MC_STR)) {
+	if (TOKANY(MC_STR)) {
 		t->type = STR_WRITE;
 		t->sp = dupstr(tokbuf);
 		match(MC_STR);
-	} else if (CURRTOK_ANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
+	} else if (TOKANY6(MC_ID, MC_CH, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
 		t->type = ID_WRITE;
 		t->ep = parse_expr();
 	} else {
 		unlikely();
 	}
-	if (CURRTOK_ANY(SS_COMMA) && t->type == STR_WRITE) {
+	if (TOKANY(SS_COMMA) && t->type == STR_WRITE) {
 		match(SS_COMMA);
 		t->type = STRID_WRITE;
 		t->ep = parse_expr();
@@ -752,7 +752,7 @@ static expr_node_t *parse_expr(void)
 	}
 
 	// reminder part
-	for (p = t; CURRTOK_ANY2(SS_PLUS, SS_MINUS); p = q) {
+	for (p = t; TOKANY2(SS_PLUS, SS_MINUS); p = q) {
 		NEWNODE(expr_node_t, q);
 		p->next = q;
 		switch (currtok) {
@@ -786,7 +786,7 @@ static term_node_t *parse_term(void)
 	t->op = NOP_MULTOP;
 	t->fp = parse_factor();
 
-	for (p = t; CURRTOK_ANY2(SS_STAR, SS_OVER); p = q) {
+	for (p = t; TOKANY2(SS_STAR, SS_OVER); p = q) {
 		NEWNODE(term_node_t, q);
 		p->next = q;
 		switch (currtok) {
@@ -832,13 +832,13 @@ static factor_node_t *parse_factor(void)
 		break;
 	case MC_ID:
 		match(MC_ID);
-		if (CURRTOK_ANY(SS_LBRA)) {
+		if (TOKANY(SS_LBRA)) {
 			t->type = ARRAY_FACTOR;
 			t->idp = parse_ident(READPREV);
 			match(SS_LBRA);
 			t->ep = parse_expr();
 			match(SS_RBRA);
-		} else if (CURRTOK_ANY(SS_LPAR)) {
+		} else if (TOKANY(SS_LPAR)) {
 			t->type = FUNCALL_FACTOR;
 			t->fcsp = parse_fcall_stmt();
 		} else {
@@ -936,7 +936,7 @@ static para_list_node_t *parse_para_list(void)
 	NEWNODE(para_list_node_t, t);
 
 	t->pdp = parse_para_def();
-	for (p = t; CURRTOK_ANY(SS_SEMI); p = q) {
+	for (p = t; TOKANY(SS_SEMI); p = q) {
 		match(SS_SEMI);
 		NEWNODE(para_list_node_t, q);
 		p->next = q;
@@ -957,14 +957,14 @@ static para_def_node_t *parse_para_def(void)
 
 	// VAR mean call by reference
 	bool byref = FALSE;
-	if (CURRTOK_ANY(KW_VAR)) {
+	if (TOKANY(KW_VAR)) {
 		byref = TRUE;
 		match(KW_VAR);
 	}
 
 	t->idp = parse_ident(READCURR);
 
-	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+	for (p = t; TOKANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
 		NEWNODE(para_def_node_t, q);
 		p->next = q;
@@ -1008,7 +1008,7 @@ static arg_list_node_t *parse_arg_list(void)
 
 	t->ep = parse_expr();
 
-	for (p = t; CURRTOK_ANY(SS_COMMA); p = q) {
+	for (p = t; TOKANY(SS_COMMA); p = q) {
 		match(SS_COMMA);
 		NEWNODE(arg_list_node_t, q);
 		p->next = q;
