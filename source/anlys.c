@@ -118,8 +118,9 @@ static void anlys_proc_head(proc_head_node_t *node)
 
 	e->scope = scope_entry(idp->name);
 
-	nevernil(t->plp);
-	anlys_para_list(idp->symbol, t->plp);
+	if (t->plp) {
+		anlys_para_list(idp->symbol, t->plp);
+	}
 }
 
 static void anlys_fun_decf(fun_dec_node_t *node)
@@ -159,8 +160,9 @@ static void anlys_fun_head(fun_head_node_t *node)
 
 	e->scope = scope_entry(idp->name);
 
-	nevernil(t->plp);
-	anlys_para_list(idp->symbol, t->plp);
+	if (t->plp) {
+		anlys_para_list(idp->symbol, t->plp);
+	}
 }
 
 static void anlys_para_list(syment_t *sign, para_list_node_t *node)
