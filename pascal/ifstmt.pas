@@ -1,5 +1,5 @@
 var x, y: integer;
-procedure newline(); var nl : char; begin nl := 10; write(nl) end;
+procedure newline(); begin writeln('') end;
 
 begin
 
