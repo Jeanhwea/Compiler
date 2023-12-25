@@ -181,7 +181,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		off = scope->depth + var->off;
+		off = 1 + scope->depth + var->off;
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
@@ -246,23 +246,21 @@ doit:
 	}
 }
 
-// duplicate current ebp area to new function
+// duplicate current ebp, construct access link area
 static void dupebp(syment_t *func)
 {
-	int funcdep = func->stab->depth;
-	int currdep = scope->depth;
+	int caller = scope->depth;
+	int callee = func->stab->depth;
 
 	int off, i;
-	for (i = 0; i < funcdep - 1; i++) {
-		off = currdep - i - 1;
-
-		// skip return value
-		if (off == 1) {
-			off--;
-		}
-
-		// dup ebp
+	for (i = 0; i < callee - 1; i++) {
+		off = caller - i;
 		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup ebp");
+		addcode2("push", REG_DI);
+	}
+
+	if (caller == callee) {
+		addcode4("mov", REG_DI, REG_BP, "dup current ebp");
 		addcode2("push", REG_DI);
 	}
 }
