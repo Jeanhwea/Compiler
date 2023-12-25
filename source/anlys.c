@@ -320,7 +320,9 @@ static void anlys_pcall_stmt(pcall_stmt_node_t *node)
 	}
 	idp->symbol = e;
 
-	anlys_arg_list(e, node->alp);
+	if (node->alp) {
+		anlys_arg_list(e, node->alp);
+	}
 }
 
 static void anlys_read_stmt(read_stmt_node_t *node)
@@ -450,8 +452,9 @@ static void anlys_fcall_stmt(fcall_stmt_node_t *node)
 	}
 	idp->symbol = e;
 
-	nevernil(node->alp);
-	anlys_arg_list(e, node->alp);
+	if (node->alp) {
+		anlys_arg_list(e, node->alp);
+	}
 }
 
 static void anlys_cond(cond_node_t *node)
