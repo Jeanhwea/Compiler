@@ -104,7 +104,7 @@ void addcode1(char *op)
 	addcode4(op, "", "", "");
 }
 
-void savetext(x86_t *i)
+void savetext(x86i_t *i)
 {
 	// label
 	if (i->islab) {
@@ -121,7 +121,7 @@ void savetext(x86_t *i)
 	}
 
 	if (strlen(i->fb)) {
-		fprintf(target, "\t%s, %s", i->fb);
+		fprintf(target, "\t%s, %s", i->fa, i->fb);
 	} else if (strlen(i->fa)) {
 		fprintf(target, "\t%s", i->fa);
 	}
@@ -132,7 +132,7 @@ void savetext(x86_t *i)
 	fprintf(target, "\n");
 }
 
-void savedata(x86_t *d)
+void savedata(x86i_t *d)
 {
 	fprintf(target, "\t%s db '%s', 0\n", d->op, d->fa);
 }
