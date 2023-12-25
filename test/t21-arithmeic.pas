@@ -11,7 +11,7 @@ begin
    write(2*3); newline();
    write(3/2); newline();
    write(2/3); newline();
-   write('x'); newline();
+   write("------"); newline();
 
    write(a+2); newline();
    write(2+a); newline();
@@ -21,7 +21,7 @@ begin
    write(2*a); newline();
    write(a/2); newline();
    write(2/a); newline();
-   write('x'); newline();
+   write("------"); newline();
 
    x := 3; y := 2;
    write(x+y); newline();
@@ -32,7 +32,7 @@ begin
    write(y*x); newline();
    write(x/y); newline();
    write(y/x); newline();
-   write('x'); newline();
+   write("------"); newline();
 
    x := 3; y := 2;
    z:=x+y; write(z); newline();
@@ -43,5 +43,5 @@ begin
    z:=y*x; write(z); newline();
    z:=x/y; write(z); newline();
    z:=y/x; write(z); newline();
-   write('x'); newline();
+   write("------"); newline();
 end.
