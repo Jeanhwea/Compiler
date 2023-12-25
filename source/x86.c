@@ -172,7 +172,7 @@ static char *ptr(char *reg, int offset)
 static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 {
 	char *mem;
-	int off, gap;
+	int off;
 
 	char extra[128];
 	sprintf(extra, "%s %s", var->label, var->name);
@@ -199,10 +199,10 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	}
 
 findaddr:
-	gap = scope->depth - tab->depth;
+	int gap = scope->depth - tab->depth;
 	if (gap == 0) {
 		mem = REG_BP;
-	} else if (gap > 1) {
+	} else if (gap > 0) {
 		addcode3("mov", REG_SI, ptr(REG_BP, gap + 1));
 		mem = REG_SI;
 	} else {
