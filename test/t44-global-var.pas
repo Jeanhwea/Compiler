@@ -12,7 +12,7 @@ begin
    id := inc(1)
 end;
 
-
+{ procedure newline(); begin writeln('') end; }
 procedure newline(); var nl: char; begin nl := 10; write(nl) end;
 
 begin
