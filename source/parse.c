@@ -396,8 +396,6 @@ static fun_head_node_t *parse_fun_head(void)
 	match(SS_LPAR);
 	if (TOKANY2(KW_VAR, MC_ID)) {
 		t->plp = parse_para_list();
-	} else {
-		unlikely();
 	}
 	match(SS_RPAR);
 	match(SS_COLON);
