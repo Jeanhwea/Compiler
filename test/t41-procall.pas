@@ -6,7 +6,7 @@ begin
    newline();
 end;
 
-procedure sayx(var x: char);
+procedure sayx(x: char);
 begin
    write("x = ", x);
    newline();

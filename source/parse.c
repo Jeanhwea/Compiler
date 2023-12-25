@@ -613,7 +613,7 @@ static pcall_stmt_node_t *parse_pcall_stmt(void)
 	t->idp = parse_ident(READPREV);
 	match(SS_LPAR);
 
-	if (TOKANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
+	if (TOKANY6(MC_ID, MC_CH, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
 		t->alp = parse_arg_list();
 	}
 	match(SS_RPAR);
@@ -635,7 +635,7 @@ static fcall_stmt_node_t *parse_fcall_stmt(void)
 	t->idp = parse_ident(READPREV);
 	match(SS_LPAR);
 
-	if (TOKANY5(MC_ID, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
+	if (TOKANY6(MC_ID, MC_CH, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
 		t->alp = parse_arg_list();
 	}
 	match(SS_RPAR);
