@@ -247,8 +247,9 @@ doit:
 }
 
 // duplicate current ebp, construct access link area
-static void dupebp(syment_t *func)
+static int dupebp(syment_t *func)
 {
+	int pushcnt = 0;
 	int caller = scope->depth;
 	int callee = func->stab->depth;
 	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
@@ -264,7 +265,9 @@ static void dupebp(syment_t *func)
 
 		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup ebp");
 		addcode2("push", REG_DI);
+		pushcnt++;
 	}
+	return pushcnt;
 }
 
 void x86_lib_enter()
@@ -624,10 +627,14 @@ void x86_leave(syment_t *func)
 
 void x86_call(syment_t *func)
 {
-	dupebp(func);
+	int pushcnt = dupebp(func);
 	char buf[64];
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
+	for (int i = 0; i < pushcnt; ++i) {
+		addcode2("pop", REG_DI);
+	}
+	dbg("pushcnt = %d\n", pushcnt);
 }
 
 void x86_ret()
