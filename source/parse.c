@@ -405,7 +405,7 @@ static fun_head_node_t *parse_fun_head(void)
 	switch (currtok) {
 	case KW_INTEGER:
 		match(KW_INTEGER);
-		t->idp->kind = CHAR_FUN_IDENT;
+		t->idp->kind = INT_FUN_IDENT;
 		break;
 	case KW_CHAR:
 		match(KW_CHAR);
