@@ -251,7 +251,7 @@ static void dupebp(syment_t *func)
 {
 	int caller = scope->depth;
 	int callee = func->stab->depth;
-	dbg("%d/%s calls %d/%s\n", caller, scope->nspace, callee, func->name);
+	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
 	if (caller == 1) {
 		addcode4("mov", REG_DI, REG_BP, "dup entry ebp");
