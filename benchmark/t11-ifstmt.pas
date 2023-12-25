@@ -10,6 +10,15 @@ end;
 begin
 
    x := 0;
+   if 1 =  x then write(0) else write(1); { 1 }
+   if 1 <> x then write(2) else write(0); { 2 }
+   if 1 >  x then write(3) else write(0); { 3 }
+   if 1 <  x then write(0) else write(4); { 4 }
+   if 1 >= x then write(5) else write(0); { 5 }
+   if 1 <= x then write(0) else write(6); { 6 }
+   newline();
+
+   x := 0;
    if x =  1 then write(0) else write(1); { 1 }
    if x <> 1 then write(2) else write(0); { 2 }
    if x >  1 then write(0) else write(3); { 3 }
