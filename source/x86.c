@@ -252,15 +252,12 @@ static void dupebp(syment_t *func)
 	int caller = scope->depth;
 	int callee = func->stab->depth;
 
+	dbg("caller=%d, callee=%d, func=%s\n", caller, callee, func->name);
+
 	int off, i;
-	for (i = 0; i < callee - 1; i++) {
+	for (i = 0; i < callee; i++) {
 		off = caller - i;
 		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup ebp");
-		addcode2("push", REG_DI);
-	}
-
-	if (caller == callee) {
-		addcode4("mov", REG_DI, REG_BP, "dup current ebp");
 		addcode2("push", REG_DI);
 	}
 }
