@@ -1,11 +1,5 @@
 var i, j: integer;
-
-procedure newline();
-var nl : char;
-begin
-   nl := 10;
-   write(nl)
-end;
+procedure newline(); var nl : char; begin nl := 10; write(nl) end;
 
 begin
 
