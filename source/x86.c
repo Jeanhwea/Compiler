@@ -342,7 +342,7 @@ void x86_iolib_wrtint()
 	addlabel(LIBWINT);
 	x86_lib_enter();
 
-	addcode3("xor", REG_SI, REG_SI); // negtive flag
+	addcode3("xor", REG_DI, REG_DI); // negtive flag
 	addcode3("cmp", REG_RA, "0");
 	addcode2("jnl", "_noneneg@wint");
 	addcode2("inc", REG_DI);
