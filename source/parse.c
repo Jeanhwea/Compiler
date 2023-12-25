@@ -555,6 +555,7 @@ static repe_stmt_node_t *parse_repe_stmt(void)
 	repe_stmt_node_t *t;
 	NEWNODE(repe_stmt_node_t, t);
 
+	match(KW_REPEAT);
 	t->sp = parse_stmt();
 	match(KW_UNTIL);
 	t->cp = parse_cond();
