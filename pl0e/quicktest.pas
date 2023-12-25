@@ -17,9 +17,9 @@ procedure newline(); var nl: char; begin nl := 10; write(nl) end;
 
 begin
    counter := 0;
-   write(id());
-   write(id());
-   { write(inc(0)); newline(); }
-   { write(id()); newline(); }
-   { write(inc(3)); newline(); }
+   { write(id()); }
+   { write(id()); }
+   write(inc(0)); newline();
+   write(id()); newline();
+   write(inc(3)); newline();
 end.
