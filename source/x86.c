@@ -181,7 +181,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		off = 1 + scope->depth + var->off;
+		off = scope->depth + var->off;
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
@@ -253,15 +253,15 @@ static void dupebp(syment_t *func)
 	int callee = func->stab->depth;
 	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
-	if (caller == 1) {
-		addcode4("mov", REG_DI, REG_BP, "dup entry ebp");
-		addcode2("push", REG_DI);
-		return;
-	}
-
 	int off, i;
-	for (i = 0; i < callee; i++) {
-		off = caller - i;
+	for (i = 0; i < callee - 1; i++) {
+		off = caller - i - 1;
+
+		// skip return address
+		if (off == 1) {
+			off--;
+		}
+
 		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup ebp");
 		addcode2("push", REG_DI);
 	}
