@@ -181,7 +181,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		off = scope->depth + var->off;
+		off = 1 + scope->depth + var->off;
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
@@ -202,11 +202,8 @@ findaddr:
 	gap = scope->depth - tab->depth;
 	if (gap == 0) {
 		mem = REG_BP;
-	} else if (gap == 1) {
-		addcode3("mov", REG_SI, ptr(REG_BP, 0));
-		mem = REG_SI;
 	} else if (gap > 1) {
-		addcode3("mov", REG_SI, ptr(REG_BP, gap));
+		addcode3("mov", REG_SI, ptr(REG_BP, gap + 1));
 		mem = REG_SI;
 	} else {
 		unlikely();
@@ -247,27 +244,23 @@ doit:
 }
 
 // duplicate current ebp, construct access link area
-static int dupebp(syment_t *func)
+static void dupebp(syment_t *func)
 {
-	int pushcnt = 0;
 	int caller = scope->depth;
 	int callee = func->stab->depth;
 	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
 	int off, i;
-	for (i = 0; i < callee - 1; i++) {
-		off = caller - i - 1;
-
-		// skip return address
-		if (off == 1) {
-			off--;
-		}
-
-		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup ebp");
+	for (i = 0; i < callee - 2; i++) {
+		off = caller - i;
+		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup old ebp");
 		addcode2("push", REG_DI);
-		pushcnt++;
 	}
-	return pushcnt;
+
+	if (callee > caller) {
+		addcode4("mov", REG_DI, REG_BP, "dup fresh ebp");
+		addcode2("push", REG_DI);
+	}
 }
 
 void x86_lib_enter()
@@ -627,14 +620,13 @@ void x86_leave(syment_t *func)
 
 void x86_call(syment_t *func)
 {
-	int pushcnt = dupebp(func);
+	dupebp(func);
 	char buf[64];
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
-	for (int i = 0; i < pushcnt; ++i) {
+	for (int i = 0; i < scope->depth - 1; ++i) {
 		addcode2("pop", REG_DI);
 	}
-	dbg("pushcnt = %d\n", pushcnt);
 }
 
 void x86_ret()

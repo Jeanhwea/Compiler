@@ -1,32 +1,23 @@
-var ans, base : integer;
+var counter: integer;
 
-function f1(x : integer ) : integer;
-   function f2(y : integer ) : integer;
-      function f3(z : integer ) : integer;
-      begin
-         f3 := z + base
-      end;
-   begin
-      f2 := y + base + f3(3)
-   end;
+function inc(x : integer): integer;
 begin
-   f1 := x + base + f2(2)
+   if x < 1 then x := 1;
+   counter := counter + x;
+   inc := counter;
 end;
 
+function id(): integer;
+begin
+   id := inc(1)
+end;
+
+{ procedure newline(); begin writeln('') end; }
 procedure newline(); var nl: char; begin nl := 10; write(nl) end;
 
 begin
-   base := 1;
-   ans := f1(1);
-   write(ans); newline();
-
-   base := 2;
-   { ans := f1(1); }
-   { write(ans); newline(); }
-   write(f1(1)); newline();
-
-   base := 2;
-   { ans := f1(2); }
-   { write(ans); newline(); }
-   write(f1(2)); newline();
+   counter := 0;
+   write(inc(0)); newline();
+   write(id()); newline();
+   write(inc(3)); newline();
 end.
