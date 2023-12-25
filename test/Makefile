@@ -9,4 +9,4 @@ all: $(RUNS)
 	$(CC) $<
 
 clean:
-	-rm *.s *.o *.run
+	-rm -f *.s *.o *.run
