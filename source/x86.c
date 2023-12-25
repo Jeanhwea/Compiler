@@ -192,6 +192,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	case ARRAY_OBJ:
 	case FUN_OBJ:
 	case PROC_OBJ:
+		off = -var->off;
 		goto findaddr;
 	default:
 		unlikely();
@@ -199,7 +200,6 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 
 findaddr:
 	gap = scope->depth - tab->depth;
-	off = -var->off;
 	if (gap == 0) {
 		mem = REG_BP;
 	} else if (gap == 1) {
@@ -251,8 +251,13 @@ static void dupebp(syment_t *func)
 {
 	int caller = scope->depth;
 	int callee = func->stab->depth;
+	dbg("%d/%s calls %d/%s\n", caller, scope->nspace, callee, func->name);
 
-	dbg("caller=%d, callee=%d, func=%s\n", caller, callee, func->name);
+	if (caller == 1) {
+		addcode4("mov", REG_DI, REG_BP, "dup entry ebp");
+		addcode2("push", REG_DI);
+		return;
+	}
 
 	int off, i;
 	for (i = 0; i < callee; i++) {
