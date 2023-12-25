@@ -267,6 +267,8 @@ static void dupebp(syment_t *func)
 		}
 		addcode4("mov", REG_DI, REG_BP, "dup fresh ebp");
 		addcode2("push", REG_DI);
+	} else {
+		unlikely();
 	}
 }
 
@@ -628,12 +630,16 @@ void x86_leave(syment_t *func)
 void x86_call(syment_t *func)
 {
 	dupebp(func);
+
 	char buf[64];
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
-	for (int i = 0; i < func->scope->depth - 1; ++i) {
+
+	int popcnt = func->scope->depth - 1;
+	for (int i = 0; i < popcnt; ++i) {
 		addcode2("pop", REG_DI);
 	}
+	dbg("popcnt=%d\n", popcnt);
 }
 
 void x86_ret()
