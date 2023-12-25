@@ -251,13 +251,20 @@ static void dupebp(syment_t *func)
 	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
 	int off, i;
-	for (i = 0; i < callee - 2; i++) {
-		off = caller - i;
-		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup old ebp");
-		addcode2("push", REG_DI);
-	}
-
-	if (callee > caller) {
+	if (callee < caller) {
+		for (i = 0; i < callee; i++) {
+			off = caller - i;
+			addcode4("mov", REG_DI, ptr(REG_BP, off),
+				 "dup old ebp");
+			addcode2("push", REG_DI);
+		}
+	} else if (callee == caller) {
+		for (i = 0; i < callee - 1; i++) {
+			off = caller - i;
+			addcode4("mov", REG_DI, ptr(REG_BP, off),
+				 "dup old ebp");
+			addcode2("push", REG_DI);
+		}
 		addcode4("mov", REG_DI, REG_BP, "dup fresh ebp");
 		addcode2("push", REG_DI);
 	}
@@ -624,7 +631,7 @@ void x86_call(syment_t *func)
 	char buf[64];
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
-	for (int i = 0; i < scope->depth - 1; ++i) {
+	for (int i = 0; i < func->scope->depth - 1; ++i) {
 		addcode2("pop", REG_DI);
 	}
 }
