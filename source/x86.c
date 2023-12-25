@@ -169,6 +169,7 @@ static char *ptr(char *reg, int offset)
 	return addrbuf;
 }
 
+// read/write memory from register, depends on mode
 static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 {
 	char *mem;
@@ -246,29 +247,26 @@ doit:
 // duplicate current ebp, construct access link area
 static void dupebp(syment_t *func)
 {
-	int caller = scope->depth;
-	int callee = func->stab->depth;
+	int caller = scope->depth; // caller depth
+	int callee = func->stab->depth; // callee depth
 	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
 	int off, i;
-	if (callee < caller) {
-		for (i = 0; i < callee; i++) {
-			off = caller - i;
-			addcode4("mov", REG_DI, ptr(REG_BP, off),
-				 "dup old ebp");
+
+	// prepare total `callee-1' saved ebps for access link
+	for (i = 0; i < callee; i++) {
+		off = caller - i;
+
+		// if off == 1, reach return value boundary,
+		// we take current ebp as the last access link, and break
+		if (off == 1) {
+			addcode4("mov", REG_DI, REG_BP, "dup fresh ebp");
 			addcode2("push", REG_DI);
+			break;
 		}
-	} else if (callee == caller) {
-		for (i = 0; i < callee - 1; i++) {
-			off = caller - i;
-			addcode4("mov", REG_DI, ptr(REG_BP, off),
-				 "dup old ebp");
-			addcode2("push", REG_DI);
-		}
-		addcode4("mov", REG_DI, REG_BP, "dup fresh ebp");
+
+		addcode4("mov", REG_DI, ptr(REG_BP, off), "dup old ebp");
 		addcode2("push", REG_DI);
-	} else {
-		unlikely();
 	}
 }
 
