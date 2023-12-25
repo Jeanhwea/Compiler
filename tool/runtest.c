@@ -13,10 +13,10 @@ char cases[MAXCASE][MAXNAMELEN];
 char actual[MAXOUTPUT];
 char expect[MAXOUTPUT];
 
-void gettests()
+void findtest()
 {
 	glob_t glob_result;
-	glob("./benchmark/*.pas", GLOB_TILDE, NULL, &glob_result);
+	glob("./test/*.pas", GLOB_TILDE, NULL, &glob_result);
 
 	int i;
 	for (i = 0; i < glob_result.gl_pathc; ++i) {
@@ -94,7 +94,7 @@ done:
 
 int main(int argc, char *argv[])
 {
-	gettests();
+	findtest();
 	for (int i = 0; i < ncase; ++i) {
 		build(i);
 		test(i);
