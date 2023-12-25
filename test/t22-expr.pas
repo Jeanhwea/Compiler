@@ -1,5 +1,5 @@
 const a = 1;
-var x, y: integer;
+var x, y, z: integer;
 procedure newline(); var nl : char; begin nl := 10; write(nl) end;
 
 begin
