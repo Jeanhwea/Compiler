@@ -340,13 +340,13 @@ void asmbl_pop_op(inst_t *x)
 
 void asmbl_call_op(inst_t *x)
 {
-	reg_t *r = allocreg();
 	x86_call(x->r);
 	if (x->d) {
+		reg_t *r = allocreg();
 		loadvar(r, x->r);
 		savevar(x->d, r);
+		freereg(r);
 	}
-	freereg(r);
 }
 
 void asmbl_ent_op(inst_t *x)

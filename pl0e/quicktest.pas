@@ -21,8 +21,12 @@ begin
    write(ans); newline();
 
    base := 2;
+   { ans := f1(1); }
+   { write(ans); newline(); }
    write(f1(1)); newline();
 
    base := 2;
+   { ans := f1(2); }
+   { write(ans); newline(); }
    write(f1(2)); newline();
 end.
