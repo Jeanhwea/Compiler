@@ -12,5 +12,4 @@ begin
    write(z); newline();
    z := sub(x,y);
    write(z); newline();
-
 end.
