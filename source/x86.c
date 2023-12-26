@@ -183,7 +183,7 @@ dofree:
 }
 
 // hold current scope, especially for get current function depth
-symtab_t *currscope = NULL;
+symtab_t *scope = NULL;
 
 // i386 instructions
 static char addrbuf[MAXSTRBUF];
@@ -210,8 +210,8 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	char extra[MAXSTRBUF];
 	sprintf(extra, "%s %s", var->label, var->name);
 
-	dbg("currscope = %p\n", currscope);
-	if (!currscope) {
+	dbg("current scope= %p, depth=%d\n", scope, scope->depth);
+	if (!scope) {
 		panic("CURR_SCOPE_IS_NULL");
 	}
 
@@ -219,7 +219,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	switch (var->cate) {
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		off = 1 + currscope->depth + var->off;
+		off = 1 + scope->depth + var->off;
 		mem = REG_BP;
 		goto doit;
 	case TMP_OBJ:
@@ -237,7 +237,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	}
 
 findaddr:
-	gap = currscope->depth - tab->depth;
+	gap = scope->depth - tab->depth;
 	if (gap == 0) {
 		mem = REG_BP;
 	} else if (gap > 0) {
@@ -284,9 +284,9 @@ doit:
 // duplicate current ebp, construct access link area
 static void dupebp(syment_t *func)
 {
-	int caller = currscope->depth; // caller depth
+	int caller = scope->depth; // caller depth
 	int callee = func->stab->depth; // callee depth
-	dbg("%s=%d %s=%d\n", currscope->nspace, caller, func->name, callee);
+	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
 	int off, i;
 
@@ -636,8 +636,8 @@ void x86_enter(syment_t *func)
 		sprintf(buf, "%s$%s", func->label, func->name);
 		addlabel(buf);
 	}
-	currscope = func->scope;
-	dbg("set currscope=%p, nspace=%s\n", currscope, func->scope->nspace);
+	scope = func->scope;
+	dbg("setscope depth=%p, nspace=%s\n", scope->depth, scope->nspace);
 
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
