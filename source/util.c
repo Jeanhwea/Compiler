@@ -29,7 +29,7 @@ void chgsuf(char *str, char *to, char *from)
 	}
 }
 
-char numbuf[32];
+char numbuf[MAXSTRBUF];
 char *itoa(int num)
 {
 	sprintf(numbuf, "%d", num);

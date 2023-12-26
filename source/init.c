@@ -2,16 +2,17 @@
 #include "debug.h"
 #include "error.h"
 #include "global.h"
+#include "limits.h"
 #include "util.h"
 #include <string.h>
 
 // constants
 char PL0E_NAME[32] = "pcc";
 char PL0E_VERSION[32] = "v0.16.2";
-char PL0E_INPUT[4096] = "input.pas";
-char PL0E_ASSEM[4096] = "input.s";
-char PL0E_OBJECT[4096] = "input.o";
-char PL0E_TARGET[4096] = "a.out";
+char PL0E_INPUT[MAXSTRLEN] = "input.pas";
+char PL0E_ASSEM[MAXSTRLEN] = "input.s";
+char PL0E_OBJECT[MAXSTRLEN] = "input.o";
+char PL0E_TARGET[MAXSTRLEN] = "a.out";
 
 // options
 bool PL0E_OPT_QUIET = FALSE;

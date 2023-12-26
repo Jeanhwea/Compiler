@@ -26,7 +26,7 @@ static void match(token_t expected)
 {
 	// check if token matched
 	if (currtok != expected) {
-		char buf[1024];
+		char buf[MAXSTRBUF];
 		sprintf(buf, "UNEXPECTED_TOKEN: LINE%d [%s]", lineno, tokbuf);
 		panic(buf);
 	}

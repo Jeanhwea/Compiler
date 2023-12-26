@@ -5,7 +5,7 @@
 
 // register
 typedef struct _reg_struct {
-	char name[4];
+	char name[8];
 	int refcnt;
 } reg_t;
 

@@ -20,7 +20,7 @@ static int beg[MAXEDGES];
 static int end[MAXEDGES];
 static char ref[MAXEDGES][MAXSTRLEN];
 
-static char buf[1024];
+static char buf[MAXSTRBUF];
 
 void visit(node_t *node)
 {

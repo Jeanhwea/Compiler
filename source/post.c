@@ -1,11 +1,12 @@
 #include "post.h"
 #include "common.h"
 #include "global.h"
+#include "limits.h"
 #include <stdio.h>
 
 void post_nasm()
 {
-	char cmd[1024];
+	char cmd[MAXSTRBUF];
 	sprintf(cmd, "nasm -f elf -o %s %s", PL0E_OBJECT, PL0E_ASSEM);
 	dbg("%s\n", cmd);
 
@@ -18,7 +19,7 @@ void post_nasm()
 
 void post_link()
 {
-	char cmd[1024];
+	char cmd[MAXSTRBUF];
 	sprintf(cmd, "ld -m elf_i386 -o %s %s", PL0E_TARGET, PL0E_OBJECT);
 	dbg("%s\n", cmd);
 

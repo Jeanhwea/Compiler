@@ -1,6 +1,7 @@
 #include "global.h"
 #include "debug.h"
 #include "glob.h"
+#include "limits.h"
 #include "stdio.h"
 #include "util.h"
 
@@ -36,7 +37,7 @@ void rtrim(char *s)
 
 void build(int id)
 {
-	char cmd[4096];
+	char cmd[MAXSTRBUF];
 	sprintf(cmd, "./%s -q %s", PL0E_NAME, cases[id]);
 	system(cmd);
 }

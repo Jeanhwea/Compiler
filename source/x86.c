@@ -186,7 +186,7 @@ dofree:
 symtab_t *currscope = NULL;
 
 // i386 instructions
-static char addrbuf[16];
+static char addrbuf[MAXSTRBUF];
 
 // conv offset to base pointer
 static char *ptr(char *reg, int offset)

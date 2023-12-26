@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "conv.h"
 #include "ir.h"
+#include "limits.h"
 #include "symtab.h"
 #include "util.h"
 #include "syntax.h"
@@ -25,7 +26,7 @@ char *symcate[12] = {
 
 void fmtinst(inst_t *x)
 {
-	char buf[1024];
+	char buf[MAXSTRBUF];
 	sprintf(buf, "#%03d: %s", x->xid, opcode[x->op]);
 	if (x->d) {
 		appendf(buf, "\td=%s", x->d->label);

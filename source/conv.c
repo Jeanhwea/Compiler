@@ -418,7 +418,7 @@ node_t *conv_factor_node(factor_node_t *t)
 	}
 
 	node_t *d = initnode(t->nid, "FACTOR");
-	char buf[1024];
+	char buf[MAXSTRBUF];
 	d->kind = t->kind;
 	switch (t->kind) {
 	case ID_FACTOR:

@@ -95,7 +95,7 @@ static void putsym(symtab_t *stab, syment_t *e)
 
 static void dumptab(symtab_t *stab)
 {
-	char indent[128] = "\0";
+	char indent[MAXSTRBUF] = "\0";
 	int i;
 	for (i = 0; i < stab->depth; ++i) {
 		strcat(indent, "  ");
