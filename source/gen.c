@@ -386,29 +386,29 @@ static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 	return d;
 }
 
-static void gen_cond(cond_node_t *node, syment_t *dest)
+static void gen_cond(cond_node_t *node, syment_t *label)
 {
 	syment_t *r, *s;
 	r = gen_expr(node->lep);
 	s = gen_expr(node->rep);
 	switch (node->kind) {
 	case EQU_RELA:
-		emit3(EQU_OP, r, s, dest);
+		emit3(EQU_OP, r, s, label);
 		break;
 	case NEQ_RELA:
-		emit3(NEQ_OP, r, s, dest);
+		emit3(NEQ_OP, r, s, label);
 		break;
 	case GTT_RELA:
-		emit3(GTT_OP, r, s, dest);
+		emit3(GTT_OP, r, s, label);
 		break;
 	case GEQ_RELA:
-		emit3(GEQ_OP, r, s, dest);
+		emit3(GEQ_OP, r, s, label);
 		break;
 	case LST_RELA:
-		emit3(LST_OP, r, s, dest);
+		emit3(LST_OP, r, s, label);
 		break;
 	case LEQ_RELA:
-		emit3(LEQ_OP, r, s, dest);
+		emit3(LEQ_OP, r, s, label);
 		break;
 	}
 }
