@@ -55,7 +55,7 @@ static pgm_node_t *parse_pgm(void)
 	entry->kind = INT_FUN_IDENT;
 	entry->value = 0;
 	entry->length = 0;
-	entry->line = lineno;
+	entry->line = 0;
 	strcpy(entry->name, MAINFUNC);
 	t->entry = entry;
 

@@ -252,6 +252,7 @@ typedef struct _ident_node {
 	int line;
 	syment_t *symbol;
 } ident_node_t;
+
 typedef struct _para_list_node {
 	int nid;
 	para_def_node_t *pdp;
