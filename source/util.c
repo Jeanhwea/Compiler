@@ -3,6 +3,7 @@
 #include "util.h"
 #include <string.h>
 
+// for appendf(...)
 char prtbuf[MAXSTRBUF];
 
 void strcopy(char *d, char *s)
