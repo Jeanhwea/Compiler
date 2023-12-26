@@ -8,11 +8,12 @@ inst_t *xtail;
 // instruction count
 int instcnt = 0;
 
-static inst_t *emit()
+static inst_t *emit(op_t op)
 {
 	inst_t *t;
 	NEWINST(t);
 	t->xid = ++instcnt;
+	t->op = op;
 
 	if (xtail) {
 		t->prev = xtail;
@@ -23,22 +24,20 @@ static inst_t *emit()
 		xhead = xtail = t;
 	}
 
-	dbg("emit xid=%d\n", t->xid);
+	dbg("emit xid=%d op=%d\n", t->xid, op);
 	return t;
 }
 
 inst_t *emit1(op_t op, syment_t *d)
 {
-	inst_t *x = emit();
-	x->op = op;
+	inst_t *x = emit(op);
 	x->d = d;
 	return x;
 }
 
 inst_t *emit2(op_t op, syment_t *r, syment_t *d)
 {
-	inst_t *x = emit();
-	x->op = op;
+	inst_t *x = emit(op);
 	x->d = d;
 	x->r = r;
 	return x;
@@ -46,8 +45,7 @@ inst_t *emit2(op_t op, syment_t *r, syment_t *d)
 
 inst_t *emit3(op_t op, syment_t *r, syment_t *s, syment_t *d)
 {
-	inst_t *x = emit();
-	x->op = op;
+	inst_t *x = emit(op);
 	x->d = d;
 	x->r = r;
 	x->s = s;

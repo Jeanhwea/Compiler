@@ -26,6 +26,7 @@ symtab_t *scope_entry(char *nspace)
 	// Push
 	t->outer = top;
 	top = t;
+	dbg("push stab=%d nspace=%s\n", t->id, t->nspace);
 	return t;
 }
 
@@ -41,6 +42,7 @@ symtab_t *scope_exit(void)
 	}
 	depth--;
 
+	dbg("pop stab=%d nspace=%s\n", t->id, t->nspace);
 	return t;
 }
 
