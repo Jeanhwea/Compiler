@@ -69,8 +69,8 @@ begin
    f23()
 end;
 
-procedure newline(); begin writeln('') end;
-{ procedure newline(); var nl: char; begin nl := 10; write(nl) end; }
+{ procedure newline(); begin writeln('') end; }
+procedure newline(); var nl: char; begin nl := 10; write(nl) end;
 
 begin
    x:=11; y:=22; z:=33; f11(); write(x); write(y); write(z); newline();
