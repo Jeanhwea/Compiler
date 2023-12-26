@@ -94,7 +94,6 @@ typedef struct _sym_table_struct {
 #define NEWSTAB(v) INITMEM(symtab_t, v)
 
 // debugging
-#define MAXSYMENT 1024
 extern syment_t *syments[MAXSYMENT];
 extern int symcnt;
 

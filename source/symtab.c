@@ -85,6 +85,12 @@ static void putsym(symtab_t *stab, syment_t *e)
 	syment_t *hair = &stab->buckets[hash(e->name) % MAXBUCKETS];
 	e->next = hair->next;
 	hair->next = e;
+
+	// for debugging
+	if (e->sid + 1 >= MAXSYMENT) {
+		panic("TOO_MANY_SYMBOL_ENTRY");
+	}
+	syments[e->sid] = e;
 }
 
 static void dumptab(symtab_t *stab)
@@ -153,7 +159,6 @@ syment_t *syminit(ident_node_t *idp)
 	syment_t *e;
 	NEWENTRY(e);
 	e->sid = ++symcnt;
-	syments[e->sid] = e;
 
 	strcopy(e->name, idp->name);
 	e->initval = idp->value;
@@ -248,7 +253,6 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 	NEWENTRY(e);
 	strcopy(e->name, name);
 	e->sid = ++symcnt;
-	syments[e->sid] = e;
 
 	e->cate = cate;
 	e->type = type;
