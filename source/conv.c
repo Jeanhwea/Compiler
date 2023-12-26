@@ -24,6 +24,11 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 	if (!child) {
 		return;
 	}
+
+	if (parent->total + 1 >= MAXCHILD) {
+		panic("TOO_MANY_CHILD");
+	}
+
 	strcopy(parent->refs[parent->total], ref);
 	parent->childs[parent->total] = child;
 	parent->total++;
