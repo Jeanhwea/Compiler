@@ -16,8 +16,9 @@ TDEPS    := $(TOBJS:.o=.d)
 TOOLS    := $(TSRCS:$(TOOL_DIR)/%.c=$(BIN_DIR)/%)
 # build config
 CC       := gcc
-CCFLAGS  := -I$(INC_DIR) -g -MMD -MP
-LDFLAGS  := -I$(INC_DIR) -g
+DEBUG    := -g
+CCFLAGS  := -I$(INC_DIR) $(DEBUG) -MMD -MP
+LDFLAGS  := -I$(INC_DIR) $(DEBUG)
 
 # all build targets
 all: $(TARGET) $(TOOLS)
