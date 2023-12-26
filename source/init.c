@@ -39,7 +39,8 @@ void pl0c_read_args(int argc, char *argv[])
 		exit(EARGMT);
 	}
 
-	for (int i = 0; i < argc; ++i) {
+	int i;
+	for (i = 0; i < argc; ++i) {
 		if (!strcmp("-q", argv[i])) {
 			PL0E_OPT_QUIET = TRUE;
 			echo = FALSE;

@@ -96,7 +96,8 @@ done:
 int main(int argc, char *argv[])
 {
 	findtest();
-	for (int i = 0; i < ncase; ++i) {
+	int i;
+	for (i = 0; i < ncase; ++i) {
 		build(i);
 		test(i);
 	}
