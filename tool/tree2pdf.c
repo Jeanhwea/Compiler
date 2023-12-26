@@ -61,7 +61,7 @@ void drawnode(node_t *node)
 	if (!opt_show_extra) {
 		goto makenode;
 	}
-	sprintf(label, "%s\\nnid=%d", node->nid);
+	sprintf(label, "\\nnid=%d", node->nid);
 
 	if (strlen(node->extra) > 0) {
 		appendf(label, " [%s]", node->extra);
