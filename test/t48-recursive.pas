@@ -7,8 +7,8 @@ function fib(x : integer ): integer; begin
       fib := fib(x-1) + fib(x-2);
 end;
 
-procedure newline(); begin writeln('') end;
-{ procedure newline(); var nl: char; begin nl := 10; write(nl) end; }
+{ procedure newline(); begin writeln('') end; }
+procedure newline(); var nl: char; begin nl := 10; write(nl) end;
 
 begin
    for i := 1 to 10 do
