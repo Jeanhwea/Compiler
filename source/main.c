@@ -11,9 +11,6 @@ int main(int argc, char *argv[])
 	// initial
 	init(argc, argv);
 
-	// startup message
-	msg("compiler %s start, version %s\n", PL0E_NAME, PL0E_VERSION);
-
 	// lexical & syntax
 	parse();
 

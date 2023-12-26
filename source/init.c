@@ -81,6 +81,11 @@ void pl0c_read_args(int argc, char *argv[])
 	}
 }
 
+void pl0c_startup_message()
+{
+	msg("compiler %s start, version %s\n", PL0E_NAME, PL0E_VERSION);
+}
+
 void pl0c_init_file()
 {
 	source = fopen(PL0E_INPUT, "r");
@@ -94,7 +99,11 @@ void pl0c_init_file()
 void init(int argc, char *argv[])
 {
 	pl0c_read_args(argc, argv);
+
+	pl0c_startup_message();
+
 	pl0c_init_file();
+
 	chkerr("init fail and exit.");
 	phase = LEXICAL;
 }
