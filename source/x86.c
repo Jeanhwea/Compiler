@@ -196,6 +196,9 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	sprintf(extra, "%s %s", var->label, var->name);
 
 	dbg("currscope = %p\n", currscope);
+	if (!currscope) {
+		panic("CURR_SCOPE_IS_NULL");
+	}
 
 	symtab_t *tab = var->stab;
 	switch (var->cate) {
