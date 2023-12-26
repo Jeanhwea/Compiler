@@ -68,7 +68,7 @@ void addlabel(char *label)
 	if (prog.itext >= MAXTEXTSEC) {
 		panic("TEXT_SECTION_TOO_BIG");
 	}
-	dbg("pos=%d, label=%s\n", prog.itext, label);
+	dbg("ipos=%d, label=%s\n", prog.itext, label);
 
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = TRUE;
@@ -81,7 +81,7 @@ void adddata2(char *name, char *initval)
 	if (prog.idata >= MAXDATASEC) {
 		panic("DATA_SECTION_TOO_BIG");
 	}
-	dbg("pos=%d, name=%s\n", prog.idata, name);
+	dbg("dpos=%d, name=%s\n", prog.idata, name);
 
 	x86i_t *d = &prog.data[prog.idata++];
 	d->islab = FALSE;
@@ -95,7 +95,7 @@ void addcode4(char *op, char *fa, char *fb, char *extra)
 	if (prog.itext >= MAXTEXTSEC) {
 		panic("TEXT_SECTION_TOO_BIG");
 	}
-	dbg("pos=%d, op=%s\n", prog.itext, op);
+	dbg("ipos=%d, op=%s\n", prog.itext, op);
 
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = FALSE;
