@@ -508,5 +508,5 @@ void genasm()
 	chkerr("assemble fail and exit.");
 	phase = ASSEMBLE;
 
-	progdump();
+	writeasm();
 }

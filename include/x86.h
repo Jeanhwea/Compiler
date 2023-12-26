@@ -46,9 +46,6 @@ typedef struct _program_code_struct {
 	x86i_t text[MAXTEXTSEC];
 } progcode_t;
 
-// dump all assemble codes
-void progdump();
-
 typedef enum _rwmemmode_enum {
 	READ_MEM_VAL,
 	READ_MEM_REF,
@@ -95,4 +92,8 @@ void x86_jng(syment_t *lab);
 void x86_jl(syment_t *lab);
 void x86_jnl(syment_t *lab);
 void x86_stralloc(char *name, char *initval);
+
+// write all assemble codes
+void writeasm();
+
 #endif /* End of _X86_H_ */

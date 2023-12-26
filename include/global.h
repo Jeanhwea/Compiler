@@ -33,7 +33,7 @@ extern FILE *source;
 extern int lineno;
 extern int colmno;
 // target assembly file
-extern FILE *target;
+extern FILE *asmble;
 
 // main entry function name
 #define MAINFUNC "_start"

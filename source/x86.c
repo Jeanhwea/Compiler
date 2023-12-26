@@ -124,46 +124,46 @@ void savetext(x86i_t *i)
 {
 	// label
 	if (i->islab) {
-		fprintf(target, "%s:\n", i->op);
+		fprintf(asmble, "%s:\n", i->op);
 		return;
 	}
 
 	// text
-	fprintf(target, "\t");
+	fprintf(asmble, "\t");
 	if (strlen(i->op)) {
-		fprintf(target, "%s", i->op);
+		fprintf(asmble, "%s", i->op);
 	} else {
 		unlikely();
 	}
 
 	if (strlen(i->fb)) {
-		fprintf(target, "\t%s, %s", i->fa, i->fb);
+		fprintf(asmble, "\t%s, %s", i->fa, i->fb);
 	} else if (strlen(i->fa)) {
-		fprintf(target, "\t%s", i->fa);
+		fprintf(asmble, "\t%s", i->fa);
 	}
 
 	if (strlen(i->et)) {
-		fprintf(target, "; %s", i->et);
+		fprintf(asmble, "; %s", i->et);
 	}
-	fprintf(target, "\n");
+	fprintf(asmble, "\n");
 }
 
 void savedata(x86i_t *d)
 {
-	fprintf(target, "\t%s db '%s', 0\n", d->op, d->fa);
+	fprintf(asmble, "\t%s db '%s', 0\n", d->op, d->fa);
 }
 
-void progdump()
+void writeasm()
 {
-	// Open Target File
-	target = fopen(PL0E_ASSEM, "w");
-	if (target == NULL) {
+	// open target nasm file
+	asmble = fopen(PL0E_ASSEM, "w");
+	if (asmble == NULL) {
 		panic("target file not found!");
 	}
 	msg("compile assemble file %s\n", PL0E_ASSEM);
 
-	// Write content
-	fprintf(target, "section .text\n");
+	// write content
+	fprintf(asmble, "section .text\n");
 	int k;
 	for (k = 0; k < prog.itext; ++k) {
 		savetext(&prog.text[k]);
@@ -173,13 +173,13 @@ void progdump()
 		goto dofree;
 	}
 
-	fprintf(target, "section .data\n");
+	fprintf(asmble, "section .data\n");
 	for (k = 0; k < prog.idata; ++k) {
 		savedata(&prog.data[k]);
 	}
 
 dofree:
-	fclose(target);
+	fclose(asmble);
 }
 
 // hold current scope, especially for get current function depth

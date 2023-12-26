@@ -27,7 +27,7 @@ bool silent = FALSE;
 
 // files
 FILE *source = NULL;
-FILE *target = NULL;
+FILE *asmble = NULL;
 
 phase_t phase = INIT;
 int errnum = 0;
