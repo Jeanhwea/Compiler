@@ -37,7 +37,7 @@ void rtrim(char *s)
 void build(int id)
 {
 	char cmd[4096];
-	sprintf(cmd, "./pc -q %s", cases[id]);
+	sprintf(cmd, "./%s -q %s", PL0E_NAME, cases[id]);
 	system(cmd);
 }
 

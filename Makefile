@@ -1,5 +1,5 @@
 # global
-TARGET   := pc
+TARGET   := pcc
 BLD_DIR  := output
 INC_DIR  := include
 SRC_DIR  := source
