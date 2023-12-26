@@ -15,7 +15,7 @@ void add_test_symbol(char *name)
 {
 	syment_t *e;
 	NEWENTRY(e);
-	strcopy(e->name, name);
+	strcpy(e->name, name);
 	symadd(e);
 }
 
