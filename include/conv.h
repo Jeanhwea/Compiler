@@ -4,7 +4,7 @@
 #include "limits.h"
 #include "parse.h"
 
-#define MAXCHILD 32
+#define MAXCHILD 128
 typedef struct _tree_node node_t;
 typedef struct _tree_node {
 	int id;
