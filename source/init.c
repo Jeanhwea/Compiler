@@ -6,7 +6,7 @@
 #include <string.h>
 
 // constants
-char PL0E_NAME[32] = "pl0c";
+char PL0E_NAME[32] = "pc";
 char PL0E_VERSION[32] = "v0.16.0";
 char PL0E_INPUT[4096] = "input.pas";
 char PL0E_ASSEM[4096] = "input.s";
