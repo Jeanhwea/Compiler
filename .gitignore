@@ -1,5 +1,6 @@
 .cache/*
 pc
+pcc
 pl0c
 core*
 bin/*

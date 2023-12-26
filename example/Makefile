@@ -1,4 +1,4 @@
-CC   := ../pc
+CC   := ../pcc
 
 SRCS := $(wildcard *.pas)
 RUNS := $(SRCS:%.pas=%.run)
