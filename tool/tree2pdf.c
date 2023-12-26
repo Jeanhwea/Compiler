@@ -27,7 +27,7 @@ void visit(node_t *node)
 	nevernil(node);
 
 	sprintf(buf, "%s", node->name);
-	if (node->extra) {
+	if (strlen(node->extra) > 0) {
 		appendf(buf, " [%s]", node->extra);
 	}
 
