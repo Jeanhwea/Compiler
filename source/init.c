@@ -90,7 +90,7 @@ void pl0c_init_file()
 {
 	source = fopen(PL0E_INPUT, "r");
 	if (source == NULL) {
-		panic("source file not found!");
+		panic("SOURCE_FILE_NOT_FOUND");
 	}
 	msg("reading file %s\n", PL0E_INPUT);
 }
