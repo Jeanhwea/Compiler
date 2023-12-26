@@ -91,6 +91,8 @@ static void putsym(symtab_t *stab, syment_t *e)
 		panic("TOO_MANY_SYMBOL_ENTRY");
 	}
 	syments[e->sid] = e;
+
+	dbg("stab=%d nspace=%s sym=%s\n", stab->id, stab->nspace, e->name);
 }
 
 static void dumptab(symtab_t *stab)
