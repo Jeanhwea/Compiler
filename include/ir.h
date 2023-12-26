@@ -64,7 +64,6 @@ extern inst_t *xhead;
 extern inst_t *xtail;
 
 // emit an instruction
-inst_t *emit0();
 inst_t *emit1(op_t op, syment_t *d);
 inst_t *emit2(op_t op, syment_t *r, syment_t *d);
 inst_t *emit3(op_t op, syment_t *r, syment_t *s, syment_t *d);

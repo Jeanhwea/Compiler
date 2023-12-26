@@ -27,13 +27,6 @@ static inst_t *emit()
 	return t;
 }
 
-inst_t *emit0(op_t op)
-{
-	inst_t *x = emit();
-	x->op = op;
-	return x;
-}
-
 inst_t *emit1(op_t op, syment_t *d)
 {
 	inst_t *x = emit();
