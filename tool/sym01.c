@@ -23,7 +23,7 @@ void func01()
 {
 	syment_t *e;
 	scope_entry("func01");
-	symdump();
+	stabdump();
 
 	e = symfind("aaa");
 	assert(e && !strcmp(e->stab->nspace, "root"));
@@ -39,7 +39,7 @@ void func01()
 	func02();
 
 	add_test_symbol("ccc");
-	symdump();
+	stabdump();
 
 	e = symfind("aaa");
 	assert(e && !strcmp(e->stab->nspace, "func01"));
@@ -57,11 +57,11 @@ void func02()
 {
 	syment_t *e;
 	scope_entry("func02");
-	symdump();
+	stabdump();
 
 	add_test_symbol("aaa");
 	add_test_symbol("ddd");
-	symdump();
+	stabdump();
 
 	e = symfind("ccc");
 	assert(!e);
@@ -75,10 +75,10 @@ int main(int argc, char *argv[])
 	scope_entry("root");
 
 	add_test_symbol("aaa");
-	symdump();
+	stabdump();
 
 	add_test_symbol("bbb");
-	symdump();
+	stabdump();
 
 	e = symfind("aaa");
 	assert(!strcmp(e->name, "aaa"));

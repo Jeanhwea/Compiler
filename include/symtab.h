@@ -106,7 +106,7 @@ void symadd(syment_t *entry);
 // symget only search current scope, while symfind search all.
 syment_t *symget(char *name);
 syment_t *symfind(char *name);
-void symdump();
+void stabdump();
 syment_t *syminit(ident_node_t *idp);
 syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type);
 #endif /* End of _SYMTAB_H_ */

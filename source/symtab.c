@@ -144,7 +144,7 @@ void symadd(syment_t *entry)
 	entry->stab = top;
 }
 
-void symdump()
+void stabdump()
 {
 	msg("DUMP SYMBOL TABLE:\n");
 	symtab_t *t;
