@@ -50,22 +50,18 @@ char *indent = "  ";
 
 void drawnode(node_t *node)
 {
-	char *shape = "oval";
-	if (!strcmp(node->name, "IDENT")) {
-		shape = "box";
-	}
-
 	char label[MAXSTRBUF];
-	sprintf(label, "%s", node->name);
+	sprintf(label, "#%d %s", node->seq, node->name);
 
 	if (!opt_show_extra) {
 		goto makenode;
 	}
-	sprintf(label, "\\nnid=%d", node->nid);
 
 	if (strlen(node->extra) > 0) {
 		appendf(label, " [%s]", node->extra);
 	}
+
+	appendf(label, "\\nnid=%d", node->nid);
 
 	if (!node->idp) {
 		goto makenode;
@@ -73,7 +69,7 @@ void drawnode(node_t *node)
 	ident_node_t *idp = node->idp;
 	appendf(label, "\\nname=%s\\nkind=%d", idp->name, idp->kind);
 
-	if (opt_show_symbol && !idp->symbol) {
+	if (!opt_show_symbol || !idp->symbol) {
 		goto makenode;
 	}
 	syment_t *symbol = idp->symbol;
@@ -82,8 +78,13 @@ void drawnode(node_t *node)
 	appendf(label, "\\ncate=%d", symbol->cate);
 
 makenode:
-	fprintf(fd, "%sn%03d[label=\"#%d %s\", shape=\"%s\"];\n", indent,
-		node->seq, node->seq, label, shape);
+	char *shape = "oval";
+	if (!strcmp(node->name, "IDENT")) {
+		shape = "box";
+	}
+
+	fprintf(fd, "%sn%03d[label=\"%s\", shape=\"%s\"];\n", indent, node->seq,
+		label, shape);
 }
 
 void drawedge(int i)
