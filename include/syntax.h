@@ -1,5 +1,6 @@
 #ifndef _SYNTAX_H_
 #define _SYNTAX_H_
+#include "limits.h"
 #include "parse.h"
 #include "symtab.h"
 
@@ -160,7 +161,7 @@ typedef struct _write_stmt_node {
 	int nid;
 	write_t type;
 	/* string pointer */
-	char *sp;
+	char sp[MAXSTRLEN];
 	expr_node_t *ep;
 	symtab_t *stab;
 } write_stmt_node_t;
@@ -245,7 +246,7 @@ typedef enum _ident_enum {
 typedef struct _ident_node {
 	int nid;
 	idekind_t kind;
-	char *name;
+	char name[MAXSTRLEN];
 	int value;
 	int length;
 	int line;

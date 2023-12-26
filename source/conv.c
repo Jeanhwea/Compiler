@@ -1,11 +1,11 @@
 #include "conv.h"
 #include "debug.h"
 #include "ir.h"
+#include "limits.h"
 #include "util.h"
 #include "global.h"
 #include "parse.h"
 #include "syntax.h"
-#include <stdio.h>
 
 static int ncnt = 0;
 
@@ -15,7 +15,7 @@ static node_t *initnode(int nid, char *name)
 	INITMEM(node_t, d);
 	d->id = ++ncnt;
 	d->nid = nid;
-	d->name = name;
+	strcopy(d->name, name);
 	return d;
 }
 
@@ -24,7 +24,7 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 	if (!child) {
 		return;
 	}
-	parent->refs[parent->total] = dupstr(ref);
+	strcopy(parent->refs[parent->total], ref);
 	parent->childs[parent->total] = child;
 	parent->total++;
 }
@@ -195,7 +195,7 @@ node_t *conv_stmt_node(stmt_node_t *t)
 	}
 	node_t *d = initnode(t->nid, "STMT");
 	if (!t) {
-		d->name = "NULLSTMT";
+		strcpy(d->name, "NULLSTMT");
 		return d;
 	}
 
@@ -348,19 +348,19 @@ node_t *conv_write_stmt_node(write_stmt_node_t *t)
 	}
 
 	node_t *d = initnode(t->nid, "WRITE_STMT");
-	char buf[1024];
+	char buf[MAXSTRBUF];
 	d->cate = t->type;
 	switch (t->type) {
 	case STR_WRITE:
 		sprintf(buf, "\\\"%s\\\"", t->sp);
-		d->extra = dupstr(buf);
+		strcopy(d->extra, buf);
 		break;
 	case ID_WRITE:
 		addchild(d, conv_expr_node(t->ep), "ep");
 		break;
 	case STRID_WRITE:
 		sprintf(buf, "\\\"%s\\\"", t->sp);
-		d->extra = dupstr(buf);
+		strcopy(d->extra, buf);
 		addchild(d, conv_expr_node(t->ep), "ep");
 		break;
 	default:
@@ -430,11 +430,11 @@ node_t *conv_factor_node(factor_node_t *t)
 		break;
 	case UNSIGN_FACTOR:
 		sprintf(buf, "%d", t->value);
-		d->extra = dupstr(buf);
+		strcopy(d->extra, buf);
 		break;
 	case CHAR_FACTOR:
 		sprintf(buf, "'%c'", t->value);
-		d->extra = dupstr(buf);
+		strcopy(d->extra, buf);
 		break;
 	case EXPR_FACTOR:
 		addchild(d, conv_expr_node(t->ep), "ep");

@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "global.h"
 #include "conv.h"
+#include "limits.h"
 #include "symtab.h"
 #include "util.h"
 #include "syntax.h"
@@ -14,10 +15,10 @@
 
 static int nedges = 0;
 static node_t *nodes[MAXNODES];
-static char *label[MAXNODES];
+static char label[MAXNODES][MAXSTRLEN];
 static int beg[MAXEDGES];
 static int end[MAXEDGES];
-static char *ref[MAXEDGES];
+static char ref[MAXEDGES][MAXSTRLEN];
 
 static char buf[1024];
 
@@ -41,13 +42,13 @@ void visit(node_t *node)
 	}
 
 	nodes[node->id] = node;
-	label[node->id] = dupstr(buf);
+	strcopy(label[node->id], buf);
 	int i;
 	for (i = 0; i < node->total; ++i) {
 		node_t *child = node->childs[i];
 		beg[nedges] = node->id;
 		end[nedges] = child->id;
-		ref[nedges] = node->refs[i];
+		strcopy(ref[nedges], node->refs[i]);
 		++nedges;
 	}
 

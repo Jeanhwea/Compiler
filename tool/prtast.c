@@ -1,6 +1,7 @@
 #include "global.h"
 #include "anlys.h"
 #include "conv.h"
+#include "limits.h"
 #include "parse.h"
 #include "util.h"
 #include "syntax.h"
@@ -20,7 +21,7 @@ void prtnode(node_t *node)
 		goto postwork;
 	}
 
-	char buf[1024];
+	char buf[MAXSTRBUF];
 	sprintf(buf, "#%03d %s", node->id, node->name);
 
 	if (node->extra) {

@@ -1,4 +1,5 @@
 #include "gen.h"
+#include "limits.h"
 #include "util.h"
 #include "debug.h"
 #include "parse.h"
@@ -225,7 +226,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 	switch (node->type) {
 	case STR_WRITE:
 		d = symalloc(node->stab, "@write/str", STR_OBJ, STR_TYPE);
-		d->str = dupstr(node->sp);
+		strcopy(d->str, node->sp);
 		emit1(WRS_OP, d);
 		break;
 	case ID_WRITE:
@@ -243,7 +244,7 @@ static void gen_write_stmt(write_stmt_node_t *node)
 		break;
 	case STRID_WRITE:
 		d = symalloc(node->stab, "@write/str", STR_OBJ, STR_TYPE);
-		d->str = dupstr(node->sp);
+		strcopy(d->str, node->sp);
 		emit1(WRS_OP, d);
 		d = gen_expr(node->ep);
 		switch (d->type) {

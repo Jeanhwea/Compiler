@@ -1,5 +1,6 @@
 #include "global.h"
 #include "debug.h"
+#include "limits.h"
 #include "parse.h"
 #include "util.h"
 #include "syntax.h"
@@ -19,7 +20,7 @@ symtab_t *scope_entry(char *nspace)
 	NEWSTAB(t);
 	t->id = ++ntab;
 	t->depth = ++depth;
-	t->nspace = dupstr(nspace);
+	strcopy(t->nspace, nspace);
 	t->varoff = 1; // reserve function return value
 
 	// Push
@@ -154,7 +155,7 @@ syment_t *syminit(ident_node_t *idp)
 	e->sid = ++symcnt;
 	syments[e->sid] = e;
 
-	e->name = dupstr(idp->name);
+	strcopy(e->name, idp->name);
 	e->initval = idp->value;
 	e->arrlen = idp->length;
 	e->lineno = idp->line;
@@ -245,7 +246,7 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 {
 	syment_t *e;
 	NEWENTRY(e);
-	e->name = dupstr(name);
+	strcopy(e->name, name);
 	e->sid = ++symcnt;
 	syments[e->sid] = e;
 

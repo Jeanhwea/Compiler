@@ -5,6 +5,7 @@
 #include "global.h"
 #include "ir.h"
 #include "gen.h"
+#include "limits.h"
 #include "symtab.h"
 #include "util.h"
 #include <stdio.h>
@@ -66,7 +67,7 @@ void addlabel(char *label)
 {
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = TRUE;
-	strncpy(i->op, label, MAXOPLEN);
+	strcopy(i->op, label);
 }
 
 // send data
@@ -74,8 +75,8 @@ void adddata2(char *name, char *initval)
 {
 	x86i_t *d = &prog.data[prog.idata++];
 	d->islab = FALSE;
-	strncpy(d->op, name, MAXOPLEN);
-	strncpy(d->fa, initval, MAXOPLEN);
+	strcopy(d->op, name);
+	strcopy(d->fa, initval);
 }
 
 // send text/code
@@ -83,10 +84,10 @@ void addcode4(char *op, char *fa, char *fb, char *extra)
 {
 	x86i_t *i = &prog.text[prog.itext++];
 	i->islab = FALSE;
-	strncpy(i->op, op, MAXOPLEN);
-	strncpy(i->fa, fa, MAXOPLEN);
-	strncpy(i->fb, fb, MAXOPLEN);
-	strncpy(i->et, extra, MAXOPLEN);
+	strcopy(i->op, op);
+	strcopy(i->fa, fa);
+	strcopy(i->fb, fb);
+	strcopy(i->et, extra);
 }
 
 void addcode3(char *op, char *fa, char *fb)
@@ -191,7 +192,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	char *mem;
 	int off, gap;
 
-	char extra[128];
+	char extra[MAXSTRBUF];
 	sprintf(extra, "%s %s", var->label, var->name);
 
 	dbg("currscope = %p\n", currscope);
@@ -610,7 +611,7 @@ void x86_push2(syment_t *var)
 
 void x86_enter(syment_t *func)
 {
-	char buf[64];
+	char buf[MAXSTRBUF];
 	if (!strcmp(func->name, MAINFUNC)) {
 		addlabel(MAINFUNC);
 	} else {
@@ -649,7 +650,7 @@ void x86_call(syment_t *func)
 {
 	dupebp(func);
 
-	char buf[64];
+	char buf[MAXSTRBUF];
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
 

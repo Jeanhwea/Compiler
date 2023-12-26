@@ -1,11 +1,10 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
+#include "limits.h"
 #include <stdio.h>
 #include <string.h>
 
-#define MAXSTRBUF 4096
-#define PRTBUFSIZE 4096
-extern char prtbuf[PRTBUFSIZE];
+extern char prtbuf[MAXSTRBUF];
 
 // strcat + sprintf
 #define appendf(s, fmt, args...)                                               \
@@ -14,7 +13,7 @@ extern char prtbuf[PRTBUFSIZE];
 		strcat(s, prtbuf);                                             \
 	} while (0)
 
-char *dupstr(char *s);
+void strcopy(char *d, char *s);
 void chgsuf(char *str, char *to, char *from);
 char *itoa(int num);
 #endif /* End of _UTIL_H_ */

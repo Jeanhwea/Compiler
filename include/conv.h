@@ -1,6 +1,7 @@
 #ifndef _CONV_H_
 #define _CONV_H_
 #include "global.h"
+#include "limits.h"
 #include "parse.h"
 
 #define MAXCHILD 32
@@ -8,9 +9,9 @@ typedef struct _tree_node node_t;
 typedef struct _tree_node {
 	int id;
 	int nid;
-	char *name;
+	char name[MAXSTRLEN];
 	int total;
-	char *refs[MAXCHILD];
+	char refs[MAXCHILD][MAXSTRLEN];
 	node_t *childs[MAXCHILD];
 	ident_node_t *idp;
 	// which category:

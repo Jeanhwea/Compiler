@@ -1,6 +1,7 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
 #include "global.h"
+#include "limits.h"
 #include "parse.h"
 
 #define MAXBUCKETS 16
@@ -45,13 +46,13 @@ typedef struct _sym_param_struct {
 typedef struct _sym_entry_struct {
 	// identifier name
 	int sid;
-	char *name;
+	char name[MAXSTRLEN];
 	cate_t cate;
 	type_t type;
 	// const value, initval value
 	int initval;
 	int arrlen;
-	char *str;
+	char str[MAXSTRLEN];
 	param_t *phead;
 	param_t *ptail;
 	symtab_t *scope;
@@ -80,7 +81,7 @@ typedef struct _sym_table_struct {
 
 	// for function scope management
 	int depth; // symbol table nested depth
-	char *nspace; // namespace
+	char nspace[MAXSTRLEN]; // namespace
 	symtab_t *inner; // inner scope
 	symtab_t *outer; // outer scope
 

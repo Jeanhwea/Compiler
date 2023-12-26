@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "error.h"
 #include "global.h"
+#include "limits.h"
 #include "parse.h"
 #include "scan.h"
 #include "util.h"
@@ -31,7 +32,7 @@ static void match(token_t expected)
 	}
 
 	// store previous token
-	strncpy(prevtokbuf, tokbuf, MAXTOKENSIZE);
+	strcopy(prevtokbuf, tokbuf);
 	prevtok = currtok;
 	prevlineno = toklineno;
 
@@ -55,7 +56,7 @@ static pgm_node_t *parse_pgm(void)
 	entry->value = 0;
 	entry->length = 0;
 	entry->line = lineno;
-	entry->name = MAINFUNC;
+	strcpy(entry->name, MAINFUNC);
 	t->entry = entry;
 
 	t->bp = parse_block();
@@ -700,7 +701,7 @@ static write_stmt_node_t *parse_write_stmt(void)
 	match(SS_LPAR);
 	if (TOKANY(MC_STR)) {
 		t->type = STR_WRITE;
-		t->sp = dupstr(tokbuf);
+		strcopy(t->sp, tokbuf);
 		match(MC_STR);
 	} else if (TOKANY6(MC_ID, MC_CH, SS_PLUS, SS_MINUS, MC_UNS, SS_LPAR)) {
 		t->type = ID_WRITE;
@@ -914,7 +915,7 @@ static ident_node_t *parse_ident(idreadmode_t mode)
 		t->value = 0;
 		t->length = 0;
 		t->line = lineno;
-		t->name = dupstr(tokbuf);
+		strcopy(t->name, tokbuf);
 		match(MC_ID);
 		break;
 	case READPREV:
@@ -922,7 +923,7 @@ static ident_node_t *parse_ident(idreadmode_t mode)
 		t->value = 0;
 		t->length = 0;
 		t->line = prevlineno;
-		t->name = dupstr(prevtokbuf);
+		strcopy(t->name, prevtokbuf);
 		break;
 	default:
 		unlikely();

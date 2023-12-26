@@ -1,24 +1,13 @@
 #include "global.h"
+#include "limits.h"
 #include "util.h"
 #include <string.h>
 
-char prtbuf[PRTBUFSIZE];
+char prtbuf[MAXSTRBUF];
 
-// duplicate string, this function will alloc a new memory
-char *dupstr(char *s)
+void strcopy(char *d, char *s)
 {
-	int n;
-	char *t;
-	if (s == NULL) {
-		return NULL;
-	}
-	n = strlen(s) + 1;
-	t = (char *)malloc(n * sizeof(char));
-	if (t == NULL) {
-		panic("OUT_OF_MEMERY");
-	}
-	strcpy(t, s);
-	return t;
+	strncpy(d, s, MAXSTRLEN);
 }
 
 // change suffix: from => to, str

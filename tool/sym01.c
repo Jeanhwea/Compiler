@@ -1,3 +1,4 @@
+#include "limits.h"
 #include <assert.h>
 #include "symtab.h"
 
@@ -14,7 +15,7 @@ void add_test_symbol(char *name)
 {
 	syment_t *e;
 	NEWENTRY(e);
-	e->name = name;
+	strcopy(e->name, name);
 	symadd(e);
 }
 
