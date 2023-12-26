@@ -46,20 +46,20 @@ void test(int id)
 {
 	FILE *fe, *fa;
 
-	char expt[MAXNAMELEN];
-	strncpy(expt, cases[id], MAXNAMELEN);
-	chgsuf(expt, ".txt", ".pas");
+	char txt[MAXNAMELEN];
+	strncpy(txt, cases[id], MAXNAMELEN);
+	chgsuf(txt, ".txt", ".pas");
 
-	fe = fopen(expt, "r");
+	fe = fopen(txt, "r");
 	if (fe == NULL) {
 		panic("fail to open expected file.");
 	}
 
-	char exeu[MAXNAMELEN];
-	strncpy(exeu, cases[id], MAXNAMELEN);
-	chgsuf(exeu, ".run", ".pas");
+	char exe[MAXNAMELEN];
+	strncpy(exe, cases[id], MAXNAMELEN);
+	chgsuf(exe, ".run", ".pas");
 
-	fa = popen(exeu, "r");
+	fa = popen(exe, "r");
 	if (fa == NULL) {
 		panic("fail to runtest.");
 	}
@@ -90,7 +90,7 @@ void test(int id)
 done:
 	pclose(fe);
 	pclose(fa);
-	remove(exeu);
+	remove(exe);
 }
 
 int main(int argc, char *argv[])
