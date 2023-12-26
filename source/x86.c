@@ -194,6 +194,8 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	char extra[128];
 	sprintf(extra, "%s %s", var->label, var->name);
 
+	dbg("currscope = %p\n", currscope);
+
 	symtab_t *tab = var->stab;
 	switch (var->cate) {
 	case BYVAL_OBJ:
