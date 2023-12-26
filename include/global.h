@@ -34,6 +34,9 @@ extern int colmno;
 // target assembly file
 extern FILE *target;
 
+// main entry function name
+#define MAINFUNC "_start"
+
 // Initialization init.c
 void init(int argc, char *argv[]);
 

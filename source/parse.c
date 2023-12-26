@@ -1,7 +1,6 @@
 #include "common.h"
 #include "debug.h"
 #include "error.h"
-#include "gen.h"
 #include "global.h"
 #include "parse.h"
 #include "scan.h"

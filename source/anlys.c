@@ -9,7 +9,7 @@
 
 static void anlys_pgm(pgm_node_t *node)
 {
-	scope_entry("main");
+	scope_entry(MAINFUNC);
 
 	syment_t *e = syminit(node->entry);
 	node->entry->symbol = e;

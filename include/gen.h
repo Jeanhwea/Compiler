@@ -3,8 +3,6 @@
 #include "parse.h"
 #include "symtab.h"
 
-#define MAINFUNC "_start"
-
 static void gen_pgm(pgm_node_t *node);
 static void gen_pf_dec_list(pf_dec_list_node_t *node);
 static void gen_proc_decf(proc_dec_node_t *node);
