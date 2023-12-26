@@ -160,7 +160,7 @@ void progdump()
 	if (target == NULL) {
 		panic("target file not found!");
 	}
-	msg("open target file %s\n", PL0E_ASSEM);
+	msg("compile assemble file %s\n", PL0E_ASSEM);
 
 	// Write content
 	fprintf(target, "section .text\n");
