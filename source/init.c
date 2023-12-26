@@ -8,7 +8,7 @@
 
 // constants
 char PL0E_NAME[32] = "pcc";
-char PL0E_VERSION[32] = "v0.16.3";
+char PL0E_VERSION[32] = "v0.16.4";
 char PL0E_INPUT[MAXSTRLEN] = "input.pas";
 char PL0E_ASSEM[MAXSTRLEN] = "input.s";
 char PL0E_OBJECT[MAXSTRLEN] = "input.o";
