@@ -5,6 +5,7 @@
 #include <string.h>
 #include "common.h"
 #include "debug.h"
+#include "limits.h"
 
 // consts
 extern char PL0E_NAME[];
@@ -42,7 +43,6 @@ void init(int argc, char *argv[]);
 
 // Lexical
 // hold source file line buffer in scan.c
-#define MAXLINEBUF 4096
 extern char linebuf[MAXLINEBUF];
 extern int bufsize;
 token_t gettok(void);

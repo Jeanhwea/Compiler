@@ -1,8 +1,8 @@
 #ifndef _SCAN_H_
 #define _SCAN_H_
 #include "lexical.h"
+#include "limits.h"
 
-#define MAXTOKENSIZE 256
 // token data, store current token string
 extern char tokbuf[MAXTOKENSIZE + 1];
 // token location, line number

@@ -5,7 +5,6 @@
 #include "parse.h"
 
 #define MAXBUCKETS 16
-#define MAXLABEL 16
 
 typedef struct _sym_param_struct param_t;
 typedef struct _sym_entry_struct syment_t;
@@ -57,7 +56,7 @@ typedef struct _sym_entry_struct {
 	param_t *ptail;
 	symtab_t *scope;
 	// label for assemble codes
-	char label[MAXLABEL];
+	char label[MAXSTRLEN];
 	int off; // offset, for local variable stack mapping
 	// referenced line number
 	int lineno;
