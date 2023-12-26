@@ -23,6 +23,7 @@ static inst_t *emit()
 		xhead = xtail = t;
 	}
 
+	dbg("emit xid=%d op=%d", t->xid, t->op);
 	return t;
 }
 
