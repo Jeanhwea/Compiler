@@ -70,7 +70,9 @@ void pl0c_read_args(int argc, char *argv[])
 			strcpy(PL0E_TARGET, argv[i]);
 			continue;
 		}
-		strcpy(PL0E_INPUT, argv[i]);
+		if (strlen(argv[i]) > 0 && argv[i][0] != '-') {
+			strcpy(PL0E_INPUT, argv[i]);
+		}
 	}
 
 	strcpy(PL0E_ASSEM, PL0E_INPUT);

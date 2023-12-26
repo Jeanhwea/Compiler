@@ -7,13 +7,13 @@
 #include "parse.h"
 #include "syntax.h"
 
-static int ncnt = 0;
+static int nextseq = 0;
 
 static node_t *initnode(int nid, char *name)
 {
 	node_t *d;
 	INITMEM(node_t, d);
-	d->id = ++ncnt;
+	d->seq = ++nextseq;
 	d->nid = nid;
 	strcopy(d->name, name);
 	return d;
@@ -25,13 +25,13 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 		return;
 	}
 
-	if (parent->total + 1 >= MAXCHILD) {
+	if (parent->nchild + 1 >= MAXCHILD) {
 		panic("TOO_MANY_NODE_CHILD");
 	}
 
-	strcopy(parent->refs[parent->total], ref);
-	parent->childs[parent->total] = child;
-	parent->total++;
+	strcopy(parent->chdptrs[parent->nchild], ref);
+	parent->childs[parent->nchild] = child;
+	parent->nchild++;
 }
 
 node_t *conv_pgm_node(pgm_node_t *t)

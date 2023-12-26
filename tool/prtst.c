@@ -22,7 +22,7 @@ void prtnode(node_t *node)
 	}
 
 	char buf[MAXSTRBUF];
-	sprintf(buf, "#%03d %s", node->id, node->name);
+	sprintf(buf, "#%03d %s", node->seq, node->name);
 
 	if (strlen(node->extra)) {
 		appendf(buf, " [%s]", node->extra);
@@ -39,7 +39,7 @@ void prtnode(node_t *node)
 	}
 	msg("%s\n", buf);
 
-	for (i = 0; i < node->total; ++i) {
+	for (i = 0; i < node->nchild; ++i) {
 		prtnode(node->childs[i]);
 	}
 

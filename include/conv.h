@@ -7,11 +7,11 @@
 #define MAXCHILD 128
 typedef struct _tree_node node_t;
 typedef struct _tree_node {
-	int id;
+	int seq;
 	int nid;
 	char name[MAXSTRLEN];
-	int total;
-	char refs[MAXCHILD][MAXSTRLEN];
+	int nchild; // number of children
+	char chdptrs[MAXCHILD][MAXSTRLEN];
 	node_t *childs[MAXCHILD];
 	ident_node_t *idp;
 	// which kind node from syntax.h
