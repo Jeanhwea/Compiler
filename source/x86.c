@@ -637,8 +637,8 @@ void x86_enter(syment_t *func)
 		addlabel(buf);
 	}
 	currscope = func->scope;
-	dbg("set currscope %s, scope = %p, scope name = %s\n", func->name,
-	    func->scope, func->scope->nspace);
+	dbg("set currscope=%p, nspace=%s\n", currscope, func->scope->nspace);
+
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
 
