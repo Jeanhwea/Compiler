@@ -637,7 +637,7 @@ void x86_enter(syment_t *func)
 		addlabel(buf);
 	}
 	scope = func->scope;
-	dbg("setscope depth=%p, nspace=%s\n", scope->depth, scope->nspace);
+	dbg("setscope depth=%d, nspace=%s\n", scope->depth, scope->nspace);
 
 	addcode2("push", REG_BP);
 	addcode3("mov", REG_BP, REG_SP);
