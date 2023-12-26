@@ -88,6 +88,7 @@ void addcode4(char *op, char *fa, char *fb, char *extra)
 	strcopy(i->fa, fa);
 	strcopy(i->fb, fb);
 	strcopy(i->et, extra);
+	dbg("addcode %d\n", prog.itext);
 }
 
 void addcode3(char *op, char *fa, char *fb)

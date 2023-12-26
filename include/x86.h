@@ -1,5 +1,6 @@
 #ifndef _X86_H_
 #define _X86_H_
+#include "limits.h"
 #include "symtab.h"
 
 // register
@@ -40,8 +41,6 @@ typedef struct _x86_inst_struct {
 	char et[MAXOPLEN]; // extra: comment, label etc.
 } x86i_t;
 
-#define MAXDATASEC 32
-#define MAXTEXTSEC 1024
 typedef struct _program_code_struct {
 	int idata;
 	x86i_t data[MAXDATASEC];

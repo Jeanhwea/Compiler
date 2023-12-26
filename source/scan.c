@@ -3,7 +3,7 @@
 #include "lexical.h"
 #include "scan.h"
 
-char tokbuf[MAXTOKENSIZE + 1];
+char tokbuf[MAXTOKSIZE + 1];
 int toklineno;
 
 // get next token
@@ -202,10 +202,10 @@ token_t gettok(void)
 		}
 
 		// save ch to tokbuf[...]
-		if ((save) && (i <= MAXTOKENSIZE)) {
+		if ((save) && (i <= MAXTOKSIZE)) {
 			tokbuf[i++] = (char)ch;
 			tokbuf[i] = '\0';
-		} else if (i > MAXTOKENSIZE) {
+		} else if (i > MAXTOKSIZE) {
 			dbg("token size is too long, lineno = %d\n", lineno);
 		}
 

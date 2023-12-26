@@ -4,7 +4,7 @@
 #include "limits.h"
 
 // token data, store current token string
-extern char tokbuf[MAXTOKENSIZE + 1];
+extern char tokbuf[MAXTOKSIZE + 1];
 // token location, line number
 extern int toklineno;
 

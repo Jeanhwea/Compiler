@@ -18,7 +18,7 @@ int nidcnt = 0;
 static token_t currtok;
 // hold previous token
 static token_t prevtok;
-static char prevtokbuf[MAXTOKENSIZE + 1];
+static char prevtokbuf[MAXTOKSIZE + 1];
 static int prevlineno;
 
 // match an expected token, and skip to next token
