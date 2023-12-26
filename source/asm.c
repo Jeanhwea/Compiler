@@ -411,6 +411,7 @@ void genasm()
 	x86_init();
 	inst_t *x;
 	for (x = xhead; x; x = x->next) {
+		dbg("xid=%d, op=%d\n", x->xid, x->op);
 		switch (x->op) {
 		case ADD_OP:
 			asmbl_add_op(x);
@@ -503,7 +504,9 @@ void genasm()
 			unlikely();
 		}
 	}
+
 	chkerr("assemble fail and exit.");
 	phase = ASSEMBLE;
+
 	progdump();
 }

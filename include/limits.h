@@ -6,7 +6,8 @@
 #define MAXLINEBUF 4096
 #define MAXTOKSIZE 256
 #define MAXSYMENT 1024
-#define MAXDATASEC 32
+#define MAXFIELDLEN 64
+#define MAXDATASEC 128
 #define MAXTEXTSEC 4096
 
 #endif /* End of _LIMITS_H_ */
