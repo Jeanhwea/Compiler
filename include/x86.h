@@ -23,13 +23,12 @@ typedef struct _reg_struct {
 #define BTP_SI "byte[esi]"
 #define SYSCAL "0x80"
 
+#define ALIGN 4
+
 // General register operations
 reg_t *allocreg();
 reg_t *lockreg(char *name);
 void freereg(reg_t *r);
-
-#define ALIGN 4
-#define OFFSET(e) (ALIGN * e->off)
 
 // x86 instructions
 typedef struct _x86_inst_struct {
@@ -95,5 +94,5 @@ void x86_jg(syment_t *lab);
 void x86_jng(syment_t *lab);
 void x86_jl(syment_t *lab);
 void x86_jnl(syment_t *lab);
-void x86_alloc_string(char *name, char *initval);
+void x86_stralloc(char *name, char *initval);
 #endif /* End of _X86_H_ */

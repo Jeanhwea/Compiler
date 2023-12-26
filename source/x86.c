@@ -736,7 +736,7 @@ void x86_jnl(syment_t *lab)
 	addcode2("jnl", lab->label);
 }
 
-void x86_alloc_string(char *name, char *initval)
+void x86_stralloc(char *name, char *initval)
 {
 	adddata2(name, initval);
 }

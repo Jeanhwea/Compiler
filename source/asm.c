@@ -377,7 +377,7 @@ void asmbl_rdc_op(inst_t *x)
 
 void asmbl_wrs_op(inst_t *x)
 {
-	x86_alloc_string(x->d->label, x->d->str);
+	x86_stralloc(x->d->label, x->d->str);
 	reg_t *ra = lockreg(REG_RA);
 	x86_mov7(ra, x->d->label);
 	x86_syscall(LIBWSTR, ra);
