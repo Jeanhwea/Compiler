@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	init(argc, argv);
 	parse();
 	analysis();
-	node_t *tree = conv_pgm_node(ast);
+	node_t *tree = conv_pgm_node(pgm);
 	prtnode(tree);
 	return 0;
 }

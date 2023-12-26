@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 // syntax tree
-pgm_node_t *ast;
+pgm_node_t *pgm;
 int nidcnt = 0;
 
 // current token
@@ -1026,9 +1026,9 @@ static arg_list_node_t *parse_arg_list(void)
 pgm_node_t *parse(void)
 {
 	currtok = gettok();
-	ast = parse_pgm();
+	pgm = parse_pgm();
 	chkerr("parse fail and exit.");
 	phase = SEMANTIC;
 	fclose(source);
-	return ast;
+	return pgm;
 }

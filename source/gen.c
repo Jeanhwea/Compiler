@@ -450,7 +450,7 @@ static void gen_arg_list(arg_list_node_t *node)
 
 void genir()
 {
-	gen_pgm(ast);
+	gen_pgm(pgm);
 	chkerr("generate fail and exit.");
 	phase = CODE_GEN;
 }

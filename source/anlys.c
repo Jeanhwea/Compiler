@@ -539,7 +539,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 
 void analysis()
 {
-	anlys_pgm(ast);
+	anlys_pgm(pgm);
 	chkerr("annlysis fail and exit.");
 	phase = IR;
 }

@@ -49,7 +49,7 @@ token_t gettok(void);
 
 // Syntax
 // prog root, syntax tree, in parse.c
-extern pgm_node_t *ast;
+extern pgm_node_t *pgm;
 pgm_node_t *parse(void);
 
 // Semantic
