@@ -68,7 +68,7 @@ static void anlys_pf_dec_list(pf_dec_list_node_t *node)
 {
 	pf_dec_list_node_t *t;
 	for (t = node; t; t = t->next) {
-		switch (t->type) {
+		switch (t->kind) {
 		case PROC_PFDEC:
 			anlys_proc_decf(t->pdp);
 			break;
@@ -209,7 +209,7 @@ static void anlys_comp_stmt(comp_stmt_node_t *node)
 
 static void anlys_stmt(stmt_node_t *node)
 {
-	switch (node->type) {
+	switch (node->kind) {
 	case ASSGIN_STMT:
 		anlys_assign_stmt(node->asp);
 		break;
@@ -251,7 +251,7 @@ static void anlys_assign_stmt(assign_stmt_node_t *node)
 		       idp->name);
 	}
 	idp->symbol = e;
-	switch (node->type) {
+	switch (node->kind) {
 	case NORM_ASSGIN:
 	case FUN_ASSGIN:
 		anlys_expr(node->rep);
@@ -296,7 +296,7 @@ static void anlys_for_stmt(for_stmt_node_t *node)
 	}
 	idp->symbol = e;
 
-	switch (node->type) {
+	switch (node->kind) {
 	case TO_FOR:
 	case DOWNTO_FOR:
 		anlys_stmt(node->sp);
@@ -380,7 +380,7 @@ static void anlys_factor(factor_node_t *node)
 	node->stab = scope_top();
 	ident_node_t *idp;
 	syment_t *e;
-	switch (node->type) {
+	switch (node->kind) {
 	case ID_FACTOR:
 		nevernil(node->idp);
 		idp = node->idp;
@@ -495,7 +495,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 
 			factor_node_t *fp = tp->fp;
 			ident_node_t *idp;
-			if (fp->type == ID_FACTOR || fp->type == ARRAY_FACTOR) {
+			if (fp->kind == ID_FACTOR || fp->kind == ARRAY_FACTOR) {
 				idp = fp->idp;
 				t->idx = fp->ep;
 				anlys_factor(fp);
@@ -512,12 +512,12 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 				giveup(BADSYM, "L%d: symbol %s not found.",
 				       idp->line, idp->name);
 			}
-			if (fp->type == ID_FACTOR && a->cate != VAR_OBJ) {
+			if (fp->kind == ID_FACTOR && a->cate != VAR_OBJ) {
 				giveup(OBJREF,
 				       "L%d: argument %s call by reference is not variable object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
-			if (fp->type == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
+			if (fp->kind == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
 				giveup(OBJREF,
 				       "L%d: argument %s call by reference is not array object, pos = %d.",
 				       idp->line, idp->name, pos);

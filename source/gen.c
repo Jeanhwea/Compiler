@@ -24,7 +24,7 @@ static void gen_pf_dec_list(pf_dec_list_node_t *node)
 {
 	pf_dec_list_node_t *t;
 	for (t = node; t; t = t->next) {
-		switch (t->type) {
+		switch (t->kind) {
 		case PROC_PFDEC:
 			gen_proc_decf(t->pdp);
 			break;
@@ -73,7 +73,7 @@ static void gen_comp_stmt(comp_stmt_node_t *node)
 
 static void gen_stmt(stmt_node_t *node)
 {
-	switch (node->type) {
+	switch (node->kind) {
 	case ASSGIN_STMT:
 		gen_assign_stmt(node->asp);
 		break;
@@ -109,7 +109,7 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 {
 	syment_t *r, *s, *d;
 	d = node->idp->symbol;
-	switch (node->type) {
+	switch (node->kind) {
 	case NORM_ASSGIN:
 		r = gen_expr(node->rep);
 		emit2(ASS_OP, r, d);
@@ -171,7 +171,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 	d = node->idp->symbol;
 	emit2(ASS_OP, beg, d);
 	emit1(LAB_OP, forstart);
-	switch (node->type) {
+	switch (node->kind) {
 	case TO_FOR:
 		emit3(GTT_OP, d, end, fordone);
 		gen_stmt(node->sp);
@@ -342,7 +342,7 @@ static syment_t *gen_factor(factor_node_t *node)
 {
 	syment_t *d, *r, *e;
 	d = r = e = NULL;
-	switch (node->type) {
+	switch (node->kind) {
 	case ID_FACTOR:
 		d = node->idp->symbol;
 		break;
@@ -391,7 +391,7 @@ static void gen_cond(cond_node_t *node, syment_t *dest)
 	syment_t *r, *s;
 	r = gen_expr(node->lep);
 	s = gen_expr(node->rep);
-	switch (node->op) {
+	switch (node->kind) {
 	case EQU_RELA:
 		emit3(EQU_OP, r, s, dest);
 		break;

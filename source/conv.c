@@ -106,7 +106,7 @@ node_t *conv_pf_dec_list_node(pf_dec_list_node_t *t)
 	}
 	node_t *d = initnode(t->nid, "PF_DEC_LIST");
 	for (; t; t = t->next) {
-		switch (t->type) {
+		switch (t->kind) {
 		case PROC_PFDEC:
 			addchild(d, conv_proc_dec_node(t->pdp), "pdp");
 			break;
@@ -199,8 +199,8 @@ node_t *conv_stmt_node(stmt_node_t *t)
 		return d;
 	}
 
-	d->cate = t->type;
-	switch (t->type) {
+	d->kind = t->kind;
+	switch (t->kind) {
 	case ASSGIN_STMT:
 		addchild(d, conv_assign_stmt_node(t->asp), "asp");
 		break;
@@ -239,8 +239,8 @@ node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 		return NULL;
 	}
 	node_t *d = initnode(t->nid, "ASSIGN_STMT");
-	d->cate = t->type;
-	switch (t->type) {
+	d->kind = t->kind;
+	switch (t->kind) {
 	case NORM_ASSGIN:
 		addchild(d, conv_ident_node(t->idp), "idp");
 		addchild(d, conv_expr_node(t->lep), "lep");
@@ -349,7 +349,7 @@ node_t *conv_write_stmt_node(write_stmt_node_t *t)
 
 	node_t *d = initnode(t->nid, "WRITE_STMT");
 	char buf[MAXSTRBUF];
-	d->cate = t->type;
+	d->kind = t->type;
 	switch (t->type) {
 	case STR_WRITE:
 		sprintf(buf, "\\\"%s\\\"", t->sp);
@@ -379,11 +379,11 @@ node_t *conv_expr_node(expr_node_t *t)
 	for (; t; t = t->next) {
 		switch (t->op) {
 		case ADD_ADDOP:
-			d->extra = "+";
+			strcpy(d->extra, "+");
 			break;
 		case MINUS_ADDOP:
 		case NEG_ADDOP:
-			d->extra = "-";
+			strcpy(d->extra, "-");
 			break;
 		}
 		addchild(d, conv_term_node(t->tp), "tp");
@@ -400,10 +400,10 @@ node_t *conv_term_node(term_node_t *t)
 	for (; t; t = t->next) {
 		switch (t->op) {
 		case MULT_MULTOP:
-			d->extra = "*";
+			strcpy(d->extra, "*");
 			break;
 		case DIV_MULTOP:
-			d->extra = "/";
+			strcpy(d->extra, "/");
 			break;
 		}
 		addchild(d, conv_factor_node(t->fp), "fp");
@@ -419,8 +419,8 @@ node_t *conv_factor_node(factor_node_t *t)
 
 	node_t *d = initnode(t->nid, "FACTOR");
 	char buf[1024];
-	d->cate = t->type;
-	switch (t->type) {
+	d->kind = t->kind;
+	switch (t->kind) {
 	case ID_FACTOR:
 		addchild(d, conv_ident_node(t->idp), "idp");
 		break;
@@ -452,25 +452,25 @@ node_t *conv_cond_node(cond_node_t *t)
 		return NULL;
 	}
 	node_t *d = initnode(t->nid, "COND");
-	d->cate = t->op;
-	switch (t->op) {
+	d->kind = t->kind;
+	switch (t->kind) {
 	case EQU_RELA:
-		d->extra = "=";
+		strcpy(d->extra, "=");
 		break;
 	case NEQ_RELA:
-		d->extra = "<>";
+		strcpy(d->extra, "<>");
 		break;
 	case GTT_RELA:
-		d->extra = ">";
+		strcpy(d->extra, ">");
 		break;
 	case GEQ_RELA:
-		d->extra = ">=";
+		strcpy(d->extra, ">=");
 		break;
 	case LST_RELA:
-		d->extra = "<";
+		strcpy(d->extra, "<");
 		break;
 	case LEQ_RELA:
-		d->extra = "<=";
+		strcpy(d->extra, "<=");
 		break;
 	}
 	addchild(d, conv_expr_node(t->lep), "lep");

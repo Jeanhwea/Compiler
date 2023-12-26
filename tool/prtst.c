@@ -24,7 +24,7 @@ void prtnode(node_t *node)
 	char buf[MAXSTRBUF];
 	sprintf(buf, "#%03d %s", node->id, node->name);
 
-	if (node->extra) {
+	if (strlen(node->extra)) {
 		appendf(buf, " [%s]", node->extra);
 	}
 

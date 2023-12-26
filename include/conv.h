@@ -14,11 +14,11 @@ typedef struct _tree_node {
 	char refs[MAXCHILD][MAXSTRLEN];
 	node_t *childs[MAXCHILD];
 	ident_node_t *idp;
-	// which category:
-	//   type(addop_t, multop_t, factor_t)
+	// which kind node from syntax.h
+	//   kind(addop_t, multop_t, factor_t)
 	//   op(rela_t)
-	int cate;
-	char *extra;
+	int kind;
+	char extra[MAXSTRLEN];
 } node_t;
 
 node_t *conv_pgm_node(pgm_node_t *t);

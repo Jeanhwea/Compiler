@@ -42,7 +42,7 @@ typedef struct _var_def_node {
 typedef enum _pf_dec_enum { FUN_PFDEC, PROC_PFDEC } pf_dec_t;
 typedef struct _pf_dec_list_node {
 	int nid;
-	pf_dec_t type;
+	pf_dec_t kind;
 	proc_dec_node_t *pdp;
 	fun_dec_node_t *fdp;
 	pf_dec_list_node_t *next;
@@ -92,7 +92,7 @@ typedef enum _stmt_enum {
 } stmt_t;
 typedef struct _stmt_node {
 	int nid;
-	stmt_t type;
+	stmt_t kind;
 	assign_stmt_node_t *asp;
 	if_stmt_node_t *ifp;
 	repe_stmt_node_t *rpp;
@@ -105,7 +105,7 @@ typedef struct _stmt_node {
 typedef enum _assgin_enum { NORM_ASSGIN, FUN_ASSGIN, ARRAY_ASSGIN } assgin_t;
 typedef struct _assign_stmt_node {
 	int nid;
-	assgin_t type;
+	assgin_t kind;
 	ident_node_t *idp;
 	expr_node_t *lep;
 	expr_node_t *rep;
@@ -128,7 +128,7 @@ typedef struct _repe_stmt_node {
 typedef enum _for_enum { TO_FOR, DOWNTO_FOR } for_t;
 typedef struct _for_stmt_node {
 	int nid;
-	for_t type;
+	for_t kind;
 	ident_node_t *idp;
 	expr_node_t *lep;
 	expr_node_t *rep;
@@ -198,7 +198,7 @@ typedef enum _factor_enum {
 } factor_t;
 typedef struct _factor_node {
 	int nid;
-	factor_t type;
+	factor_t kind;
 	ident_node_t *idp;
 	expr_node_t *ep;
 	// value: store unsigned int or char
@@ -217,7 +217,7 @@ typedef enum _rela_enum {
 typedef struct _cond_node {
 	int nid;
 	expr_node_t *lep;
-	rela_t op;
+	rela_t kind;
 	expr_node_t *rep;
 	symtab_t *stab;
 } cond_node_t;

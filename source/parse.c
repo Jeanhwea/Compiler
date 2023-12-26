@@ -272,11 +272,11 @@ static pf_dec_list_node_t *parse_pf_dec_list(void)
 		}
 		switch (currtok) {
 		case KW_PROCEDURE:
-			q->type = PROC_PFDEC;
+			q->kind = PROC_PFDEC;
 			q->pdp = parse_proc_dec();
 			break;
 		case KW_FUNCTION:
-			q->type = FUN_PFDEC;
+			q->kind = FUN_PFDEC;
 			q->fdp = parse_fun_dec();
 			break;
 		default:
@@ -429,39 +429,39 @@ static stmt_node_t *parse_stmt(void)
 
 	switch (currtok) {
 	case KW_IF:
-		t->type = IF_STMT;
+		t->kind = IF_STMT;
 		t->ifp = parse_if_stmt();
 		break;
 	case KW_REPEAT:
-		t->type = REPEAT_STMT;
+		t->kind = REPEAT_STMT;
 		t->rpp = parse_repe_stmt();
 		break;
 	case KW_BEGIN:
-		t->type = COMP_STMT;
+		t->kind = COMP_STMT;
 		t->cpp = parse_comp_stmt();
 		break;
 	case KW_READ:
-		t->type = READ_STMT;
+		t->kind = READ_STMT;
 		t->rdp = parse_read_stmt();
 		break;
 	case KW_WRITE:
-		t->type = WRITE_STMT;
+		t->kind = WRITE_STMT;
 		t->wtp = parse_write_stmt();
 		break;
 	case KW_FOR:
-		t->type = FOR_STMT;
+		t->kind = FOR_STMT;
 		t->frp = parse_for_stmt();
 		break;
 	case MC_ID:
 		match(MC_ID);
 		if (TOKANY(SS_LPAR)) {
-			t->type = PCALL_STMT;
+			t->kind = PCALL_STMT;
 			t->pcp = parse_pcall_stmt();
 		} else if (TOKANY2(SS_ASGN, SS_LBRA)) {
-			t->type = ASSGIN_STMT;
+			t->kind = ASSGIN_STMT;
 			t->asp = parse_assign_stmt();
 		} else if (TOKANY(SS_EQU)) {
-			t->type = ASSGIN_STMT;
+			t->kind = ASSGIN_STMT;
 			t->asp = parse_assign_stmt();
 			rescue(ERRTOK, "L%d: bad token, = may be :=", lineno);
 		} else {
@@ -469,7 +469,7 @@ static stmt_node_t *parse_stmt(void)
 		}
 		break;
 	default:
-		t->type = NULL_STMT;
+		t->kind = NULL_STMT;
 		break;
 	}
 
@@ -491,14 +491,14 @@ static assign_stmt_node_t *parse_assign_stmt(void)
 
 	switch (currtok) {
 	case SS_ASGN:
-		t->type = NORM_ASSGIN;
+		t->kind = NORM_ASSGIN;
 		t->idp = parse_ident(READPREV);
 		match(SS_ASGN);
 		t->lep = NULL;
 		t->rep = parse_expr();
 		break;
 	case SS_LBRA:
-		t->type = ARRAY_ASSGIN;
+		t->kind = ARRAY_ASSGIN;
 		t->idp = parse_ident(READPREV);
 		match(SS_LBRA);
 		t->lep = parse_expr();
@@ -507,7 +507,7 @@ static assign_stmt_node_t *parse_assign_stmt(void)
 		t->rep = parse_expr();
 		break;
 	case SS_EQU: // bad case
-		t->type = NORM_ASSGIN;
+		t->kind = NORM_ASSGIN;
 		t->idp = parse_ident(READPREV);
 		match(SS_EQU);
 		t->lep = NULL;
@@ -579,11 +579,11 @@ static for_stmt_node_t *parse_for_stmt(void)
 	switch (currtok) {
 	case KW_TO:
 		match(KW_TO);
-		t->type = TO_FOR;
+		t->kind = TO_FOR;
 		break;
 	case KW_DOWNTO:
 		match(KW_DOWNTO);
-		t->type = DOWNTO_FOR;
+		t->kind = DOWNTO_FOR;
 		break;
 	default:
 		unlikely();
@@ -820,34 +820,34 @@ static factor_node_t *parse_factor(void)
 
 	switch (currtok) {
 	case MC_UNS:
-		t->type = UNSIGN_FACTOR;
+		t->kind = UNSIGN_FACTOR;
 		t->value = atoi(tokbuf);
 		match(MC_UNS);
 		break;
 	case MC_CH:
-		t->type = CHAR_FACTOR;
+		t->kind = CHAR_FACTOR;
 		t->value = (int)tokbuf[0];
 		match(MC_CH);
 		break;
 	case SS_LPAR:
 		match(SS_LPAR);
-		t->type = EXPR_FACTOR;
+		t->kind = EXPR_FACTOR;
 		t->ep = parse_expr();
 		match(SS_RPAR);
 		break;
 	case MC_ID:
 		match(MC_ID);
 		if (TOKANY(SS_LBRA)) {
-			t->type = ARRAY_FACTOR;
+			t->kind = ARRAY_FACTOR;
 			t->idp = parse_ident(READPREV);
 			match(SS_LBRA);
 			t->ep = parse_expr();
 			match(SS_RBRA);
 		} else if (TOKANY(SS_LPAR)) {
-			t->type = FUNCALL_FACTOR;
+			t->kind = FUNCALL_FACTOR;
 			t->fcsp = parse_fcall_stmt();
 		} else {
-			t->type = ID_FACTOR;
+			t->kind = ID_FACTOR;
 			t->idp = parse_ident(READPREV);
 		}
 		break;
@@ -871,27 +871,27 @@ static cond_node_t *parse_cond(void)
 	switch (currtok) {
 	case SS_EQU:
 		match(SS_EQU);
-		t->op = EQU_RELA;
+		t->kind = EQU_RELA;
 		break;
 	case SS_LST:
 		match(SS_LST);
-		t->op = LST_RELA;
+		t->kind = LST_RELA;
 		break;
 	case SS_LEQ:
 		match(SS_LEQ);
-		t->op = LEQ_RELA;
+		t->kind = LEQ_RELA;
 		break;
 	case SS_GTT:
 		match(SS_GTT);
-		t->op = GTT_RELA;
+		t->kind = GTT_RELA;
 		break;
 	case SS_GEQ:
 		match(SS_GEQ);
-		t->op = GEQ_RELA;
+		t->kind = GEQ_RELA;
 		break;
 	case SS_NEQ:
 		match(SS_NEQ);
-		t->op = NEQ_RELA;
+		t->kind = NEQ_RELA;
 		break;
 	default:
 		unlikely();
