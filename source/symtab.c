@@ -26,7 +26,9 @@ symtab_t *scope_entry(char *nspace)
 	// Push
 	t->outer = top;
 	top = t;
-	dbg("push stab=%d nspace=%s\n", t->id, t->nspace);
+
+	// trace log
+	dbg("push depth=%d stab=%d nspace=%s\n", t->depth, t->id, t->nspace);
 	return t;
 }
 
@@ -42,7 +44,18 @@ symtab_t *scope_exit(void)
 	}
 	depth--;
 
-	dbg("pop stab=%d nspace=%s\n", t->id, t->nspace);
+	// trace log
+	//   1. dump table info
+	//   2. dump all table entry
+	dbg("pop depth=%d stab=%d nspace=%s\n", t->depth, t->id, t->nspace);
+	int i;
+	for (i = 0; i < MAXBUCKETS; ++i) {
+		syment_t *hair, *e;
+		hair = &t->buckets[i];
+		for (e = hair->next; e; e = e->next) {
+			dbg("sid=%d, name=%s\n", e->sid, e->name);
+		}
+	}
 	return t;
 }
 
@@ -112,9 +125,9 @@ static void dumptab(symtab_t *stab)
 	strcat(indent, "  ");
 	for (i = 0; i < MAXBUCKETS; ++i) {
 		syment_t *hair, *e;
-		hair = &stab->buckets[i];
+		hair = &t->buckets[i];
 		for (e = hair->next; e; e = e->next) {
-			msg("%sname=%s, value=%d, label=%s, obj=%d, type=%d\n",
+			msg("%sname=%s, value=%d, label=%s, cate=%d, type=%d\n",
 			    indent, e->name, e->initval, e->label, e->cate,
 			    e->type);
 		}
