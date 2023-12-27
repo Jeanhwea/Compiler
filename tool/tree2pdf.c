@@ -13,9 +13,13 @@
 
 bool opt_show_extra = FALSE;
 bool opt_show_symbol = FALSE;
+bool opt_main_only = FALSE;
 
 #define MAXNODES 1024
 #define MAXEDGES 1024
+
+// syntax tree
+node_t *tree;
 
 // nodes
 static int nedges = 0;
@@ -125,13 +129,16 @@ void draw()
 void initopt(int argc, char *argv[])
 {
 	int i;
-	for (i = 0; i < argc; ++i) {
+	for (i = 1; i < argc; ++i) {
 		if (!strcmp("-x", argv[i])) {
 			opt_show_extra = TRUE;
 		}
 		if (!strcmp("-xx", argv[i])) {
 			opt_show_extra = TRUE;
 			opt_show_symbol = TRUE;
+		}
+		if (!strcmp("-m", argv[i])) {
+			opt_main_only = TRUE;
 		}
 	}
 }
@@ -144,11 +151,17 @@ int main(int argc, char *argv[])
 	initopt(argc, argv);
 	parse();
 	analysis();
-	node_t *tree = conv_pgm_node(pgm);
+
+	if (opt_main_only && pgm && pgm->bp && pgm->bp->csp) {
+		tree = conv_comp_stmt_node(pgm->bp->csp);
+	} else {
+		tree = conv_pgm_node(pgm);
+	}
 
 	visit(tree);
 
 	draw();
+
 	system("dot -Tpdf viz.dot -o viz.pdf");
 	// system("rm viz.dot");
 	return 0;
