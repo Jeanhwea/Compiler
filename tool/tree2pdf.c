@@ -52,6 +52,7 @@ void drawnode(node_t *node)
 {
 	char label[MAXSTRBUF];
 	sprintf(label, "#%d %s", node->seq, node->name);
+	char *shape;
 
 	if (!opt_show_extra) {
 		goto makenode;
@@ -78,7 +79,7 @@ void drawnode(node_t *node)
 	appendf(label, "\\ncate=%d", symbol->cate);
 
 makenode:
-	char *shape = "oval";
+	shape = "oval";
 	if (!strcmp(node->name, "IDENT")) {
 		shape = "box";
 	}
