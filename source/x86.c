@@ -157,7 +157,7 @@ void writeasm()
 {
 	// open target nasm file
 	asmble = fopen(PL0E_ASSEM, "w");
-	if (asmble == NULL) {
+	if (!asmble) {
 		panic("target file not found!");
 	}
 	msg("compile assemble file %s\n", PL0E_ASSEM);

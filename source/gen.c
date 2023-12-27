@@ -66,7 +66,7 @@ static void gen_fun_decf(fun_dec_node_t *node)
 static void gen_comp_stmt(comp_stmt_node_t *node)
 {
 	comp_stmt_node_t *t;
-	for (t = node; t != NULL; t = t->next) {
+	for (t = node; t; t = t->next) {
 		gen_stmt(t->sp);
 	}
 }

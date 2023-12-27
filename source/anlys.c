@@ -201,7 +201,7 @@ static void anlys_para_list(syment_t *sign, para_list_node_t *node)
 static void anlys_comp_stmt(comp_stmt_node_t *node)
 {
 	comp_stmt_node_t *t;
-	for (t = node; t != NULL; t = t->next) {
+	for (t = node; t; t = t->next) {
 		nevernil(t->sp);
 		anlys_stmt(t->sp);
 	}

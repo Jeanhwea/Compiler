@@ -265,7 +265,7 @@ static pf_dec_list_node_t *parse_pf_dec_list(void)
 
 	for (p = t = NULL; TOKANY2(KW_FUNCTION, KW_PROCEDURE); p = q) {
 		NEWNODE(pf_dec_list_node_t, q);
-		if (p == NULL) {
+		if (!p) {
 			t = q;
 		} else {
 			p->next = q;
