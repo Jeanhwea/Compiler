@@ -65,6 +65,6 @@ extern inst_t *xtail;
 
 // emit an instruction
 inst_t *emit1(op_t op, syment_t *d);
-inst_t *emit2(op_t op, syment_t *r, syment_t *d);
+inst_t *emit2(op_t op, syment_t *d, syment_t *r);
 inst_t *emit3(op_t op, syment_t *d, syment_t *r, syment_t *s);
 #endif /* End of _IR_H_ */

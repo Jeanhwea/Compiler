@@ -112,11 +112,11 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 	switch (node->kind) {
 	case NORM_ASSGIN:
 		r = gen_expr(node->rep);
-		emit2(ASS_OP, r, d);
+		emit2(ASS_OP, d, r);
 		break;
 	case FUN_ASSGIN:
 		r = gen_expr(node->rep);
-		emit2(ASS_OP, r, d);
+		emit2(ASS_OP, d, r);
 		break;
 	case ARRAY_ASSGIN:
 		s = gen_expr(node->lep);
@@ -169,7 +169,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 
 	syment_t *d;
 	d = node->idp->symbol;
-	emit2(ASS_OP, beg, d);
+	emit2(ASS_OP, d, beg);
 	emit1(LAB_OP, forstart);
 	switch (node->kind) {
 	case TO_FOR:
@@ -196,7 +196,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 static void gen_pcall_stmt(pcall_stmt_node_t *node)
 {
 	gen_arg_list(node->alp);
-	emit2(CALL_OP, node->idp->symbol, NULL);
+	emit2(CALL_OP, NULL, node->idp->symbol);
 	arg_list_node_t *t;
 	for (t = node->alp; t; t = t->next) {
 		emit1(POP_OP, NULL);
@@ -275,7 +275,7 @@ static syment_t *gen_expr(expr_node_t *node)
 			case NEG_ADDOP:
 				d = symalloc(node->stab, "@expr/neg", TMP_OBJ,
 					     r->type);
-				emit2(NEG_OP, r, d);
+				emit2(NEG_OP, d, r);
 				break;
 			case NOP_ADDOP:
 				d = r;
@@ -378,7 +378,7 @@ static syment_t *gen_fcall_stmt(fcall_stmt_node_t *node)
 	e = node->idp->symbol;
 	d = symalloc(node->stab, "@fcall/ret", TMP_OBJ, e->type);
 	gen_arg_list(node->alp);
-	emit2(CALL_OP, e, d);
+	emit2(CALL_OP, d, e);
 	arg_list_node_t *t;
 	for (t = node->alp; t; t = t->next) {
 		emit1(POP_OP, NULL);
@@ -433,11 +433,11 @@ static void gen_arg_list(arg_list_node_t *node)
 		d = t->argsym;
 		switch (t->argsym->cate) {
 		case VAR_OBJ:
-			emit2(PADR_OP, NULL, d);
+			emit2(PADR_OP, d, NULL);
 			break;
 		case ARRAY_OBJ:
 			r = gen_expr(t->idx);
-			emit2(PADR_OP, r, d);
+			emit2(PADR_OP, d, r);
 			break;
 		default:
 			unlikely();

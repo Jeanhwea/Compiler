@@ -35,7 +35,7 @@ inst_t *emit1(op_t op, syment_t *d)
 	return x;
 }
 
-inst_t *emit2(op_t op, syment_t *r, syment_t *d)
+inst_t *emit2(op_t op, syment_t *d, syment_t *r)
 {
 	inst_t *x = emit(op);
 	x->d = d;
