@@ -121,7 +121,7 @@ static void gen_assign_stmt(assign_stmt_node_t *node)
 	case ARRAY_ASSGIN:
 		s = gen_expr(node->lep);
 		r = gen_expr(node->rep);
-		emit3(ASA_OP, r, s, d);
+		emit3(ASA_OP, d, r, s);
 		break;
 	default:
 		unlikely();
@@ -173,7 +173,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 	emit1(LAB_OP, forstart);
 	switch (node->kind) {
 	case TO_FOR:
-		emit3(GTT_OP, d, end, fordone);
+		emit3(GTT_OP, fordone, d, end);
 		gen_stmt(node->sp);
 		emit1(INC_OP, d);
 		emit1(JMP_OP, forstart);
@@ -181,7 +181,7 @@ static void gen_for_stmt(for_stmt_node_t *node)
 		emit1(DEC_OP, d);
 		break;
 	case DOWNTO_FOR:
-		emit3(LST_OP, d, end, fordone);
+		emit3(LST_OP, fordone, d, end);
 		gen_stmt(node->sp);
 		emit1(DEC_OP, d);
 		emit1(JMP_OP, forstart);
@@ -290,13 +290,13 @@ static syment_t *gen_expr(expr_node_t *node)
 		case ADD_ADDOP:
 			e = d;
 			d = symalloc(node->stab, "@expr/add", TMP_OBJ, e->type);
-			emit3(ADD_OP, e, r, d);
+			emit3(ADD_OP, d, e, r);
 			break;
 		case MINUS_ADDOP:
 		case NEG_ADDOP:
 			e = d;
 			d = symalloc(node->stab, "@expr/sub", TMP_OBJ, e->type);
-			emit3(SUB_OP, e, r, d);
+			emit3(SUB_OP, d, e, r);
 			break;
 		default:
 			unlikely();
@@ -324,12 +324,12 @@ static syment_t *gen_term(term_node_t *node)
 		case MULT_MULTOP:
 			e = d;
 			d = symalloc(node->stab, "@term/mul", TMP_OBJ, e->type);
-			emit3(MUL_OP, e, r, d);
+			emit3(MUL_OP, d, e, r);
 			break;
 		case DIV_MULTOP:
 			e = d;
 			d = symalloc(node->stab, "@term/div", TMP_OBJ, e->type);
-			emit3(DIV_OP, e, r, d);
+			emit3(DIV_OP, d, e, r);
 			break;
 		default:
 			unlikely();
@@ -350,7 +350,7 @@ static syment_t *gen_factor(factor_node_t *node)
 		r = node->idp->symbol;
 		e = gen_expr(node->ep);
 		d = symalloc(node->stab, "@factor/array", TMP_OBJ, r->type);
-		emit3(LOAD_OP, r, e, d);
+		emit3(LOAD_OP, d, r, e);
 		break;
 	case UNSIGN_FACTOR:
 		d = symalloc(node->stab, "@factor/usi", NUM_OBJ, INT_TYPE);
@@ -393,22 +393,22 @@ static void gen_cond(cond_node_t *node, syment_t *label)
 	s = gen_expr(node->rep);
 	switch (node->kind) {
 	case EQU_RELA:
-		emit3(EQU_OP, r, s, label);
+		emit3(EQU_OP, label, r, s);
 		break;
 	case NEQ_RELA:
-		emit3(NEQ_OP, r, s, label);
+		emit3(NEQ_OP, label, r, s);
 		break;
 	case GTT_RELA:
-		emit3(GTT_OP, r, s, label);
+		emit3(GTT_OP, label, r, s);
 		break;
 	case GEQ_RELA:
-		emit3(GEQ_OP, r, s, label);
+		emit3(GEQ_OP, label, r, s);
 		break;
 	case LST_RELA:
-		emit3(LST_OP, r, s, label);
+		emit3(LST_OP, label, r, s);
 		break;
 	case LEQ_RELA:
-		emit3(LEQ_OP, r, s, label);
+		emit3(LEQ_OP, label, r, s);
 		break;
 	}
 }
