@@ -1,4 +1,4 @@
-{greatest common divisor, recursive}
+{ greatest common divisor, recursive }
 function gcd(i, j:integer):integer;
 begin
    if i=j then gcd:=i;

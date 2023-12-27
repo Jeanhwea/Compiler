@@ -5,10 +5,11 @@
 #include "limits.h"
 #include "util.h"
 #include <string.h>
+#include <unistd.h>
 
 // constants
-char PL0E_NAME[32] = "pcc";
-char PL0E_VERSION[32] = "v0.16.4";
+char PL0E_NAME[MAXSTRLEN] = "pcc";
+char PL0E_VERSION[MAXSTRLEN] = "v0.16.4";
 char PL0E_INPUT[MAXSTRLEN] = "input.pas";
 char PL0E_ASSEM[MAXSTRLEN] = "input.s";
 char PL0E_OBJECT[MAXSTRLEN] = "input.o";
@@ -34,13 +35,8 @@ int errnum = 0;
 
 void pl0c_read_args(int argc, char *argv[])
 {
-	if (argc < 2) {
-		msg("usage: %s source.pas\n", argv[0]);
-		exit(EARGMT);
-	}
-
 	int i;
-	for (i = 0; i < argc; ++i) {
+	for (i = 1; i < argc; ++i) {
 		if (!strcmp("-q", argv[i])) {
 			PL0E_OPT_QUIET = TRUE;
 			echo = FALSE;
@@ -74,15 +70,7 @@ void pl0c_read_args(int argc, char *argv[])
 			strcpy(PL0E_INPUT, argv[i]);
 		}
 	}
-
-	strcpy(PL0E_ASSEM, PL0E_INPUT);
-	chgsuf(PL0E_ASSEM, ".s", ".pas");
-	strcpy(PL0E_OBJECT, PL0E_INPUT);
-	chgsuf(PL0E_OBJECT, ".o", ".pas");
-	if (!PL0E_OPT_SET_TARGET_NAME) {
-		strcpy(PL0E_TARGET, PL0E_INPUT);
-		chgsuf(PL0E_TARGET, ".run", ".pas");
-	}
+	dbg("current input file %s\n", PL0E_INPUT);
 }
 
 void pl0c_startup_message()
@@ -92,6 +80,20 @@ void pl0c_startup_message()
 
 void pl0c_init_file()
 {
+	if (access(PL0E_INPUT, R_OK)) {
+		msg("cannot read file %s\n", PL0E_INPUT);
+		exit(EARGMT);
+	}
+
+	strcpy(PL0E_ASSEM, PL0E_INPUT);
+	chgsuf(PL0E_ASSEM, ".s", ".pas");
+	strcpy(PL0E_OBJECT, PL0E_INPUT);
+	chgsuf(PL0E_OBJECT, ".o", ".pas");
+	if (!PL0E_OPT_SET_TARGET_NAME) {
+		strcpy(PL0E_TARGET, PL0E_INPUT);
+		chgsuf(PL0E_TARGET, ".run", ".pas");
+	}
+
 	source = fopen(PL0E_INPUT, "r");
 	if (source == NULL) {
 		panic("SOURCE_FILE_NOT_FOUND");
