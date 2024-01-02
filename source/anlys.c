@@ -481,11 +481,11 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			t->refsym = e;
 			break;
 		case BYREF_OBJ: // var, arr[exp]
-			if (!t->ep || t->ep->op != NOP_ADDOP) {
+			if (!t->ep || t->ep->kind != NOP_ADDOP) {
 				goto referr;
 			}
 			expr_node_t *ep = t->ep;
-			if (!ep->tp || ep->tp->op != NOP_MULTOP) {
+			if (!ep->tp || ep->tp->kind != NOP_MULTOP) {
 				goto referr;
 			}
 			term_node_t *tp = ep->tp;

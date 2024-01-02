@@ -271,7 +271,7 @@ static syment_t *gen_expr(expr_node_t *node)
 	for (t = node; t; t = t->next) {
 		r = gen_term(t->tp);
 		if (!d) {
-			switch (t->op) {
+			switch (t->kind) {
 			case NEG_ADDOP:
 				d = symalloc(node->stab, "@expr/neg", TMP_OBJ,
 					     r->type);
@@ -285,7 +285,7 @@ static syment_t *gen_expr(expr_node_t *node)
 			}
 			continue;
 		}
-		switch (t->op) {
+		switch (t->kind) {
 		case NOP_ADDOP:
 		case ADD_ADDOP:
 			e = d;
@@ -313,13 +313,13 @@ static syment_t *gen_term(term_node_t *node)
 	for (t = node; t; t = t->next) {
 		r = gen_factor(t->fp);
 		if (!d) {
-			if (t->op != NOP_MULTOP) {
+			if (t->kind != NOP_MULTOP) {
 				unlikely();
 			}
 			d = r;
 			continue;
 		}
-		switch (t->op) {
+		switch (t->kind) {
 		case NOP_MULTOP:
 		case MULT_MULTOP:
 			e = d;

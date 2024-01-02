@@ -175,7 +175,7 @@ typedef enum _addop_enum {
 } addop_t;
 typedef struct _expr_node {
 	int nid;
-	addop_t op;
+	addop_t kind;
 	term_node_t *tp;
 	expr_node_t *next;
 	symtab_t *stab;
@@ -183,7 +183,7 @@ typedef struct _expr_node {
 typedef enum _multop_enum { NOP_MULTOP, MULT_MULTOP, DIV_MULTOP } multop_t;
 typedef struct _term_node {
 	int nid;
-	multop_t op;
+	multop_t kind;
 	factor_node_t *fp;
 	term_node_t *next;
 	symtab_t *stab;
