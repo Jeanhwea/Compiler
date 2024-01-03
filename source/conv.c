@@ -382,7 +382,7 @@ node_t *conv_expr_node(expr_node_t *t)
 	}
 	node_t *d = initnode(t->nid, "EXPR");
 	for (; t; t = t->next) {
-		switch (t->op) {
+		switch (t->kind) {
 		case ADD_ADDOP:
 			strcpy(d->extra, "+");
 			break;
@@ -403,7 +403,7 @@ node_t *conv_term_node(term_node_t *t)
 	}
 	node_t *d = initnode(t->nid, "TERM");
 	for (; t; t = t->next) {
-		switch (t->op) {
+		switch (t->kind) {
 		case MULT_MULTOP:
 			strcpy(d->extra, "*");
 			break;

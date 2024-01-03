@@ -732,19 +732,19 @@ static expr_node_t *parse_expr(void)
 	switch (currtok) {
 	case SS_PLUS:
 		match(SS_PLUS);
-		t->op = ADD_ADDOP;
+		t->kind = ADD_ADDOP;
 		t->tp = parse_term();
 		break;
 	case SS_MINUS:
 		match(SS_MINUS);
-		t->op = NEG_ADDOP;
+		t->kind = NEG_ADDOP;
 		t->tp = parse_term();
 		break;
 	case MC_ID:
 	case MC_CH:
 	case MC_UNS:
 	case SS_LPAR:
-		t->op = NOP_ADDOP;
+		t->kind = NOP_ADDOP;
 		t->tp = parse_term();
 		break;
 	default:
@@ -758,12 +758,12 @@ static expr_node_t *parse_expr(void)
 		switch (currtok) {
 		case SS_PLUS:
 			match(SS_PLUS);
-			q->op = ADD_ADDOP;
+			q->kind = ADD_ADDOP;
 			q->tp = parse_term();
 			break;
 		case SS_MINUS:
 			match(SS_MINUS);
-			q->op = NEG_ADDOP;
+			q->kind = NEG_ADDOP;
 			q->tp = parse_term();
 			break;
 		default:
@@ -783,7 +783,7 @@ static term_node_t *parse_term(void)
 	term_node_t *t, *p, *q;
 	NEWNODE(term_node_t, t);
 
-	t->op = NOP_MULTOP;
+	t->kind = NOP_MULTOP;
 	t->fp = parse_factor();
 
 	for (p = t; TOKANY2(SS_STAR, SS_OVER); p = q) {
@@ -792,12 +792,12 @@ static term_node_t *parse_term(void)
 		switch (currtok) {
 		case SS_STAR:
 			match(SS_STAR);
-			q->op = MULT_MULTOP;
+			q->kind = MULT_MULTOP;
 			q->fp = parse_factor();
 			break;
 		case SS_OVER:
 			match(SS_OVER);
-			q->op = DIV_MULTOP;
+			q->kind = DIV_MULTOP;
 			q->fp = parse_factor();
 			break;
 		default:
