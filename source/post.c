@@ -2,11 +2,13 @@
 #include "common.h"
 #include "global.h"
 #include "limits.h"
-#include <stdio.h>
+#include "util.h"
 
 void post_nasm()
 {
-	chkcmd("nasm");
+	if (!chkcmd("nasm")) {
+		panic("nasm not installed.\n");
+	}
 
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "nasm -f elf -o %s %s", PL0E_OBJECT, PL0E_ASSEM);
@@ -21,7 +23,9 @@ void post_nasm()
 
 void post_link()
 {
-	chkcmd("ld");
+	if (!chkcmd("ld")) {
+		panic("ld not installed.\n");
+	}
 
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "ld -m elf_i386 -o %s %s", PL0E_TARGET, PL0E_OBJECT);

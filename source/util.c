@@ -1,3 +1,4 @@
+#include "common.h"
 #include "global.h"
 #include "limits.h"
 #include "util.h"
@@ -41,8 +42,8 @@ char *itoa(int num)
 bool chkcmd(char *cmd)
 {
 	FILE *fp;
-	char path[MAXSTRBUF];
 	char cmdbuf[MAXSTRBUF];
+	char path[MAXSTRBUF];
 
 	sprintf(cmdbuf, "which %s", cmd);
 
@@ -51,7 +52,12 @@ bool chkcmd(char *cmd)
 		giveup(ENOCMD, "command not found: %s", cmd);
 	}
 
-	while (fgets(path, sizeof(path) - 1, fp) != NULL) {
+	while (fgets(path, sizeof(path) - 1, fp) != NULL)
+		;
+
+	if (feof(fp)) {
+		return FALSE;
+	} else {
 		return TRUE;
 	}
 
