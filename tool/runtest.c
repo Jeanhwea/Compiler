@@ -1,8 +1,8 @@
+#include <stdio.h>
 #include "global.h"
 #include "debug.h"
 #include "glob.h"
 #include "limits.h"
-#include "stdio.h"
 #include "util.h"
 
 #define MAXCASE 100

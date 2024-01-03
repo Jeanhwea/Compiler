@@ -17,7 +17,7 @@ TOOLS    := $(TSRCS:$(TOOL_DIR)/%.c=$(BIN_DIR)/%)
 # build config
 CC       := gcc
 DEBUG    := -g
-CCFLAGS  := -I$(INC_DIR) $(DEBUG) -MMD -MP
+CCFLAGS  := -I$(INC_DIR) $(DEBUG) -MMD -MP -std=gnu99
 LDFLAGS  := -I$(INC_DIR) $(DEBUG)
 
 # all build targets
