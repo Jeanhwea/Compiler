@@ -41,17 +41,16 @@ char *itoa(int num)
 
 bool chkcmd(char *cmd)
 {
-	FILE *fp;
 	char cmdbuf[MAXSTRBUF];
-	char path[MAXSTRBUF];
-
 	sprintf(cmdbuf, "which %s", cmd);
 
+	FILE *fp;
 	fp = popen(cmdbuf, "r");
 	if (fp == NULL) {
 		giveup(ENOCMD, "command not found: %s", cmd);
 	}
 
+	char path[MAXSTRBUF];
 	while (fgets(path, sizeof(path) - 1, fp) != NULL) {
 		pclose(fp);
 		return TRUE;
