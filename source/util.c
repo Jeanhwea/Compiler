@@ -52,8 +52,10 @@ bool chkcmd(char *cmd)
 		giveup(ENOCMD, "command not found: %s", cmd);
 	}
 
-	while (fgets(path, sizeof(path) - 1, fp) != NULL)
-		;
+	while (fgets(path, sizeof(path) - 1, fp) != NULL) {
+		pclose(fp);
+		return TRUE;
+	}
 
 	if (feof(fp)) {
 		return FALSE;
