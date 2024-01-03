@@ -16,4 +16,5 @@ extern char prtbuf[MAXSTRBUF];
 void strcopy(char *d, char *s);
 void chgsuf(char *str, char *to, char *from);
 char *itoa(int num);
+bool chkcmd(char *cmd);
 #endif /* End of _UTIL_H_ */

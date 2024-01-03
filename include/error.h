@@ -9,6 +9,7 @@
 #define BADLEN 114
 #define BADREF 115
 #define OBJREF 106
+#define ENOCMD 995
 #define EPANIC 996
 #define EABORT 997
 #define EARGMT 998

@@ -6,6 +6,8 @@
 
 void post_nasm()
 {
+	chkcmd("nasm");
+
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "nasm -f elf -o %s %s", PL0E_OBJECT, PL0E_ASSEM);
 	dbg("%s\n", cmd);
@@ -19,6 +21,8 @@ void post_nasm()
 
 void post_link()
 {
+	chkcmd("ld");
+
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "ld -m elf_i386 -o %s %s", PL0E_TARGET, PL0E_OBJECT);
 	dbg("%s\n", cmd);
