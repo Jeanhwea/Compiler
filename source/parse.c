@@ -419,7 +419,7 @@ static fun_head_node_t *parse_fun_head(void)
 
 /**
  * statement ->
- *	assignstmt | ifstmt | repeatstmt | Pcallstmt | compstmt
+ *	assignstmt | ifstmt | repeatstmt | pcallstmt | compstmt
  *		readstmt | writestmt | forstmt | nullstmt
  */
 static stmt_node_t *parse_stmt(void)
