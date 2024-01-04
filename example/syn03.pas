@@ -11,11 +11,7 @@ begin
    y := t
 end;
 begin { main }
-   a[0] := 4;
-   a[1] := 5;
-   a[2] := 2;
-   a[3] := 7;
-   a[4] := 0;
+   a[0] := 4; a[1] := 5; a[2] := 2; a[3] := 7; a[4] := 0;
    for i := 0 to 4 do
    begin
       for j := i to 4 do
