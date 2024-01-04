@@ -22,6 +22,7 @@ LDFLAGS  := -I$(INC_DIR) $(DEBUG)
 
 # all build targets
 all: $(TARGET) $(TOOLS)
+	cp pcc bin
 
 
 # target
