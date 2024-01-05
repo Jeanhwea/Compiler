@@ -66,7 +66,13 @@ typedef struct _sym_entry_struct {
 } syment_t;
 
 typedef struct _sym_table_struct {
-	int id; // symbol table ID
+	int tid; // symbol table ID
+
+	// for function scope management
+	int depth; // symbol table nested depth
+	char nspace[MAXSTRLEN]; // namespace
+	symtab_t *inner; // inner scope
+	symtab_t *outer; // outer scope
 
 	// for assembly stack mapping
 	//    1. arguments values
@@ -77,12 +83,6 @@ typedef struct _sym_table_struct {
 	int argoff; // argument variable offset in total
 	int varoff; // variable offset in total
 	int tmpoff; // temporary variable offset in total
-
-	// for function scope management
-	int depth; // symbol table nested depth
-	char nspace[MAXSTRLEN]; // namespace
-	symtab_t *inner; // inner scope
-	symtab_t *outer; // outer scope
 
 	// entries buckets
 	syment_t buckets[MAXBUCKETS];

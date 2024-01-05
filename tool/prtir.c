@@ -43,7 +43,7 @@ void fmtinst(inst_t *x)
 void dumpent(syment_t *e)
 {
 	msg("label=%s type=%d cate=%s name=%s off=%d stab=%d depth=%d initval=%d arrlen=%d str=%s\n",
-	    e->label, e->type, symcate[e->cate], e->name, e->off, e->stab->id,
+	    e->label, e->type, symcate[e->cate], e->name, e->off, e->stab->tid,
 	    e->stab->depth, e->initval, e->arrlen, e->str);
 }
 
