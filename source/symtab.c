@@ -28,7 +28,7 @@ symtab_t *scope_entry(char *nspace)
 	top = t;
 
 	// trace log
-	dbg("push depth=%d stab=%d nspace=%s\n", t->depth, t->tid, t->nspace);
+	dbg("push depth=%d tid=%d nspace=%s\n", t->depth, t->tid, t->nspace);
 	return t;
 }
 
@@ -47,7 +47,7 @@ symtab_t *scope_exit(void)
 	// trace log
 	//   1. dump table info
 	//   2. dump all table entry
-	dbg("pop depth=%d stab=%d nspace=%s\n", t->depth, t->tid, t->nspace);
+	dbg("pop depth=%d tid=%d nspace=%s\n", t->depth, t->tid, t->nspace);
 	int i;
 	for (i = 0; i < MAXBUCKETS; ++i) {
 		syment_t *hair, *e;
@@ -107,7 +107,7 @@ static void putsym(symtab_t *stab, syment_t *e)
 	}
 	syments[e->sid] = e;
 
-	dbg("stab=%d nspace=%s sym=%s\n", stab->tid, stab->nspace, e->name);
+	dbg("tid=%d nspace=%s sym=%s\n", stab->tid, stab->nspace, e->name);
 }
 
 static void dumptab(symtab_t *stab)
@@ -119,7 +119,7 @@ static void dumptab(symtab_t *stab)
 	}
 
 	symtab_t *t = stab;
-	msg("%sstab(#%d): depth=%d, nspace=%s\n", indent, t->tid, t->depth,
+	msg("%sstab(tid=%d): depth=%d, nspace=%s\n", indent, t->tid, t->depth,
 	    t->nspace);
 
 	strcat(indent, "  ");
