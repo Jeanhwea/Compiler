@@ -127,9 +127,9 @@ static void dumptab(symtab_t *stab)
 		syment_t *hair, *e;
 		hair = &t->buckets[i];
 		for (e = hair->next; e; e = e->next) {
-			msg("%sname=%s, value=%d, label=%s, cate=%d, type=%d\n",
-			    indent, e->name, e->initval, e->label, e->cate,
-			    e->type);
+			msg("%ssid=%d, name=%s, cate=%d, type=%d, value=%d, label=%s\n",
+			    indent, e->sid, e->name, e->cate, e->type,
+			    e->initval, e->label);
 		}
 	}
 }
