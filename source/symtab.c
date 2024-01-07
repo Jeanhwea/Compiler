@@ -9,16 +9,16 @@
 // symbol table management
 symtab_t *top = NULL;
 int depth = 0;
-int ntab = 0;
+int tidcnt = 0;
 
 syment_t *syments[MAXSYMENT];
-int symcnt = 0;
+int sidcnt = 0;
 
 symtab_t *scope_entry(char *nspace)
 {
 	symtab_t *t;
 	NEWSTAB(t);
-	t->tid = ++ntab;
+	t->tid = ++tidcnt;
 	t->depth = ++depth;
 	strcopy(t->nspace, nspace);
 	t->varoff = 1; // reserve function return value
@@ -175,7 +175,7 @@ syment_t *syminit(ident_node_t *idp)
 {
 	syment_t *e;
 	NEWENTRY(e);
-	e->sid = ++symcnt;
+	e->sid = ++sidcnt;
 
 	strcopy(e->name, idp->name);
 	e->initval = idp->value;
@@ -269,7 +269,7 @@ syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type)
 	syment_t *e;
 	NEWENTRY(e);
 	strcopy(e->name, name);
-	e->sid = ++symcnt;
+	e->sid = ++sidcnt;
 
 	e->cate = cate;
 	e->type = type;

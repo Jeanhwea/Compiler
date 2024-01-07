@@ -95,7 +95,7 @@ typedef struct _sym_table_struct {
 
 // debugging
 extern syment_t *syments[MAXSYMENT];
-extern int symcnt;
+extern int sidcnt;
 
 // scope management
 symtab_t *scope_entry(char *nspace);

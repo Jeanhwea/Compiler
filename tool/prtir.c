@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 	msg("DUMP SYMBOLS:\n");
 	int i;
-	for (i = 1; i <= symcnt; ++i) {
+	for (i = 1; i <= sidcnt; ++i) {
 		syment_t *e = syments[i];
 		dumpent(e);
 	}
