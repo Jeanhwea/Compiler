@@ -672,12 +672,12 @@ void x86_call(syment_t *func)
 	sprintf(buf, "%s$%s", func->label, func->name);
 	addcode2("call", buf);
 
-	int i, popcnt;
-	popcnt = func->scope->depth - 1;
-	for (i = 0; i < popcnt; ++i) {
+	int i, npop;
+	npop = func->scope->depth - 1;
+	for (i = 0; i < npop; ++i) {
 		addcode2("pop", REG_DI);
 	}
-	dbg("popcnt=%d\n", popcnt);
+	dbg("npop=%d\n", npop);
 }
 
 void x86_ret()

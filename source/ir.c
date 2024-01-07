@@ -6,13 +6,13 @@ inst_t *xhead;
 inst_t *xtail;
 
 // instruction count
-int instcnt = 0;
+int xidcnt = 0;
 
 static inst_t *emit(op_t op)
 {
 	inst_t *t;
 	NEWINST(t);
-	t->xid = ++instcnt;
+	t->xid = ++xidcnt;
 	t->op = op;
 
 	if (xtail) {
