@@ -514,12 +514,12 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			}
 			if (fp->kind == ID_FACTOR && a->cate != VAR_OBJ) {
 				giveup(OBJREF,
-				       "L%d: argument %s call by reference is not variable object, pos = %d.",
+				       "L%d: argument %s is not variable object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
 			if (fp->kind == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
 				giveup(OBJREF,
-				       "L%d: argument %s call by reference is not array object, pos = %d.",
+				       "L%d: argument %s is not array object, pos = %d.",
 				       idp->line, idp->name, pos);
 			}
 			t->argsym = idp->symbol = a;
