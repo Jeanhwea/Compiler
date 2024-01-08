@@ -502,9 +502,8 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 				goto refok;
 			}
 		referr:
-			giveup(BADREF,
-			       "L%d: %s call arguments has bad reference, pos = %d.",
-			       sign->lineno, sign->name, pos);
+			giveup(BADREF, "L%d: arg%d [%s] has bad reference.",
+			       pos, sign->lineno, sign->name);
 			continue;
 		refok:
 			a = symfind(idp->name);
@@ -514,13 +513,13 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			}
 			if (fp->kind == ID_FACTOR && a->cate != VAR_OBJ) {
 				giveup(OBJREF,
-				       "L%d: arg[%s] is not variable object, pos = %d.",
-				       idp->line, idp->name, pos);
+				       "L%d: arg%d [%s] is not variable object.",
+				       pos, idp->line, idp->name);
 			}
 			if (fp->kind == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
 				giveup(OBJREF,
-				       "L%d: arg[%s] is not array object, pos = %d.",
-				       idp->line, idp->name, pos);
+				       "L%d: arg%d [%s] is not array object.",
+				       pos, idp->line, idp->name);
 			}
 			t->argsym = idp->symbol = a;
 			t->refsym = e;
