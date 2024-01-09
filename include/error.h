@@ -26,6 +26,7 @@
 	do {                                                                   \
 		errnum = err;                                                  \
 		printf(fmt, ##args);                                           \
+		printf("\n");                                                  \
 		exit(err);                                                     \
 	} while (0)
 
