@@ -481,10 +481,16 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			t->refsym = e;
 			break;
 		case BYREF_OBJ: // var, arr[exp]
-			if (!t->ep || t->ep->kind != NOP_ADDOP) {
+			if (!t->ep) {
+				goto referr;
+			}
+			if (t->ep->kind != NOP_ADDOP) {
 				goto referr;
 			}
 			expr_node_t *ep = t->ep;
+			if (ep->next) {
+				goto referr;
+			}
 			if (!ep->tp || ep->tp->kind != NOP_MULTOP) {
 				goto referr;
 			}
@@ -502,8 +508,8 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 				goto refok;
 			}
 		referr:
-			giveup(BADREF, "L%d: arg%d [%s] has bad reference.",
-			       pos, sign->lineno, sign->name);
+			giveup(BADREF, "L%d: %s() arg%d has bad reference.",
+			       sign->lineno, sign->name, pos);
 			continue;
 		refok:
 			a = symfind(idp->name);
@@ -513,13 +519,13 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 			}
 			if (fp->kind == ID_FACTOR && a->cate != VAR_OBJ) {
 				giveup(OBJREF,
-				       "L%d: arg%d [%s] is not variable object.",
-				       pos, idp->line, idp->name);
+				       "L%d: %s() arg%d is not variable object.",
+				       idp->line, idp->name, pos);
 			}
 			if (fp->kind == ARRAY_FACTOR && a->cate != ARRAY_OBJ) {
 				giveup(OBJREF,
-				       "L%d: arg%d [%s] is not array object.",
-				       pos, idp->line, idp->name);
+				       "L%d: %s() arg%d is not array object.",
+				       idp->line, idp->name, pos);
 			}
 			t->argsym = idp->symbol = a;
 			t->refsym = e;
@@ -531,7 +537,7 @@ static void anlys_arg_list(syment_t *sign, arg_list_node_t *node)
 
 	if (t || p) {
 		giveup(BADLEN,
-		       "L%d: %s call arguments and parameters length not equal.",
+		       "L%d: %s(...) arguments and parameters length not equal.",
 		       sign->lineno, sign->name);
 	}
 }
