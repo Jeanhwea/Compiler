@@ -12,7 +12,7 @@ typedef enum _inst_op_enum {
 	/*  4 */ INC_OP,
 	/*  5 */ DEC_OP,
 	/*  6 */ NEG_OP,
-	// Save and Store
+	// Load and Store
 	/*  7 */ LOAD_OP,
 	/*  8 */ ASS_OP,
 	/*  9 */ ASA_OP,
