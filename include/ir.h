@@ -2,8 +2,6 @@
 #define _IR_H_
 #include "symtab.h"
 
-typedef struct _inst_struct inst_t;
-
 // Instruction Operator Type
 typedef enum _inst_op_enum {
 	// Arithmetic
@@ -14,7 +12,7 @@ typedef enum _inst_op_enum {
 	/*  4 */ INC_OP,
 	/*  5 */ DEC_OP,
 	/*  6 */ NEG_OP,
-	// Save and Store
+	// Load and Store
 	/*  7 */ LOAD_OP,
 	/*  8 */ ASS_OP,
 	/*  9 */ ASA_OP,
@@ -46,6 +44,8 @@ typedef enum _inst_op_enum {
 } op_t;
 
 // Instruction struct
+typedef struct _inst_struct inst_t;
+
 typedef struct _inst_struct {
 	int xid;
 	op_t op;
