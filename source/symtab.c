@@ -25,6 +25,9 @@ symtab_t *scope_entry(char *nspace)
 
 	// Push
 	t->outer = top;
+	if (top) {
+		top->inner = t;
+	}
 	top = t;
 
 	// trace log
