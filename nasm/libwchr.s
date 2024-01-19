@@ -21,10 +21,11 @@ _libwchr:
 	ret
 
 _start:
-
+	mov	eax, 'a'
+	call	_libwchr
 	mov	eax, 1
 	xor	ebx, ebx
 	int	0x80
 
 section .data
-	_chrbuf db '?', 0
+	_chrbuf db 'x', 0
