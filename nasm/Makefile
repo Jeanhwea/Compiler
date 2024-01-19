@@ -13,4 +13,4 @@ all: $(RUNS)
 	$(LD) -m elf_i386 -o $@ $<
 
 clean:
-	-rm -f *.s *.o *.run
+	-rm -f *.o *.run
