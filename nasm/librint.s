@@ -54,6 +54,10 @@ _notdigit@rint:
 	ret
 
 _start:
+	call	_librint
+	mov	ebx, eax
+	mov	eax, 1
+	int	0x80
 
 section .data
 	_scanint db '????????????????', 0

@@ -46,6 +46,11 @@ _syswrite@wint:
 	ret
 
 _start:
+	mov	eax, 123
+	call	_libwint
+	mov	eax, 1
+	xor	ebx, ebx
+	int	0x80
 
 section .data
 	_intbuf db '????????????????', 0
