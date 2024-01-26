@@ -1,6 +1,6 @@
 var u, v, ans: integer;
 
-function adder(x, y : integer):integer;
+function adder(var x, y : integer):integer;
 begin
    adder := x + y
 end;
