@@ -49,8 +49,7 @@ index: clean
 
 clean:
 	$(RM) -r $(BLD_DIR) $(TARGET) bin/* viz*
-	find . -iname "*.o" -or -iname "*.run" | xargs -I {} rm -f {}
-	find . -iname "core*" | xargs -I {} rm -f {}
+	find . -iname "*.o" -or -iname "*.run" -or -iname "core*" | xargs -I {} rm -f {}
 
 distclean:
 	$(RM) -r compile_commands.json cscope.* TAGS
