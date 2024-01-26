@@ -143,7 +143,7 @@ void savetext(x86i_t *i)
 	}
 
 	if (strlen(i->et)) {
-		fprintf(asmble, "; %s", i->et);
+		fprintf(asmble, " ; %s", i->et);
 	}
 	fprintf(asmble, "\n");
 }
