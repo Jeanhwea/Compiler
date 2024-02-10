@@ -7,7 +7,7 @@ typedef struct _basic_block_struct bb_t;
 
 typedef struct _basic_block_struct {
 	int bid; // block ID
-	int ninst; // number of instructions
+	int total; // total number of instructions
 	inst_t *[MAXBBLOCK] insts; // instructions
 	bb_t *[MAXBBLINK] bb_pre;
 	bb_t *[MAXBBLINK] bb_post;
