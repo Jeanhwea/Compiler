@@ -10,5 +10,7 @@
 #define MAXFIELDLEN 64
 #define MAXDATASEC 128
 #define MAXTEXTSEC 4096
+#define MAXBBLOCK 4096
+#define MAXBBLINK 32
 
 #endif /* End of _LIMITS_H_ */
