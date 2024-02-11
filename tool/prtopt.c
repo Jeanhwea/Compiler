@@ -25,10 +25,10 @@ char *symcate[12] = {
 	[8] = "TMP", [9] = "LABEL", [10] = "NUM",  [11] = "STR",
 };
 
-void fmtinst(inst_t *x)
+void fmtinst2(inst_t *x)
 {
 	char buf[MAXSTRBUF];
-	sprintf(buf, "#%03d: %s", x->xid, opcode[x->op]);
+	sprintf(buf, "  #%03d: %s", x->xid, opcode[x->op]);
 	if (x->d) {
 		appendf(buf, "\td=%s", x->d->label);
 	}
@@ -66,20 +66,22 @@ int main(int argc, char *argv[])
 	msg("\n");
 
 	msg("DUMP INTERMEDIATE REPRESENTATION:\n");
-	inst_t *x;
-	for (x = xhead; x; x = x->next) {
-		fmtinst(x);
+
+	partition();
+
+	fun_t *fun;
+	for (fun = mod.fhead; fun; fun = fun->next) {
+		msg("func(nspace=%s)\n", fun->scope->nspace);
+		bb_t *bb;
+		for (bb = fun->bhead; bb; bb = bb->next) {
+			msg(" block(bid=%d)\n", bb->bid);
+			int i;
+			for (i = 0; i < bb->total; i++) {
+				fmtinst2(bb->insts[i]);
+			}
+		}
 	}
 	msg("\n");
 
-	partition();
-	bb_t *bb;
-	for (bb = bbhead; bb; bb = bb->next) {
-		msg("bid=%d\n", bb->bid);
-		int i;
-		for (i = 0; i < bb->total; i++) {
-			fmtinst(bb->insts[i]);
-		}
-	}
 	return 0;
 }

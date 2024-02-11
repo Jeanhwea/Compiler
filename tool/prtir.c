@@ -24,7 +24,7 @@ char *symcate[12] = {
 	[8] = "TMP", [9] = "LABEL", [10] = "NUM",  [11] = "STR",
 };
 
-void fmtinst(inst_t *x)
+void fmtinst2(inst_t *x)
 {
 	char buf[MAXSTRBUF];
 	sprintf(buf, "#%03d: %s", x->xid, opcode[x->op]);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	msg("DUMP INTERMEDIATE REPRESENTATION:\n");
 	inst_t *x;
 	for (x = xhead; x; x = x->next) {
-		fmtinst(x);
+		fmtinst2(x);
 	}
 	msg("\n");
 

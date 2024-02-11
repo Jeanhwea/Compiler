@@ -1,9 +1,23 @@
 #ifndef _OPTIM_H_
 #define _OPTIM_H_
-#include "ir.h"
 #include "limits.h"
+#include "ir.h"
 
+typedef struct _module_struct mod_t;
+typedef struct _function_struct fun_t;
 typedef struct _basic_block_struct bb_t;
+
+typedef struct _module_struct {
+	fun_t *fhead;
+	fun_t *ftail;
+} mod_t;
+
+typedef struct _function_struct {
+	symtab_t *scope;
+	bb_t *bhead;
+	bb_t *btail;
+	fun_t *next;
+} fun_t;
 
 typedef struct _basic_block_struct {
 	int bid; // block ID
@@ -14,9 +28,10 @@ typedef struct _basic_block_struct {
 	bb_t *next;
 } bb_t;
 
+extern mod_t mod;
 extern int bbcnt;
-extern bb_t *bbhead;
-extern bb_t *bbtail;
+
+#define NEWFUNCTION(v) INITMEM(fun_t, v);
 
 #define NEWBASICBLOCK(v)                                                       \
 	do {                                                                   \

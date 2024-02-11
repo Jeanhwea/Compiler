@@ -3,21 +3,37 @@
 #include "ir.h"
 #include "limits.h"
 
+mod_t mod;
 int bbcnt = 0;
-bb_t *bbhead = NULL;
-bb_t *bbtail = NULL;
 
-inst_t *leader;
+static fun_t *currfunc;
+static inst_t *leader;
+
+fun_t *funalloc(void)
+{
+	fun_t *fun;
+	NEWFUNCTION(fun);
+
+	if (mod.fhead) {
+		mod.ftail->next = fun;
+		mod.ftail = fun;
+	} else {
+		mod.fhead = mod.ftail = fun;
+	}
+
+	fun->scope = leader->d->scope;
+	return fun;
+}
 
 bb_t *bballoc(void)
 {
 	bb_t *bb;
 	NEWBASICBLOCK(bb);
-	if (bbhead) {
-		bbtail->next = bb;
-		bbtail = bb;
+	if (currfunc->bhead) {
+		currfunc->btail->next = bb;
+		currfunc->btail = bb;
 	} else {
-		bbhead = bbtail = bb;
+		currfunc->bhead = currfunc->btail = bb;
 	}
 
 	for (inst_t *x = leader; x; x = x->next) {
@@ -56,8 +72,6 @@ bb_t *bballoc(void)
 		case LST_OP:
 		case LEQ_OP:
 		case JMP_OP:
-		case ENT_OP:
-		case FIN_OP:
 			goto ok;
 		default:
 			break;
@@ -72,6 +86,20 @@ void partition(void)
 {
 	leader = xhead;
 	while (leader) {
-		bballoc();
+		switch (leader->op) {
+		case ENT_OP:
+			currfunc = funalloc();
+			leader = leader->next;
+			break;
+		case FIN_OP:
+			if (currfunc->scope != leader->d->scope) {
+				panic("ENTER_FINISH_NOT_MATCH");
+			}
+			currfunc = NULL;
+			leader = leader->next;
+			break;
+		default:
+			bballoc();
+		}
 	}
 }
