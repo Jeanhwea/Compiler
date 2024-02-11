@@ -20,12 +20,15 @@ typedef struct _function_struct {
 } fun_t;
 
 typedef struct _basic_block_struct {
+	// basic information
 	int bid; // block ID
 	int total; // total number of instructions
 	inst_t *insts[MAXBBINST]; // instructions
-	bb_t *pred_bbs[MAXBBLINK]; // predecessors of basic blocks
-	bb_t *succ_bbs[MAXBBLINK]; // successors of basic blocks
 	bb_t *next;
+
+	// predecessors and successors
+	bb_t *pred[MAXBBLINK];
+	bb_t *succ[MAXBBLINK];
 } bb_t;
 
 extern mod_t mod;
