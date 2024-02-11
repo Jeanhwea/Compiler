@@ -41,6 +41,7 @@ bb_t *bballoc(void)
 		case LEQ_OP:
 		case JMP_OP:
 		case LAB_OP:
+		case ENT_OP:
 		case FIN_OP:
 			goto ok;
 		}
@@ -53,9 +54,12 @@ bb_t *bballoc(void)
 		case LST_OP:
 		case LEQ_OP:
 		case JMP_OP:
+		case ENT_OP:
+		case FIN_OP:
 			goto ok;
 		}
 	}
+
 ok:
 	return bb;
 }
