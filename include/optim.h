@@ -9,8 +9,8 @@ typedef struct _basic_block_struct {
 	int bid; // block ID
 	int total; // total number of instructions
 	inst_t *insts[MAXBBINST]; // instructions
-	bb_t *pre_bb_list[MAXBBLINK]; // BBs entering this BB
-	bb_t *post_bb_list[MAXBBLINK]; // BBs exiting this BB
+	bb_t *pred_bbs[MAXBBLINK]; // predecessors of basic blocks
+	bb_t *succ_bbs[MAXBBLINK]; // successors of basic blocks
 	bb_t *next;
 } bb_t;
 

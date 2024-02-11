@@ -44,6 +44,8 @@ bb_t *bballoc(void)
 		case ENT_OP:
 		case FIN_OP:
 			goto ok;
+		default:
+			break;
 		}
 
 		switch (x->op) {
@@ -57,6 +59,8 @@ bb_t *bballoc(void)
 		case ENT_OP:
 		case FIN_OP:
 			goto ok;
+		default:
+			break;
 		}
 	}
 
