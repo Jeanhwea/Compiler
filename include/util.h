@@ -1,6 +1,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 #include "limits.h"
+#include "common.h"
 #include <stdio.h>
 #include <string.h>
 

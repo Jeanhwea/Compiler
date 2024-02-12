@@ -25,7 +25,7 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 		return;
 	}
 
-	if (parent->nchild + 1 >= MAXCHILD) {
+	if (parent->nchild + 1 >= MAXNODECHILD) {
 		panic("TOO_MANY_NODE_CHILD");
 	}
 

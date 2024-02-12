@@ -64,5 +64,5 @@ bool chkcmd(char *cmd)
 
 	pclose(fp);
 
-	return 0;
+	return TRUE;
 }
