@@ -48,6 +48,11 @@ bb_t *bballoc(void)
 			goto ok;
 		}
 
+		// Case I: Found next leader, which leader is in:
+		//     1. conditional jump
+		//     2. unconditional jump
+		//     3. a label
+		//     4. function enter/finish
 		switch (leader->op) {
 		case EQU_OP:
 		case NEQ_OP:
@@ -64,6 +69,9 @@ bb_t *bballoc(void)
 			break;
 		}
 
+		// Case II: Current x is OK
+		//     1. conditional jump
+		//     2. unconditional jump
 		switch (x->op) {
 		case EQU_OP:
 		case NEQ_OP:
