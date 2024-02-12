@@ -4,22 +4,21 @@
 #include "limits.h"
 #include "parse.h"
 
-#define MAXCHILD 128
 typedef struct _tree_node node_t;
-typedef struct _tree_node {
+struct _tree_node {
 	int seq;
 	int nid;
 	char name[MAXSTRLEN];
 	int nchild; // number of children
-	char chdptrs[MAXCHILD][MAXSTRLEN];
-	node_t *childs[MAXCHILD];
+	char chdptrs[MAXNODECHILD][MAXSTRLEN];
+	node_t *childs[MAXNODECHILD];
 	ident_node_t *idp;
 	// which kind node from syntax.h
 	//   kind(addop_t, multop_t, factor_t)
 	//   op(rela_t)
 	int kind;
 	char extra[MAXSTRLEN];
-} node_t;
+};
 
 node_t *conv_pgm_node(pgm_node_t *t);
 node_t *conv_block_node(block_node_t *t);

@@ -37,12 +37,12 @@ typedef enum _sym_type_enum {
 } type_t;
 
 // signature for procedure and function
-typedef struct _sym_param_struct {
+struct _sym_param_struct {
 	syment_t *symbol;
 	param_t *next;
-} param_t;
+};
 
-typedef struct _sym_entry_struct {
+struct _sym_entry_struct {
 	// identifier name
 	int sid;
 	char name[MAXSTRLEN];
@@ -63,9 +63,9 @@ typedef struct _sym_entry_struct {
 	// which symbol table
 	symtab_t *stab;
 	syment_t *next;
-} syment_t;
+};
 
-typedef struct _sym_table_struct {
+struct _sym_table_struct {
 	int tid; // symbol table ID
 
 	// for function scope management
@@ -86,7 +86,7 @@ typedef struct _sym_table_struct {
 
 	// entries buckets
 	syment_t buckets[MAXBUCKETS];
-} symtab_t;
+};
 
 // Constructor
 #define NEWPARAM(v) INITMEM(param_t, v)

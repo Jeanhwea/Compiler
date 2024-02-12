@@ -46,7 +46,7 @@ typedef enum _inst_op_enum {
 // Instruction struct
 typedef struct _inst_struct inst_t;
 
-typedef struct _inst_struct {
+struct _inst_struct {
 	int xid;
 	op_t op;
 	syment_t *d;
@@ -54,7 +54,7 @@ typedef struct _inst_struct {
 	syment_t *s;
 	inst_t *prev;
 	inst_t *next;
-} inst_t;
+};
 
 // Constructor
 #define NEWINST(v) INITMEM(inst_t, v)
