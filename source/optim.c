@@ -9,7 +9,7 @@ int bbcnt = 0;
 static fun_t *currfunc;
 static inst_t *leader;
 
-fun_t *funalloc(void)
+static fun_t *funalloc(void)
 {
 	fun_t *fun;
 	NEWFUNCTION(fun);
@@ -25,7 +25,7 @@ fun_t *funalloc(void)
 	return fun;
 }
 
-bb_t *bballoc(void)
+static bb_t *bballoc(void)
 {
 	bb_t *bb;
 	NEWBASICBLOCK(bb);
