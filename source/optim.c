@@ -122,12 +122,15 @@ static void bblink(fun_t *f)
 	bb_t *lab2bb[MAXSYMENT];
 	bb_t *bb = NULL, *prev = NULL;
 
-	// Step1: make lab2bb[...] map, create x->succ[0], x->prev[0] link
+	// Step1: make lab2bb[...] map, create x->succ[0], x->pred[0] link
 	for (bb = f->bhead; bb; bb = bb->next) {
+		// make lab2bb[...] map
 		inst_t *x = bb->insts[0];
 		if (x->op == LAB_OP) {
 			lab2bb[x->d->sid] = bb;
 		}
+
+		// create succ[0], pred[0] link
 		if (!prev) {
 			prev = bb;
 			continue;
