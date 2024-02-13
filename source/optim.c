@@ -3,10 +3,14 @@
 #include "ir.h"
 #include "limits.h"
 
+// module
 mod_t mod;
+// basic block counter
 int bbcnt = 0;
 
-static fun_t *currfunc;
+// point to the current function scope
+static fun_t *thefunc;
+// leader of current basic block
 static inst_t *leader;
 
 static fun_t *funalloc(void)
@@ -29,11 +33,11 @@ static bb_t *bballoc(void)
 {
 	bb_t *bb;
 	NEWBASICBLOCK(bb);
-	if (currfunc->bhead) {
-		currfunc->btail->next = bb;
-		currfunc->btail = bb;
+	if (thefunc->bhead) {
+		thefunc->btail->next = bb;
+		thefunc->btail = bb;
 	} else {
-		currfunc->bhead = currfunc->btail = bb;
+		thefunc->bhead = thefunc->btail = bb;
 	}
 
 	for (inst_t *x = leader; x; x = x->next) {
@@ -96,14 +100,14 @@ void partition(void)
 	while (leader) {
 		switch (leader->op) {
 		case ENT_OP:
-			currfunc = funalloc();
+			thefunc = funalloc();
 			leader = leader->next;
 			break;
 		case FIN_OP:
-			if (currfunc->scope != leader->d->scope) {
+			if (thefunc->scope != leader->d->scope) {
 				panic("ENTER_FINISH_NOT_MATCH");
 			}
-			currfunc = NULL;
+			thefunc = NULL;
 			leader = leader->next;
 			break;
 		default:
