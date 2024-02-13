@@ -94,6 +94,7 @@ ok:
 	return bb;
 }
 
+// partition into basic blocks
 void partition(void)
 {
 	leader = xhead;
@@ -113,5 +114,75 @@ void partition(void)
 		default:
 			bballoc();
 		}
+	}
+}
+
+static void bblink(fun_t *f)
+{
+	bb_t *lab2bb[MAXSYMENT];
+	bb_t *bb = NULL, *prev = NULL;
+
+	// Step1: make lab2bb[...] map, create x->succ[0], x->prev[0] link
+	for (bb = f->bhead; bb; bb = bb->next) {
+		inst_t *x = bb->insts[0];
+		if (x->op == LAB_OP) {
+			lab2bb[x->d->sid] = bb;
+		}
+		if (!prev) {
+			prev = bb;
+			continue;
+		}
+		prev->succ[0] = bb;
+		bb->pred[0] = prev;
+		prev = bb;
+	}
+
+	bb_t *target = NULL;
+	int i;
+
+	// Step2: make jump label links
+	for (bb = f->bhead; bb; bb = bb->next) {
+		inst_t *x = bb->insts[bb->total - 1];
+		switch (x->op) {
+		case EQU_OP:
+		case NEQ_OP:
+		case GTT_OP:
+		case GEQ_OP:
+		case LST_OP:
+		case LEQ_OP:
+		case JMP_OP:
+			// get target basic block
+			target = lab2bb[x->d->sid];
+			// link bb->succ[...]
+			for (i = 0; i < MAXBBLINK; ++i) {
+				if (!bb->succ[i]) {
+					bb->succ[i] = target;
+				}
+				if (bb->succ[i] == target) {
+					break;
+				}
+			}
+			// link target->pred[...]
+			for (i = 0; i < MAXBBLINK; ++i) {
+				if (!target->pred[i]) {
+					target->pred[i] = bb;
+				}
+				if (target->pred[i] == bb) {
+					break;
+				}
+			}
+			break;
+		default:
+			continue;
+		}
+	}
+}
+
+// construct the flow graph
+void construct(void)
+{
+	fun_t *f;
+	for (f = mod.fhead; f; f = f->next) {
+		bblink(f);
 	}
 }

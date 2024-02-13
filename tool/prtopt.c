@@ -68,14 +68,40 @@ int main(int argc, char *argv[])
 	msg("DUMP INTERMEDIATE REPRESENTATION:\n");
 
 	partition();
+	construct();
 
 	fun_t *fun;
 	for (fun = mod.fhead; fun; fun = fun->next) {
 		msg("func(nspace=%s)\n", fun->scope->nspace);
 		bb_t *bb;
 		for (bb = fun->bhead; bb; bb = bb->next) {
-			msg(" block(bid=%d)\n", bb->bid);
+			char bbinfo[MAXSTRBUF];
+			sprintf(bbinfo, "B%d", bb->bid);
+
 			int i;
+			appendf(bbinfo, " pred=");
+			for (i = 0; i < MAXBBLINK; ++i) {
+				if (!bb->pred[i]) {
+					break;
+				}
+				if (i > 0) {
+					appendf(bbinfo, ",", bb->bid);
+				}
+				appendf(bbinfo, "B%d", bb->pred[i]->bid);
+			}
+
+			appendf(bbinfo, " succ=");
+			for (i = 0; i < MAXBBLINK; ++i) {
+				if (!bb->succ[i]) {
+					break;
+				}
+				if (i > 0) {
+					appendf(bbinfo, ",", bb->bid);
+				}
+				appendf(bbinfo, "B%d", bb->succ[i]->bid);
+			}
+
+			msg(" block(%s)\n", bbinfo);
 			for (i = 0; i < bb->total; i++) {
 				fmtinst2(bb->insts[i]);
 			}

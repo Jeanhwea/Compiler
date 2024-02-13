@@ -43,4 +43,5 @@ extern int bbcnt;
 	} while (0)
 
 void partition(void);
+void construct(void);
 #endif /* End of _OPTIM_H_ */
