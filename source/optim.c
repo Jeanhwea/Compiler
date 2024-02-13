@@ -13,7 +13,7 @@ static fun_t *thefunc;
 // leader of current basic block
 static inst_t *leader;
 
-static fun_t *funalloc(void)
+static fun_t *functor(void)
 {
 	fun_t *fun;
 	NEWFUNCTION(fun);
@@ -29,7 +29,7 @@ static fun_t *funalloc(void)
 	return fun;
 }
 
-static bb_t *bballoc(void)
+static bb_t *bbctor(void)
 {
 	bb_t *bb;
 	NEWBASICBLOCK(bb);
@@ -101,7 +101,7 @@ void partition(void)
 	while (leader) {
 		switch (leader->op) {
 		case ENT_OP:
-			thefunc = funalloc();
+			thefunc = functor();
 			leader = leader->next;
 			break;
 		case FIN_OP:
@@ -112,7 +112,7 @@ void partition(void)
 			leader = leader->next;
 			break;
 		default:
-			bballoc();
+			bbctor();
 		}
 	}
 }
