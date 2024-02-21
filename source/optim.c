@@ -119,7 +119,11 @@ void partition(void)
 
 static void link_basic_block(fun_t *f)
 {
+	// lab2bb[..] map label to basic block pointer
+	//    key:   label->sid
+	//    value: bb_t pointer
 	bb_t *lab2bb[MAXSYMENT];
+
 	bb_t *bb = NULL, *prev = NULL;
 
 	// Step1: make lab2bb[...] map, create x->succ[0], x->pred[0] link
