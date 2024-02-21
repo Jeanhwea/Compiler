@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 				if (i > 0) {
-					appendf(bbinfo, ",", bb->bid);
+					appendf(bbinfo, ",");
 				}
 				appendf(bbinfo, "B%d", bb->pred[i]->bid);
 			}
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 				if (i > 0) {
-					appendf(bbinfo, ",", bb->bid);
+					appendf(bbinfo, ",");
 				}
 				appendf(bbinfo, "B%d", bb->succ[i]->bid);
 			}
