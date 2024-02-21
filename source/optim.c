@@ -13,7 +13,7 @@ static fun_t *thefunc;
 // leader of current basic block
 static inst_t *leader;
 
-static fun_t *make_func(void)
+static fun_t *make_function(void)
 {
 	fun_t *fun;
 	NEWFUNCTION(fun);
@@ -101,7 +101,7 @@ void partition(void)
 	while (leader) {
 		switch (leader->op) {
 		case ENT_OP:
-			thefunc = make_func();
+			thefunc = make_function();
 			leader = leader->next;
 			break;
 		case FIN_OP:
