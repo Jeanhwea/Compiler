@@ -9,17 +9,17 @@
 
 static int nextseq = 0;
 
-static node_t *initnode(int nid, char *name)
+static tnode_t *initnode(int nid, char *name)
 {
-	node_t *d;
-	INITMEM(node_t, d);
+	tnode_t *d;
+	INITMEM(tnode_t, d);
 	d->seq = ++nextseq;
 	d->nid = nid;
 	strcopy(d->name, name);
 	return d;
 }
 
-static void addchild(node_t *parent, node_t *child, char *ref)
+static void addchild(tnode_t *parent, tnode_t *child, char *ref)
 {
 	if (!child) {
 		return;
@@ -34,23 +34,23 @@ static void addchild(node_t *parent, node_t *child, char *ref)
 	parent->nchild++;
 }
 
-node_t *conv_pgm_node(pgm_node_t *t)
+tnode_t *conv_pgm_node(pgm_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PGM");
+	tnode_t *d = initnode(t->nid, "PGM");
 	addchild(d, conv_ident_node(t->entry), "entry");
 	addchild(d, conv_block_node(t->bp), "bp");
 	return d;
 }
 
-node_t *conv_block_node(block_node_t *t)
+tnode_t *conv_block_node(block_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "BLOCK");
+	tnode_t *d = initnode(t->nid, "BLOCK");
 	addchild(d, conv_const_dec_node(t->cdp), "cdp");
 	addchild(d, conv_var_dec_node(t->vdp), "vdp");
 	addchild(d, conv_pf_dec_list_node(t->pfdlp), "pfdlp");
@@ -58,58 +58,58 @@ node_t *conv_block_node(block_node_t *t)
 	return d;
 }
 
-node_t *conv_const_dec_node(const_dec_node_t *t)
+tnode_t *conv_const_dec_node(const_dec_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "CONST_DEC");
+	tnode_t *d = initnode(t->nid, "CONST_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_const_def_node(t->cdp), "cdp");
 	}
 	return d;
 }
 
-node_t *conv_const_def_node(const_def_node_t *t)
+tnode_t *conv_const_def_node(const_def_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "CONST_DEF");
+	tnode_t *d = initnode(t->nid, "CONST_DEF");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	return d;
 }
 
-node_t *conv_var_dec_node(var_dec_node_t *t)
+tnode_t *conv_var_dec_node(var_dec_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "VAR_DEC");
+	tnode_t *d = initnode(t->nid, "VAR_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_var_def_node(t->vdp), "vdp");
 	}
 	return d;
 }
 
-node_t *conv_var_def_node(var_def_node_t *t)
+tnode_t *conv_var_def_node(var_def_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "VAR_DEF");
+	tnode_t *d = initnode(t->nid, "VAR_DEF");
 	for (; t; t = t->next) {
 		addchild(d, conv_ident_node(t->idp), "idp");
 	}
 	return d;
 }
 
-node_t *conv_pf_dec_list_node(pf_dec_list_node_t *t)
+tnode_t *conv_pf_dec_list_node(pf_dec_list_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PF_DEC_LIST");
+	tnode_t *d = initnode(t->nid, "PF_DEC_LIST");
 	for (; t; t = t->next) {
 		switch (t->kind) {
 		case PROC_PFDEC:
@@ -125,80 +125,80 @@ node_t *conv_pf_dec_list_node(pf_dec_list_node_t *t)
 	return d;
 }
 
-node_t *conv_proc_dec_node(proc_dec_node_t *t)
+tnode_t *conv_proc_dec_node(proc_dec_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PROC_DEC");
+	tnode_t *d = initnode(t->nid, "PROC_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_proc_def_node(t->pdp), "pdp");
 	}
 	return d;
 }
 
-node_t *conv_proc_def_node(proc_def_node_t *t)
+tnode_t *conv_proc_def_node(proc_def_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PROC_DEF");
+	tnode_t *d = initnode(t->nid, "PROC_DEF");
 	addchild(d, conv_proc_head_node(t->php), "php");
 	addchild(d, conv_block_node(t->bp), "bp");
 	return d;
 }
 
-node_t *conv_proc_head_node(proc_head_node_t *t)
+tnode_t *conv_proc_head_node(proc_head_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PROC_HEAD");
+	tnode_t *d = initnode(t->nid, "PROC_HEAD");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_para_list_node(t->plp), "plp");
 	return d;
 }
 
-node_t *conv_fun_dec_node(fun_dec_node_t *t)
+tnode_t *conv_fun_dec_node(fun_dec_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "FUN_DEC");
+	tnode_t *d = initnode(t->nid, "FUN_DEC");
 	for (; t; t = t->next) {
 		addchild(d, conv_fun_def_node(t->fdp), "fdp");
 	}
 	return d;
 }
 
-node_t *conv_fun_def_node(fun_def_node_t *t)
+tnode_t *conv_fun_def_node(fun_def_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "FUN_DEF");
+	tnode_t *d = initnode(t->nid, "FUN_DEF");
 	addchild(d, conv_fun_head_node(t->fhp), "fhp");
 	addchild(d, conv_block_node(t->bp), "bp");
 	return d;
 }
 
-node_t *conv_fun_head_node(fun_head_node_t *t)
+tnode_t *conv_fun_head_node(fun_head_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "FUN_HEAD");
+	tnode_t *d = initnode(t->nid, "FUN_HEAD");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_para_list_node(t->plp), "plp");
 	return d;
 }
 
-node_t *conv_stmt_node(stmt_node_t *t)
+tnode_t *conv_stmt_node(stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "STMT");
+	tnode_t *d = initnode(t->nid, "STMT");
 	if (!t) {
 		strcpy(d->name, "NULLSTMT");
 		return d;
@@ -238,12 +238,12 @@ node_t *conv_stmt_node(stmt_node_t *t)
 	return d;
 }
 
-node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
+tnode_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "ASSIGN_STMT");
+	tnode_t *d = initnode(t->nid, "ASSIGN_STMT");
 	d->kind = t->kind;
 	switch (t->kind) {
 	case NORM_ASSGIN:
@@ -265,35 +265,35 @@ node_t *conv_assign_stmt_node(assign_stmt_node_t *t)
 	return d;
 }
 
-node_t *conv_if_stmt_node(if_stmt_node_t *t)
+tnode_t *conv_if_stmt_node(if_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "IF_STMT");
+	tnode_t *d = initnode(t->nid, "IF_STMT");
 	addchild(d, conv_cond_node(t->cp), "cp");
 	addchild(d, conv_stmt_node(t->tp), "tp");
 	addchild(d, conv_stmt_node(t->ep), "ep");
 	return d;
 }
 
-node_t *conv_repe_stmt_node(repe_stmt_node_t *t)
+tnode_t *conv_repe_stmt_node(repe_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "REPE_STMT");
+	tnode_t *d = initnode(t->nid, "REPE_STMT");
 	addchild(d, conv_cond_node(t->cp), "cp");
 	addchild(d, conv_stmt_node(t->sp), "sp");
 	return d;
 }
 
-node_t *conv_for_stmt_node(for_stmt_node_t *t)
+tnode_t *conv_for_stmt_node(for_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "FOR_STMT");
+	tnode_t *d = initnode(t->nid, "FOR_STMT");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_expr_node(t->lep), "lep");
 	addchild(d, conv_expr_node(t->rep), "rep");
@@ -301,58 +301,58 @@ node_t *conv_for_stmt_node(for_stmt_node_t *t)
 	return d;
 }
 
-node_t *conv_pcall_stmt_node(pcall_stmt_node_t *t)
+tnode_t *conv_pcall_stmt_node(pcall_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PCALL_STMT");
+	tnode_t *d = initnode(t->nid, "PCALL_STMT");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_arg_list_node(t->alp), "alp");
 	return d;
 }
 
-node_t *conv_fcall_stmt_node(fcall_stmt_node_t *t)
+tnode_t *conv_fcall_stmt_node(fcall_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "FCALL_STMT");
+	tnode_t *d = initnode(t->nid, "FCALL_STMT");
 	addchild(d, conv_ident_node(t->idp), "idp");
 	addchild(d, conv_arg_list_node(t->alp), "alp");
 	return d;
 }
 
-node_t *conv_comp_stmt_node(comp_stmt_node_t *t)
+tnode_t *conv_comp_stmt_node(comp_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "COMP_STMT");
+	tnode_t *d = initnode(t->nid, "COMP_STMT");
 	for (; t; t = t->next) {
 		addchild(d, conv_stmt_node(t->sp), "sp");
 	}
 	return d;
 }
 
-node_t *conv_read_stmt_node(read_stmt_node_t *t)
+tnode_t *conv_read_stmt_node(read_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "READ_STMT");
+	tnode_t *d = initnode(t->nid, "READ_STMT");
 	for (; t; t = t->next) {
 		addchild(d, conv_ident_node(t->idp), "idp");
 	}
 }
 
-node_t *conv_write_stmt_node(write_stmt_node_t *t)
+tnode_t *conv_write_stmt_node(write_stmt_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
 
-	node_t *d = initnode(t->nid, "WRITE_STMT");
+	tnode_t *d = initnode(t->nid, "WRITE_STMT");
 	char buf[MAXSTRBUF];
 	d->kind = t->type;
 	switch (t->type) {
@@ -375,12 +375,12 @@ node_t *conv_write_stmt_node(write_stmt_node_t *t)
 	return d;
 }
 
-node_t *conv_expr_node(expr_node_t *t)
+tnode_t *conv_expr_node(expr_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "EXPR");
+	tnode_t *d = initnode(t->nid, "EXPR");
 	for (; t; t = t->next) {
 		switch (t->kind) {
 		case ADD_ADDOP:
@@ -396,12 +396,12 @@ node_t *conv_expr_node(expr_node_t *t)
 	return d;
 }
 
-node_t *conv_term_node(term_node_t *t)
+tnode_t *conv_term_node(term_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "TERM");
+	tnode_t *d = initnode(t->nid, "TERM");
 	for (; t; t = t->next) {
 		switch (t->kind) {
 		case MULT_MULTOP:
@@ -416,13 +416,13 @@ node_t *conv_term_node(term_node_t *t)
 	return d;
 }
 
-node_t *conv_factor_node(factor_node_t *t)
+tnode_t *conv_factor_node(factor_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
 
-	node_t *d = initnode(t->nid, "FACTOR");
+	tnode_t *d = initnode(t->nid, "FACTOR");
 	char buf[MAXSTRBUF];
 	d->kind = t->kind;
 	switch (t->kind) {
@@ -451,12 +451,12 @@ node_t *conv_factor_node(factor_node_t *t)
 	return d;
 }
 
-node_t *conv_cond_node(cond_node_t *t)
+tnode_t *conv_cond_node(cond_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "COND");
+	tnode_t *d = initnode(t->nid, "COND");
 	d->kind = t->kind;
 	switch (t->kind) {
 	case EQU_RELA:
@@ -483,46 +483,46 @@ node_t *conv_cond_node(cond_node_t *t)
 	return d;
 }
 
-node_t *conv_ident_node(ident_node_t *t)
+tnode_t *conv_ident_node(ident_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "IDENT");
+	tnode_t *d = initnode(t->nid, "IDENT");
 	d->idp = t;
 	return d;
 }
 
-node_t *conv_para_list_node(para_list_node_t *t)
+tnode_t *conv_para_list_node(para_list_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PARA_LIST");
+	tnode_t *d = initnode(t->nid, "PARA_LIST");
 	for (; t; t = t->next) {
 		addchild(d, conv_para_def_node(t->pdp), "pdp");
 	}
 	return d;
 }
 
-node_t *conv_para_def_node(para_def_node_t *t)
+tnode_t *conv_para_def_node(para_def_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "PARA_DEF");
+	tnode_t *d = initnode(t->nid, "PARA_DEF");
 	for (; t; t = t->next) {
 		addchild(d, conv_ident_node(t->idp), "idp");
 	}
 	return d;
 }
 
-node_t *conv_arg_list_node(arg_list_node_t *t)
+tnode_t *conv_arg_list_node(arg_list_node_t *t)
 {
 	if (!t) {
 		return NULL;
 	}
-	node_t *d = initnode(t->nid, "ARG_LIST");
+	tnode_t *d = initnode(t->nid, "ARG_LIST");
 	for (; t; t = t->next) {
 		addchild(d, conv_expr_node(t->ep), "ep");
 	}
