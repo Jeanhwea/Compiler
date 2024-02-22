@@ -19,7 +19,7 @@ static dnode_t *create_dag_node(void)
 }
 
 // create DAG graph
-static dag_t *create_dag(void)
+static dag_t *create_dag_graph(void)
 {
 	dag_t *graph;
 	INITMEM(dag_t, graph);
@@ -70,7 +70,7 @@ static dnode_t *find_op_node(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 // construct DAG for the basic block
 static void construct_dag(bb_t *bb)
 {
-	dag_t *graph = create_dag();
+	dag_t *graph = create_dag_graph();
 
 	inst_t *x;
 	int i;
