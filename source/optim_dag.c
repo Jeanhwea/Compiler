@@ -31,7 +31,7 @@ static dnode_t *find_symbol_node(dag_t *g, syment_t *e)
 {
 	dnode_t *node = g->symnodes[e->sid];
 
-	// create one node if not found
+	// insert new one node if not found
 	if (!node) {
 		node = create_dag_node();
 		node->syment = e;
@@ -59,7 +59,7 @@ static dnode_t *find_op_node(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 		return node;
 	}
 
-	// create one if not found
+	// insert new one if not found
 	node = create_dag_node();
 	node->left = left;
 	node->right = right;
