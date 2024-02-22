@@ -44,21 +44,21 @@ struct _basic_block_struct {
 struct _dag_struct {
 	int gid; // graph ID
 	int nnode; // number of nodes
-	dnode_t *nodes[MAXDAGNODES]; // vertices
-	dnode_t *leaves[MAXSYMENT]; // leaf lookup table
+	dnode_t *opnodes[MAXDAGNODES]; // operation nodes
+	dnode_t *symnodes[MAXSYMENT]; // symbol nodes
 };
 
 struct _dag_node_struct {
+	// common
 	int nid; // node ID
 
-	// attributes for non-leaf nodes
-	op_t op; // the operator
-	// attributes for leaf nodes
-	syment_t *syment; // the symbol entry
-
-	// common
+	// attributes for operation node
+	op_t op;
 	dnode_t *left;
 	dnode_t *right;
+
+	// attributes for symbol node
+	syment_t *syment;
 };
 
 // global module handler
