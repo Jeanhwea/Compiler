@@ -67,8 +67,7 @@ int main(int argc, char *argv[])
 
 	msg("DUMP INTERMEDIATE REPRESENTATION:\n");
 
-	partition();
-	construct();
+	optim();
 
 	fun_t *fun;
 	for (fun = mod.fhead; fun; fun = fun->next) {
