@@ -43,7 +43,8 @@ struct _basic_block_struct {
 
 struct _dag_struct {
 	int gid; // graph ID
-	dag_node_t *root; // graph root
+	dag_node_t *nodes[MAXDAGNODES]; // vertices
+	dag_node_t *leaves[MAXSYMENT]; // leaf lookup table
 };
 
 struct _dag_node_struct {
