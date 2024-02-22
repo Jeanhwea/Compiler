@@ -1,3 +1,4 @@
+#include "common.h"
 #include "optim.h"
 #include "debug.h"
 #include "ir.h"
@@ -5,8 +6,9 @@
 
 // module
 mod_t mod;
+
 // basic block counter
-int bbcnt = 0;
+static int bbcnt = 0;
 
 // point to the current function scope
 static fun_t *thefunc;
@@ -17,7 +19,7 @@ static inst_t *leader;
 static fun_t *create_function_object(void)
 {
 	fun_t *fun;
-	NEWFUNCTION(fun);
+	INITMEM(fun_t, fun);
 
 	if (mod.fhead) {
 		mod.ftail->next = fun;
@@ -34,7 +36,8 @@ static fun_t *create_function_object(void)
 static bb_t *create_basic_block(void)
 {
 	bb_t *bb;
-	NEWBASICBLOCK(bb);
+	INITMEM(bb_t, bb);
+	bb->bid = ++bbcnt;
 	if (thefunc->bhead) {
 		thefunc->btail->next = bb;
 		thefunc->btail = bb;
