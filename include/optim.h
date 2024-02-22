@@ -2,10 +2,16 @@
 #define _OPTIM_H_
 #include "limits.h"
 #include "ir.h"
+#include "symtab.h"
 
+// CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;
 typedef struct _function_struct fun_t;
 typedef struct _basic_block_struct bb_t;
+
+// DAG: graph, nodes
+typedef struct _dag_struct dag_t;
+typedef struct _dag_node_struct dag_node_t;
 
 struct _module_struct {
 	fun_t *fhead;
@@ -35,6 +41,24 @@ struct _basic_block_struct {
 	bb_t *succ[MAXBBLINK];
 };
 
+struct _dag_struct {
+	int gid; // graph ID
+	dag_node_t *root; // graph root
+};
+
+struct _dag_node_struct {
+	int nid; // node ID
+
+	// attributes for non-leaf nodes
+	op_t *op; // the operator
+	// attributes for leaf nodes
+	syment_t *syment; // the symbol entry
+
+	// common
+	dag_node_t *left;
+	dag_node_t *right;
+};
+
 // global module handler
 extern mod_t mod;
 
@@ -42,5 +66,6 @@ extern mod_t mod;
 void partition_basic_blocks(void);
 void construct_flow_graph(void);
 
+// optimize entry
 void optim(void);
 #endif /* End of _OPTIM_H_ */
