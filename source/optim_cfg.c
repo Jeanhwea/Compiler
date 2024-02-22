@@ -4,9 +4,6 @@
 #include "ir.h"
 #include "limits.h"
 
-// module
-mod_t mod;
-
 // basic block counter
 static int bbcnt = 0;
 
