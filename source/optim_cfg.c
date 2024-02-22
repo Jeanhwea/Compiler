@@ -4,9 +4,6 @@
 #include "ir.h"
 #include "limits.h"
 
-// module
-mod_t mod;
-
 // basic block counter
 static int bbcnt = 0;
 
@@ -99,6 +96,29 @@ ok:
 	return bb;
 }
 
+// partition into basic blocks
+void partition_basic_blocks(void)
+{
+	leader = xhead;
+	while (leader) {
+		switch (leader->op) {
+		case ENT_OP:
+			thefunc = create_function_object();
+			leader = leader->next;
+			break;
+		case FIN_OP:
+			if (thefunc->scope != leader->d->scope) {
+				panic("ENTER_FINISH_NOT_MATCH");
+			}
+			thefunc = NULL;
+			leader = leader->next;
+			break;
+		default:
+			create_basic_block();
+		}
+	}
+}
+
 // link basic block in function object
 static void link_basic_block(fun_t *f)
 {
@@ -164,29 +184,6 @@ static void link_basic_block(fun_t *f)
 			break;
 		default:
 			continue;
-		}
-	}
-}
-
-// partition into basic blocks
-void partition_basic_blocks(void)
-{
-	leader = xhead;
-	while (leader) {
-		switch (leader->op) {
-		case ENT_OP:
-			thefunc = create_function_object();
-			leader = leader->next;
-			break;
-		case FIN_OP:
-			if (thefunc->scope != leader->d->scope) {
-				panic("ENTER_FINISH_NOT_MATCH");
-			}
-			thefunc = NULL;
-			leader = leader->next;
-			break;
-		default:
-			create_basic_block();
 		}
 	}
 }
