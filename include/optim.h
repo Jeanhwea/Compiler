@@ -52,7 +52,7 @@ struct _dag_node_struct {
 	int nid; // node ID
 
 	// attributes for non-leaf nodes
-	op_t *op; // the operator
+	op_t op; // the operator
 	// attributes for leaf nodes
 	syment_t *syment; // the symbol entry
 

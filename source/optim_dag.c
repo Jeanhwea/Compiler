@@ -46,7 +46,7 @@ static dnode_t *find_nonleaf(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 {
 	dnode_t *node;
 	int i;
-	for (i = 0; i < n; ++i) {
+	for (i = 0; i < g->nnode; ++i) {
 		node = g->nodes[i];
 		if (node->left != left) {
 			continue;
@@ -59,7 +59,12 @@ static dnode_t *find_nonleaf(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 		}
 		return node;
 	}
-	return NULL;
+
+	node = create_dag_node();
+	node->left = left;
+	node->right = right;
+	node->op = op;
+	return node;
 }
 
 // construct DAG for the basic block
@@ -77,6 +82,7 @@ static void construct_dag(bb_t *bb)
 			left = find_leaf(graph, x->r);
 			right = find_leaf(graph, x->s);
 			root = find_nonleaf(graph, x->op, left, right);
+			// TODO
 			break;
 		}
 	}
