@@ -26,7 +26,7 @@ struct _basic_block_struct {
 	inst_t *insts[MAXBBINST]; // instructions
 	bb_t *next;
 
-	// next-use infomation
+	// next-use information
 	bool liveness[MAXSYMENT];
 	inst_t *nextuse[MAXSYMENT];
 
