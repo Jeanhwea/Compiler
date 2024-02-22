@@ -8,7 +8,7 @@
 
 int indent = 0;
 
-void prtnode(node_t *node)
+void prtnode(tnode_t *node)
 {
 	indent++;
 	int i;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	init(argc, argv);
 	parse();
 	analysis();
-	node_t *tree = conv_pgm_node(pgm);
+	tnode_t *tree = conv_pgm_node(pgm);
 	prtnode(tree);
 	return 0;
 }

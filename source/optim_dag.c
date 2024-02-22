@@ -10,10 +10,10 @@ static int graphcnt = 0;
 static int nodecnt = 0;
 
 // create DAG node
-static dag_node_t *create_dag_node(void)
+static dnode_t *create_dag_node(void)
 {
-	dag_node_t *node;
-	INITMEM(dag_node_t, node);
+	dnode_t *node;
+	INITMEM(dnode_t, node);
 	node->nid = ++nodecnt;
 	return node;
 }
@@ -28,23 +28,23 @@ static dag_t *create_dag(void)
 }
 
 // find leaf node in DAG, which is the symbol entry
-static dag_node_t *find_leaf_node(dag_t *graph, syment_t *e)
+static dnode_t *find_leaf(dag_t *g, syment_t *e)
 {
-	dag_node_t *leaf = graph->leaves[e->sid];
+	dnode_t *leaf = g->leaves[e->sid];
 
 	// create one leaf node if not found
 	if (!leaf) {
 		leaf = create_dag_node();
 		leaf->syment = e;
-		graph->leaves[e->sid] = leaf;
+		g->leaves[e->sid] = leaf;
 	}
 
 	return leaf;
 }
 
-static dag_node_t *find_nonleaf_node(dag_t *graph, syment_t *e)
+static dnode_t *find_nonleaf(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 {
-	// TODO
+	g->nodes
 }
 
 // construct DAG for the basic block
@@ -56,11 +56,11 @@ static void construct_dag(bb_t *bb)
 	int i;
 	for (i = 0; i < bb->total; ++i) {
 		x = bb->insts[i];
-		dag_node_t *left, *right;
+		dnode_t *left, *right;
 		switch (x->op) {
 		case ADD_OP:
-			left = find_leaf_node(graph, x->r);
-			right = find_leaf_node(graph, x->s);
+			left = find_leaf(graph, x->r);
+			right = find_leaf(graph, x->s);
 			break;
 		}
 	}

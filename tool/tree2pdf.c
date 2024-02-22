@@ -19,23 +19,23 @@ bool opt_main_only = FALSE;
 #define MAXEDGES 1024
 
 // syntax tree
-node_t *tree;
+tnode_t *tree;
 
 // nodes
 static int nedges = 0;
-static node_t *nodes[MAXNODES];
+static tnode_t *nodes[MAXNODES];
 // edges: beg -> end; ptr: pointer name
 static int beg[MAXEDGES];
 static int end[MAXEDGES];
 static char ptrs[MAXEDGES][MAXSTRLEN];
 
 static char buf[MAXSTRBUF];
-void visit(node_t *node)
+void visit(tnode_t *node)
 {
 	nodes[node->seq] = node;
 	int i;
 	for (i = 0; i < node->nchild; ++i) {
-		node_t *child = node->childs[i];
+		tnode_t *child = node->childs[i];
 		beg[nedges] = node->seq;
 		end[nedges] = child->seq;
 		strcopy(ptrs[nedges], node->chdptrs[i]);
@@ -43,7 +43,7 @@ void visit(node_t *node)
 	}
 
 	for (i = 0; i < node->nchild; ++i) {
-		node_t *child = node->childs[i];
+		tnode_t *child = node->childs[i];
 		visit(child);
 	}
 }
@@ -52,7 +52,7 @@ char *outname = "viz.dot";
 FILE *fd = NULL;
 char *indent = "  ";
 
-void drawnode(node_t *node)
+void drawnode(tnode_t *node)
 {
 	char label[MAXSTRBUF];
 	sprintf(label, "#%d %s", node->seq, node->name);

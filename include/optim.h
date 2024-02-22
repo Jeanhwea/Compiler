@@ -11,7 +11,7 @@ typedef struct _basic_block_struct bb_t;
 
 // DAG: graph, nodes
 typedef struct _dag_struct dag_t;
-typedef struct _dag_node_struct dag_node_t;
+typedef struct _dag_node_struct dnode_t;
 
 struct _module_struct {
 	fun_t *fhead;
@@ -43,8 +43,9 @@ struct _basic_block_struct {
 
 struct _dag_struct {
 	int gid; // graph ID
-	dag_node_t *nodes[MAXDAGNODES]; // vertices
-	dag_node_t *leaves[MAXSYMENT]; // leaf lookup table
+	int nnode; // number of nodes
+	dnode_t *nodes[MAXDAGNODES]; // vertices
+	dnode_t *leaves[MAXSYMENT]; // leaf lookup table
 };
 
 struct _dag_node_struct {
@@ -56,8 +57,8 @@ struct _dag_node_struct {
 	syment_t *syment; // the symbol entry
 
 	// common
-	dag_node_t *left;
-	dag_node_t *right;
+	dnode_t *left;
+	dnode_t *right;
 };
 
 // global module handler
