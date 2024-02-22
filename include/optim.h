@@ -52,6 +52,5 @@ extern int bbcnt;
 void partition_basic_blocks(void);
 void construct_flow_graph(void);
 
-void partition(void);
-void construct(void);
+void optim(void);
 #endif /* End of _OPTIM_H_ */
