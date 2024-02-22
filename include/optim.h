@@ -26,12 +26,19 @@ struct _basic_block_struct {
 	inst_t *insts[MAXBBINST]; // instructions
 	bb_t *next;
 
+	// next-use information
+	bool liveness[MAXSYMENT];
+	inst_t *nextuse[MAXSYMENT];
+
 	// predecessors and successors
 	bb_t *pred[MAXBBLINK];
 	bb_t *succ[MAXBBLINK];
 };
 
+// global module handler
 extern mod_t mod;
+
+// count the number of basic block
 extern int bbcnt;
 
 #define NEWFUNCTION(v) INITMEM(fun_t, v);

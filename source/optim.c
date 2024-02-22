@@ -13,7 +13,7 @@ static fun_t *thefunc;
 // leader of current basic block
 static inst_t *leader;
 
-static fun_t *functor(void)
+static fun_t *create_function(void)
 {
 	fun_t *fun;
 	NEWFUNCTION(fun);
@@ -29,7 +29,7 @@ static fun_t *functor(void)
 	return fun;
 }
 
-static bb_t *bbctor(void)
+static bb_t *create_basic_block(void)
 {
 	bb_t *bb;
 	NEWBASICBLOCK(bb);
@@ -101,7 +101,7 @@ void partition(void)
 	while (leader) {
 		switch (leader->op) {
 		case ENT_OP:
-			thefunc = functor();
+			thefunc = create_function();
 			leader = leader->next;
 			break;
 		case FIN_OP:
@@ -112,14 +112,18 @@ void partition(void)
 			leader = leader->next;
 			break;
 		default:
-			bbctor();
+			create_basic_block();
 		}
 	}
 }
 
-static void bblink(fun_t *f)
+static void link_basic_block(fun_t *f)
 {
+	// lab2bb[..] map label to basic block pointer
+	//    key:   label->sid
+	//    value: bb_t pointer
 	bb_t *lab2bb[MAXSYMENT];
+
 	bb_t *bb = NULL, *prev = NULL;
 
 	// Step1: make lab2bb[...] map, create x->succ[0], x->pred[0] link
@@ -186,6 +190,6 @@ void construct(void)
 {
 	fun_t *f;
 	for (f = mod.fhead; f; f = f->next) {
-		bblink(f);
+		link_basic_block(f);
 	}
 }
