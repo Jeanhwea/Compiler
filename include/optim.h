@@ -38,17 +38,7 @@ struct _basic_block_struct {
 // global module handler
 extern mod_t mod;
 
-// count the number of basic block
-extern int bbcnt;
-
-#define NEWFUNCTION(v) INITMEM(fun_t, v);
-
-#define NEWBASICBLOCK(v)                                                       \
-	do {                                                                   \
-		INITMEM(bb_t, v);                                              \
-		v->bid = ++bbcnt;                                              \
-	} while (0)
-
+// optimize function
 void partition_basic_blocks(void);
 void construct_flow_graph(void);
 
