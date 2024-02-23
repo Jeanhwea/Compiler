@@ -41,16 +41,15 @@ struct _basic_block_struct {
 	bb_t *succ[MAXBBLINK];
 };
 
-struct _dag_struct {
-	int gid; // graph ID
-	int nnode; // number of nodes
-	dnode_t *opnodes[MAXDAGNODES]; // operation nodes
-	dnode_t *symnodes[MAXSYMENT]; // symbol nodes
-};
+typedef enum dnode_cate_enum {
+	OPERNODE = 0,
+	SYMBOLNODE = 1,
+} dnode_cate_t;
 
 struct _dag_node_struct {
 	// common
 	int nid; // node ID
+	dnode_cate_t cate;
 
 	// attributes for operation node
 	op_t op;
@@ -59,6 +58,13 @@ struct _dag_node_struct {
 
 	// attributes for symbol node
 	syment_t *syment;
+};
+
+struct _dag_struct {
+	int gid; // graph ID
+	int opcnt; // operation nodes counter
+	dnode_t *opnodes[MAXDAGNODES]; // operation nodes
+	dnode_t *sbnodes[MAXDAGNODES]; // symbol nodes
 };
 
 // global module handler
