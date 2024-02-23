@@ -13,6 +13,16 @@
 
 bool opt_dag = FALSE;
 
+void initopt(int argc, char *argv[])
+{
+	int i;
+	for (i = 1; i < argc; ++i) {
+		if (!strcmp("-dag", argv[i])) {
+			opt_dag = TRUE;
+		}
+	}
+}
+
 char *opcode[32] = {
 	[0] = "ADD",   [1] = "SUB",  [2] = "MUL",   [3] = "DIV",   [4] = "INC",
 	[5] = "DEC",   [6] = "NEG",  [7] = "LOAD",  [8] = "ASS",   [9] = "ASA",
@@ -108,16 +118,6 @@ void dumpdag(bb_t *bb)
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "dot -Tpdf %s -o %s.pdf", outname, outname);
 	system(cmd);
-}
-
-void initopt(int argc, char *argv[])
-{
-	int i;
-	for (i = 1; i < argc; ++i) {
-		if (!strcmp("-dag", argv[i])) {
-			opt_dag = TRUE;
-		}
-	}
 }
 
 int main(int argc, char *argv[])
