@@ -48,6 +48,32 @@ void dumpent(syment_t *e)
 	    e->stab->depth, e->initval, e->arrlen, e->str);
 }
 
+void dumpdag(bb_t *bb)
+{
+	dgraph_t *g;
+	g = bb->dag;
+
+	int i;
+	dnode_t *v;
+	for (i = 0; i < g->nodecnt; ++i) {
+		v = g->nodes[i];
+		switch (v->cate) {
+		case OPERNODE:
+			msg("N: #%d op=%d\n", v->nid, v->op);
+			if (v->lhs) {
+				msg("E: n%d -> n%d\n", v->nid, v->lhs->nid);
+			}
+			if (v->rhs) {
+				msg("E: n%d -> n%d\n", v->nid, v->rhs->nid);
+			}
+			break;
+		case SYMBOLNODE:
+			msg("N: #%d symbol=%s\n", v->nid, v->syment->name);
+			break;
+		}
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	echo = 0;
@@ -104,6 +130,17 @@ int main(int argc, char *argv[])
 			for (i = 0; i < bb->total; i++) {
 				fmtinst2(bb->insts[i]);
 			}
+		}
+	}
+	msg("\n");
+
+	for (fun = mod.fhead; fun; fun = fun->next) {
+		bb_t *bb;
+		for (bb = fun->bhead; bb; bb = bb->next) {
+			if (!bb->dag) {
+				continue;
+			}
+			dumpdag(bb);
 		}
 	}
 	msg("\n");
