@@ -84,8 +84,9 @@ static void construct_dag(bb_t *bb)
 	inst_t *x;
 	int i;
 	for (i = 0; i < bb->total; ++i) {
-		x = bb->insts[i];
 		dnode_t *lhs = NULL, *rhs = NULL, *out = NULL;
+
+		x = bb->insts[i];
 		switch (x->op) {
 		case ADD_OP:
 		case SUB_OP:
@@ -95,10 +96,23 @@ static void construct_dag(bb_t *bb)
 			lhs = find_sym_node(graph, x->r);
 			rhs = find_sym_node(graph, x->s);
 			out = find_op_node(graph, x->op, lhs, rhs);
-			// update output symbol
-			graph->symmap[x->d->sid] = out;
 			break;
+		case INC_OP:
+		case DEC_OP:
+		case NEG_OP:
+		case ASS_OP:
+			lhs = find_sym_node(graph, x->r);
+			out = find_op_node(graph, x->op, lhs, rhs);
+			break;
+		case LAB_OP:
+		default:
+			goto NEXTINST
 		}
+
+		// update output symbol
+		graph->symmap[x->d->sid] = out;
+
+	NEXTINST:
 	}
 
 	bb->dag = graph;
