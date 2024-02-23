@@ -32,7 +32,7 @@ void freereg(reg_t *r);
 
 // x86 instructions
 typedef struct _x86_inst_struct {
-	bool islab; // if instruction is a label
+	bool islab;	      // if the instruction is a label
 	char op[MAXFIELDLEN]; // operator or label
 	char fa[MAXFIELDLEN]; // operand field a
 	char fb[MAXFIELDLEN]; // operand field b
