@@ -30,7 +30,7 @@ static dgraph_t *create_dag_graph(void)
 
 static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
 {
-	dnode_t *node = g->sbnodes[e->sid];
+	dnode_t *node = g->symnodes[e->sid];
 
 	// insert new one node if not found
 	if (!node) {
@@ -38,7 +38,7 @@ static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
 		node->syment = e;
 
 		// add node to graph
-		g->sbnodes[e->sid] = node;
+		g->symnodes[e->sid] = node;
 	}
 
 	return node;
