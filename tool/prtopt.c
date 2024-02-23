@@ -9,6 +9,9 @@
 #include "util.h"
 #include "syntax.h"
 #include "gen.h"
+#include <stdio.h>
+
+bool opt_dag = FALSE;
 
 char *opcode[32] = {
 	[0] = "ADD",   [1] = "SUB",  [2] = "MUL",   [3] = "DIV",   [4] = "INC",
@@ -59,6 +62,17 @@ void dumpent(syment_t *e)
 
 void dumpdag(bb_t *bb)
 {
+	char *ind = "  ";
+	char outname[128];
+	sprintf(outname, "dagB%d.dot", bb->bid);
+
+	FILE *fd = fopen(outname, "w");
+	if (fd == NULL) {
+		panic("FAIL_TO_OPEN_FILE");
+	}
+
+	fprintf(fd, "digraph dag {\n");
+
 	dgraph_t *g;
 	g = bb->dag;
 
@@ -68,17 +82,40 @@ void dumpdag(bb_t *bb)
 		v = g->nodes[i];
 		switch (v->cate) {
 		case OPERNODE:
-			msg("N: #%d op=%s\n", v->nid, oprepr[v->op]);
+			fprintf(fd,
+				"%sn%03d [shape=oval label=\"#%d [%s]\"];\n",
+				ind, v->nid, v->nid, oprepr[v->op]);
 			if (v->lhs) {
-				msg("E: n%d -> n%d\n", v->nid, v->lhs->nid);
+				fprintf(fd, "%sn%03d -> n%03d;\n", ind, v->nid,
+					v->lhs->nid);
 			}
 			if (v->rhs) {
-				msg("E: n%d -> n%d\n", v->nid, v->rhs->nid);
+				fprintf(fd, "%sn%03d -> n%03d;\n", ind, v->nid,
+					v->rhs->nid);
 			}
 			break;
 		case SYMBOLNODE:
-			msg("N: #%d symbol=%s\n", v->nid, v->syment->name);
+			fprintf(fd,
+				"%sn%03d [shape=box  label=\"#%d [%s0]\"];\n",
+				ind, v->nid, v->nid, v->syment->name);
 			break;
+		}
+	}
+
+	fprintf(fd, "}\n");
+	fclose(fd);
+
+	char cmd[MAXSTRBUF];
+	sprintf(cmd, "dot -Tpdf %s -o %s.pdf", outname, outname);
+	system(cmd);
+}
+
+void initopt(int argc, char *argv[])
+{
+	int i;
+	for (i = 1; i < argc; ++i) {
+		if (!strcmp("-dag", argv[i])) {
+			opt_dag = TRUE;
 		}
 	}
 }
@@ -149,7 +186,9 @@ int main(int argc, char *argv[])
 			if (!bb->dag) {
 				continue;
 			}
-			dumpdag(bb);
+			if (opt_dag) {
+				dumpdag(bb);
+			}
 		}
 	}
 	msg("\n");

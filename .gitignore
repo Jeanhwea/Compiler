@@ -39,3 +39,5 @@ Desktop.ini
 .vscode/*
 .projectile
 viz*
+dag*.dot
+dag*.dot.pdf
