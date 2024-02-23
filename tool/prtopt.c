@@ -124,6 +124,7 @@ int main(int argc, char *argv[])
 {
 	echo = 0;
 	init(argc, argv);
+	initopt(argc, argv);
 	parse();
 	analysis();
 	genir();
