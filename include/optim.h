@@ -27,8 +27,8 @@ struct _function_struct {
 
 struct _basic_block_struct {
 	// basic information
-	int bid; // block ID
-	int total; // total number of instructions
+	int bid;		  // block ID
+	int total;		  // total number of instructions
 	inst_t *insts[MAXBBINST]; // instructions
 	bb_t *next;
 
@@ -61,8 +61,8 @@ struct _dag_node_struct {
 };
 
 struct _dag_struct {
-	int gid; // graph ID
-	int opcnt; // operation nodes counter
+	int gid;		       // graph ID
+	int opcnt;		       // operation nodes counter
 	dnode_t *opnodes[MAXDAGNODES]; // operation nodes
 	dnode_t *sbnodes[MAXDAGNODES]; // symbol nodes
 };

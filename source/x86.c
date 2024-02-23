@@ -284,7 +284,7 @@ doit:
 // duplicate current ebp, construct access link area
 static void dupebp(syment_t *func)
 {
-	int caller = scope->depth; // caller depth
+	int caller = scope->depth;	// caller depth
 	int callee = func->stab->depth; // callee depth
 	dbg("%s=%d %s=%d\n", scope->nspace, caller, func->name, callee);
 
@@ -329,7 +329,7 @@ void x86_lib_leave()
 void x86_iolib_exit()
 {
 	addlabel(LIBEXIT);
-	addcode3("mov", REG_RA, "1"); // syscall number
+	addcode3("mov", REG_RA, "1");	 // syscall number
 	addcode3("xor", REG_RB, REG_RB); // return value
 	addcode2("int", SYSCAL);
 }
@@ -388,8 +388,8 @@ void x86_iolib_wrtint()
 	addcode2("inc", REG_DI);
 	addcode2("neg", REG_RA);
 	addlabel("_noneneg@wint");
-	addcode3("mov", REG_RB, "10"); // number base
-	addcode3("xor", REG_RC, REG_RC); // number string length
+	addcode3("mov", REG_RB, "10");	       // number base
+	addcode3("xor", REG_RC, REG_RC);       // number string length
 	addcode3("mov", REG_SI, "_intbuf+15"); // number string pointer
 	addlabel("_loopdigit@wint");
 	addcode3("xor", REG_RD, REG_RD);
@@ -409,8 +409,8 @@ void x86_iolib_wrtint()
 	addcode2("inc", REG_RC);
 	addlabel("_syswrite@wint");
 	addcode3("mov", REG_RD, REG_RC); // string length
-	addcode3("mov", REG_RA, "4"); // syscall number, NR
-	addcode3("mov", REG_RB, "1"); // fd: 1=stdout
+	addcode3("mov", REG_RA, "4");	 // syscall number, NR
+	addcode3("mov", REG_RB, "1");	 // fd: 1=stdout
 	addcode3("mov", REG_RC, REG_SI); // ptr to string buffer
 	addcode2("int", SYSCAL);
 
@@ -425,10 +425,10 @@ void x86_iolib_readchr()
 	x86_lib_enter();
 
 	addlabel("_sysread@rchr");
-	addcode3("mov", REG_RA, "3"); // syscall number, NR
-	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
+	addcode3("mov", REG_RA, "3");	     // syscall number, NR
+	addcode3("mov", REG_RB, "0");	     // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanbuf"); // ptr to scan buffer
-	addcode3("mov", REG_RD, "1"); // buffer size
+	addcode3("mov", REG_RD, "1");	     // buffer size
 	addcode2("int", SYSCAL);
 	addcode3("xor", REG_RC, REG_RC);
 	addcode3("mov", REG_CL, "[_scanbuf]");
@@ -447,10 +447,10 @@ void x86_iolib_readint()
 	x86_lib_enter();
 
 	addlabel("_sysread@rint");
-	addcode3("mov", REG_RA, "3"); // syscall number, NR
-	addcode3("mov", REG_RB, "0"); // fd: 0=stdin
+	addcode3("mov", REG_RA, "3");	     // syscall number, NR
+	addcode3("mov", REG_RB, "0");	     // fd: 0=stdin
 	addcode3("mov", REG_RC, "_scanint"); // ptr to scan buffer
-	addcode3("mov", REG_RD, "16"); // buffer size
+	addcode3("mov", REG_RD, "16");	     // buffer size
 	addcode2("int", SYSCAL);
 	addlabel("_init@rint");
 	addcode3("xor", REG_RA, REG_RA);
