@@ -30,7 +30,7 @@ static dgraph_t *create_dag_graph(void)
 
 static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
 {
-	dnode_t *node = g->symnodes[e->sid];
+	dnode_t *node = g->leaf[e->sid];
 
 	// insert new one node if not found
 	if (!node) {
@@ -38,7 +38,7 @@ static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
 		node->syment = e;
 
 		// add node to graph
-		g->symnodes[e->sid] = node;
+		g->leaf[e->sid] = node;
 	}
 
 	return node;
@@ -49,7 +49,7 @@ static dnode_t *find_op_node(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
 	dnode_t *node;
 	int i;
 	for (i = 0; i < g->opcnt; ++i) {
-		node = g->opnodes[i];
+		node = g->nonleaf[i];
 		if (node->lhs != lhs) {
 			continue;
 		}
@@ -69,7 +69,7 @@ static dnode_t *find_op_node(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
 	node->op = op;
 
 	// add node to graph
-	g->opnodes[g->opcnt++] = node;
+	g->nonleaf[g->opcnt++] = node;
 
 	return node;
 }
@@ -86,6 +86,9 @@ static void construct_dag(bb_t *bb)
 		dnode_t *lhs, *rhs, *out;
 		switch (x->op) {
 		case ADD_OP:
+		case SUB_OP:
+		case MUL_OP:
+		case DIV_OP:
 			lhs = find_sym_node(graph, x->r);
 			rhs = find_sym_node(graph, x->s);
 			out = find_op_node(graph, x->op, lhs, rhs);

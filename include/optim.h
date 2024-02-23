@@ -64,10 +64,10 @@ struct _dag_node_struct {
 };
 
 struct _dag_graph_struct {
-	int gid;			// graph ID
-	int opcnt;			// operation nodes counter
-	dnode_t *opnodes[MAXDAGNODES];	// operation nodes
-	dnode_t *symnodes[MAXDAGNODES]; // symbol nodes
+	int gid;		       // graph ID
+	int opcnt;		       // nonleaf nodes counter
+	dnode_t *nonleaf[MAXDAGNODES]; // nonleaf nodes, store operation
+	dnode_t *leaf[MAXDAGNODES];    // leaf nodes, store symbol
 };
 
 // global module handler
