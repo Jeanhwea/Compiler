@@ -7,5 +7,5 @@ void optim(void)
 {
 	partition_basic_blocks();
 	construct_flow_graph();
-	make_basic_block_dag();
+	try_make_dags();
 }

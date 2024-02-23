@@ -33,7 +33,8 @@ static dgraph_t *create_dag_graph(void)
 	return graph;
 }
 
-static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
+// lookup leaf node, for symbol
+static dnode_t *find_leaf(dgraph_t *g, syment_t *e)
 {
 	dnode_t *node = g->symmap[e->sid];
 
@@ -49,7 +50,8 @@ static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
 	return node;
 }
 
-static dnode_t *find_op_node(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
+// lookup non leaf node, for opertion
+static dnode_t *find_nonleaf(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
 {
 	dnode_t *node;
 	int i;
@@ -77,7 +79,7 @@ static dnode_t *find_op_node(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
 }
 
 // construct DAG for the basic block
-static void construct_dag(bb_t *bb)
+static void make_dag_in_basic_block(bb_t *bb)
 {
 	dgraph_t *graph = create_dag_graph();
 
@@ -93,16 +95,16 @@ static void construct_dag(bb_t *bb)
 		case MUL_OP:
 		case DIV_OP:
 			// calculate: lhs, rhs and output
-			lhs = find_sym_node(graph, x->r);
-			rhs = find_sym_node(graph, x->s);
-			out = find_op_node(graph, x->op, lhs, rhs);
+			lhs = find_leaf(graph, x->r);
+			rhs = find_leaf(graph, x->s);
+			out = find_nonleaf(graph, x->op, lhs, rhs);
 			break;
 		case INC_OP:
 		case DEC_OP:
 		case NEG_OP:
 		case ASS_OP:
-			lhs = find_sym_node(graph, x->r);
-			out = find_op_node(graph, x->op, lhs, rhs);
+			lhs = find_leaf(graph, x->r);
+			out = find_nonleaf(graph, x->op, lhs, rhs);
 			break;
 		case LAB_OP:
 		default:
@@ -118,13 +120,13 @@ static void construct_dag(bb_t *bb)
 	bb->dag = graph;
 }
 
-void make_basic_block_dag(void)
+void try_make_dags(void)
 {
 	fun_t *f;
 	bb_t *bb;
 	for (f = mod.fhead; f; f = f->next) {
 		for (bb = f->bhead; bb; bb = bb->next) {
-			construct_dag(bb);
+			make_dag_in_basic_block(bb);
 		}
 	}
 }
