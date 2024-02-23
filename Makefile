@@ -43,8 +43,7 @@ setup: clean index
 	bear -- make
 
 format:
-	find source  -iname "*.c" | xargs -I {} clang-format -i {}
-	find include -iname "*.h" | xargs -I {} clang-format -i {}
+	find $(INC_DIR) $(SRC_DIR) -type f | xargs -I {} clang-format -i {}
 
 index: clean
 	find $(INC_DIR) $(SRC_DIR) -type f | sort > cscope.files
