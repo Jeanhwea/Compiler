@@ -52,7 +52,7 @@ index: clean
 
 clean:
 	$(RM) -r $(BLD_DIR) $(TARGET) bin/* viz*
-	rm dag*.dot dag*.dot.pdf
+	-rm dag*.dot dag*.dot.pdf
 	find . -iname "*.o" -or -iname "*.run" -or -iname "core*" | xargs -I {} rm -f {}
 	find test -iname "*.s" -or -iname "*.o" | xargs -I {} rm -f {}
 	find example -iname "*.s" -or -iname "*.o" | xargs -I {} rm -f {}
