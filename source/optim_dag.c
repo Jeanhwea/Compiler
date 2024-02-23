@@ -20,15 +20,15 @@ static dnode_t *create_dag_node(dnode_cate_t cate)
 }
 
 // create DAG graph
-static dag_t *create_dag_graph(void)
+static dgraph_t *create_dag_graph(void)
 {
-	dag_t *graph;
-	INITMEM(dag_t, graph);
+	dgraph_t *graph;
+	INITMEM(dgraph_t, graph);
 	graph->gid = ++graphcnt;
 	return graph;
 }
 
-static dnode_t *find_sym_node(dag_t *g, syment_t *e)
+static dnode_t *find_sym_node(dgraph_t *g, syment_t *e)
 {
 	dnode_t *node = g->sbnodes[e->sid];
 
@@ -44,16 +44,16 @@ static dnode_t *find_sym_node(dag_t *g, syment_t *e)
 	return node;
 }
 
-static dnode_t *find_op_node(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
+static dnode_t *find_op_node(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
 {
 	dnode_t *node;
 	int i;
 	for (i = 0; i < g->opcnt; ++i) {
 		node = g->opnodes[i];
-		if (node->left != left) {
+		if (node->lhs != lhs) {
 			continue;
 		}
-		if (node->right != right) {
+		if (node->rhs != rhs) {
 			continue;
 		}
 		if (node->op != op) {
@@ -64,8 +64,8 @@ static dnode_t *find_op_node(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 
 	// insert new one if not found
 	node = create_dag_node(OPERNODE);
-	node->left = left;
-	node->right = right;
+	node->lhs = lhs;
+	node->rhs = rhs;
 	node->op = op;
 
 	// add node to graph
@@ -77,19 +77,18 @@ static dnode_t *find_op_node(dag_t *g, op_t op, dnode_t *left, dnode_t *right)
 // construct DAG for the basic block
 static void construct_dag(bb_t *bb)
 {
-	dag_t *graph = create_dag_graph();
+	dgraph_t *graph = create_dag_graph();
 
 	inst_t *x;
 	int i;
 	for (i = 0; i < bb->total; ++i) {
 		x = bb->insts[i];
-		dnode_t *left, *right, *root;
+		dnode_t *lhs, *rhs, *out;
 		switch (x->op) {
 		case ADD_OP:
-			left = find_sym_node(graph, x->r);
-			right = find_sym_node(graph, x->s);
-			root = find_op_node(graph, x->op, left, right);
-			// TODO
+			lhs = find_sym_node(graph, x->r);
+			rhs = find_sym_node(graph, x->s);
+			out = find_op_node(graph, x->op, lhs, rhs);
 			break;
 		}
 	}

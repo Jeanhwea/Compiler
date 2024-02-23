@@ -10,7 +10,7 @@ typedef struct _function_struct fun_t;
 typedef struct _basic_block_struct bb_t;
 
 // DAG: graph, nodes
-typedef struct _dag_graph_struct dag_t;
+typedef struct _dag_graph_struct dgraph_t;
 typedef struct _dag_node_struct dnode_t;
 
 struct _module_struct {
@@ -52,9 +52,9 @@ struct _dag_node_struct {
 	dnode_cate_t cate;
 
 	// attributes for operation node
-	op_t op;
-	dnode_t *left;
-	dnode_t *right;
+	op_t op;      // operation
+	dnode_t *lhs; // left hand side
+	dnode_t *rhs; // right hand side
 
 	// attributes for symbol node
 	syment_t *syment;
