@@ -32,6 +32,9 @@ struct _basic_block_struct {
 	inst_t *insts[MAXBBINST]; // instructions
 	bb_t *next;
 
+	// DAG
+	dgraph_t *dag;
+
 	// next-use information
 	bool liveness[MAXSYMENT];
 	inst_t *nextuse[MAXSYMENT];
@@ -70,9 +73,13 @@ struct _dag_graph_struct {
 // global module handler
 extern mod_t mod;
 
-// optimize function
+// Optimization
+//
+//   1. Flow Graph
 void partition_basic_blocks(void);
 void construct_flow_graph(void);
+//   2. DAG Graph
+void dag(void);
 
 // optimize entry
 void optim(void);

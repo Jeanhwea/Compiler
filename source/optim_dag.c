@@ -92,4 +92,17 @@ static void construct_dag(bb_t *bb)
 			break;
 		}
 	}
+
+	bb->dag = graph;
+}
+
+void dag(void)
+{
+	fun_t *f;
+	bb_t *bb;
+	for (f = mod.fhead; f; f = f->next) {
+		for (bb = f->bhead; bb; bb = bb->next) {
+			construct_dag(bb);
+		}
+	}
 }
