@@ -118,7 +118,7 @@ static void construct_dag(bb_t *bb)
 	bb->dag = graph;
 }
 
-void dag(void)
+void make_basic_block_dag(void)
 {
 	fun_t *f;
 	bb_t *bb;

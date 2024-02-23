@@ -79,7 +79,7 @@ extern mod_t mod;
 void partition_basic_blocks(void);
 void construct_flow_graph(void);
 //   2. DAG Graph
-void dag(void);
+void make_basic_block_dag(void);
 
 // optimize entry
 void optim(void);
