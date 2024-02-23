@@ -120,7 +120,7 @@ void partition_basic_blocks(void)
 }
 
 // link basic block in function object
-static void link_basic_block(fun_t *f)
+static void link_basic_block(fun_t *fun)
 {
 	// lab2bb[..] map label to basic block pointer
 	//    key:   label->sid
@@ -130,7 +130,7 @@ static void link_basic_block(fun_t *f)
 	bb_t *bb = NULL, *prev = NULL;
 
 	// Step1: make lab2bb[...] map, create x->succ[0], x->pred[0] link
-	for (bb = f->bhead; bb; bb = bb->next) {
+	for (bb = fun->bhead; bb; bb = bb->next) {
 		// make lab2bb[...] map
 		inst_t *x = bb->insts[0];
 		if (x->op == LAB_OP) {
@@ -151,7 +151,7 @@ static void link_basic_block(fun_t *f)
 	int i;
 
 	// Step2: make jump label links
-	for (bb = f->bhead; bb; bb = bb->next) {
+	for (bb = fun->bhead; bb; bb = bb->next) {
 		inst_t *x = bb->insts[bb->total - 1];
 		switch (x->op) {
 		case EQU_OP:
@@ -191,8 +191,8 @@ static void link_basic_block(fun_t *f)
 // construct the flow graph
 void construct_flow_graph(void)
 {
-	fun_t *f;
-	for (f = mod.fhead; f; f = f->next) {
-		link_basic_block(f);
+	fun_t *fun;
+	for (fun = mod.fhead; fun; fun = fun->next) {
+		link_basic_block(fun);
 	}
 }

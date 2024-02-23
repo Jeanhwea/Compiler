@@ -122,10 +122,10 @@ static void make_dag_in_basic_block(bb_t *bb)
 
 void try_make_dags(void)
 {
-	fun_t *f;
+	fun_t *fun;
 	bb_t *bb;
-	for (f = mod.fhead; f; f = f->next) {
-		for (bb = f->bhead; bb; bb = bb->next) {
+	for (fun = mod.fhead; fun; fun = fun->next) {
+		for (bb = fun->bhead; bb; bb = bb->next) {
 			make_dag_in_basic_block(bb);
 		}
 	}
