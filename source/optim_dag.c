@@ -108,13 +108,11 @@ static void make_dag_in_basic_block(bb_t *bb)
 			break;
 		case LAB_OP:
 		default:
-			goto NEXTINST;
+			continue;
 		}
 
 		// update output symbol
 		graph->symmap[x->d->sid] = out;
-
-	NEXTINST:
 	}
 
 	bb->dag = graph;
