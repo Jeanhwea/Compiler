@@ -10,7 +10,7 @@ typedef struct _function_struct fun_t;
 typedef struct _basic_block_struct bb_t;
 
 // DAG: graph, nodes
-typedef struct _dag_struct dag_t;
+typedef struct _dag_graph_struct dag_t;
 typedef struct _dag_node_struct dnode_t;
 
 struct _module_struct {
@@ -60,7 +60,7 @@ struct _dag_node_struct {
 	syment_t *syment;
 };
 
-struct _dag_struct {
+struct _dag_graph_struct {
 	int gid;		       // graph ID
 	int opcnt;		       // operation nodes counter
 	dnode_t *opnodes[MAXDAGNODES]; // operation nodes
