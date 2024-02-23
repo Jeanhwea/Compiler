@@ -106,7 +106,7 @@ static void construct_dag(bb_t *bb)
 			break;
 		case LAB_OP:
 		default:
-			goto NEXTINST
+			goto NEXTINST;
 		}
 
 		// update output symbol
