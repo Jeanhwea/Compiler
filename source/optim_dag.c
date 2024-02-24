@@ -143,6 +143,7 @@ static void make_dag_in_basic_block(bb_t *bb)
 	bb->dag = graph;
 }
 
+// check instructions in basic block is dagable
 static bool is_dagable(bb_t *bb)
 {
 	inst_t *x;
