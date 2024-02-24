@@ -1,0 +1,28 @@
+#+TITLE: COMPILER
+#+AUTHOR: Jinghui Hu
+#+EMAIL: hujinghui@buaa.edu.cn
+#+DATE: <2024-02-24 Sat>
+#+STARTUP: overview num indent
+#+OPTIONS: ^:nil
+
+* 视频课程
+视频课程见 [PL0E 编译器实现](https://www.bilibili.com/cheese/play/ss10144)
+
+1. 背景介绍，gcc 工具集介绍，编译阶段分析
+2. PL0E 文法解读，fpc 编译器
+3. 词法分析-项目介绍
+4. 有限状态机-gettok 实现
+5. 语法分析-抽象语法树-文法歧义
+6. 语法树节点定义
+7. 递归下降法-程序、分程序、语句的解析
+8. 表达式、条件、参数的解析-更多语法树例子
+9. 语义分析引入-符号表逻辑结构
+10. 符号表数据结构-函数作用域
+11. 嵌套函数作用域-符号表操作函数
+12. anlys 函数家族-语义分析情景分析
+13. 中间代码-四元式设计-指令队列
+14. 语法树转换四元式-表达式、if、for 和函数调用
+15. gen 生成函数-prtir 调试工具
+
+* 学习教材
+见 pl0e.pdf
