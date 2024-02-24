@@ -143,7 +143,7 @@ static void make_dag_in_basic_block(bb_t *bb)
 	bb->dag = graph;
 }
 
-static bool check_bb_is_dagable(bb_t *bb)
+static bool is_dagable(bb_t *bb)
 {
 	inst_t *x;
 	int i;
@@ -174,7 +174,7 @@ void try_make_dags(void)
 	bb_t *bb;
 	for (fun = mod.fhead; fun; fun = fun->next) {
 		for (bb = fun->bhead; bb; bb = bb->next) {
-			if (!check_bb_is_dagable(bb)) {
+			if (!is_dagable(bb)) {
 				continue;
 			}
 			make_dag_in_basic_block(bb);
