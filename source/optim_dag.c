@@ -1,4 +1,5 @@
 #include "common.h"
+#include "debug.h"
 #include "ir.h"
 #include "limits.h"
 #include "optim.h"
@@ -94,18 +95,42 @@ static void make_dag_in_basic_block(bb_t *bb)
 		case SUB_OP:
 		case MUL_OP:
 		case DIV_OP:
-			// calculate: lhs, rhs and output
+		case LOAD_OP:
 			lhs = find_leaf(graph, x->r);
 			rhs = find_leaf(graph, x->s);
 			out = find_nonleaf(graph, x->op, lhs, rhs);
 			break;
 		case INC_OP:
 		case DEC_OP:
+			lhs = find_leaf(graph, x->d);
+			out = find_nonleaf(graph, x->op, lhs, rhs);
+			break;
 		case NEG_OP:
 		case ASS_OP:
 			lhs = find_leaf(graph, x->r);
 			out = find_nonleaf(graph, x->op, lhs, rhs);
 			break;
+		case ASA_OP:
+		case PUSH_OP:
+		case PADR_OP:
+		case POP_OP:
+		case CALL_OP:
+		case ENT_OP:
+		case FIN_OP:
+		case RDI_OP:
+		case RDC_OP:
+		case WRS_OP:
+		case WRI_OP:
+		case WRC_OP:
+			panic("UNSUPPORT_INSTRUCTION");
+			break;
+		case EQU_OP:
+		case NEQ_OP:
+		case GTT_OP:
+		case GEQ_OP:
+		case LST_OP:
+		case LEQ_OP:
+		case JMP_OP:
 		case LAB_OP:
 		default:
 			continue;
@@ -118,12 +143,40 @@ static void make_dag_in_basic_block(bb_t *bb)
 	bb->dag = graph;
 }
 
+static bool check_bb_is_dagable(bb_t *bb)
+{
+	inst_t *x;
+	int i;
+	for (i = 0; i < bb->total; ++i) {
+		x = bb->insts[i];
+		switch (x->op) {
+		case ASA_OP:
+		case PUSH_OP:
+		case PADR_OP:
+		case POP_OP:
+		case CALL_OP:
+		case RDI_OP:
+		case RDC_OP:
+		case WRS_OP:
+		case WRI_OP:
+		case WRC_OP:
+			return FALSE;
+		default:
+			continue;
+		}
+	}
+	return TRUE;
+}
+
 void try_make_dags(void)
 {
 	fun_t *fun;
 	bb_t *bb;
 	for (fun = mod.fhead; fun; fun = fun->next) {
 		for (bb = fun->bhead; bb; bb = bb->next) {
+			if (!check_bb_is_dagable(bb)) {
+				continue;
+			}
 			make_dag_in_basic_block(bb);
 		}
 	}

@@ -81,13 +81,23 @@ void dumpdag(bb_t *bb)
 		panic("FAIL_TO_OPEN_FILE");
 	}
 
-	fprintf(fd, "digraph dag {\n");
-
 	dgraph_t *g;
 	g = bb->dag;
 
 	int i;
-	dnode_t *v;
+	dnode_t *v = NULL;
+	syment_t *e = NULL;
+	for (i = 0; i < MAXDAGNODES; ++i) {
+		v = g->symmap[i];
+		if (!v) {
+			continue;
+		}
+		e = syments[i];
+		msg("nid=%d %s %s\n", v->nid, e->label, e->name);
+	}
+
+	fprintf(fd, "digraph dag {\n");
+
 	for (i = 0; i < g->nodecnt; ++i) {
 		v = g->nodes[i];
 		switch (v->cate) {
