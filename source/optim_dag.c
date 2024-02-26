@@ -10,6 +10,32 @@ static int graphcnt = 0;
 // the DAG nodes counter
 static int nodecnt = 0;
 
+// check instructions in basic block is dagable
+static bool check_dagable(bb_t *bb)
+{
+	inst_t *x;
+	int i;
+	for (i = 0; i < bb->total; ++i) {
+		x = bb->insts[i];
+		switch (x->op) {
+		case ASA_OP:
+		case PUSH_OP:
+		case PADR_OP:
+		case POP_OP:
+		case CALL_OP:
+		case RDI_OP:
+		case RDC_OP:
+		case WRS_OP:
+		case WRI_OP:
+		case WRC_OP:
+			return FALSE;
+		default:
+			continue;
+		}
+	}
+	return TRUE;
+}
+
 // create DAG node
 static dnode_t *create_dag_node(dgraph_t *g, dnode_cate_t cate)
 {
@@ -143,8 +169,8 @@ static void construct_graph(bb_t *bb)
 	bb->dag = graph;
 }
 
-// build referenced variables
-static void build_referenced_map(dgraph_t *g)
+// build referred variables
+static void build_referred_map(dgraph_t *g)
 {
 	dnode_t *v = NULL;
 	syment_t *e = NULL;
@@ -165,30 +191,31 @@ static void build_referenced_map(dgraph_t *g)
 	}
 }
 
-// check instructions in basic block is dagable
-static bool is_dagable(bb_t *bb)
+static void gen_curr_node(dgraph_t *g, dnode_t *n)
 {
-	inst_t *x;
+	if (n->generated) {
+		return;
+	}
+
+	// if is symbol/leaf node, skip
+	if (n->cate == SYMBOLNODE) {
+		return;
+	}
+}
+
+// re-generate instructions
+static void regen_instructions(bb_t *bb)
+{
+	dgraph_t *g = bb->dag;
+	dnode_t *n = NULL;
 	int i;
-	for (i = 0; i < bb->total; ++i) {
-		x = bb->insts[i];
-		switch (x->op) {
-		case ASA_OP:
-		case PUSH_OP:
-		case PADR_OP:
-		case POP_OP:
-		case CALL_OP:
-		case RDI_OP:
-		case RDC_OP:
-		case WRS_OP:
-		case WRI_OP:
-		case WRC_OP:
-			return FALSE;
-		default:
+	for (i = 0; i < g->nodecnt; ++i) {
+		n = g->nodes[i];
+		if (n->generated) {
 			continue;
 		}
+		gen_curr_node(g, n);
 	}
-	return TRUE;
 }
 
 void dag_optim(void)
@@ -197,11 +224,11 @@ void dag_optim(void)
 	bb_t *bb;
 	for (fun = mod.fhead; fun; fun = fun->next) {
 		for (bb = fun->bhead; bb; bb = bb->next) {
-			if (!is_dagable(bb)) {
+			if (!check_dagable(bb)) {
 				continue;
 			}
 			construct_graph(bb);
-			build_referenced_map(bb->dag);
+			build_referred_map(bb->dag);
 		}
 	}
 }
