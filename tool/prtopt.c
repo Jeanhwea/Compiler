@@ -94,7 +94,7 @@ void dumpdag(bb_t *bb)
 
 		char vars[256] = "";
 		dnvar_t *p;
-		for (p = v->refmap; p; p = p->next) {
+		for (p = v->reflist; p; p = p->next) {
 			if (strlen(vars) > 0) {
 				appendf(vars, ", ");
 			}
@@ -133,6 +133,14 @@ void dumpdag(bb_t *bb)
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "dot -Tpdf %s -o %s.pdf", outname, outname);
 	system(cmd);
+}
+
+void dumpinst2(bb_t *bb)
+{
+	int i;
+	for (i = 0; i < bb->inst2cnt; i++) {
+		fmtinst2(bb->insts2[i]);
+	}
 }
 
 int main(int argc, char *argv[])
@@ -204,6 +212,7 @@ int main(int argc, char *argv[])
 			}
 			if (opt_dag) {
 				dumpdag(bb);
+				dumpinst2(bb);
 			}
 		}
 	}

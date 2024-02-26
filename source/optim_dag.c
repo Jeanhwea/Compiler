@@ -185,13 +185,15 @@ static void build_referred_map(dgraph_t *g)
 		dnvar_t *p;
 		INITMEM(dnvar_t, p);
 		p->sym = e;
-		// head-insert to refvars
-		p->next = v->refmap;
-		v->refmap = p;
+		v->syment = e;
+
+		// head-insert to reflist
+		p->next = v->reflist;
+		v->reflist = p;
 	}
 }
 
-static void gen_curr_node(dgraph_t *g, dnode_t *n)
+static void gen_curr_node(bb_t *bb, dnode_t *n)
 {
 	if (n->generated) {
 		return;
@@ -201,6 +203,41 @@ static void gen_curr_node(dgraph_t *g, dnode_t *n)
 	if (n->cate == SYMBOLNODE) {
 		return;
 	}
+
+	// now is OPERNODE
+	if (n->lhs) {
+		gen_curr_node(bb, n->lhs);
+	}
+	if (n->rhs) {
+		gen_curr_node(bb, n->rhs);
+	}
+
+	inst_t *x;
+	NEWINST(x);
+	x->op = n->op;
+	switch (n->op) {
+	case ADD_OP:
+	case SUB_OP:
+	case MUL_OP:
+	case DIV_OP:
+	case LOAD_OP:
+		x->r = n->lhs->syment;
+		x->s = n->rhs->syment;
+		x->d = n->syment;
+		break;
+	case INC_OP:
+	case DEC_OP:
+		x->d = n->syment;
+		break;
+	case NEG_OP:
+	case ASS_OP:
+		x->r = n->lhs->syment;
+		x->d = n->syment;
+		break;
+	}
+
+	bb->insts2[bb->inst2cnt++] = x;
+	n->generated = TRUE;
 }
 
 // re-generate instructions
@@ -214,7 +251,7 @@ static void regen_instructions(bb_t *bb)
 		if (n->generated) {
 			continue;
 		}
-		gen_curr_node(g, n);
+		gen_curr_node(bb, n);
 	}
 }
 
@@ -229,6 +266,7 @@ void dag_optim(void)
 			}
 			construct_graph(bb);
 			build_referred_map(bb->dag);
+			regen_instructions(bb);
 		}
 	}
 }

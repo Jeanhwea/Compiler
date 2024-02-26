@@ -35,6 +35,7 @@ struct _basic_block_struct {
 
 	// DAG optimization
 	dgraph_t *dag;		   // the DAG
+	int inst2cnt;		   // insts2[MAXBBINST] counter
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// next-use information
@@ -71,9 +72,9 @@ struct _dag_node_struct {
 	// attributes for symbol node
 	syment_t *syment;
 
-	// control
-	dnvar_t *refmap; // reference to symbol entry
-	bool generated;	 // if current node is generated
+	// control parameters
+	dnvar_t *reflist; // reference to symbol entry
+	bool generated;	  // if current node is generated
 };
 
 // store referenecd symbol variables in DAG node
