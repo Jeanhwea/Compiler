@@ -14,6 +14,9 @@ typedef struct _dag_graph_struct dgraph_t;
 typedef struct _dag_node_struct dnode_t;
 typedef struct _dag_node_var_struct dnvar_t;
 
+// DFA: data flow analysis
+typedef unsigned long long u64;
+
 struct _module_struct {
 	fun_t *fhead;
 	fun_t *ftail;
@@ -37,6 +40,12 @@ struct _basic_block_struct {
 	dgraph_t *dag;		   // the DAG
 	int inst2cnt;		   // insts2[MAXBBINST] counter
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
+
+	// DFA
+	u64 use[MAXSETNUM];
+	u64 def[MAXSETNUM];
+	u64 in[MAXSETNUM];
+	u64 out[MAXSETNUM];
 
 	// next-use information
 	bool liveness[MAXSYMENT];
