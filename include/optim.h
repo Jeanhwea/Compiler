@@ -3,6 +3,7 @@
 #include "limits.h"
 #include "ir.h"
 #include "symtab.h"
+#include "bitset.h"
 
 // CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;
@@ -15,7 +16,6 @@ typedef struct _dag_node_struct dnode_t;
 typedef struct _dag_node_var_struct dnvar_t;
 
 // DFA: data flow analysis
-typedef unsigned long long u64;
 
 struct _module_struct {
 	fun_t *fhead;
@@ -42,10 +42,10 @@ struct _basic_block_struct {
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// DFA
-	u64 use[MAXSETNUM];
-	u64 def[MAXSETNUM];
-	u64 in[MAXSETNUM];
-	u64 out[MAXSETNUM];
+	bits_t use[MAXSETNUM];
+	bits_t def[MAXSETNUM];
+	bits_t in[MAXSETNUM];
+	bits_t out[MAXSETNUM];
 
 	// next-use information
 	bool liveness[MAXSYMENT];
