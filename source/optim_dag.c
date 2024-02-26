@@ -170,7 +170,7 @@ static void construct_graph(bb_t *bb)
 }
 
 // build referred variables
-static void build_referred_map(dgraph_t *g)
+static void build_referred_info(dgraph_t *g)
 {
 	dnode_t *v = NULL;
 	syment_t *e = NULL;
@@ -185,7 +185,11 @@ static void build_referred_map(dgraph_t *g)
 		dnvar_t *p;
 		INITMEM(dnvar_t, p);
 		p->sym = e;
-		v->syment = e;
+
+		// set symbol reference
+		if (!v->syment) {
+			v->syment = e;
+		}
 
 		// head-insert to reflist
 		p->next = v->reflist;
@@ -265,7 +269,7 @@ void dag_optim(void)
 				continue;
 			}
 			construct_graph(bb);
-			build_referred_map(bb->dag);
+			build_referred_info(bb->dag);
 			regen_instructions(bb);
 		}
 	}
