@@ -80,7 +80,7 @@ static dnode_t *find_nonleaf(dgraph_t *g, op_t op, dnode_t *lhs, dnode_t *rhs)
 }
 
 // construct DAG for the basic block
-static void make_dag_in_basic_block(bb_t *bb)
+static void construct_graph(bb_t *bb)
 {
 	dgraph_t *graph = create_dag_graph();
 
@@ -140,11 +140,17 @@ static void make_dag_in_basic_block(bb_t *bb)
 		graph->symmap[x->d->sid] = out;
 	}
 
-	// make referenced variables
+	bb->dag = graph;
+}
+
+// build referenced variables
+static void build_referenced_map(dgraph_t *g)
+{
 	dnode_t *v = NULL;
 	syment_t *e = NULL;
+	int i;
 	for (i = 0; i < MAXDAGNODES; ++i) {
-		v = graph->symmap[i];
+		v = g->symmap[i];
 		if (!v) {
 			continue;
 		}
@@ -154,11 +160,9 @@ static void make_dag_in_basic_block(bb_t *bb)
 		INITMEM(dnvar_t, p);
 		p->sym = e;
 		// head-insert to refvars
-		p->next = v->refvars;
-		v->refvars = p;
+		p->next = v->refmap;
+		v->refmap = p;
 	}
-
-	bb->dag = graph;
 }
 
 // check instructions in basic block is dagable
@@ -187,7 +191,7 @@ static bool is_dagable(bb_t *bb)
 	return TRUE;
 }
 
-void try_make_dags(void)
+void dag_optim(void)
 {
 	fun_t *fun;
 	bb_t *bb;
@@ -196,7 +200,8 @@ void try_make_dags(void)
 			if (!is_dagable(bb)) {
 				continue;
 			}
-			make_dag_in_basic_block(bb);
+			construct_graph(bb);
+			build_referenced_map(bb->dag);
 		}
 	}
 }

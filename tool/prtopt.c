@@ -94,7 +94,7 @@ void dumpdag(bb_t *bb)
 
 		char vars[256] = "";
 		dnvar_t *p;
-		for (p = v->refvars; p; p = p->next) {
+		for (p = v->refmap; p; p = p->next) {
 			if (strlen(vars) > 0) {
 				appendf(vars, ", ");
 			}

@@ -72,8 +72,8 @@ struct _dag_node_struct {
 	syment_t *syment;
 
 	// control
-	bool visited;
-	dnvar_t *refvars;
+	dnvar_t *refmap; // reference to symbol entry
+	bool generated;	 // if current node is generated
 };
 
 // store referenecd symbol variables in DAG node
@@ -91,7 +91,7 @@ extern mod_t mod;
 void partition_basic_blocks(void);
 void construct_flow_graph(void);
 //   2. DAG Graph
-void try_make_dags(void);
+void dag_optim(void);
 
 // optimize entry
 void optim(void);
