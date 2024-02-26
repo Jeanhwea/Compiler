@@ -58,7 +58,7 @@ struct _sym_entry_struct {
 	// label for assemble codes
 	char label[MAXSTRLEN];
 	int off; // offset, for local variable stack mapping
-	// referenced line number
+	// referred line number
 	int lineno;
 	// which symbol table
 	symtab_t *stab;

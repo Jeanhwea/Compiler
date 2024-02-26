@@ -10,6 +10,7 @@
 #include "syntax.h"
 #include "gen.h"
 #include <stdio.h>
+#include <string.h>
 
 bool opt_dag = FALSE;
 
@@ -84,27 +85,31 @@ void dumpdag(bb_t *bb)
 	dgraph_t *g;
 	g = bb->dag;
 
-	int i;
-	dnode_t *v = NULL;
-	syment_t *e = NULL;
-	for (i = 0; i < MAXDAGNODES; ++i) {
-		v = g->symmap[i];
-		if (!v) {
-			continue;
-		}
-		e = syments[i];
-		msg("nid=%d %s %s\n", v->nid, e->label, e->name);
-	}
-
 	fprintf(fd, "digraph dag {\n");
 
+	int i;
+	dnode_t *v = NULL;
 	for (i = 0; i < g->nodecnt; ++i) {
 		v = g->nodes[i];
+
+		char vars[256] = "";
+		dnvar_t *p;
+		for (p = v->reflist; p; p = p->next) {
+			if (strlen(vars) > 0) {
+				appendf(vars, ", ");
+			}
+			if (p->sym->cate == TMP_OBJ) {
+				appendf(vars, "T%d", p->sym->sid);
+			} else {
+				appendf(vars, "%s", p->sym->name);
+			}
+		}
+
 		switch (v->cate) {
 		case OPERNODE:
 			fprintf(fd,
-				"%sn%03d [shape=oval label=\"#%d [%s]\"];\n",
-				ind, v->nid, v->nid, oprepr[v->op]);
+				"%sn%03d [shape=oval label=\"#%d [%s]\\n%s\"];\n",
+				ind, v->nid, v->nid, oprepr[v->op], vars);
 			if (v->lhs) {
 				fprintf(fd, "%sn%03d -> n%03d;\n", ind, v->nid,
 					v->lhs->nid);
@@ -116,8 +121,8 @@ void dumpdag(bb_t *bb)
 			break;
 		case SYMBOLNODE:
 			fprintf(fd,
-				"%sn%03d [shape=box  label=\"#%d [%s0]\"];\n",
-				ind, v->nid, v->nid, v->syment->name);
+				"%sn%03d [shape=box  label=\"#%d [%s0]\\n%s\"];\n",
+				ind, v->nid, v->nid, v->syment->name, vars);
 			break;
 		}
 	}
@@ -128,6 +133,14 @@ void dumpdag(bb_t *bb)
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "dot -Tpdf %s -o %s.pdf", outname, outname);
 	system(cmd);
+}
+
+void dumpinst2(bb_t *bb)
+{
+	int i;
+	for (i = 0; i < bb->inst2cnt; i++) {
+		fmtinst2(bb->insts2[i]);
+	}
 }
 
 int main(int argc, char *argv[])
@@ -199,6 +212,7 @@ int main(int argc, char *argv[])
 			}
 			if (opt_dag) {
 				dumpdag(bb);
+				dumpinst2(bb);
 			}
 		}
 	}

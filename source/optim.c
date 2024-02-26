@@ -5,7 +5,10 @@ mod_t mod;
 
 void optim(void)
 {
+	// make flow graph
 	partition_basic_blocks();
 	construct_flow_graph();
-	try_make_dags();
+
+	// DAG optimization
+	dag_optim();
 }

@@ -267,8 +267,8 @@ struct _arg_list_node {
 	int nid;
 	expr_node_t *ep;
 	arg_list_node_t *next;
-	// link to referenced variable or array
-	syment_t *refsym; // referenced parameter
+	// link to referred variable or array
+	syment_t *refsym; // referred parameter
 	syment_t *argsym; // local argument
 	expr_node_t *idx; // array reference index
 };
