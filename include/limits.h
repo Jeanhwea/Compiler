@@ -1,6 +1,7 @@
 #ifndef _LIMITS_H_
 #define _LIMITS_H_
 
+// system constants
 #define MAXSTRLEN 256
 #define MAXSTRBUF 4096
 #define MAXLINEBUF 4096
@@ -14,8 +15,10 @@
 #define MAXBBINST 4096
 #define MAXBBLINK 32
 #define MAXDAGNODES 1024
-#define SETELEBITS 64
+
+// set constants
+#define ELEMENTBITS 64
 #define MAXSETBITS 1024
-#define MAXSETNUM (MAXSETBITS / SETELEBITS)
+#define MAXSETNUM (MAXSETBITS / ELEMENTBITS)
 
 #endif /* End of _LIMITS_H_ */
