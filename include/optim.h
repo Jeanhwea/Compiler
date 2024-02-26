@@ -12,6 +12,7 @@ typedef struct _basic_block_struct bb_t;
 // DAG: graph, nodes
 typedef struct _dag_graph_struct dgraph_t;
 typedef struct _dag_node_struct dnode_t;
+typedef struct _dag_node_var_struct dnvar_t;
 
 struct _module_struct {
 	fun_t *fhead;
@@ -44,6 +45,13 @@ struct _basic_block_struct {
 	bb_t *succ[MAXBBLINK];
 };
 
+struct _dag_graph_struct {
+	int gid;		      // graph ID
+	int nodecnt;		      // nodes counter
+	dnode_t *nodes[MAXDAGNODES];  // vertices
+	dnode_t *symmap[MAXDAGNODES]; // symbol map, mapping symbol to node
+};
+
 typedef enum dnode_cate_enum {
 	OPERNODE = 0,
 	SYMBOLNODE = 1,
@@ -61,13 +69,16 @@ struct _dag_node_struct {
 
 	// attributes for symbol node
 	syment_t *syment;
+
+	// control
+	bool visited;
+	dnvar_t *refvars;
 };
 
-struct _dag_graph_struct {
-	int gid;		      // graph ID
-	int nodecnt;		      // nodes counter
-	dnode_t *nodes[MAXDAGNODES];  // vertices
-	dnode_t *symmap[MAXDAGNODES]; // symbol map, mapping symbol to node
+// store referenecd symbol variables in DAG node
+struct _dag_node_var_struct {
+	syment_t *sym;
+	dnvar_t *next;
 };
 
 // global module handler

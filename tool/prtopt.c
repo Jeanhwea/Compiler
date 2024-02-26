@@ -87,13 +87,13 @@ void dumpdag(bb_t *bb)
 	int i;
 	dnode_t *v = NULL;
 	syment_t *e = NULL;
-	for (i = 0; i < MAXDAGNODES; ++i) {
-		v = g->symmap[i];
-		if (!v) {
-			continue;
+	for (i = 0; i < g->nodecnt; ++i) {
+		v = g->nodes[i];
+		dnvar_t *p;
+		for (p = v->refvars; p; p = p->next) {
+			msg("nid=%d %s %s\n", v->nid, p->sym->label,
+			    p->sym->name);
 		}
-		e = syments[i];
-		msg("nid=%d %s %s\n", v->nid, e->label, e->name);
 	}
 
 	fprintf(fd, "digraph dag {\n");

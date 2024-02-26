@@ -140,6 +140,24 @@ static void make_dag_in_basic_block(bb_t *bb)
 		graph->symmap[x->d->sid] = out;
 	}
 
+	// make referenced variables
+	dnode_t *v = NULL;
+	syment_t *e = NULL;
+	for (i = 0; i < MAXDAGNODES; ++i) {
+		v = graph->symmap[i];
+		if (!v) {
+			continue;
+		}
+		e = syments[i];
+
+		dnvar_t *p;
+		INITMEM(dnvar_t, p);
+		p->sym = e;
+		// head-insert to refvars
+		p->next = v->refvars;
+		v->refvars = p;
+	}
+
 	bb->dag = graph;
 }
 
