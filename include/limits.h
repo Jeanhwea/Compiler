@@ -14,6 +14,8 @@
 #define MAXBBINST 4096
 #define MAXBBLINK 32
 #define MAXDAGNODES 1024
-#define MAXSETNUM 32
+#define SETELEBITS 64
+#define MAXSETBITS 1024
+#define MAXSETNUM (MAXSETBITS / SETELEBITS)
 
 #endif /* End of _LIMITS_H_ */
