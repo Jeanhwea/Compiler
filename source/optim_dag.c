@@ -240,6 +240,9 @@ static void gen_curr_node(bb_t *bb, dnode_t *n)
 		break;
 	}
 
+	if (bb->inst2cnt >= MAXBBINST) {
+		panic("DAG_REGEN_INSTRUCTION_OVERFLOW");
+	}
 	bb->insts2[bb->inst2cnt++] = x;
 	n->generated = TRUE;
 }
