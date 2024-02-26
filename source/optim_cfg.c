@@ -42,12 +42,13 @@ static bb_t *create_basic_block(void)
 		thefunc->bhead = thefunc->btail = bb;
 	}
 
+	dbg("CREATE B%d\n", bb->bid);
 	for (inst_t *x = leader; x; x = x->next) {
 		if (bb->total >= MAXBBINST) {
 			panic("BASIC_BLOCK_INSTRUCTION_OVERFLOW");
 		}
 		bb->insts[bb->total++] = x;
-		dbg("%03d: x=%d\n", x->xid, x->op);
+		dbg("INST_ADD B%d: #%03d\n", bb->bid, x->xid);
 
 		leader = x->next;
 		if (!leader) {
@@ -99,6 +100,7 @@ ok:
 // partition into basic blocks
 void partition_basic_blocks(void)
 {
+	dbg("PARTITION BB\n");
 	leader = xhead;
 	while (leader) {
 		switch (leader->op) {
@@ -191,6 +193,7 @@ static void link_basic_block(fun_t *fun)
 // construct the flow graph
 void construct_flow_graph(void)
 {
+	dbg("CONSTRUCT FLOW GRAPH\n");
 	fun_t *fun;
 	for (fun = mod.fhead; fun; fun = fun->next) {
 		link_basic_block(fun);
