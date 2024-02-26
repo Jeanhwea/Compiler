@@ -238,6 +238,8 @@ static void gen_curr_node(bb_t *bb, dnode_t *n)
 		x->r = n->lhs->syment;
 		x->d = n->syment;
 		break;
+	default:
+		panic("BAD_OP_IN_GEN_CURR_NODE");
 	}
 
 	if (bb->inst2cnt >= MAXBBINST) {
