@@ -273,6 +273,7 @@ void dag_optim(void)
 			if (!check_dagable(bb)) {
 				continue;
 			}
+			dbg("DAG OPTIMIZATION: bb=B%d\n", bb->bid);
 			construct_graph(bb);
 			build_referred_info(bb->dag);
 			regen_instructions(bb);
