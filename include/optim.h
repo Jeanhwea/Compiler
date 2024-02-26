@@ -33,8 +33,9 @@ struct _basic_block_struct {
 	inst_t *insts[MAXBBINST]; // instructions
 	bb_t *next;
 
-	// DAG
-	dgraph_t *dag;
+	// DAG optimization
+	dgraph_t *dag;		   // the DAG
+	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// next-use information
 	bool liveness[MAXSYMENT];
