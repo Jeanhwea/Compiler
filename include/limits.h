@@ -21,4 +21,9 @@
 #define MAXSETBITS 1024
 #define MAXSETNUM (MAXSETBITS / ELEMENTBITS)
 
+// set(nth) = set(index<<64 | offset)
+#define NTHSHIFT 64
+#define NTH(index) (index >> NTHSHIFT)
+#define OFF(index) (index & (0xfffffff))
+
 #endif /* End of _LIMITS_H_ */
