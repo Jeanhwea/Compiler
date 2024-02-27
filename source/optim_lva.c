@@ -43,7 +43,7 @@ void setuse(bb_t *bb, syment_t *e)
 void setdef(bb_t *bb, syment_t *e)
 {
 	if (!isvar(e)) {
-		return
+		return;
 	}
 	if (bmget(bb->use, e)) {
 		return;
