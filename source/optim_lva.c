@@ -57,13 +57,13 @@ void setdef(bb_t *bb, syment_t *e)
 	dbg("SET DEF: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
 }
 
-void live_var_anlys(bb_t *bb)
+static void calc_use_def(bb_t *bb)
 {
 	// init
-	bclrall(bb->use, MAXSETNUM);
-	bclrall(bb->def, MAXSETNUM);
-	bclrall(bb->in, MAXSETNUM);
-	bclrall(bb->out, MAXSETNUM);
+	bclrall(bb->use, NBITARR);
+	bclrall(bb->def, NBITARR);
+	bclrall(bb->in, NBITARR);
+	bclrall(bb->out, NBITARR);
 
 	int i;
 	for (i = 0; i < bb->total; ++i) {
@@ -122,6 +122,11 @@ void live_var_anlys(bb_t *bb)
 			panic("UNKONWN_INSTRUCTION_OP");
 		}
 	}
+}
+
+static void live_var_anlys(bb_t *bb)
+{
+	calc_use_def(bb);
 }
 
 void lva_optim(void)

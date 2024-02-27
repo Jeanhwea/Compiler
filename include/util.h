@@ -21,23 +21,28 @@ char *itoa(int num);
 bool chkcmd(char *cmd);
 
 // bitset constants
-#define ELEMENTBITS 32
-#define MAXSETNUM (MAXSETBITS / ELEMENTBITS)
+// bit shift
+#define BITSHIFT 5
+// elements of bit shift, which is 2^BITSHIFT
+#define ELEMENTS (1 << BITSHIFT)
+// array number counter
+#define NBITARR (MAXSETBITS / ELEMENTS)
 
 // unsigned 64 bit int
 typedef unsigned int bits_t;
-typedef char bin_t[ELEMENTBITS + 1];
+typedef char bin_t[ELEMENTS + 1];
 
 //
 //   HIGH                   LOW
 //  index xxxxxxxxxxxxxxxxx
 //        |---------||----|
 //             |       |
-//             |        `- offset in the bit (LSB 6 bits in index)
-//             `---------- position in array (HSB (ELEMENTBITS-6) bits in index)
+//             |        `- offset in the bit (LSB BITSHIFT bits in index)
+//             `---------- position in array (HSB (ELEMENTS-BITSHIFT) bits in index)
 //
-#define BITSHIFT 6
+// offset of index(i)
 #define OFF(i) (((bits_t)i) & (~((~0) << BITSHIFT)))
+// position of index(i)
 #define POS(i) ((((bits_t)i) & ((~0) << BITSHIFT)) >> BITSHIFT)
 
 #define MASK(i) (1L << OFF(i))

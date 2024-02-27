@@ -70,7 +70,7 @@ bool chkcmd(char *cmd)
 // convert bit to char array
 void bconv(bin_t str, bits_t b)
 {
-	int i = ELEMENTBITS;
+	int i = ELEMENTS;
 	str[i--] = '\0';
 	while (b > 0) {
 		str[i--] = (b & 0x1) ? '1' : '0';

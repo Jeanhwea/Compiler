@@ -46,12 +46,12 @@ struct _basic_block_struct {
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// LVA: live variable analysis
-	bits_t use[MAXSETNUM];	// use set
-	bits_t def[MAXSETNUM];	// def set
-	bits_t in[MAXSETNUM];	// new in set
-	bits_t out[MAXSETNUM];	// new out set
-	bits_t in0[MAXSETNUM];	// old in set
-	bits_t out0[MAXSETNUM]; // old out set
+	bits_t use[NBITARR];  // use set
+	bits_t def[NBITARR];  // def set
+	bits_t in[NBITARR];   // new in set
+	bits_t out[NBITARR];  // new out set
+	bits_t in0[NBITARR];  // old in set
+	bits_t out0[NBITARR]; // old out set
 };
 
 struct _dag_graph_struct {
