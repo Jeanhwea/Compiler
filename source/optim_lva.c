@@ -125,8 +125,6 @@ static void live_var_anlys(fun_t *fun)
 		calc_use_def(bb);
 	}
 
-	bits_t tmp[NBITARR];
-
 	// Iteration Algorithm
 	bool loop = TRUE; // loop flag
 	int epoch = 1;
@@ -146,6 +144,8 @@ static void live_var_anlys(fun_t *fun)
 				}
 				sunion(bb->out, bb->out, s->in);
 			}
+
+			bits_t tmp[NBITARR];
 			ssub(tmp, bb->out, bb->def);
 			sunion(bb->in, bb->use, tmp);
 		}
