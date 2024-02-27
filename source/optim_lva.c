@@ -12,6 +12,7 @@ bool bmget(bits_t bits[], syment_t *e)
 	return bget(bits, e->sid);
 }
 
+// test if symbol e is a variable
 bool isvar(syment_t *e)
 {
 	switch (e->cate) {
@@ -22,6 +23,22 @@ bool isvar(syment_t *e)
 		return TRUE;
 	default:
 		return FALSE;
+	}
+}
+
+// set USE in BB
+bool setuse(bb_t *bb, syment_t *e)
+{
+	if (isvar(e) && !bmget(bb->def, e)) {
+		bmset(bb->use, e);
+	}
+}
+
+// set DEF in BB
+bool setdef(bb_t *bb, syment_t *e)
+{
+	if (isvar(e) && !bmget(bb->use, e)) {
+		bmset(bb->def, e);
 	}
 }
 
@@ -43,15 +60,9 @@ void live_var_anlys(bb_t *bb)
 		case DIV_OP:
 		case LOAD_OP:
 		case ASA_OP:
-			if (isvar(x->r) && !bmget(bb->def, x->r)) {
-				bmset(bb->use, x->r);
-			}
-			if (isvar(x->s) && !bmget(bb->def, x->s)) {
-				bmset(bb->use, x->s);
-			}
-			if (isvar(x->d) && !bmget(bb->use, x->d)) {
-				bmset(bb->def, x->d);
-			}
+			setuse(bb, x->r);
+			setuse(bb, x->s);
+			setdef(bb, x->d);
 			break;
 		default:
 			continue;
