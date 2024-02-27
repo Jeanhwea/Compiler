@@ -43,9 +43,14 @@ typedef char bin_t[ELEMENTBITS + 1];
 #define MASK(i) (1L << OFF(i))
 
 void bconv(bin_t str, bits_t b);
-void bset(bits_t bits[], int index);
-void bclr(bits_t bits[], int index);
-bool bget(bits_t bits[], int index);
-void bclrall(bits_t bits[], int total);
-void bsetall(bits_t bits[], int total);
+void bset(bits_t bits[], int i);
+void bclr(bits_t bits[], int i);
+bool bget(bits_t bits[], int i);
+void bclrall(bits_t bits[], int n);
+void bsetall(bits_t bits[], int n);
+bool bsame(bits_t a[], bits_t b[], int n);
+void bdup(bits_t des[], bits_t src[], int n);
+void bunion(bits_t r[], bits_t a[], bits_t b[], int n);
+void bsub(bits_t r[], bits_t a[], bits_t b[], int n);
+
 #endif /* End of _UTIL_H_ */
