@@ -1,3 +1,4 @@
+#include "ir.h"
 #include "optim.h"
 #include "symtab.h"
 #include "util.h"
@@ -37,6 +38,8 @@ void setuse(bb_t *bb, syment_t *e)
 	}
 
 	bmset(bb->use, e);
+
+	dbg("SET USE: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
 }
 
 // set DEF in BB
@@ -50,6 +53,8 @@ void setdef(bb_t *bb, syment_t *e)
 	}
 
 	bmset(bb->def, e);
+
+	dbg("SET DEF: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
 }
 
 void live_var_anlys(bb_t *bb)
@@ -74,8 +79,47 @@ void live_var_anlys(bb_t *bb)
 			setuse(bb, x->s);
 			setdef(bb, x->d);
 			break;
-		default:
+		case INC_OP:
+		case DEC_OP:
+			setuse(bb, x->d);
+			break;
+		case NEG_OP:
+		case ASS_OP:
+			setuse(bb, x->r);
+			setdef(bb, x->d);
+			break;
+		case EQU_OP:
+		case NEQ_OP:
+		case GTT_OP:
+		case GEQ_OP:
+		case LST_OP:
+		case LEQ_OP:
+			setuse(bb, x->r);
+			setuse(bb, x->s);
+			break;
+		case JMP_OP:
+		case CALL_OP:
+		case ENT_OP:
+		case FIN_OP:
+		case LAB_OP:
 			continue;
+		case PUSH_OP:
+		case PADR_OP:
+		case POP_OP:
+		case RDI_OP:
+		case RDC_OP:
+			setuse(bb, x->d);
+			if (x->r) {
+				setuse(bb, x->r);
+			}
+			break;
+		case WRS_OP:
+		case WRI_OP:
+		case WRC_OP:
+			setdef(bb, x->d);
+			break;
+		default:
+			panic("UNKONWN_INSTRUCTION_OP");
 		}
 	}
 }
