@@ -110,12 +110,10 @@ static void construct_graph(bb_t *bb)
 {
 	dgraph_t *graph = create_dag_graph();
 
-	inst_t *x;
 	int i;
 	for (i = 0; i < bb->total; ++i) {
 		dnode_t *lhs = NULL, *rhs = NULL, *out = NULL;
-
-		x = bb->insts[i];
+		inst_t *x = bb->insts[i];
 		switch (x->op) {
 		case ADD_OP:
 		case SUB_OP:
