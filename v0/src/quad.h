@@ -13,7 +13,7 @@ typedef enum {
 	/* Arith */
 	ADD_op, SUB_op, MUL_op, DIV_op,
 	/* unary */
-	INC_op, DEC_op, 
+	INC_op, DEC_op,
 	/* bineary */
 	NEG_op,
 	/* save and store */
@@ -43,7 +43,7 @@ typedef struct _QuadS {
 	QuadSP prev;
 	QuadSP next;
 
-	// for optimation 
+	// for optimation
 	BOOL rm_flag; // been removed, if rm_flag is TRUE
 } QuadS;
 

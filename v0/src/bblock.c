@@ -3,7 +3,7 @@
  * Date: Dec 10, 2013
  * Author: Jeanhwea
  */
- 
+
 #include "global.h"
 #include "parse.h"
 #include "symtab.h"
@@ -17,15 +17,15 @@
 // see qaud.c
 static QuadSP leader = NULL ;
 
-// header pointer to the function 
+// header pointer to the function
 // the current block blogs to
-static QuadSP header = NULL; 
+static QuadSP header = NULL;
 
 static int bblock_id = 0;
 
 // point to basic block head
 BBListSP bblst = NULL;
-// point to basic block list after 
+// point to basic block list after
 // basic block partition
 BBListSP bbtail = NULL;
 BOOL quad_end_flag = FALSE;
@@ -41,9 +41,9 @@ static QuadSP nextleader(void)
 	QuadSP p;
 	// jump continues labels
 	// the leader is a label, or we will make mistakes
-	for (   p = leader->next; 
-		p != NULL && LABEL(leader) && LABEL(p); 
-		p = p->next ) 
+	for (   p = leader->next;
+		p != NULL && LABEL(leader) && LABEL(p);
+		p = p->next )
 		;
 	for (; p != NULL; p = p->next) {
 		if (PFHEAD(p)) {
@@ -118,12 +118,12 @@ void addBblock(BBSP b)
 		// deal normal precursors and postcursors
 		NEWBBLIST(pre);
 		NEWBBLIST(post);
-		if (bbtail->bbp->scope == b->scope) 
+		if (bbtail->bbp->scope == b->scope)
 			pre->bbp = bbtail->bbp;
 		pre->next = NULL;
 		post->bbp = NULL;
 		post->next = NULL;
-		if (bbtail->bbp->scope == b->scope) 
+		if (bbtail->bbp->scope == b->scope)
 			bbtail->bbp->posts->bbp = b;
 		b->pres = pre;
 		b->posts = post;
@@ -145,7 +145,7 @@ void printBblock(BBSP b)
 {
 	QuadSP p;
 	BBListSP q;
-	fprintf(code, "\nBBLOCK_ID = %d; SCOPE = %s\n", 
+	fprintf(code, "\nBBLOCK_ID = %d; SCOPE = %s\n",
 		b->id, b->scope->d->name);
 	fprintf(code, "PRE BBLOCK = ");
 	for (q = b->pres; q != NULL; q = q->next) {
@@ -182,7 +182,7 @@ void _printBblock(BBSP b)
 {
 	QuadSP p;
 	BBListSP q;
-	fprintf(code, "\nBBLOCK_ID = %d; SCOPE = %s\n", 
+	fprintf(code, "\nBBLOCK_ID = %d; SCOPE = %s\n",
 		b->id, b->scope->d->name);
 	fprintf(code, "PRE BBLOCK = ");
 	for (q = b->pres; q != NULL; q = q->next) {
@@ -309,7 +309,7 @@ void make_dag_for_bblock(BBSP b)
 		case READC_op:
 		case WRS_op: case WRI_op: case WRC_op:
 		case LABEL_op:
-		case CALL_op: case PUSHA_op: 
+		case CALL_op: case PUSHA_op:
 		case PUSH_op:
 			get_quad(b);
 			tmp_q = dupQuad(q);
@@ -362,7 +362,7 @@ BBListSP search_block_for_brance(SymTabESP label_search)
 	QuadSP q;
 	for (r = bblst; r != NULL; r = r->next) {
 		for (q = r->bbp->qhead; q != NULL; q = q->next) {
-			if (LABEL(q) && q->d == label_search) 
+			if (LABEL(q) && q->d == label_search)
 				return r;
 		}
 	}
@@ -389,7 +389,7 @@ void link_bblock(void)
 	BBListSP bl, brance_des, pre, post;
 	QuadSP q;
 	for (bl = bblst; bl != NULL; bl = bl->next) {
-		for (q = bl->bbp->qhead; q != NULL && q->next != NULL; q = q->next) 
+		for (q = bl->bbp->qhead; q != NULL && q->next != NULL; q = q->next)
 			;
 		if (q != NULL && BRANCE(q)) {
 		// find some postcursor for brance in this bblock

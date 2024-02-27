@@ -127,7 +127,7 @@ int main(int argc, const char *argv[])
 		listing = stdout;
 		code = stdout;
 		stablist = stdout;
-	} 
+	}
 	daglist = stdout;
 	errlist = stderr;
 	tiplist = stderr;

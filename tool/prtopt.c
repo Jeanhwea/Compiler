@@ -24,15 +24,6 @@ void initopt(int argc, char *argv[])
 	}
 }
 
-char *opcode[32] = {
-	[0] = "ADD",   [1] = "SUB",  [2] = "MUL",   [3] = "DIV",   [4] = "INC",
-	[5] = "DEC",   [6] = "NEG",  [7] = "LOAD",  [8] = "ASS",   [9] = "ASA",
-	[10] = "EQU",  [11] = "NEQ", [12] = "GTT",  [13] = "GEQ",  [14] = "LST",
-	[15] = "LEQ",  [16] = "JMP", [17] = "PUSH", [18] = "PADR", [19] = "POP",
-	[20] = "CALL", [21] = "ENT", [22] = "FIN",  [23] = "RDI",  [24] = "RDC",
-	[25] = "WRS",  [26] = "WRI", [27] = "WRC",  [28] = "LAB",
-};
-
 char *oprepr[32] = {
 	[0] = "+",     [1] = "-",    [2] = "*",	    [3] = "/",	   [4] = "INC",
 	[5] = "DEC",   [6] = "NEG",  [7] = "LOAD",  [8] = ":=",	   [9] = "ASA",
@@ -138,6 +129,11 @@ void dumpdag(bb_t *bb)
 void dumpinst2(bb_t *bb)
 {
 	int i;
+	if (bb->inst2cnt <= 0) {
+		return;
+	}
+
+	msg("   => insts2\n");
 	for (i = 0; i < bb->inst2cnt; i++) {
 		fmtinst2(bb->insts2[i]);
 	}
@@ -200,6 +196,10 @@ int main(int argc, char *argv[])
 			for (i = 0; i < bb->total; i++) {
 				fmtinst2(bb->insts[i]);
 			}
+
+			if (opt_dag) {
+				dumpinst2(bb);
+			}
 		}
 	}
 	msg("\n");
@@ -212,7 +212,6 @@ int main(int argc, char *argv[])
 			}
 			if (opt_dag) {
 				dumpdag(bb);
-				dumpinst2(bb);
 			}
 		}
 	}

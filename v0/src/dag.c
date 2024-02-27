@@ -147,7 +147,7 @@ void push_back_iter(NTabESP nte, DNodeESP dne)
 		dne->iter = ntl;
 		return ;
 	}
-	for (p = dne->iter; p->next != NULL; p = p->next) 
+	for (p = dne->iter; p->next != NULL; p = p->next)
 		;
 	ntl = newNTList();
 	ntl->nte = nte;
@@ -177,7 +177,7 @@ void make_iter(void)
 {
 	NTListSP p;
 	for (p = nthead; p != NULL; p = p->next) {
-		if (p->nte->ste->obj == Tmp_Obj_t) 
+		if (p->nte->ste->obj == Tmp_Obj_t)
 			push_back_iter(p->nte, p->nte->dne);
 		else
 			push_front_iter(p->nte, p->nte->dne);
@@ -238,7 +238,7 @@ NTabESP lookup_nodetab(SymTabESP key)
 {
 	NTListSP p;
 	for (p = nthead; p != NULL; p = p->next) {
-		if (key == p->nte->ste) 
+		if (key == p->nte->ste)
 			return p->nte;
 	}
 	return NULL;
@@ -410,10 +410,10 @@ static void _dag2quad(DNodeESP d)
 	case LOAD_op:
 		NEWQUAD(q);
 		q->op = d->attr.op;
-		q->r = (d->left->iter == NULL) ? 
+		q->r = (d->left->iter == NULL) ?
 			d->left->attr.ste:
 			d->left->iter->nte->ste;
-		q->s = (d->right->iter == NULL) ? 
+		q->s = (d->right->iter == NULL) ?
 			d->right->attr.ste:
 			d->right->iter->nte->ste;
 		q->d = d->iter->nte->ste;
@@ -430,7 +430,7 @@ static void _dag2quad(DNodeESP d)
 	case ASS_op:
 		NEWQUAD(q);
 		q->op = d->attr.op;
-		q->r = (d->left->iter == NULL) ? 
+		q->r = (d->left->iter == NULL) ?
 			d->left->attr.ste:
 			d->left->iter->nte->ste;
 		q->s = NULL;
@@ -442,7 +442,7 @@ static void _dag2quad(DNodeESP d)
 	}
 	// generate a list assign quadruples
 	assert(d->iter);
-	for (it = d->iter->next; 
+	for (it = d->iter->next;
 		it != NULL; it = it->next) {
 		NEWQUAD(q);
 		q->op = ASS_op;
@@ -457,13 +457,13 @@ static void _dag2quad(DNodeESP d)
 void dag2quad()
 {
 	DNodeESP dne;
-	for (; (dne = find()) != NULL; ) 
+	for (; (dne = find()) != NULL; )
 		_dag2quad(dne);
 }
 
 void printNTE(NTabESP nte)
 {
-	fprintf(daglist, "%5s -> Node(%2d)\n", 
+	fprintf(daglist, "%5s -> Node(%2d)\n",
 		nte->ste->name, nte->dne->id);
 }
 
@@ -477,7 +477,7 @@ void printAllNT()
 
 void printDNE(DNodeESP dne)
 {
-	fprintf(daglist, "Node(%2d), Left(%2d), Right(%2d), Attr(%5s), VISIT(%d)\n", 
+	fprintf(daglist, "Node(%2d), Left(%2d), Right(%2d), Attr(%5s), VISIT(%d)\n",
 		dne->id, (dne->left)?dne->left->id:0,
 		(dne->right)?dne->right->id:0,
 		(dne->left||dne->right)?

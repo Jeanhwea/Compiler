@@ -48,7 +48,9 @@ static bb_t *create_basic_block(void)
 			panic("BASIC_BLOCK_INSTRUCTION_OVERFLOW");
 		}
 		bb->insts[bb->total++] = x;
-		dbg("INST_ADD B%d: #%03d\n", bb->bid, x->xid);
+		dbg("B%d ADD_QUAD: #%03d %s d=%s r=%s s=%s\n", bb->bid, x->xid,
+		    opcode[x->op], x->d ? x->d->label : "NONE",
+		    x->r ? x->r->label : "NONE", x->s ? x->s->label : "NONE");
 
 		leader = x->next;
 		if (!leader) {

@@ -5,6 +5,18 @@
 #include "symtab.h"
 #include "util.h"
 
+// array number counter
+#define NBITARR (MAXSETBITS / BITSIZE)
+
+// bitset function
+void sset(bits_t bits[], syment_t *e);
+bool sget(bits_t bits[], syment_t *e);
+void sdup(bits_t des[], bits_t src[]);
+void sclr(bits_t *bits);
+bool ssame(bits_t a[], bits_t b[]);
+void sunion(bits_t *r, bits_t *a, bits_t *b);
+void ssub(bits_t *r, bits_t *a, bits_t *b);
+
 // CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;
 typedef struct _function_struct fun_t;
@@ -46,12 +58,12 @@ struct _basic_block_struct {
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// LVA: live variable analysis
-	bits_t use[MAXSETNUM];	// use set
-	bits_t def[MAXSETNUM];	// def set
-	bits_t in[MAXSETNUM];	// new in set
-	bits_t out[MAXSETNUM];	// new out set
-	bits_t in0[MAXSETNUM];	// old in set
-	bits_t out0[MAXSETNUM]; // old out set
+	bits_t use[NBITARR];  // use set
+	bits_t def[NBITARR];  // def set
+	bits_t in[NBITARR];   // new in set
+	bits_t out[NBITARR];  // new out set
+	bits_t in0[NBITARR];  // old in set
+	bits_t out0[NBITARR]; // old out set
 };
 
 struct _dag_graph_struct {

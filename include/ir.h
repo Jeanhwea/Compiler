@@ -63,6 +63,9 @@ struct _inst_struct {
 extern inst_t *xhead;
 extern inst_t *xtail;
 
+// opcode table
+extern char *opcode[32];
+
 // emit an instruction
 inst_t *emit1(op_t op, syment_t *d);
 inst_t *emit2(op_t op, syment_t *d, syment_t *r);

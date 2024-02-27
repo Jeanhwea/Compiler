@@ -9,15 +9,6 @@
 #include "syntax.h"
 #include "gen.h"
 
-char *opcode[32] = {
-	[0] = "ADD",   [1] = "SUB",  [2] = "MUL",   [3] = "DIV",   [4] = "INC",
-	[5] = "DEC",   [6] = "NEG",  [7] = "LOAD",  [8] = "ASS",   [9] = "ASA",
-	[10] = "EQU",  [11] = "NEQ", [12] = "GTT",  [13] = "GEQ",  [14] = "LST",
-	[15] = "LEQ",  [16] = "JMP", [17] = "PUSH", [18] = "PADR", [19] = "POP",
-	[20] = "CALL", [21] = "ENT", [22] = "FIN",  [23] = "RDI",  [24] = "RDC",
-	[25] = "WRS",  [26] = "WRI", [27] = "WRC",  [28] = "LAB",
-};
-
 char *symcate[12] = {
 	[0] = "NOP", [1] = "CONST", [2] = "VAR",   [3] = "PROC",
 	[4] = "FUN", [5] = "ARRAY", [6] = "BYVAL", [7] = "BYREF",

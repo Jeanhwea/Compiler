@@ -1,7 +1,7 @@
 /**
  * File: global.h
  * Date: Nov 3, 2013
- * Author: Jeanhwea 
+ * Author: Jeanhwea
  */
 
 #ifndef GLOBAL_H
@@ -16,7 +16,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <sys/wait.h>
- 
+
 #ifndef FALSE
 #define FALSE 0
 #endif

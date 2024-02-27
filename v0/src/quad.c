@@ -8,7 +8,7 @@
 #include "symtab.h"
 #include "quad.h"
 
-char *quadMap[30] = 
+char *quadMap[30] =
 {
 	"ADD",
 	"SUB",
@@ -123,7 +123,7 @@ void printQuad(QuadSP q)
 		break;
 	case NEG_op:
 		NEED2(r, d);
-		fprintf(code, "\tNEG\t%s, -, %s\n", 
+		fprintf(code, "\tNEG\t%s, -, %s\n",
 			q->r->name, q->d->name);
 		break;
 	case LOAD_op:

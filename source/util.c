@@ -70,7 +70,7 @@ bool chkcmd(char *cmd)
 // convert bit to char array
 void bconv(bin_t str, bits_t b)
 {
-	int i = ELEMENTBITS;
+	int i = BITSIZE;
 	str[i--] = '\0';
 	while (b > 0) {
 		str[i--] = (b & 0x1) ? '1' : '0';
@@ -138,7 +138,7 @@ void bdup(bits_t des[], bits_t src[], int n)
 	}
 }
 
-// bits union
+// bits union: r = a union b
 void bunion(bits_t r[], bits_t a[], bits_t b[], int n)
 {
 	int i;
@@ -147,7 +147,7 @@ void bunion(bits_t r[], bits_t a[], bits_t b[], int n)
 	}
 }
 
-// bits substract
+// bits substract: r = a substract b
 void bsub(bits_t r[], bits_t a[], bits_t b[], int n)
 {
 	int i;
