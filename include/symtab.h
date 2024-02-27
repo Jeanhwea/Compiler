@@ -94,8 +94,8 @@ struct _sym_table_struct {
 #define NEWSTAB(v) INITMEM(symtab_t, v)
 
 // store all symbols
-extern syment_t *syments[MAXSYMENT];
-extern int sidcnt;
+extern syment_t *syments[MAXSYMENT]; // map[sid]*syment_t
+extern int sidcnt;		     // sid counter
 
 // scope management
 symtab_t *scope_entry(char *nspace);
