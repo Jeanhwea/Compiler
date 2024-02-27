@@ -121,7 +121,7 @@ static void calc_use_def(bb_t *bb)
 			setdef(bb, x->d);
 			break;
 		default:
-			panic("UNKONWN_INSTRUCTION_OP");
+			panic("UNKNOWN_INSTRUCTION_OP");
 		}
 	}
 }
