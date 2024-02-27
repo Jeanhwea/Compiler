@@ -138,6 +138,11 @@ void dumpdag(bb_t *bb)
 void dumpinst2(bb_t *bb)
 {
 	int i;
+	if (bb->inst2cnt <= 0) {
+		return;
+	}
+
+	msg("   => insts2\n");
 	for (i = 0; i < bb->inst2cnt; i++) {
 		fmtinst2(bb->insts2[i]);
 	}
@@ -200,6 +205,10 @@ int main(int argc, char *argv[])
 			for (i = 0; i < bb->total; i++) {
 				fmtinst2(bb->insts[i]);
 			}
+
+			if (opt_dag) {
+				dumpinst2(bb);
+			}
 		}
 	}
 	msg("\n");
@@ -212,7 +221,6 @@ int main(int argc, char *argv[])
 			}
 			if (opt_dag) {
 				dumpdag(bb);
-				dumpinst2(bb);
 			}
 		}
 	}
