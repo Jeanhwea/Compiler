@@ -24,13 +24,13 @@ bool chkcmd(char *cmd);
 // bit shift
 #define BITSHIFT 5
 // elements of bit shift, which is 2^BITSHIFT
-#define ELEMENTS (1 << BITSHIFT)
+#define BITSIZE (1 << BITSHIFT)
 // array number counter
-#define NBITARR (MAXSETBITS / ELEMENTS)
+#define NBITARR (MAXSETBITS / BITSIZE)
 
 // unsigned 64 bit int
 typedef unsigned int bits_t;
-typedef char bin_t[ELEMENTS + 1];
+typedef char bin_t[BITSIZE + 1];
 
 //
 //   HIGH                   LOW
@@ -38,7 +38,7 @@ typedef char bin_t[ELEMENTS + 1];
 //        |---------||----|
 //             |       |
 //             |        `- offset in the bit (LSB BITSHIFT bits in index)
-//             `---------- position in array (HSB (ELEMENTS-BITSHIFT) bits in index)
+//             `---------- position in array (HSB (BITSIZE-BITSHIFT) bits in index)
 //
 // offset of index(i)
 #define OFF(i) (((bits_t)i) & (~((~0) << BITSHIFT)))
