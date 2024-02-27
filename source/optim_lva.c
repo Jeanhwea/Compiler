@@ -59,6 +59,8 @@ void setdef(bb_t *bb, syment_t *e)
 
 static void calc_use_def(bb_t *bb)
 {
+	dbg("LVA USE/DEF: bb=B%d\n", bb->bid);
+
 	// init
 	bclrall(bb->use, NBITARR);
 	bclrall(bb->def, NBITARR);
@@ -124,19 +126,19 @@ static void calc_use_def(bb_t *bb)
 	}
 }
 
-static void live_var_anlys(bb_t *bb)
+static void live_var_anlys(fun_t *fun)
 {
-	calc_use_def(bb);
+	bb_t *bb;
+	for (bb = fun->bhead; bb; bb = bb->next) {
+		calc_use_def(bb);
+	}
 }
 
 void lva_optim(void)
 {
 	fun_t *fun;
-	bb_t *bb;
 	for (fun = mod.fhead; fun; fun = fun->next) {
-		for (bb = fun->bhead; bb; bb = bb->next) {
-			dbg("LIVE VARIABLE ANALYSIS: bb=B%d\n", bb->bid);
-			live_var_anlys(bb);
-		}
+		dbg("LIVE VARIABLE ANALYSIS: fun=%s\n", fun->scope->nspace);
+		live_var_anlys(fun);
 	}
 }
