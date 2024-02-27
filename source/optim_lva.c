@@ -3,41 +3,6 @@
 #include "symtab.h"
 #include "util.h"
 
-static void sset(bits_t bits[], syment_t *e)
-{
-	bset(bits, e->sid);
-}
-
-static bool sget(bits_t bits[], syment_t *e)
-{
-	return bget(bits, e->sid);
-}
-
-static void sdup(bits_t des[], bits_t src[])
-{
-	bdup(des, src, NBITARR);
-}
-
-static void sclr(bits_t *bits)
-{
-	bclrall(bits, NBITARR);
-}
-
-static bool ssame(bits_t a[], bits_t b[])
-{
-	return bsame(a, b, NBITARR);
-}
-
-static void sunion(bits_t *r, bits_t *a, bits_t *b)
-{
-	bunion(r, a, b, NBITARR);
-}
-
-static void ssub(bits_t *r, bits_t *a, bits_t *b)
-{
-	bsub(r, a, b, NBITARR);
-}
-
 // test if symbol e is a variable
 bool isvar(syment_t *e)
 {

@@ -93,6 +93,15 @@ struct _dag_node_var_struct {
 // global module handler
 extern mod_t mod;
 
+// bitset function
+void sset(bits_t bits[], syment_t *e);
+bool sget(bits_t bits[], syment_t *e);
+void sdup(bits_t des[], bits_t src[]);
+void sclr(bits_t *bits);
+bool ssame(bits_t a[], bits_t b[]);
+void sunion(bits_t *r, bits_t *a, bits_t *b);
+void ssub(bits_t *r, bits_t *a, bits_t *b);
+
 // Optimization
 //
 //   1. Flow Graph
