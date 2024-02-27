@@ -4,9 +4,9 @@
  * Author: Jeanhwea
  */
 #include "global.h"
-#include "error.h" 
+#include "error.h"
 
-char *ERRVEC[MAXERROR] = 
+char *ERRVEC[MAXERROR] =
 {
 	"Fatal, Unexpect symbol token -> ",
 	"Char defination is too long",

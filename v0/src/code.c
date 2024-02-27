@@ -582,7 +582,7 @@ void WriteStmtG(WriteStmtSP t)
 				q->d = ExprG(t->ep);
 				emit(q);
 				break;
-			} 
+			}
 		}
 		NEWQUAD(q);
 		q->op = WRI_op;
@@ -621,7 +621,7 @@ void WriteStmtG(WriteStmtSP t)
 				q->d = ExprG(t->ep);
 				emit(q);
 				break;
-			} 
+			}
 		}
 		NEWQUAD(q);
 		q->op = WRI_op;
@@ -677,7 +677,7 @@ SymTabESP ExprG(ExprSP t)
 			q->op = ADD_op;
 			q->r = r;
 			q->s = TermG(t->next->tp);
-			if (q->r->type == Char_Type_t 
+			if (q->r->type == Char_Type_t
 				&& q->s->type == Char_Type_t) {
 				d = sym_insert_tmp(Char_Type_t);
 			} else {
@@ -691,7 +691,7 @@ SymTabESP ExprG(ExprSP t)
 			q->op = SUB_op;
 			q->r = r;
 			q->s = TermG(t->next->tp);
-			if (q->r->type == Char_Type_t 
+			if (q->r->type == Char_Type_t
 				&& q->s->type == Char_Type_t) {
 				d = sym_insert_tmp(Char_Type_t);
 			} else {
@@ -732,7 +732,7 @@ SymTabESP TermG(TermSP t)
 			q->op = MUL_op;
 			q->r = r;
 			q->s = FactorG(t->next->fp);
-			if (q->r->type == Char_Type_t 
+			if (q->r->type == Char_Type_t
 				&& q->s->type == Char_Type_t) {
 				d = sym_insert_tmp(Char_Type_t);
 			} else {
@@ -746,7 +746,7 @@ SymTabESP TermG(TermSP t)
 			q->op = DIV_op;
 			q->r = r;
 			q->s = FactorG(t->next->fp);
-			if (q->r->type == Char_Type_t 
+			if (q->r->type == Char_Type_t
 				&& q->s->type == Char_Type_t) {
 				d = sym_insert_tmp(Char_Type_t);
 			} else {
@@ -939,8 +939,8 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 	FactorSP f;
 	QuadSP q;
 	int parapos = 1;
-	for (b = pfste->stp->headinfo; 
-		t != NULL && b != NULL; 
+	for (b = pfste->stp->headinfo;
+		t != NULL && b != NULL;
 		t = t->next, b = b->next, ++parapos) {
 		switch (b->ep->obj) {
 		case Para_Val_Obj_t:
@@ -950,7 +950,7 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 			q->r = NULL;
 			q->s = NULL;
 			if (d != NULL && d->type != b->ep->type) {
-				fprintf(errlist, 
+				fprintf(errlist,
 					"warning:%d: type miss match at %dth position while using -> %s\n",
 					pfste->lineno, parapos, pfste->name);
 			}
@@ -972,7 +972,7 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				res = sym_lookup(f->idp->name);
 				if (res == NULL) {
 					--runlevel;
-					semanticError(NULLSYM, f->idp->line, 
+					semanticError(NULLSYM, f->idp->line,
 						FALSE, f->idp->name);
 					break;
 				}
@@ -990,7 +990,7 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				q->r = NULL;
 				q->s = NULL;
 				if (d != NULL && d->type != b->ep->type) {
-					fprintf(errlist, 
+					fprintf(errlist,
 						"warning:%d: type miss match at %dth position while using -> %s\n",
 						pfste->lineno, parapos, pfste->name);
 				}
@@ -1001,7 +1001,7 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				res = sym_lookup(f->idp->name);
 				if (res == NULL) {
 					--runlevel;
-					semanticError(NULLSYM, f->idp->line, 
+					semanticError(NULLSYM, f->idp->line,
 						FALSE, f->idp->name);
 					break;
 				}
@@ -1018,7 +1018,7 @@ void ArgListG(ArgListSP t, SymTabESP pfste)
 				q->r = NULL;
 				q->s = ExprG(f->ep);
 				if (d != NULL && d->type != b->ep->type) {
-					fprintf(errlist, 
+					fprintf(errlist,
 						"warning:%d: type miss match at %dth position while using -> %s\n",
 						pfste->lineno, parapos, pfste->name);
 				}

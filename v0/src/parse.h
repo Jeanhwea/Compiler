@@ -41,23 +41,23 @@ typedef struct _ParaDefS *ParaDefSP;
 typedef struct _ArgListS *ArgListSP;
 
 /* declaretion of a bundle of node type */
-typedef enum { 
-	Fun_PFDec_t , Proc_PFDec_t 
+typedef enum {
+	Fun_PFDec_t , Proc_PFDec_t
 } PFDec_t;
 typedef enum {
 	Nop_Addop_t, Add_Addop_t, Neg_Addop_t,
-	Minus_Addop_t 
+	Minus_Addop_t
 } Addop_t;
-typedef enum { 
-	Nop_Multop_t, Mult_Multop_t, Div_Multop_t 
+typedef enum {
+	Nop_Multop_t, Mult_Multop_t, Div_Multop_t
 } Multop_t;
-typedef enum { 
-	Equ_Rela_t, Neq_Rela_t, Gtt_Rela_t, 
-	Geq_Rela_t, Lst_Rela_t, Leq_Rela_t 
+typedef enum {
+	Equ_Rela_t, Neq_Rela_t, Gtt_Rela_t,
+	Geq_Rela_t, Lst_Rela_t, Leq_Rela_t
 } Rela_t;
-typedef enum { 
+typedef enum {
 	/* normal identifier type */
-	Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t, 
+	Init_Ident_t, Proc_Ident_t, Int_Fun_Ident_t,
 	Char_Fun_Ident_t,
 	/* const identifier type */
 	Int_Const_Ident_t, Char_Const_Ident_t,
@@ -70,24 +70,24 @@ typedef enum {
 	/* call by address */
 	Int_Para_Ref_Ident_t, Char_Para_Ref_Ident_t
 } Ident_t;
-typedef enum { 
+typedef enum {
 	Assgin_Stmt_t, IF_Stmt_t, Repeat_Stmt_t,
 	Pcall_Stmt_t, Comp_Stmt_t, Read_Stmt_t,
-	Write_Stmt_t,  For_Stmt_t, 
-	Null_Stmt_t 
+	Write_Stmt_t,  For_Stmt_t,
+	Null_Stmt_t
 } Stmt_t;
-typedef enum { 
-	Norm_Assgin_t, Fun_Assgin_t, Array_Assgin_t 
+typedef enum {
+	Norm_Assgin_t, Fun_Assgin_t, Array_Assgin_t
 } Assgin_t;
-typedef enum { 
-	To_For_t, Downto_For_t 
+typedef enum {
+	To_For_t, Downto_For_t
 } For_t;
-typedef enum { 
+typedef enum {
 	Id_Factor_t, Array_Factor_t, Unsign_Factor_t,
-	Expr_Factor_t, Funcall_Factor_t 
+	Expr_Factor_t, Funcall_Factor_t
 } Factor_t;
-typedef enum { 
-	StrId_Write_t, Str_Write_t, Id_Write_t 
+typedef enum {
+	StrId_Write_t, Str_Write_t, Id_Write_t
 } Write_t;
 
 /* declaretion of a bundle of struct */
@@ -119,8 +119,8 @@ typedef struct _VarDefS {
 } VarDefS;
 typedef struct _PFDecListS {
 	PFDec_t type;
-	ProcDecSP pdp; 
-	FunDecSP fdp; 
+	ProcDecSP pdp;
+	FunDecSP fdp;
 	PFDecListSP next;
 } PFDecListS;
 typedef struct _ProcDecS {
@@ -251,7 +251,7 @@ typedef struct _ArgListS {
 } ArgListS;
 
 
-typedef int IDREADMODE; 
+typedef int IDREADMODE;
 #define READCURR 0
 #define READPREV 1
 

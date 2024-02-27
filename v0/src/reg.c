@@ -16,10 +16,10 @@
 // #define VARIABLE_LIMIT (16*8)
 // extern SymTabESP all_variables[VARIABLE_LIMIT];
 // extern int var_num;
-// see bblock.c 
+// see bblock.c
 // BBListSP bblst = NULL;
 
-int isUse[3] = 
+int isUse[3] =
 {
 	FALSE,
 	FALSE,
@@ -93,16 +93,16 @@ void _do_use_count(void)
 	for (bl = fun_head; bl->bbp->posts->bbp; bl = bl->next) {
 		b = bl->bbp;
 		for (q = b->qhead; q; q = q->next) {
-			if (q->r && COUNT_VARS(q->r)) 
+			if (q->r && COUNT_VARS(q->r))
 				increaseCount(q->r);
-			if (q->s && COUNT_VARS(q->s)) 
+			if (q->s && COUNT_VARS(q->s))
 				increaseCount(q->s);
-			if (q->d && COUNT_VARS(q->d)) 
+			if (q->d && COUNT_VARS(q->d))
 				increaseCount(q->d);
 		}
 	}
 	mi = find_max_count();
-	if (strcmp(b->scope->d->label, "main")) 
+	if (strcmp(b->scope->d->label, "main"))
 		global_reg[find_var_pos(b->scope->d)] = all_variables[mi];
 }
 
@@ -114,7 +114,7 @@ void do_use_count(void)
 		// fun_block_tail = bl;
 		_do_use_count();
 		// printf("********** void do_dataflow(void) ***********\n");
-		for (bl = bl->next; bl && bl->bbp->pres->bbp ; bl = bl->next) 
+		for (bl = bl->next; bl && bl->bbp->pres->bbp ; bl = bl->next)
 			;
 	}
 }

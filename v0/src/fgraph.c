@@ -59,7 +59,7 @@ void dataflow(void)
 	_printAllBblock();
 	rm_useless_assign();
 	_printAllBblock();
-	for (bl = bblst; bl; bl = bl->next) 
+	for (bl = bblst; bl; bl = bl->next)
 		elf_for_block(bl->bbp);
 }
 

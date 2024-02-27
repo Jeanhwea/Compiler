@@ -167,7 +167,7 @@ ConstDecSP ConstDecB(void)
 
 /**
  * constdef ->
- * 	ident = const 
+ * 	ident = const
  */
 ConstDefSP ConstDefB(void)
 {
@@ -274,7 +274,7 @@ VarDecSP VarDecB(void)
 
 /**
  * vardef ->
- * 	ident {, ident} : type 
+ * 	ident {, ident} : type
  */
 VarDefSP VarDefB(void)
 {
@@ -303,12 +303,12 @@ VarDefSP VarDefB(void)
 	switch (token) {
 	case INTEGER:
 		match(INTEGER);
-		for (p = t; p != NULL; p = p->next) 
+		for (p = t; p != NULL; p = p->next)
 			p->idp->type = Int_Var_Ident_t;
 		break;
 	case CHAR:
 		match(CHAR);
-		for (p = t; p != NULL; p = p->next) 
+		for (p = t; p != NULL; p = p->next)
 			p->idp->type = Char_Var_Ident_t;
 		break;
 	case ARRAY:
@@ -378,7 +378,7 @@ VarDefSP VarDefB(void)
 }
 
 /**
- * pfdeclist -> 
+ * pfdeclist ->
  * 	{ procdec | fundec }
  */
 PFDecListSP PFDecListB(void)
@@ -477,7 +477,7 @@ ProcDefSP ProcDefB(void)
 	return t;
 }
 
-/** 
+/**
  * prochead ->
  * 	PROCEDURE ident '(' [paralist] ')' ;
  */
@@ -554,7 +554,7 @@ FunDecSP FunDecB(void)
 }
 
 /**
- * fundef -> 
+ * fundef ->
  * 	funhead block
  */
 FunDefSP FunDefB(void)
@@ -689,7 +689,7 @@ StmtSP StmtB(void)
 }
 
 /**
- * remember in the statement build function 
+ * remember in the statement build function
  * we have read the token from ident to := or '['
  *
  * assignstmt ->
@@ -828,7 +828,7 @@ ForStmtSP ForStmtB(void)
 }
 
 /**
- * remember in the statement build function 
+ * remember in the statement build function
  * we have read the token from ident to (
  *
  * pcallstmt ->
@@ -860,7 +860,7 @@ PcallStmtSP PcallStmtB(void)
 }
 
 /**
- * remember in the factor build function 
+ * remember in the factor build function
  * we have read the token from ident to (
  *
  * fcallstmt ->
@@ -893,7 +893,7 @@ FcallStmtSP FcallStmtB(void)
 
 /**
  * compstmt ->
- * 	BEGIN statement {; statement} END 
+ * 	BEGIN statement {; statement} END
  */
 CompStmtSP CompStmtB(void)
 {
@@ -1095,7 +1095,7 @@ TermSP TermB(void)
 
 /**
  * factor ->
- * 	ident | ident '[' expression ']' | unsign 
+ * 	ident | ident '[' expression ']' | unsign
  * 		| '(' expression ')' | fcallstmt
  */
 FactorSP FactorB(void)
@@ -1246,7 +1246,7 @@ ParaListSP ParaListB(void)
 	return t;
 }
 
-/** 
+/**
  * paradef ->
  * 	[VAR] ident {, ident} : basictype
  */
@@ -1310,7 +1310,7 @@ ParaDefSP ParaDefB(void)
  * arglist ->
  * 	argument {, argument}
  *
- * argument -> 
+ * argument ->
  * 	expression
  */
 ArgListSP ArgListB(void)

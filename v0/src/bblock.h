@@ -19,7 +19,7 @@ typedef struct _BBS {
 	int id;
 	QuadSP qhead;
 	QuadSP qtail;
-	QuadSP scope; 
+	QuadSP scope;
 	QuadSP first; // first position of basic block
 	QuadSP last;  // last position of basic block
 

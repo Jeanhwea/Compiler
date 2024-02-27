@@ -91,7 +91,7 @@ BOOL bm_test(int bm[], SymTabESP ste)
 	return bit_test(bm, find_var_pos(ste));
 }
 
-// see bblock.c 
+// see bblock.c
 // BBListSP bblst = NULL;
 void cal_use_def(void)
 {
@@ -158,8 +158,8 @@ BOOL exit_condition(void)
 {
 	// if TRUE, then exit
 	BBListSP bl;
-	for (   bl = fun_block_head; 
-		bl->bbp->posts->bbp; 
+	for (   bl = fun_block_head;
+		bl->bbp->posts->bbp;
 		bl = bl->next) {
 		if (!bm_issame(bl->bbp->in, bl->bbp->in_old) ||
 			!bm_issame(bl->bbp->out, bl->bbp->out_old))
@@ -174,9 +174,9 @@ void _do_dataflow(void)
 	BBSP b;
 	int bm_tmp[8];
 	do {
-		for (   bl = fun_block_head; 
-			bl->bbp->posts->bbp; 
-			bl = bl->next) 
+		for (   bl = fun_block_head;
+			bl->bbp->posts->bbp;
+			bl = bl->next)
 		{
 			b = bl->bbp;
 			bm_copy(b->in_old, b->in);
@@ -206,7 +206,7 @@ void do_dataflow(void)
 		// fun_block_tail = bl;
 		_do_dataflow();
 		// printf("********** void do_dataflow(void) ***********\n");
-		for (bl = bl->next; bl && bl->bbp->pres->bbp ; bl = bl->next) 
+		for (bl = bl->next; bl && bl->bbp->pres->bbp ; bl = bl->next)
 			;
 	}
 }
@@ -220,7 +220,7 @@ void rm_useless_assign(void)
 		b = bl->bbp;
 		for (q = b->qhead; q; q = q->next) {
 			if ( (q->op == ASS_op) && !bm_test(b->out, q->d)
-			   && q->d->obj == Tmp_Obj_t) 
+			   && q->d->obj == Tmp_Obj_t)
 			{
 				q->rm_flag = TRUE;
 			}
