@@ -67,15 +67,52 @@ bool chkcmd(char *cmd)
 	return TRUE;
 }
 
-void convbin(bin_t bits, bits_t b)
+// convert bit to char array
+void bconv(bin_t str, bits_t b)
 {
 	int i = ELEMENTBITS;
-	bits[i--] = '\0';
+	str[i--] = '\0';
 	while (b > 0) {
-		bits[i--] = (b & 0x1) ? '1' : '0';
+		str[i--] = (b & 0x1) ? '1' : '0';
 		b >>= 1;
 	}
 	while (i >= 0) {
-		bits[i--] = '0';
+		str[i--] = '0';
+	}
+}
+
+// set bit
+void bset(bits_t bits[], int index)
+{
+	bits[POS(index)] |= MASK(index);
+}
+
+// clear bit
+void bclr(bits_t bits[], int index)
+{
+	bits[POS(index)] &= ~(MASK(index));
+}
+
+// get bit
+bool bget(bits_t bits[], int index)
+{
+	return bits[POS(index)] & MASK(index) ? TRUE : FALSE;
+}
+
+// clear all bits
+void bclrall(bits_t bits[], int total)
+{
+	int i;
+	for (i = 0; i < total; ++i) {
+		bits[i] &= 0;
+	}
+}
+
+// set all bits
+void bsetall(bits_t bits[], int total)
+{
+	int i;
+	for (i = 0; i < total; ++i) {
+		bits[i] |= ~0;
 	}
 }

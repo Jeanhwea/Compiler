@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	// printf("bits_t = %ld\n", sizeof(bits_t));
 	for (int i = 0; i < 500; i++) {
 		bin_t buf;
-		convbin(buf, MASK(i));
+		bconv(buf, MASK(i));
 		printf("0x%x\tposition=%d\toffset=%d\tmask=0b%s\n", i, POS(i),
 		       OFF(i), buf);
 	}

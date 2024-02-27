@@ -40,7 +40,12 @@ typedef char bin_t[ELEMENTBITS + 1];
 #define OFF(i) (((bits_t)i) & (~((~0) << BITSHIFT)))
 #define POS(i) ((((bits_t)i) & ((~0) << BITSHIFT)) >> BITSHIFT)
 
-#define MASK(i) (1 << OFF(i))
+#define MASK(i) (1L << OFF(i))
 
-void convbin(bin_t bits, bits_t b);
+void bconv(bin_t str, bits_t b);
+void bset(bits_t bits[], int index);
+void bclr(bits_t bits[], int index);
+bool bget(bits_t bits[], int index);
+void bclrall(bits_t bits[], int total);
+void bsetall(bits_t bits[], int total);
 #endif /* End of _UTIL_H_ */
