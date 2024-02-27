@@ -23,6 +23,11 @@ static void sclr(bits_t *bits)
 	bclrall(bits, NBITARR);
 }
 
+static bool ssame(bits_t a[], bits_t b[])
+{
+	return bsame(a, b, NBITARR);
+}
+
 static void sunion(bits_t *r, bits_t *a, bits_t *b)
 {
 	bunion(r, a, b, NBITARR);
@@ -149,21 +154,46 @@ static void calc_use_def(bb_t *bb)
 static void live_var_anlys(fun_t *fun)
 {
 	bb_t *bb;
+
+	// init USE/DEF set
 	for (bb = fun->bhead; bb; bb = bb->next) {
 		calc_use_def(bb);
 	}
 
-	// iteration algorithm
-	for (bb = fun->bhead; bb; bb = bb->next) {
-		sdup(bb->in0, bb->in);
-		sdup(bb->out0, bb->out);
-		sclr(bb->out);
+	bits_t tmp[NBITARR];
 
-		int i;
-		for (i = 0; i < MAXBBLINK && bb->succ[i]; ++i) {
-			bb_t *s = bb->succ[i];
-			sunion(bb->out, bb->out, s->in);
+	// Iteration Algorithm
+	bool loop = TRUE; // loop flag
+	int epoch = 1;
+	while (loop) {
+		dbg("epoch=%d\n", epoch);
+
+		for (bb = fun->bhead; bb; bb = bb->next) {
+			sdup(bb->in0, bb->in);
+			sdup(bb->out0, bb->out);
+			sclr(bb->out);
+
+			int i;
+			for (i = 0; i < MAXBBLINK && bb->succ[i]; ++i) {
+				bb_t *s = bb->succ[i];
+				sunion(bb->out, bb->out, s->in);
+			}
+			ssub(tmp, bb->out, bb->def);
+			sunion(bb->in, bb->use, tmp);
 		}
+
+		loop = FALSE;
+		for (bb = fun->bhead; bb; bb = bb->next) {
+			if (!ssame(bb->in, bb->in0)) {
+				loop = TRUE;
+				break;
+			}
+			if (!ssame(bb->out, bb->out0)) {
+				loop = TRUE;
+				break;
+			}
+		}
+		epoch++;
 	}
 }
 
