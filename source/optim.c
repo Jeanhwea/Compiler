@@ -11,4 +11,7 @@ void optim(void)
 
 	// DAG optimization
 	dag_optim();
+
+	// Live Variables Analysis
+	lva_optim();
 }

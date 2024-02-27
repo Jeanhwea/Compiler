@@ -102,6 +102,8 @@ void partition_basic_blocks(void);
 void construct_flow_graph(void);
 //   2. DAG Graph
 void dag_optim(void);
+//   3. Live Variables Analysis
+void lva_optim(void);
 
 // optimize entry
 void optim(void);
