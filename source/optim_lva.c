@@ -14,6 +14,11 @@ bool bmget(bits_t bits[], syment_t *e)
 
 void live_var_anlys(bb_t *bb)
 {
+	bclrall(bb->use, MAXSETNUM);
+	bclrall(bb->def, MAXSETNUM);
+	bclrall(bb->in, MAXSETNUM);
+	bclrall(bb->out, MAXSETNUM);
+
 	inst_t *x;
 	int i;
 	for (i = 0; i < bb->total; ++i) {

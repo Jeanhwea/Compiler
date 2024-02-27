@@ -36,24 +36,22 @@ struct _basic_block_struct {
 	inst_t *insts[MAXBBINST]; // instructions
 	bb_t *next;
 
+	// links
+	bb_t *pred[MAXBBLINK]; // predecessors
+	bb_t *succ[MAXBBLINK]; // successors
+
 	// DAG optimization
 	dgraph_t *dag;		   // the DAG
 	int inst2cnt;		   // insts2[MAXBBINST] counter
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
-	// DFA
-	bits_t use[MAXSETNUM];
-	bits_t def[MAXSETNUM];
-	bits_t in[MAXSETNUM];
-	bits_t out[MAXSETNUM];
-
-	// next-use information
-	bool liveness[MAXSYMENT];
-	inst_t *nextuse[MAXSYMENT];
-
-	// predecessors and successors
-	bb_t *pred[MAXBBLINK];
-	bb_t *succ[MAXBBLINK];
+	// LVA: live variable analysis
+	bits_t use[MAXSETNUM];	// use set
+	bits_t def[MAXSETNUM];	// def set
+	bits_t in[MAXSETNUM];	// new in set
+	bits_t out[MAXSETNUM];	// new out set
+	bits_t in0[MAXSETNUM];	// old in set
+	bits_t out0[MAXSETNUM]; // old out set
 };
 
 struct _dag_graph_struct {
