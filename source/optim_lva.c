@@ -27,19 +27,29 @@ bool isvar(syment_t *e)
 }
 
 // set USE in BB
-bool setuse(bb_t *bb, syment_t *e)
+void setuse(bb_t *bb, syment_t *e)
 {
-	if (isvar(e) && !bmget(bb->def, e)) {
-		bmset(bb->use, e);
+	if (!isvar(e)) {
+		return;
 	}
+	if (bmget(bb->def, e)) {
+		return;
+	}
+
+	bmset(bb->use, e);
 }
 
 // set DEF in BB
-bool setdef(bb_t *bb, syment_t *e)
+void setdef(bb_t *bb, syment_t *e)
 {
-	if (isvar(e) && !bmget(bb->use, e)) {
-		bmset(bb->def, e);
+	if (!isvar(e)) {
+		return
 	}
+	if (bmget(bb->use, e)) {
+		return;
+	}
+
+	bmset(bb->def, e);
 }
 
 void live_var_anlys(bb_t *bb)
