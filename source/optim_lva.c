@@ -3,14 +3,34 @@
 #include "symtab.h"
 #include "util.h"
 
-void bmset(bits_t bits[], syment_t *e)
+static void sset(bits_t bits[], syment_t *e)
 {
 	bset(bits, e->sid);
 }
 
-bool bmget(bits_t bits[], syment_t *e)
+static bool sget(bits_t bits[], syment_t *e)
 {
 	return bget(bits, e->sid);
+}
+
+static void sdup(bits_t des[], bits_t src[])
+{
+	bdup(des, src, NBITARR);
+}
+
+static void sclr(bits_t *bits)
+{
+	bclrall(bits, NBITARR);
+}
+
+static void sunion(bits_t *r, bits_t *a, bits_t *b)
+{
+	bunion(r, a, b, NBITARR);
+}
+
+static void ssub(bits_t *r, bits_t *a, bits_t *b)
+{
+	bsub(r, a, b, NBITARR);
 }
 
 // test if symbol e is a variable
@@ -33,11 +53,11 @@ void setuse(bb_t *bb, syment_t *e)
 	if (!isvar(e)) {
 		return;
 	}
-	if (bmget(bb->def, e)) {
+	if (sget(bb->def, e)) {
 		return;
 	}
 
-	bmset(bb->use, e);
+	sset(bb->use, e);
 
 	dbg("SET USE: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
 }
@@ -48,11 +68,11 @@ void setdef(bb_t *bb, syment_t *e)
 	if (!isvar(e)) {
 		return;
 	}
-	if (bmget(bb->use, e)) {
+	if (sget(bb->use, e)) {
 		return;
 	}
 
-	bmset(bb->def, e);
+	sset(bb->def, e);
 
 	dbg("SET DEF: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
 }
@@ -62,10 +82,10 @@ static void calc_use_def(bb_t *bb)
 	dbg("LVA USE/DEF: bb=B%d\n", bb->bid);
 
 	// init
-	bclrall(bb->use, NBITARR);
-	bclrall(bb->def, NBITARR);
-	bclrall(bb->in, NBITARR);
-	bclrall(bb->out, NBITARR);
+	sclr(bb->use);
+	sclr(bb->def);
+	sclr(bb->in);
+	sclr(bb->out);
 
 	int i;
 	for (i = 0; i < bb->total; ++i) {
@@ -131,6 +151,19 @@ static void live_var_anlys(fun_t *fun)
 	bb_t *bb;
 	for (bb = fun->bhead; bb; bb = bb->next) {
 		calc_use_def(bb);
+	}
+
+	// iteration algorithm
+	for (bb = fun->bhead; bb; bb = bb->next) {
+		sdup(bb->in0, bb->in);
+		sdup(bb->out0, bb->out);
+		sclr(bb->out);
+
+		int i;
+		for (i = 0; i < MAXBBLINK && bb->succ[i]; ++i) {
+			bb_t *s = bb->succ[i];
+			sunion(bb->out, bb->out, s->in);
+		}
 	}
 }
 
