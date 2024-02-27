@@ -174,8 +174,11 @@ static void live_var_anlys(fun_t *fun)
 			sclr(bb->out);
 
 			int i;
-			for (i = 0; i < MAXBBLINK && bb->succ[i]; ++i) {
+			for (i = 0; i < MAXBBLINK; ++i) {
 				bb_t *s = bb->succ[i];
+				if (!s) {
+					break;
+				}
 				sunion(bb->out, bb->out, s->in);
 			}
 			ssub(tmp, bb->out, bb->def);
