@@ -3,7 +3,7 @@
 #include "limits.h"
 #include "ir.h"
 #include "symtab.h"
-#include "bitset.h"
+#include "util.h"
 
 // CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;

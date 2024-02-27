@@ -66,3 +66,16 @@ bool chkcmd(char *cmd)
 
 	return TRUE;
 }
+
+void convbin(bin_t bits, bits_t b)
+{
+	int i = ELEMENTBITS;
+	bits[i--] = '\0';
+	while (b > 0) {
+		bits[i--] = (b & 0x1) ? '1' : '0';
+		b >>= 1;
+	}
+	while (i >= 0) {
+		bits[i--] = '0';
+	}
+}
