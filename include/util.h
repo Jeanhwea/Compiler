@@ -25,8 +25,6 @@ bool chkcmd(char *cmd);
 #define BITSHIFT 5
 // elements of bit shift, which is 2^BITSHIFT
 #define BITSIZE (1 << BITSHIFT)
-// array number counter
-#define NBITARR (MAXSETBITS / BITSIZE)
 
 // unsigned 64 bit int
 typedef unsigned int bits_t;

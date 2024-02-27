@@ -5,6 +5,18 @@
 #include "symtab.h"
 #include "util.h"
 
+// array number counter
+#define NBITARR (MAXSETBITS / BITSIZE)
+
+// bitset function
+void sset(bits_t bits[], syment_t *e);
+bool sget(bits_t bits[], syment_t *e);
+void sdup(bits_t des[], bits_t src[]);
+void sclr(bits_t *bits);
+bool ssame(bits_t a[], bits_t b[]);
+void sunion(bits_t *r, bits_t *a, bits_t *b);
+void ssub(bits_t *r, bits_t *a, bits_t *b);
+
 // CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;
 typedef struct _function_struct fun_t;
@@ -92,15 +104,6 @@ struct _dag_node_var_struct {
 
 // global module handler
 extern mod_t mod;
-
-// bitset function
-void sset(bits_t bits[], syment_t *e);
-bool sget(bits_t bits[], syment_t *e);
-void sdup(bits_t des[], bits_t src[]);
-void sclr(bits_t *bits);
-bool ssame(bits_t a[], bits_t b[]);
-void sunion(bits_t *r, bits_t *a, bits_t *b);
-void ssub(bits_t *r, bits_t *a, bits_t *b);
 
 // Optimization
 //
