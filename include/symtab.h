@@ -93,7 +93,7 @@ struct _sym_table_struct {
 #define NEWENTRY(v) INITMEM(syment_t, v)
 #define NEWSTAB(v) INITMEM(symtab_t, v)
 
-// debugging
+// store all symbols
 extern syment_t *syments[MAXSYMENT];
 extern int sidcnt;
 
