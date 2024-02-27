@@ -34,7 +34,7 @@ struct _basic_block_struct {
 	int bid;		  // block ID
 	int total;		  // total number of instructions
 	inst_t *insts[MAXBBINST]; // instructions
-	bb_t *next;
+	bb_t *next;		  // next BB
 
 	// links
 	bb_t *pred[MAXBBLINK]; // predecessors
