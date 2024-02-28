@@ -23,6 +23,8 @@ void setuse(bb_t *bb, syment_t *e)
 	if (!isvar(e)) {
 		return;
 	}
+
+	// if e belongs to DEF, then skip set USE
 	if (sget(bb->def, e)) {
 		return;
 	}
@@ -38,6 +40,8 @@ void setdef(bb_t *bb, syment_t *e)
 	if (!isvar(e)) {
 		return;
 	}
+
+	// if e belongs to USE, then skip set DEF
 	if (sget(bb->use, e)) {
 		return;
 	}
