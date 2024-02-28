@@ -3,6 +3,9 @@
 // define the global module
 mod_t mod;
 
+// re-generated instruction counter
+int xidcnt2 = 500;
+
 void optim(void)
 {
 	// make flow graph

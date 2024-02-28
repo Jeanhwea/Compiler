@@ -10,9 +10,6 @@ static int graphcnt = 0;
 // the DAG nodes counter
 static int nodecnt = 0;
 
-// the new XID counter
-static int xidcnt2 = 500;
-
 // check instructions in basic block is dagable
 static bool check_dagable(bb_t *bb)
 {

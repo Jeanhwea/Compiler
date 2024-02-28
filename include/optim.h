@@ -105,6 +105,9 @@ struct _dag_node_var_struct {
 // global module handler
 extern mod_t mod;
 
+// re-generated instruction counter
+extern int xidcnt2;
+
 // Optimization
 //
 //   1. Flow Graph
