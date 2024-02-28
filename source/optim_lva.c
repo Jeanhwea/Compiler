@@ -129,17 +129,22 @@ static void live_var_anlys(fun_t *fun)
 		calc_use_def(bb);
 	}
 
-	// Iteration Algorithm
+	// Iterative Solver
 	bool loop = TRUE; // loop flag
 	int epoch = 1;
 	while (loop) {
 		dbg("epoch=%d\n", epoch);
 
+		// update IN/OUT in current loop
 		for (bb = fun->bhead; bb; bb = bb->next) {
+			// save old IN/OUT sets
 			sdup(bb->in0, bb->in);
 			sdup(bb->out0, bb->out);
+
+			// set OUT[B] = empty set
 			sclr(bb->out);
 
+			// OUT[B] = Union_{b0 is B's successor}(IN[b0])
 			int i;
 			for (i = 0; i < MAXBBLINK; ++i) {
 				bb_t *s = bb->succ[i];
@@ -149,11 +154,13 @@ static void live_var_anlys(fun_t *fun)
 				sunion(bb->out, bb->out, s->in);
 			}
 
+			// IN[B] = use[B] union (OUT[B] - def[B])
 			bits_t tmp[NBITARR];
 			ssub(tmp, bb->out, bb->def);
 			sunion(bb->in, bb->use, tmp);
 		}
 
+		// check exit condition
 		loop = FALSE;
 		for (bb = fun->bhead; bb; bb = bb->next) {
 			if (!ssame(bb->in, bb->in0)) {
