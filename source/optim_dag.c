@@ -10,6 +10,9 @@ static int graphcnt = 0;
 // the DAG nodes counter
 static int nodecnt = 0;
 
+// the new XID counter
+static int xidcnt2 = 500;
+
 // check instructions in basic block is dagable
 static bool check_dagable(bb_t *bb)
 {
@@ -217,6 +220,7 @@ static void gen_curr_node(bb_t *bb, dnode_t *n)
 	inst_t *x;
 	NEWINST(x);
 	x->op = n->op;
+	x->xid = ++xidcnt2;
 	switch (n->op) {
 	case ADD_OP:
 	case SUB_OP:

@@ -16,7 +16,7 @@ inst_t *xhead;
 inst_t *xtail;
 
 // instruction count
-int xidcnt = 0;
+static int xidcnt = 0;
 
 static inst_t *emit(op_t op)
 {
