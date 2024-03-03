@@ -25,4 +25,4 @@
 15. gen 生成函数-prtir 调试工具
 
 * 学习教材
-见 pl0e.pdf
+见 [[file:pl0e.pdf][pl0e.pdf]]
