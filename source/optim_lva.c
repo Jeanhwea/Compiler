@@ -130,9 +130,9 @@ static void live_var_anlys(fun_t *fun)
 	}
 
 	// Iterative Solver
-	bool loop = TRUE; // loop flag
+	bool changed = TRUE; // loop flag
 	int epoch = 1;
-	while (loop) {
+	while (changed) {
 		dbg("epoch=%d\n", epoch);
 
 		// update IN/OUT in current loop
@@ -161,14 +161,14 @@ static void live_var_anlys(fun_t *fun)
 		}
 
 		// check exit condition
-		loop = FALSE;
+		changed = FALSE;
 		for (bb = fun->bhead; bb; bb = bb->next) {
 			if (!ssame(bb->in, bb->in0)) {
-				loop = TRUE;
+				changed = TRUE;
 				break;
 			}
 			if (!ssame(bb->out, bb->out0)) {
-				loop = TRUE;
+				changed = TRUE;
 				break;
 			}
 		}
