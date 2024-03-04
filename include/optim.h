@@ -57,13 +57,15 @@ struct _basic_block_struct {
 	int inst2cnt;		   // insts2[MAXBBINST] counter
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
-	// LVA: live variable analysis
-	bits_t use[NBITARR];  // use set
-	bits_t def[NBITARR];  // def set
-	bits_t in[NBITARR];   // new in set
-	bits_t out[NBITARR];  // new out set
+	// DFA: data flow analysis
+	bits_t in[NBITARR];   // in set
+	bits_t out[NBITARR];  // out set
 	bits_t in0[NBITARR];  // old in set
 	bits_t out0[NBITARR]; // old out set
+
+	// LVA: live variable analysis
+	bits_t use[NBITARR]; // use set
+	bits_t def[NBITARR]; // def set
 };
 
 struct _dag_graph_struct {
