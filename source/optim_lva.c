@@ -240,6 +240,9 @@ static void data_flow_anlys(fun_t *fun)
 
 		epoch++;
 	}
+
+	dbg("LVA DONE\n");
+	dump_in_out(fun);
 }
 
 static void live_var_anlys(fun_t *fun)
