@@ -46,7 +46,9 @@ struct _function_struct {
 	bb_t *btail;
 
 	// store variables in LVA
-	syment_t *vars[MAXSYMENT];
+	int total;		   // total variables
+	syment_t *vars[MAXSYMENT]; // symbol entry
+	int seqs[MAXSYMENT];	   // variable sequence
 
 	fun_t *next;
 };

@@ -125,33 +125,26 @@ static void calc_use_def(bb_t *bb)
 
 static void dump_vars(fun_t *fun)
 {
-	int sid, seq = 0;
+	int sid;
 	for (sid = 0; sid < MAXSYMENT; ++sid) {
 		syment_t *e = fun->vars[sid];
 		if (!e) {
 			continue;
 		}
-		dbg("seq=%02d sid=%02d var=%s\n", ++seq, sid, REPR(e));
+		fun->seqs[fun->total++] = sid;
+		dbg("seq=%02d sid=%02d var=%s\n", fun->total, sid, REPR(e));
 	}
 }
 
 static void dump_use_def(fun_t *fun)
 {
-	int seqs[MAXSYMENT], total = 0;
-	int sid = 0;
-	for (sid = 0; sid < MAXSYMENT; ++sid) {
-		syment_t *e = fun->vars[sid];
-		if (!e) {
-			continue;
-		}
-		seqs[total++] = sid;
-	}
+	int total = fun->total;
+	int *seqs = fun->seqs;
 
 	bb_t *bb;
 	for (bb = fun->bhead; bb; bb = bb->next) {
 		char bm_def[MAXSYMENT] = {};
 		char bm_use[MAXSYMENT] = {};
-
 		int i;
 		for (i = 0; i < total; ++i) {
 			bm_def[i] = bget(bb->def, seqs[i]) ? '1' : '0';
@@ -167,9 +160,9 @@ static void dump_use_def(fun_t *fun)
 				continue;
 			}
 			if (strlen(buf_def) > 0) {
-				strncat(buf_def, ",", MAXSTRBUF);
+				strncat(buf_def, ",", MAXSTRBUF - 1);
 			}
-			strncat(buf_def, REPR(syments[seqs[i]]), MAXSTRBUF);
+			strncat(buf_def, REPR(syments[seqs[i]]), MAXSTRBUF - 1);
 		}
 
 		char buf_use[MAXSTRBUF] = {};
@@ -178,9 +171,9 @@ static void dump_use_def(fun_t *fun)
 				continue;
 			}
 			if (strlen(buf_use) > 0) {
-				strncat(buf_use, ",", MAXSTRBUF);
+				strncat(buf_use, ",", MAXSTRBUF - 1);
 			}
-			strncat(buf_use, REPR(syments[seqs[i]]), MAXSTRBUF);
+			strncat(buf_use, REPR(syments[seqs[i]]), MAXSTRBUF - 1);
 		}
 
 		dbg("B%d def=[%s] use=[%s]\n", bb->bid, buf_def, buf_use);
