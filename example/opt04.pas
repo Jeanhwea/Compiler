@@ -1,12 +1,13 @@
 const a = 3;
-var x, y :integer;
+var x, y, z :integer;
 begin
    x := 1;
    y := 2;
 
-   if x > 5 then
+   if x > a then
    begin
       y := y + 1;
+      z := a;
       write(x);
    end
    else
