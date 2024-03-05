@@ -180,25 +180,15 @@ static void dump_use_def(fun_t *fun)
 	}
 }
 
-static void live_var_anlys(fun_t *fun)
+// Data Flow Analysis (Backward)
+static void data_flow_anlys(fun_t *fun)
 {
-	bb_t *bb;
-
-	// init USE/DEF set
-	for (bb = fun->bhead; bb; bb = bb->next) {
-		calc_use_def(bb);
-	}
-
-	// dump variables
-	dump_vars(fun);
-	dump_use_def(fun);
-
-	// Iterative Solver
 	bool changed = TRUE; // loop flag
 	int epoch = 1;
 	while (changed) {
 		dbg("epoch=%d\n", epoch);
 
+		bb_t *bb;
 		// update IN/OUT in current loop
 		for (bb = fun->bhead; bb; bb = bb->next) {
 			// save old IN/OUT sets
@@ -238,6 +228,23 @@ static void live_var_anlys(fun_t *fun)
 		}
 		epoch++;
 	}
+}
+
+static void live_var_anlys(fun_t *fun)
+{
+	bb_t *bb;
+
+	// init USE/DEF set
+	for (bb = fun->bhead; bb; bb = bb->next) {
+		calc_use_def(bb);
+	}
+
+	// dump variables
+	dump_vars(fun);
+	dump_use_def(fun);
+
+	// Iterative Solver
+	data_flow_anlys(fun);
 }
 
 void lva_optim(void)
