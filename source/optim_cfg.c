@@ -41,6 +41,7 @@ static bb_t *create_basic_block(void)
 	} else {
 		thefunc->bhead = thefunc->btail = bb;
 	}
+	bb->fun = thefunc;
 
 	dbg("CREATE B%d\n", bb->bid);
 	for (inst_t *x = leader; x; x = x->next) {

@@ -8,6 +8,9 @@
 // array number counter
 #define NBITARR (MAXSETBITS / BITSIZE)
 
+// get syment_t *e representation
+#define REPR(e) (e->cate == TMP_OBJ ? e->label : e->name)
+
 // bitset function
 void sset(bits_t bits[], syment_t *e);
 bool sget(bits_t bits[], syment_t *e);
@@ -35,9 +38,18 @@ struct _module_struct {
 };
 
 struct _function_struct {
+	// current scope
 	symtab_t *scope;
+
+	// basic block list
 	bb_t *bhead;
 	bb_t *btail;
+
+	// store variables in LVA
+	int total;		   // total variables
+	syment_t *vars[MAXSYMENT]; // symbol entry
+	int seqs[MAXSYMENT];	   // variable sequence
+
 	fun_t *next;
 };
 
@@ -46,6 +58,7 @@ struct _basic_block_struct {
 	int bid;		  // block ID
 	int total;		  // total number of instructions
 	inst_t *insts[MAXBBINST]; // instructions
+	fun_t *fun;		  // which fun_t belongs to
 	bb_t *next;		  // next BB
 
 	// links
@@ -57,13 +70,15 @@ struct _basic_block_struct {
 	int inst2cnt;		   // insts2[MAXBBINST] counter
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
-	// LVA: live variable analysis
-	bits_t use[NBITARR];  // use set
-	bits_t def[NBITARR];  // def set
-	bits_t in[NBITARR];   // new in set
-	bits_t out[NBITARR];  // new out set
+	// DFA: data flow analysis
+	bits_t in[NBITARR];   // in set
+	bits_t out[NBITARR];  // out set
 	bits_t in0[NBITARR];  // old in set
 	bits_t out0[NBITARR]; // old out set
+
+	// LVA: live variable analysis
+	bits_t use[NBITARR]; // use set
+	bits_t def[NBITARR]; // def set
 };
 
 struct _dag_graph_struct {
