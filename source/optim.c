@@ -53,3 +53,15 @@ void ssub(bits_t *r, bits_t *a, bits_t *b)
 {
 	bsub(r, a, b, NBITARR);
 }
+
+inst_t *dupinst(op_t op, syment_t *d, syment_t *r, syment_t *s)
+{
+	inst_t *x;
+	NEWINST(x);
+	x->op = op;
+	x->xid = ++xidcnt2;
+	x->r = r;
+	x->s = s;
+	x->d = d;
+	return x;
+}

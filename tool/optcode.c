@@ -13,6 +13,7 @@
 #include <string.h>
 
 bool opt_dag = FALSE;
+bool opt_lva = FALSE;
 
 void initopt(int argc, char *argv[])
 {
@@ -20,6 +21,9 @@ void initopt(int argc, char *argv[])
 	for (i = 1; i < argc; ++i) {
 		if (!strcmp("-dag", argv[i])) {
 			opt_dag = TRUE;
+		}
+		if (!strcmp("-lva", argv[i])) {
+			opt_lva = TRUE;
 		}
 	}
 }
@@ -139,6 +143,19 @@ void dumpinst2(bb_t *bb)
 	}
 }
 
+void dumpinst3(bb_t *bb)
+{
+	int i;
+	if (bb->inst3cnt <= 0) {
+		return;
+	}
+
+	msg("   => insts3 after LVA\n");
+	for (i = 0; i < bb->inst3cnt; i++) {
+		fmtinst2(bb->insts3[i]);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	echo = 0;
@@ -199,6 +216,10 @@ int main(int argc, char *argv[])
 
 			if (opt_dag) {
 				dumpinst2(bb);
+			}
+
+			if (opt_lva) {
+				dumpinst3(bb);
 			}
 		}
 	}

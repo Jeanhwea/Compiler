@@ -20,6 +20,9 @@ bool ssame(bits_t a[], bits_t b[]);
 void sunion(bits_t *r, bits_t *a, bits_t *b);
 void ssub(bits_t *r, bits_t *a, bits_t *b);
 
+// helper
+inst_t *dupinst(op_t op, syment_t *d, syment_t *r, syment_t *s);
+
 // CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;
 typedef struct _function_struct fun_t;
@@ -42,8 +45,8 @@ struct _function_struct {
 	symtab_t *scope;
 
 	// basic block list
-	bb_t *bhead;
-	bb_t *btail;
+	bb_t *bhead; // prev of bhead is ENTRY
+	bb_t *btail; // next of btail is EXIT
 
 	// store variables in LVA
 	int total;		   // total variables
@@ -71,14 +74,15 @@ struct _basic_block_struct {
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// DFA: data flow analysis
-	bits_t in[NBITARR];   // in set
-	bits_t out[NBITARR];  // out set
-	bits_t in0[NBITARR];  // old in set
-	bits_t out0[NBITARR]; // old out set
+	bits_t in[NBITARR];  // in set
+	bits_t out[NBITARR]; // out set
 
 	// LVA: live variable analysis
 	bits_t use[NBITARR]; // use set
 	bits_t def[NBITARR]; // def set
+
+	int inst3cnt;		   // insts3[MAXBBINST] counter
+	inst_t *insts3[MAXBBINST]; // instructions after DAG optim
 };
 
 struct _dag_graph_struct {
