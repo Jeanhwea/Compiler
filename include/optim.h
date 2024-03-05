@@ -77,6 +77,9 @@ struct _basic_block_struct {
 	// LVA: live variable analysis
 	bits_t use[NBITARR]; // use set
 	bits_t def[NBITARR]; // def set
+
+	int inst3cnt;		   // insts3[MAXBBINST] counter
+	inst_t *insts3[MAXBBINST]; // instructions after DAG optim
 };
 
 struct _dag_graph_struct {

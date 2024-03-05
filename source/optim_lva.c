@@ -262,11 +262,21 @@ static void live_var_anlys(fun_t *fun)
 	data_flow_anlys(fun);
 }
 
+// Eliminate Dead Assign
+static void elim_dead_assign(bb_t *bb)
+{
+}
+
 void lva_optim(void)
 {
 	fun_t *fun;
 	for (fun = mod.fhead; fun; fun = fun->next) {
 		dbg("LIVE VARIABLE ANALYSIS: fun=%s\n", fun->scope->nspace);
 		live_var_anlys(fun);
+
+		bb_t *bb;
+		for (bb = fun->bhead; bb; bb = bb->next) {
+			elim_dead_assign(bb);
+		}
 	}
 }
