@@ -8,6 +8,9 @@
 // array number counter
 #define NBITARR (MAXSETBITS / BITSIZE)
 
+// get syment_t *e representation
+#define REPR(e) (e->cate == TMP_OBJ ? e->label : e->name)
+
 // bitset function
 void sset(bits_t bits[], syment_t *e);
 bool sget(bits_t bits[], syment_t *e);
@@ -35,9 +38,16 @@ struct _module_struct {
 };
 
 struct _function_struct {
+	// current scope
 	symtab_t *scope;
+
+	// basic block list
 	bb_t *bhead;
 	bb_t *btail;
+
+	// store variables in LVA
+	syment_t *vars[MAXSYMENT];
+
 	fun_t *next;
 };
 
@@ -46,6 +56,7 @@ struct _basic_block_struct {
 	int bid;		  // block ID
 	int total;		  // total number of instructions
 	inst_t *insts[MAXBBINST]; // instructions
+	fun_t *fun;		  // which fun_t belongs to
 	bb_t *next;		  // next BB
 
 	// links

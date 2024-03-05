@@ -1,4 +1,5 @@
 #include "ir.h"
+#include "limits.h"
 #include "optim.h"
 #include "symtab.h"
 #include "util.h"
@@ -23,6 +24,7 @@ void setuse(bb_t *bb, syment_t *e)
 	if (!isvar(e)) {
 		return;
 	}
+	bb->fun->vars[e->sid] = e;
 
 	// if e belongs to DEF, then skip set USE
 	if (sget(bb->def, e)) {
@@ -31,7 +33,7 @@ void setuse(bb_t *bb, syment_t *e)
 
 	sset(bb->use, e);
 
-	dbg("SET USE: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
+	dbg("SET USE: %s\n", REPR(e));
 }
 
 // set DEF in BB
@@ -40,6 +42,7 @@ void setdef(bb_t *bb, syment_t *e)
 	if (!isvar(e)) {
 		return;
 	}
+	bb->fun->vars[e->sid] = e;
 
 	// if e belongs to USE, then skip set DEF
 	if (sget(bb->use, e)) {
@@ -48,7 +51,7 @@ void setdef(bb_t *bb, syment_t *e)
 
 	sset(bb->def, e);
 
-	dbg("SET DEF: %s\n", e->cate == TMP_OBJ ? e->label : e->name);
+	dbg("SET DEF: %s\n", REPR(e));
 }
 
 static void calc_use_def(bb_t *bb)
@@ -120,6 +123,19 @@ static void calc_use_def(bb_t *bb)
 	}
 }
 
+static void dump_vars(fun_t *fun)
+{
+	int sid, seq;
+	seq = 0;
+	for (sid = 0; sid < MAXSYMENT; ++sid) {
+		syment_t *e = fun->vars[sid];
+		if (!e) {
+			continue;
+		}
+		dbg("seq=%02d sid=%02d var=%s\n", ++seq, sid, REPR(e));
+	}
+}
+
 static void live_var_anlys(fun_t *fun)
 {
 	bb_t *bb;
@@ -128,6 +144,9 @@ static void live_var_anlys(fun_t *fun)
 	for (bb = fun->bhead; bb; bb = bb->next) {
 		calc_use_def(bb);
 	}
+
+	// dump variables
+	dump_vars(fun);
 
 	// Iterative Solver
 	bool changed = TRUE; // loop flag
