@@ -10,10 +10,7 @@ begin
       z := a;
       write(x);
    end
-   else
-   begin
-      y := y + 2;
-   end;
+   else y := y + 2;
 
    y := 2 * y;
    write(y);
