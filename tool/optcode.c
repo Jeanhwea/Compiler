@@ -133,7 +133,7 @@ void dumpinst2(bb_t *bb)
 		return;
 	}
 
-	msg("   => insts2\n");
+	msg("   => insts2 after DAG\n");
 	for (i = 0; i < bb->inst2cnt; i++) {
 		fmtinst2(bb->insts2[i]);
 	}
