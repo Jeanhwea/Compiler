@@ -151,6 +151,7 @@ static void dump_use_def(fun_t *fun)
 	for (bb = fun->bhead; bb; bb = bb->next) {
 		char bm_def[MAXSYMENT] = {};
 		char bm_use[MAXSYMENT] = {};
+
 		int i;
 		for (i = 0; i < total; ++i) {
 			bm_def[i] = bget(bb->def, seqs[i]) ? '1' : '0';
@@ -181,6 +182,7 @@ static void dump_use_def(fun_t *fun)
 			}
 			strncat(buf_use, REPR(syments[seqs[i]]), MAXSTRBUF);
 		}
+
 		dbg("B%d def=[%s] use=[%s]\n", bb->bid, buf_def, buf_use);
 	}
 }
