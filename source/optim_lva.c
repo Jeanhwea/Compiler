@@ -272,16 +272,16 @@ static void elim_dead_assign(bb_t *bb)
 		// check if eliminate current instruction
 		syment_t *d = curr->d;
 		if (curr->op != ASS_OP) {
-			goto duplication;
+			goto dupinst;
 		}
 		if (d->cate != VAR_OBJ && d->cate != TMP_OBJ) {
-			goto duplication;
+			goto dupinst;
 		}
 		if (!sget(bb->in, d) && !sget(bb->out, d)) {
 			continue;
 		}
 
-	duplication:
+	dupinst:
 		inst_t *copy = dupinst(curr->op, curr->d, curr->r, curr->s);
 		if (bb->inst3cnt >= MAXBBINST) {
 			panic("LVA_ELIM_DEAD_ASSIGN_OVERFLOW");
