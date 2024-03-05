@@ -42,8 +42,8 @@ struct _function_struct {
 	symtab_t *scope;
 
 	// basic block list
-	bb_t *bhead;
-	bb_t *btail;
+	bb_t *bhead; // prev of bhead is ENTRY
+	bb_t *btail; // next of btail is EXIT
 
 	// store variables in LVA
 	int total;		   // total variables
@@ -71,10 +71,8 @@ struct _basic_block_struct {
 	inst_t *insts2[MAXBBINST]; // instructions after DAG optim
 
 	// DFA: data flow analysis
-	bits_t in[NBITARR];   // in set
-	bits_t out[NBITARR];  // out set
-	bits_t in0[NBITARR];  // old in set
-	bits_t out0[NBITARR]; // old out set
+	bits_t in[NBITARR];  // in set
+	bits_t out[NBITARR]; // out set
 
 	// LVA: live variable analysis
 	bits_t use[NBITARR]; // use set

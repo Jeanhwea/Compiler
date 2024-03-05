@@ -136,6 +136,29 @@ static void dump_vars(fun_t *fun)
 	}
 }
 
+void make_bitmap(fun_t *fun, bits_t bits[], char *bmap)
+{
+	int i;
+	for (i = 0; i < fun->total; ++i) {
+		bmap[i] = bget(bits, fun->seqs[i]) ? '1' : '0';
+	}
+	bmap[fun->total] = '\0';
+}
+
+void make_vector(fun_t *fun, bits_t bits[], char *vec)
+{
+	int i;
+	for (i = 0; i < fun->total; ++i) {
+		if (!bget(bits, fun->seqs[i])) {
+			continue;
+		}
+		if (strlen(vec) > 0) {
+			strncat(vec, ",", MAXSTRBUF - 1);
+		}
+		strncat(vec, REPR(syments[fun->seqs[i]]), MAXSTRBUF - 1);
+	}
+}
+
 static void dump_use_def(fun_t *fun)
 {
 	int total = fun->total;
@@ -143,63 +166,55 @@ static void dump_use_def(fun_t *fun)
 
 	bb_t *bb;
 	for (bb = fun->bhead; bb; bb = bb->next) {
-		char bm_def[MAXSYMENT] = {};
-		char bm_use[MAXSYMENT] = {};
-		int i;
-		for (i = 0; i < total; ++i) {
-			bm_def[i] = bget(bb->def, seqs[i]) ? '1' : '0';
-			bm_use[i] = bget(bb->use, seqs[i]) ? '1' : '0';
-		}
-		bm_def[total] = '\0';
-		bm_use[total] = '\0';
+		char bm_def[MAXSYMENT] = {}, bm_use[MAXSYMENT] = {};
+		make_bitmap(fun, bb->def, bm_def);
+		make_bitmap(fun, bb->use, bm_use);
 		dbg("B%d def=%s use=%s\n", bb->bid, bm_def, bm_use);
 
-		char buf_def[MAXSTRBUF] = {};
-		for (i = 0; i < total; ++i) {
-			if (!bget(bb->def, seqs[i])) {
-				continue;
-			}
-			if (strlen(buf_def) > 0) {
-				strncat(buf_def, ",", MAXSTRBUF - 1);
-			}
-			strncat(buf_def, REPR(syments[seqs[i]]), MAXSTRBUF - 1);
-		}
+		char vt_def[MAXSTRBUF] = {}, vt_use[MAXSTRBUF] = {};
+		make_vector(fun, bb->def, vt_def);
+		make_vector(fun, bb->use, vt_use);
+		dbg("B%d def=[%s] use=[%s]\n", bb->bid, vt_def, vt_use);
+	}
+}
 
-		char buf_use[MAXSTRBUF] = {};
-		for (i = 0; i < total; ++i) {
-			if (!bget(bb->use, seqs[i])) {
-				continue;
-			}
-			if (strlen(buf_use) > 0) {
-				strncat(buf_use, ",", MAXSTRBUF - 1);
-			}
-			strncat(buf_use, REPR(syments[seqs[i]]), MAXSTRBUF - 1);
-		}
+static void dump_in_out(fun_t *fun)
+{
+	int total = fun->total;
+	int *seqs = fun->seqs;
 
-		dbg("B%d def=[%s] use=[%s]\n", bb->bid, buf_def, buf_use);
+	bb_t *bb;
+	for (bb = fun->bhead; bb; bb = bb->next) {
+		char bm_in[MAXSYMENT] = {}, bm_out[MAXSYMENT] = {};
+		make_bitmap(fun, bb->in, bm_in);
+		make_bitmap(fun, bb->out, bm_out);
+		dbg("B%d in=%s out=%s\n", bb->bid, bm_in, bm_out);
+
+		char vt_in[MAXSTRBUF] = {}, vt_out[MAXSTRBUF] = {};
+		make_vector(fun, bb->in, vt_in);
+		make_vector(fun, bb->out, vt_out);
+		dbg("B%d in=[%s] out=[%s]\n", bb->bid, vt_in, vt_out);
 	}
 }
 
 // Data Flow Analysis (Backward)
 static void data_flow_anlys(fun_t *fun)
 {
-	bool changed = TRUE; // loop flag
-	int epoch = 1;
+	bool changed = TRUE; // flag, loop if IN set is changed
+	int epoch = 1;	     // which iteration round?
+
 	while (changed) {
 		dbg("epoch=%d\n", epoch);
+		changed = FALSE;
+
+		dump_in_out(fun);
 
 		bb_t *bb;
 		// update IN/OUT in current loop
 		for (bb = fun->bhead; bb; bb = bb->next) {
-			// save old IN/OUT sets
-			sdup(bb->in0, bb->in);
-			sdup(bb->out0, bb->out);
-
-			// set OUT[B] = empty set
-			sclr(bb->out);
-
-			// OUT[B] = Union_{b0 is B's successor}(IN[b0])
 			int i;
+			// OUT[B] = Union_{S is B's successor}(IN[S])
+			// sclr(bb->out);
 			for (i = 0; i < MAXBBLINK; ++i) {
 				bb_t *s = bb->succ[i];
 				if (!s) {
@@ -208,24 +223,21 @@ static void data_flow_anlys(fun_t *fun)
 				sunion(bb->out, bb->out, s->in);
 			}
 
+			// save old IN sets
+			bits_t old_in[NBITARR];
+			sdup(old_in, bb->in);
+
 			// IN[B] = use[B] union (OUT[B] - def[B])
 			bits_t tmp[NBITARR];
 			ssub(tmp, bb->out, bb->def);
 			sunion(bb->in, bb->use, tmp);
+
+			// check exit condition
+			if (!ssame(bb->in, old_in)) {
+				changed = TRUE;
+			}
 		}
 
-		// check exit condition
-		changed = FALSE;
-		for (bb = fun->bhead; bb; bb = bb->next) {
-			if (!ssame(bb->in, bb->in0)) {
-				changed = TRUE;
-				break;
-			}
-			if (!ssame(bb->out, bb->out0)) {
-				changed = TRUE;
-				break;
-			}
-		}
 		epoch++;
 	}
 }
