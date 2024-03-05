@@ -42,7 +42,7 @@ typedef char bin_t[BITSIZE + 1];
 #define OFF(i) (((bits_t)i) & (~((~0) << BITSHIFT)))
 // position of index(i)
 #define POS(i) ((((bits_t)i) & ((~0) << BITSHIFT)) >> BITSHIFT)
-
+// mask on element
 #define MASK(i) (1L << OFF(i))
 
 void bconv(bin_t str, bits_t b);
