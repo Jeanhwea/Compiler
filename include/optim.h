@@ -20,6 +20,9 @@ bool ssame(bits_t a[], bits_t b[]);
 void sunion(bits_t *r, bits_t *a, bits_t *b);
 void ssub(bits_t *r, bits_t *a, bits_t *b);
 
+// helper
+inst_t *dupinst(op_t op, syment_t *d, syment_t *r, syment_t *s);
+
 // CFG: flow graph objects: Module, Function, BasicBlock
 typedef struct _module_struct mod_t;
 typedef struct _function_struct fun_t;

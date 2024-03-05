@@ -265,6 +265,29 @@ static void live_var_anlys(fun_t *fun)
 // Eliminate Dead Assign
 static void elim_dead_assign(bb_t *bb)
 {
+	int i;
+	for (i = 0; i < bb->total; ++i) {
+		inst_t *curr = bb->insts[i];
+
+		// check if eliminate current instruction
+		syment_t *d = curr->d;
+		if (curr->op != ASS_OP) {
+			goto duplication;
+		}
+		if (d->cate != VAR_OBJ && d->cate != TMP_OBJ) {
+			goto duplication;
+		}
+		if (!sget(bb->in, d) && !sget(bb->out, d)) {
+			continue;
+		}
+
+	duplication:
+		inst_t *copy = dupinst(curr->op, curr->d, curr->r, curr->s);
+		if (bb->inst3cnt >= MAXBBINST) {
+			panic("LVA_ELIM_DEAD_ASSIGN_OVERFLOW");
+		}
+		bb->insts3[bb->inst3cnt++] = copy;
+	}
 }
 
 void lva_optim(void)

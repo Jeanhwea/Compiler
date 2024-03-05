@@ -214,32 +214,10 @@ static void gen_curr_node(bb_t *bb, dnode_t *n)
 		gen_curr_node(bb, n->rhs);
 	}
 
-	inst_t *x;
-	NEWINST(x);
-	x->op = n->op;
-	x->xid = ++xidcnt2;
-	switch (n->op) {
-	case ADD_OP:
-	case SUB_OP:
-	case MUL_OP:
-	case DIV_OP:
-	case LOAD_OP:
-		x->r = n->lhs->syment;
-		x->s = n->rhs->syment;
-		x->d = n->syment;
-		break;
-	case INC_OP:
-	case DEC_OP:
-		x->d = n->syment;
-		break;
-	case NEG_OP:
-	case ASS_OP:
-		x->r = n->lhs->syment;
-		x->d = n->syment;
-		break;
-	default:
-		panic("BAD_OP_IN_GEN_CURR_NODE");
-	}
+	// duplicate instruction
+	syment_t *r = n->lhs ? n->lhs->syment : NULL;
+	syment_t *s = n->rhs ? n->rhs->syment : NULL;
+	inst_t *x = dupinst(n->op, n->syment, r, s);
 
 	if (bb->inst2cnt >= MAXBBINST) {
 		panic("DAG_REGEN_INSTRUCTION_OVERFLOW");
