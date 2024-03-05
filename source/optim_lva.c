@@ -125,14 +125,63 @@ static void calc_use_def(bb_t *bb)
 
 static void dump_vars(fun_t *fun)
 {
-	int sid, seq;
-	seq = 0;
+	int sid, seq = 0;
 	for (sid = 0; sid < MAXSYMENT; ++sid) {
 		syment_t *e = fun->vars[sid];
 		if (!e) {
 			continue;
 		}
 		dbg("seq=%02d sid=%02d var=%s\n", ++seq, sid, REPR(e));
+	}
+}
+
+static void dump_use_def(fun_t *fun)
+{
+	int seqs[MAXSYMENT], total = 0;
+	int sid = 0;
+	for (sid = 0; sid < MAXSYMENT; ++sid) {
+		syment_t *e = fun->vars[sid];
+		if (!e) {
+			continue;
+		}
+		seqs[total++] = sid;
+	}
+
+	bb_t *bb;
+	for (bb = fun->bhead; bb; bb = bb->next) {
+		char bm_def[MAXSYMENT] = {};
+		char bm_use[MAXSYMENT] = {};
+		int i;
+		for (i = 0; i < total; ++i) {
+			bm_def[i] = bget(bb->def, seqs[i]) ? '1' : '0';
+			bm_use[i] = bget(bb->use, seqs[i]) ? '1' : '0';
+		}
+		bm_def[total] = '\0';
+		bm_use[total] = '\0';
+		dbg("B%d def=%s use=%s\n", bb->bid, bm_def, bm_use);
+
+		char buf_def[MAXSTRBUF] = {};
+		for (i = 0; i < total; ++i) {
+			if (!bget(bb->def, seqs[i])) {
+				continue;
+			}
+			if (strlen(buf_def) > 0) {
+				strncat(buf_def, ",", MAXSTRBUF);
+			}
+			strncat(buf_def, REPR(syments[seqs[i]]), MAXSTRBUF);
+		}
+
+		char buf_use[MAXSTRBUF] = {};
+		for (i = 0; i < total; ++i) {
+			if (!bget(bb->use, seqs[i])) {
+				continue;
+			}
+			if (strlen(buf_use) > 0) {
+				strncat(buf_use, ",", MAXSTRBUF);
+			}
+			strncat(buf_use, REPR(syments[seqs[i]]), MAXSTRBUF);
+		}
+		dbg("B%d def=[%s] use=[%s]\n", bb->bid, buf_def, buf_use);
 	}
 }
 
@@ -147,6 +196,7 @@ static void live_var_anlys(fun_t *fun)
 
 	// dump variables
 	dump_vars(fun);
+	dump_use_def(fun);
 
 	// Iterative Solver
 	bool changed = TRUE; // loop flag
