@@ -210,7 +210,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	char extra[MAXSTRBUF];
 	sprintf(extra, "%s %s", var->label, var->name);
 
-	dbg("current scope= %p, depth=%d\n", scope, scope->depth);
+	dbg("current scope= %s, depth=%d\n", scope->nspace, scope->depth);
 	if (!scope) {
 		panic("CURR_SCOPE_IS_NULL");
 	}
