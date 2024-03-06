@@ -210,7 +210,7 @@ static void rwmem(rwmode_t mode, reg_t *reg, syment_t *var, reg_t *idx)
 	char extra[MAXSTRBUF];
 	sprintf(extra, "%s %s", var->label, var->name);
 
-	dbg("current scope= %p, depth=%d\n", scope, scope->depth);
+	dbg("current scope= %s, depth=%d\n", scope->nspace, scope->depth);
 	if (!scope) {
 		panic("CURR_SCOPE_IS_NULL");
 	}
@@ -326,7 +326,7 @@ void x86_lib_leave()
 	addcode1("ret");
 }
 
-void x86_iolib_exit()
+void x86_syslib_exit()
 {
 	addlabel(LIBEXIT);
 	addcode3("mov", REG_RA, "1");	 // syscall number
@@ -498,7 +498,7 @@ void x86_init()
 	x86_iolib_wrtchr();
 	x86_iolib_wrtstr();
 	x86_iolib_wrtint();
-	x86_iolib_exit();
+	x86_syslib_exit();
 }
 
 void x86_mov(reg_t *reg, syment_t *var)
