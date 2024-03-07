@@ -15,7 +15,7 @@ TOBJS    := $(filter-out $(BLD_DIR)/$(SRC_DIR)/main.c.o,$(OBJS))
 TDEPS    := $(TOBJS:.o=.d)
 TOOLS    := $(TSRCS:$(TOOL_DIR)/%.c=$(BIN_DIR)/%)
 # build config
-CC       := gcc
+CC       := cc
 DEBUG    := -g
 CCFLAGS  := -I$(INC_DIR) $(DEBUG) -MMD -MP -std=gnu99
 LDFLAGS  := -I$(INC_DIR) $(DEBUG)
