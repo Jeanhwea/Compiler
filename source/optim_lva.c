@@ -265,7 +265,7 @@ static void live_var_anlys(fun_t *fun)
 // Eliminate Dead Assign
 static void elim_dead_assign(bb_t *bb)
 {
-	inst_t *x;
+	inst_t *new;
 	int i;
 	for (i = 0; i < bb->total; ++i) {
 		inst_t *curr = bb->insts[i];
@@ -283,11 +283,11 @@ static void elim_dead_assign(bb_t *bb)
 		}
 
 	dupinst:
-		x = dupinst(curr->op, curr->d, curr->r, curr->s);
+		new = dupinst(curr->op, curr->d, curr->r, curr->s);
 		if (bb->inst3cnt >= MAXBBINST) {
 			panic("LVA_ELIM_DEAD_ASSIGN_OVERFLOW");
 		}
-		bb->insts3[bb->inst3cnt++] = x;
+		bb->insts3[bb->inst3cnt++] = new;
 	}
 }
 
