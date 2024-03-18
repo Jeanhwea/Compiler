@@ -2,10 +2,107 @@
 #include "anlys.h"
 #include "global.h"
 #include "debug.h"
+#include "limits.h"
 #include "util.h"
 #include "syntax.h"
 #include "parse.h"
 #include "symtab.h"
+
+char *typerepr[4] = {
+	[0] = "$V", /* VOID_TYPE */
+	[1] = "$I", /* INT_TYPE  */
+	[2] = "$C", /* CHAR_TYPE */
+	[3] = "$S", /* STR_TYPE  */
+};
+
+static type_t infer_expr_type(expr_node_t *node)
+{
+	type_t ltyp, rtyp;
+	ltyp = infer_term_type(node->tp);
+	expr_node_t *t;
+	for (t = node->next; t; t = t->next) {
+		rtyp = infer_term_type(t->tp);
+		if (ltyp == CHAR_TYPE && rtyp == CHAR_TYPE) {
+			ltyp = CHAR_TYPE;
+		} else if (ltyp == INT_TYPE && rtyp == INT_TYPE) {
+			ltyp = INT_TYPE;
+		}
+	}
+	return ltyp;
+}
+
+static type_t infer_term_type(term_node_t *node)
+{
+	type_t ltyp, rtyp;
+	ltyp = infer_factor_type(node->fp);
+	term_node_t *t;
+	for (t = node->next; t; t = t->next) {
+		rtyp = infer_factor_type(t->fp);
+		if (ltyp == CHAR_TYPE && rtyp == CHAR_TYPE) {
+			ltyp = CHAR_TYPE;
+		} else if (ltyp == INT_TYPE && rtyp == INT_TYPE) {
+			ltyp = INT_TYPE;
+		}
+	}
+	return ltyp;
+}
+
+static type_t infer_factor_type(factor_node_t *node)
+{
+	ident_node_t *idp;
+	syment_t *e;
+	switch (node->kind) {
+	case ID_FACTOR:
+		nevernil(node->idp);
+		idp = node->idp;
+		e = symfind(idp->name);
+		if (!e) {
+			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
+			       idp->name);
+		}
+		return e->type;
+	case ARRAY_FACTOR:
+		nevernil(node->idp);
+		idp = node->idp;
+		e = symfind(idp->name);
+		if (!e) {
+			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
+			       idp->name);
+		}
+		if (e->cate != ARRAY_OBJ) {
+			giveup(ERTYPE, "L%d: symbol %s type is not array.",
+			       idp->line, idp->name);
+		}
+		return e->type;
+	case UNSIGN_FACTOR:
+		return INT_TYPE;
+	case CHAR_FACTOR:
+		return CHAR_TYPE;
+	case EXPR_FACTOR:
+		return infer_expr_type(node->ep);
+	case FUNCALL_FACTOR:
+		panic("FUNCALL_IN_INFERENCE");
+	default:
+		unlikely();
+	}
+}
+
+static void make_symkey(char *key, param_t *phead)
+{
+	param_t *p = NULL;
+	for (p = phead; p; p = p->next) {
+		strncat(key, typerepr[p->symbol->type], MAXSTRLEN - 1);
+	}
+}
+
+static void make_symkey2(char *key, arg_list_node_t *arglist)
+{
+	arg_list_node_t *a = NULL;
+	for (a = arglist; a; a = a->next) {
+		type_t typ = infer_expr_type(a->ep);
+		strncat(key, typerepr[typ], MAXSTRLEN - 1);
+	}
+}
 
 static void anlys_pgm(pgm_node_t *node)
 {
@@ -107,20 +204,33 @@ static void anlys_proc_head(proc_head_node_t *node)
 
 	nevernil(t->idp);
 	ident_node_t *idp = t->idp;
-	syment_t *e = symget(idp->name);
+
+	symtab_t *parent = scope_top();
+	symtab_t *scope = scope_entry(idp->name);
+
+	// analysis parameters
+	param_t *phead = NULL;
+	if (t->plp) {
+		phead = anlys_para_list(t->plp);
+	}
+
+	// construct procedure name
+	char pname[MAXSTRLEN];
+	strncpy(pname, idp->name, MAXSTRLEN - 1);
+	make_symkey(pname, phead);
+
+	syment_t *e = symget2(parent, pname);
 	if (e) {
 		rescue(DUPSYM, "L%d: procedure %s already declared.", idp->line,
 		       idp->name);
 	} else {
-		e = syminit(idp);
+		e = syminit2(parent, idp, pname);
 	}
+
+	scope->funcsym = e;
+	e->scope = scope;
+	e->phead = phead;
 	idp->symbol = e;
-
-	e->scope = scope_entry(idp->name);
-
-	if (t->plp) {
-		anlys_para_list(idp->symbol, t->plp);
-	}
 }
 
 static void anlys_fun_decf(fun_dec_node_t *node)
@@ -149,24 +259,38 @@ static void anlys_fun_head(fun_head_node_t *node)
 
 	nevernil(t->idp);
 	ident_node_t *idp = t->idp;
-	syment_t *e = symget(idp->name);
+
+	symtab_t *parent = scope_top();
+	symtab_t *scope = scope_entry(idp->name);
+
+	// analysis parameters
+	param_t *phead = NULL;
+	if (t->plp) {
+		phead = anlys_para_list(t->plp);
+	}
+
+	// construct function name
+	char fname[MAXSTRLEN];
+	strncpy(fname, idp->name, MAXSTRLEN - 1);
+	make_symkey(fname, phead);
+
+	syment_t *e = symget2(parent, fname);
 	if (e) {
 		rescue(DUPSYM, "L%d: function %s already declared.", idp->line,
 		       idp->name);
 	} else {
-		e = syminit(idp);
+		e = syminit2(parent, idp, fname);
 	}
+
+	scope->funcsym = e;
+	e->scope = scope;
+	e->phead = phead;
 	idp->symbol = e;
-
-	e->scope = scope_entry(idp->name);
-
-	if (t->plp) {
-		anlys_para_list(idp->symbol, t->plp);
-	}
 }
 
-static void anlys_para_list(syment_t *sign, para_list_node_t *node)
+static param_t *anlys_para_list(para_list_node_t *node)
 {
+	param_t *phead = NULL, *ptail = NULL;
 	para_list_node_t *t;
 	para_def_node_t *p;
 	for (t = node; t; t = t->next) {
@@ -187,15 +311,17 @@ static void anlys_para_list(syment_t *sign, para_list_node_t *node)
 			NEWPARAM(param);
 			param->symbol = e;
 
-			if (!sign->ptail) {
-				sign->ptail = param;
-				sign->phead = param;
+			if (!ptail) {
+				ptail = param;
+				phead = param;
 			} else {
-				sign->ptail->next = param;
-				sign->ptail = param;
+				ptail->next = param;
+				ptail = param;
 			}
 		}
 	}
+
+	return phead;
 }
 
 static void anlys_comp_stmt(comp_stmt_node_t *node)
@@ -245,11 +371,17 @@ static void anlys_assign_stmt(assign_stmt_node_t *node)
 {
 	syment_t *e;
 	ident_node_t *idp = node->idp;
-	e = symfind(idp->name);
-	if (!e) {
-		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
-		       idp->name);
+
+	if (!strcmp(idp->name, scope_top()->nspace)) {
+		e = scope_top()->funcsym;
+	} else {
+		e = symfind(idp->name);
+		if (!e) {
+			giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
+			       idp->name);
+		}
 	}
+
 	idp->symbol = e;
 	switch (node->kind) {
 	case NORM_ASSGIN:
@@ -309,7 +441,11 @@ static void anlys_for_stmt(for_stmt_node_t *node)
 static void anlys_pcall_stmt(pcall_stmt_node_t *node)
 {
 	ident_node_t *idp = node->idp;
-	syment_t *e = symfind(idp->name);
+	char pname[MAXSTRLEN];
+	strncpy(pname, idp->name, MAXSTRLEN - 1);
+	make_symkey2(pname, node->alp);
+
+	syment_t *e = symfind(pname);
 	if (!e) {
 		giveup(BADSYM, "L%d: symbol %s not found.", idp->line,
 		       idp->name);
@@ -440,8 +576,13 @@ static void anlys_fcall_stmt(fcall_stmt_node_t *node)
 {
 	node->stab = scope_top();
 	nevernil(node->idp);
+
 	ident_node_t *idp = node->idp;
-	syment_t *e = symfind(idp->name);
+	char fname[MAXSTRLEN];
+	strncpy(fname, idp->name, MAXSTRLEN - 1);
+	make_symkey2(fname, node->alp);
+
+	syment_t *e = symfind(fname);
 	if (!e) {
 		giveup(BADSYM, "L%d: function %s not found.", idp->line,
 		       idp->name);

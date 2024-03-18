@@ -53,7 +53,6 @@ struct _sym_entry_struct {
 	int arrlen;
 	char str[MAXSTRLEN];
 	param_t *phead;
-	param_t *ptail;
 	symtab_t *scope;
 	// label for assemble codes
 	char label[MAXSTRLEN];
@@ -71,6 +70,7 @@ struct _sym_table_struct {
 	// for function scope management
 	int depth;		// symbol table nested depth
 	char nspace[MAXSTRLEN]; // namespace
+	syment_t *funcsym;	// current scope function/procedure symbol
 	symtab_t *inner;	// inner scope
 	symtab_t *outer;	// outer scope
 
@@ -103,10 +103,13 @@ symtab_t *scope_exit(void);
 symtab_t *scope_top();
 // symbol operator
 void symadd(syment_t *entry);
+void symadd2(symtab_t *stab, syment_t *entry);
 // symget only search current scope, while symfind search all.
 syment_t *symget(char *name);
+syment_t *symget2(symtab_t *stab, char *name);
 syment_t *symfind(char *name);
 void stabdump();
 syment_t *syminit(ident_node_t *idp);
+syment_t *syminit2(symtab_t *stab, ident_node_t *idp, char *key);
 syment_t *symalloc(symtab_t *stab, char *name, cate_t cate, type_t type);
 #endif /* End of _SYMTAB_H_ */
