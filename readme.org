@@ -34,5 +34,5 @@
 24. 思考题讲解-课程完结
 
 * 学习教材
-教材见 [[file:pl0e.pdf][pl0e.pdf]]
-题解见 [[file:solutions.pdf][solutions.pdf]]
+- 教材见 [[file:pl0e.pdf][pl0e.pdf]]
+- 题解见 [[file:solutions.pdf][solutions.pdf]]
