@@ -12,7 +12,7 @@ static void anlys_proc_decf(proc_dec_node_t *node);
 static void anlys_proc_head(proc_head_node_t *node);
 static void anlys_fun_decf(fun_dec_node_t *node);
 static void anlys_fun_head(fun_head_node_t *node);
-static void anlys_para_list(syment_t *sign, para_list_node_t *node);
+static param_t *anlys_para_list(para_list_node_t *node);
 static void anlys_comp_stmt(comp_stmt_node_t *node);
 static void anlys_stmt(stmt_node_t *node);
 static void anlys_assign_stmt(assign_stmt_node_t *node);
@@ -28,6 +28,10 @@ static void anlys_factor(factor_node_t *node);
 static void anlys_fcall_stmt(fcall_stmt_node_t *node);
 static void anlys_cond(cond_node_t *node);
 static void anlys_arg_list(syment_t *sign, arg_list_node_t *node);
+
+static type_t infer_expr_type(expr_node_t *node);
+static type_t infer_term_type(term_node_t *node);
+static type_t infer_factor_type(factor_node_t *node);
 
 void analysis();
 #endif /* End of _ANLYS_H_ */

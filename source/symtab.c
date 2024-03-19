@@ -143,6 +143,11 @@ syment_t *symget(char *name)
 	return getsym(top, name);
 }
 
+syment_t *symget2(symtab_t *stab, char *name)
+{
+	return getsym(stab, name);
+}
+
 syment_t *symfind(char *name)
 {
 	nevernil(top);
@@ -159,9 +164,14 @@ syment_t *symfind(char *name)
 
 void symadd(syment_t *entry)
 {
-	nevernil(top);
-	putsym(top, entry);
-	entry->stab = top;
+	symadd2(top, entry);
+}
+
+void symadd2(symtab_t *stab, syment_t *entry)
+{
+	nevernil(stab);
+	putsym(stab, entry);
+	entry->stab = stab;
 }
 
 void stabdump()
@@ -176,11 +186,16 @@ void stabdump()
 
 syment_t *syminit(ident_node_t *idp)
 {
+	return syminit2(top, idp, idp->name);
+}
+
+syment_t *syminit2(symtab_t *stab, ident_node_t *idp, char *key)
+{
 	syment_t *e;
 	NEWENTRY(e);
 	e->sid = ++sidcnt;
 
-	strcopy(e->name, idp->name);
+	strcopy(e->name, key);
 	e->initval = idp->value;
 	e->arrlen = idp->length;
 	e->lineno = idp->line;
@@ -247,23 +262,23 @@ syment_t *syminit(ident_node_t *idp)
 	case VAR_OBJ:
 	case PROC_OBJ:
 	case FUN_OBJ:
-		e->off = top->varoff;
-		top->varoff++;
+		e->off = stab->varoff;
+		stab->varoff++;
 		break;
 	case BYVAL_OBJ:
 	case BYREF_OBJ:
-		e->off = top->argoff;
-		top->argoff++;
+		e->off = stab->argoff;
+		stab->argoff++;
 		break;
 	case ARRAY_OBJ:
-		e->off = top->varoff;
-		top->varoff += e->arrlen;
+		e->off = stab->varoff;
+		stab->varoff += e->arrlen;
 		break;
 	default:
 		unlikely();
 	}
 
-	symadd(e);
+	symadd2(stab, e);
 	return e;
 }
 
