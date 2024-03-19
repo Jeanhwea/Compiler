@@ -31,6 +31,8 @@
 21. DAG-SSA-消除公共表达式
 22. 全局优化-数据流分析-到达定值分析
 23. 活跃变量分析-集合操作及优化算法实现
+24. 思考题讲解-课程完结
 
 * 学习教材
-见 [[file:pl0e.pdf][pl0e.pdf]]
+教材见 [[file:pl0e.pdf][pl0e.pdf]]
+题解见 [[file:solutions.pdf][solutions.pdf]]
