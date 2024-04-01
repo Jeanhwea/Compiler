@@ -47,8 +47,8 @@ format:
 
 index: clean
 	find $(INC_DIR) $(SRC_DIR) -type f | sort > cscope.files
-	cscope -bqk
-	ctags -e -L cscope.files
+	-cscope -bqk
+	-ctags -e -L cscope.files
 
 clean:
 	$(RM) -r $(BLD_DIR) $(TARGET) bin/* viz*
