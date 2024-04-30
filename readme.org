@@ -1,4 +1,4 @@
-#+TITLE: COMPILER
+#+TITLE: 🦖 COMPILER - a full compiler for PL/0e language base on x86 architectture
 #+AUTHOR: Jinghui Hu
 #+EMAIL: hujinghui@buaa.edu.cn
 #+DATE: <2024-02-24 Sat>
