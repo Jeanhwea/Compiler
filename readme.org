@@ -5,6 +5,8 @@
 #+STARTUP: overview num indent
 #+OPTIONS: ^:nil
 
+[[file:phase.dot.png]]
+
 * 视频课程
 视频课程见 [[https://www.bilibili.com/cheese/play/ss10144][PL0E 编译器实现]]
 
