@@ -21,9 +21,14 @@ jobs:
       matrix:
         target: [x86_64-unknown-linux-musl]
     steps:
-      - uses: actions/checkout@master
-      - name: Run unit test
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Install depends
+        run: |
+          sudo apt-get update
+          sudo apt-get install nasm gcc make
+      - name: Build source code
         run: |
           make
-      - name: Checkout build outputs
+      - name: List build outputs
         run: find . -type f -not -path './.git/*' | sort
