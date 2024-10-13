@@ -50,7 +50,7 @@ void test(int id)
 	strncpy(txt, cases[id], MAXNAMELEN);
 	chgsuf(txt, ".txt", ".pas");
 
-	msg("run test case: %s\n", cases[id]);
+	msg("testcase(%02d): %s\n", id, cases[id]);
 
 	fe = fopen(txt, "r");
 	if (fe == NULL) {
