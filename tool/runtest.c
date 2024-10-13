@@ -50,6 +50,8 @@ void test(int id)
 	strncpy(txt, cases[id], MAXNAMELEN);
 	chgsuf(txt, ".txt", ".pas");
 
+	msg("run test case: %s\n", cases[id]);
+
 	fe = fopen(txt, "r");
 	if (fe == NULL) {
 		panic("fail to open expected file.");
@@ -75,6 +77,7 @@ void test(int id)
 		}
 
 		msg("test case: %s failed.\n", cases[id]);
+		exit(1);
 		goto done;
 	}
 
@@ -82,6 +85,7 @@ void test(int id)
 		rtrim(actual);
 		if (strlen(actual) > 0) {
 			msg("test case: %s failed.\n", cases[id]);
+			exit(1);
 			goto done;
 		}
 	}
