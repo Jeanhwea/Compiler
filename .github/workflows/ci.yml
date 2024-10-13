@@ -1,0 +1,29 @@
+# https://docs.github.com/en/actions/writing-workflows/quickstart
+
+on:
+  release:
+    types: [created]
+  push:
+    branches:
+      - master
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  unit_tests:
+    name: Release ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        target: [x86_64-unknown-linux-musl]
+    steps:
+      - uses: actions/checkout@master
+      - name: Run unit test
+        run: |
+          make
+      - name: Checkout build outputs
+        run: find . -type f -not -path './.git/*' | sort
