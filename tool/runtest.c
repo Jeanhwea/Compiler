@@ -101,7 +101,7 @@ done:
 int main(int argc, char *argv[])
 {
 	findtest();
-	int i, retcode;
+	int i, retcode = 0;
 	for (i = 0; i < ncase; ++i) {
 		char statusmsg[MAXNAMELEN] = "ok";
 		int buildcode = build(i);
