@@ -101,22 +101,24 @@ done:
 int main(int argc, char *argv[])
 {
 	findtest();
-	int i;
+	int i, retcode;
 	for (i = 0; i < ncase; ++i) {
 		char statusmsg[MAXNAMELEN] = "ok";
 		int id = i + 1;
-		int retcode = build(id);
-		if (retcode) {
+		int buildcode = build(id);
+		if (buildcode) {
 			strncpy(statusmsg, "build failed", MAXNAMELEN - 1);
+			retcode = 1;
 			goto nextcase;
 		}
-		int retcode = test(id);
-		if (retcode) {
+		int testcode = test(id);
+		if (testcode) {
 			strncpy(statusmsg, "test failed", MAXNAMELEN - 1);
+			retcode = 2;
 			goto nextcase;
 		}
 	nextcase:
 		msg("%02d: %s => %s\n", id, cases[id], statusmsg);
 	}
-	return 0;
+	return retcode;
 }
