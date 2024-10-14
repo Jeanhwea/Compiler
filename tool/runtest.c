@@ -104,21 +104,20 @@ int main(int argc, char *argv[])
 	int i, retcode;
 	for (i = 0; i < ncase; ++i) {
 		char statusmsg[MAXNAMELEN] = "ok";
-		int id = i + 1;
-		int buildcode = build(id);
+		int buildcode = build(i);
 		if (buildcode) {
 			strncpy(statusmsg, "build failed", MAXNAMELEN - 1);
 			retcode = 1;
 			goto nextcase;
 		}
-		int testcode = test(id);
+		int testcode = test(i);
 		if (testcode) {
 			strncpy(statusmsg, "test failed", MAXNAMELEN - 1);
 			retcode = 2;
 			goto nextcase;
 		}
 	nextcase:
-		msg("%02d: %s => %s\n", id, cases[id], statusmsg);
+		msg("%02d: %s => %s\n", i + 1, cases[i], statusmsg);
 	}
 	return retcode;
 }
