@@ -10,7 +10,7 @@
 * 视频课程
 视频课程见 [[https://www.bilibili.com/cheese/play/ss10144][PL0E 编译器实现]]
 
-| 发布日期         | 主题                                        | 视频链接 |
+| 发布日期         | 课程主题                                    | 视频链接 |
 |------------------+---------------------------------------------+----------|
 | <2023-12-30 Sat> | 背景介绍，gcc 工具集介绍，编译阶段分析      | [[https://www.bilibili.com/cheese/play/ep381031][p01]]      |
 | <2024-01-02 Tue> | PL0E 文法解读，fpc 编译器                   | [[https://www.bilibili.com/cheese/play/ep394522][p02]]      |
