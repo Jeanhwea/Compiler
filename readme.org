@@ -10,30 +10,32 @@
 * 视频课程
 视频课程见 [[https://www.bilibili.com/cheese/play/ss10144][PL0E 编译器实现]]
 
-1. 背景介绍，gcc 工具集介绍，编译阶段分析
-2. PL0E 文法解读，fpc 编译器
-3. 词法分析-项目介绍
-4. 有限状态机-gettok 实现
-5. 语法分析-抽象语法树-文法歧义
-6. 语法树节点定义
-7. 递归下降法-程序、分程序、语句的解析
-8. 表达式、条件、参数的解析-更多语法树例子
-9. 语义分析引入-符号表逻辑结构
-10. 符号表数据结构-函数作用域
-11. 嵌套函数作用域-符号表操作函数
-12. anlys 函数家族-语义分析情景分析
-13. 中间代码-四元式设计-指令队列
-14. 语法树转换四元式-表达式、if、for 和函数调用
-15. gen 生成函数-prtir 调试工具
-16. 目标代码生成-x86 体系结构-nasm 汇编器
-17. 库函数-输入输出指令实现
-18. 运行栈-调用帧-汇编代码生成
-19. x86 汇编-access link 区-x86 寻址-后置工作
-20. 代码优化-基本块-流图
-21. DAG-SSA-消除公共表达式
-22. 全局优化-数据流分析-到达定值分析
-23. 活跃变量分析-集合操作及优化算法实现
-24. 思考题讲解-课程完结
+| 发布日期         | 主题                                        | 视频链接 |
+|------------------+---------------------------------------------+----------|
+| <2023-12-30 Sat> | 背景介绍，gcc 工具集介绍，编译阶段分析      | [[https://www.bilibili.com/cheese/play/ep381031][p01]]      |
+| <2024-01-02 Tue> | PL0E 文法解读，fpc 编译器                   | [[https://www.bilibili.com/cheese/play/ep394522][p02]]      |
+| <2024-01-02 tue> | 词法分析-项目介绍                           | [[https://www.bilibili.com/cheese/play/ep394602][p03]]      |
+| <2024-01-03 Wed> | 有限状态机-gettok 实现                      | [[https://www.bilibili.com/cheese/play/ep394603][p04]]      |
+| <2024-01-11 Thu> | 语法分析-抽象语法树-文法歧义                | [[https://www.bilibili.com/cheese/play/ep407828][p05]]      |
+| <2024-01-11 Thu> | 语法树节点定义                              | [[https://www.bilibili.com/cheese/play/ep408148][p06]]      |
+| <2024-01-11 Thu> | 递归下降法-程序、分程序、语句的解析         | [[https://www.bilibili.com/cheese/play/ep408327][p07]]      |
+| <2024-01-12 Fri> | 表达式、条件、参数的解析-更多语法树例子     | [[https://www.bilibili.com/cheese/play/ep408328][p08]]      |
+| <2024-01-19 Fri> | 语义分析引入-符号表逻辑结构                 | [[https://www.bilibili.com/cheese/play/ep428954][p09]]      |
+| <2024-01-19 Fri> | 符号表数据结构-函数作用域                   | [[https://www.bilibili.com/cheese/play/ep431949][p10]]      |
+| <2024-01-19 Fri> | 嵌套函数作用域-符号表操作函数               | [[https://www.bilibili.com/cheese/play/ep432040][p11]]      |
+| <2024-01-23 Tue> | anlys 函数家族-语义分析情景分析             | [[https://www.bilibili.com/cheese/play/ep441891][p12]]      |
+| <2024-02-01 Thu> | 中间代码-四元式设计-指令队列                | [[https://www.bilibili.com/cheese/play/ep454565][p13]]      |
+| <2024-02-01 Thu> | 语法树转换四元式-表达式、if、for 和函数调用 | [[https://www.bilibili.com/cheese/play/ep454566][p14]]      |
+| <2024-02-01 Thu> | gen 生成函数-prtir 调试工具                 | [[https://www.bilibili.com/cheese/play/ep462897][p15]]      |
+| <2024-02-28 Wed> | 目标代码生成-x86 体系结构-nasm 汇编器       | [[https://www.bilibili.com/cheese/play/ep499615][p16]]      |
+| <2024-02-29 Thu> | 库函数-输入输出指令实现                     | [[https://www.bilibili.com/cheese/play/ep502440][p17]]      |
+| <2024-03-06 Wed> | 运行栈-调用帧-汇编代码生成                  | [[https://www.bilibili.com/cheese/play/ep515422][p18]]      |
+| <2024-03-07 Thu> | x86 汇编-access link 区-x86 寻址-后置工作   | [[https://www.bilibili.com/cheese/play/ep517986][p19]]      |
+| <2024-03-13 Wed> | 代码优化-基本块-流图                        | [[https://www.bilibili.com/cheese/play/ep530191][p20]]      |
+| <2024-03-14 Thu> | DAG-SSA-消除公共表达式                      | [[https://www.bilibili.com/cheese/play/ep533312][p21]]      |
+| <2024-03-18 Mon> | 全局优化-数据流分析-到达定值分析            | [[https://www.bilibili.com/cheese/play/ep541372][p22]]      |
+| <2024-03-20 Wed> | 活跃变量分析-集合操作及优化算法实现         | [[https://www.bilibili.com/cheese/play/ep545901][p23]]      |
+| <2024-03-21 Thu> | 思考题讲解-课程完结                         | [[https://www.bilibili.com/cheese/play/ep547659][p24]]      |
 
 * 学习教材
 - 教材见 [[file:pl0e.pdf][pl0e.pdf]]
