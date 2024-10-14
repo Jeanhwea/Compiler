@@ -30,7 +30,7 @@ $(TARGET): $(OBJS)
 
 # c source
 $(BLD_DIR)/%.c.o: %.c
-	mkdir -p $(dir $@)
+	@mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -c $< -o $@
 # tools
 $(BIN_DIR)/%: $(TOBJS) $(BLD_DIR)/$(TOOL_DIR)/%.c.o
