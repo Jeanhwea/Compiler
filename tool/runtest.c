@@ -4,6 +4,7 @@
 #include "glob.h"
 #include "limits.h"
 #include "util.h"
+#include <string.h>
 
 #define MAXCASE 100
 #define MAXNAMELEN 1024
@@ -35,22 +36,21 @@ void rtrim(char *s)
 	}
 }
 
-void build(int id)
+int build(int id)
 {
 	char cmd[MAXSTRBUF];
 	sprintf(cmd, "./%s -q %s", PL0E_NAME, cases[id]);
-	system(cmd);
+	return system(cmd);
 }
 
-void test(int id)
+int test(int id)
 {
+	int retcode = 0;
 	FILE *fe, *fa;
 
 	char txt[MAXNAMELEN];
 	strncpy(txt, cases[id], MAXNAMELEN);
 	chgsuf(txt, ".txt", ".pas");
-
-	msg("testcase(%02d): %s\n", id, cases[id]);
 
 	fe = fopen(txt, "r");
 	if (fe == NULL) {
@@ -77,7 +77,7 @@ void test(int id)
 		}
 
 		msg("test case: %s failed.\n", cases[id]);
-		exit(1);
+		retcode = 1;
 		goto done;
 	}
 
@@ -85,7 +85,7 @@ void test(int id)
 		rtrim(actual);
 		if (strlen(actual) > 0) {
 			msg("test case: %s failed.\n", cases[id]);
-			exit(1);
+			retcode = 1;
 			goto done;
 		}
 	}
@@ -95,6 +95,7 @@ done:
 	pclose(fe);
 	pclose(fa);
 	remove(exe);
+	return retcode;
 }
 
 int main(int argc, char *argv[])
@@ -102,8 +103,20 @@ int main(int argc, char *argv[])
 	findtest();
 	int i;
 	for (i = 0; i < ncase; ++i) {
-		build(i);
-		test(i);
+		int statusmsg[MAXNAMELEN] = "ok";
+		int id = i + 1;
+		int retcode = build(id);
+		if (retcode) {
+			strncpy(statusmsg, "build failed", MAXNAMELEN - 1);
+			goto nextcase;
+		}
+		int retcode = test(id);
+		if (retcode) {
+			strncpy(statusmsg, "test failed", MAXNAMELEN - 1);
+			goto nextcase;
+		}
+	nextcase:
+		msg("%02d: %s => %s\n", id, cases[id], statusmsg);
 	}
 	return 0;
 }
