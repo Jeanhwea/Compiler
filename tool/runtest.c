@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 	findtest();
 	int i;
 	for (i = 0; i < ncase; ++i) {
-		int statusmsg[MAXNAMELEN] = "ok";
+		char statusmsg[MAXNAMELEN] = "ok";
 		int id = i + 1;
 		int retcode = build(id);
 		if (retcode) {
